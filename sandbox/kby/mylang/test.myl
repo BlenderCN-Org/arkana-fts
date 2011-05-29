@@ -1,3 +1,4 @@
+
 display("Hi")
 boolean b = #t 
 if b 
@@ -10,6 +11,12 @@ def int ret(int i)
 
 def retvoid()
     return
+
+def int doAdd(int x, int y)
+    return x+y
+
+int sum = doAdd(3,2)
+display("sum is %d\n",sum)
 
 ; int i = 5
 @{ 
