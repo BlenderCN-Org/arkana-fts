@@ -1,0 +1,17 @@
+display("Hi")
+boolean b = #t 
+if b 
+  display("found true\n")
+else
+  display("found false\n")
+
+def int ret(int i)
+    return 5
+
+def retvoid()
+    return
+
+; int i = 5
+@{ 
+bla
+@}

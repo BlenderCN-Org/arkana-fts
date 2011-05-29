@@ -1,0 +1,63 @@
+@{
+@}
+string s = " bla 1
+bla '2' \n
+bla 3 \"
+---"
+s = 'He says:
+  "Hello ol\' boy"
+and leaves the place'
+
+int i = 0
+while i > 0
+   i = i - 1
+   printvalue(i)
+else
+  display("upps nix\n")
+
+@{
+@}
+
+display("Hi")
+return  ;a ret in between causes a seg fault in jit.
+
+boolean b = #t 
+if b 
+  display("found true\n")
+else
+  display("found false\n")
+
+def int makeX(int x, int y)
+  display("makeX(%d, %d)\n", x,y);
+  return x + y
+
+
+int _abc = 1
+int a = 1
+int b = 2 
+int a-b = a - b
+boolean d = a and b or a-b
+int e = a * b + a-b
+display("e=%d\n", e)
+e = makeX( a, b)
+
+int i = 5
+int j = not i
+display("j=%d\n",j)
+string s = "Dies ist ein String."
+
+
+int x = makeX(3,4)
+display("x=%d\n",x)
+if x < 6  
+  x = x + 6 
+  x = x * 2
+  printvalue(x)
+else 
+  x=4
+double d = 0.5
+d = sin(d)
+printdouble(d)
+
+@{
+@}

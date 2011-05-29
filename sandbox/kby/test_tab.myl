@@ -1,0 +1,39 @@
+int a = 5
+a+5
+display("la")
+@{
+boolean a = #t
+if a > #t then
+ display("jau")
+
+ int yy =0 
+else
+ display("nee")
+
+for i in 5..7 
+  
+with i do
+=0:...   
+>7:...
+
+def add(a, b)
+  {print(a), print(a + b)}[1]
+
+add2 = add(b=2)
+
+def add2(a)
+  add(a, 2)
+
+add2(3)
+
+a = 5
+define a 5
+(define (add x y)
+  (lambda(y) ( + y x )))
+(define add2  (add 1))
+
+
+((add2) 5)
+
+l = [x+3 for x in range(5)]
+@}
