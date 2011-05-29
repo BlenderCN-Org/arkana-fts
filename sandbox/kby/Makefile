@@ -4,7 +4,7 @@ LLVM-CONF = $(LLVM)/bin/llvm-config
 LLVMLIB = `$(LLVM-CONF) --libdir`
 LLVM-INC  = `$(LLVM-CONF) --includedir`
 LLVM-FLAGS = `$(LLVM-CONF) --libfiles --cxxflags` -lpthread -ldl
-CC = /usr/bin/g++-4.6 -std=c++0x
+CC = g++ -std=c++0x
 SOURCE= main.cpp parser.cpp tokens.cpp AstNode.cpp CodeGenContext.cpp
 INCS = CodeGenContext.h AstNode.h
 
