@@ -6,7 +6,7 @@ else
   display("found false\n")
 
 def int ret(int i)
-    return 5
+    return 5 * i
 
 def retvoid()
     return
