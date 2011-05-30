@@ -1,0 +1,421 @@
+<ui version="4.0" >
+ <class>TilesetMaker</class>
+ <widget class="QDialog" name="TilesetMaker" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>631</width>
+    <height>454</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>TilesetMaker</string>
+  </property>
+  <property name="windowIcon" >
+   <iconset resource="application.qrc" >:/newicon16.png</iconset>
+  </property>
+  <layout class="QVBoxLayout" >
+   <item>
+    <layout class="QHBoxLayout" >
+     <item>
+      <layout class="QVBoxLayout" >
+       <item>
+        <layout class="QHBoxLayout" >
+         <item>
+          <layout class="QVBoxLayout" >
+           <item>
+            <widget class="QRadioButton" name="m_prbTiles" >
+             <property name="toolTip" >
+              <string>If you select this, you will see the image on the right, that's all.</string>
+             </property>
+             <property name="statusTip" >
+              <string>If you select this, you will see the image on the right, that's all.</string>
+             </property>
+             <property name="whatsThis" >
+              <string>If you select this, you will see the image on the right, that's all.</string>
+             </property>
+             <property name="text" >
+              <string>&amp;Tiles:</string>
+             </property>
+             <property name="checked" >
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="m_pbtnAdd" >
+             <property name="toolTip" >
+              <string>This adds a tile to the list of (Lower)tiles.</string>
+             </property>
+             <property name="statusTip" >
+              <string>This adds a tile to the list of (Lower)tiles.</string>
+             </property>
+             <property name="whatsThis" >
+              <string>This adds a tile to the list of (Lower)tiles.</string>
+             </property>
+             <property name="text" >
+              <string>&amp;Add Tile</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="m_pbtnRem" >
+             <property name="toolTip" >
+              <string>This removes the currently selected tile from the list of (Lower)tiles.</string>
+             </property>
+             <property name="statusTip" >
+              <string>This removes the currently selected tile from the list of (Lower)tiles.</string>
+             </property>
+             <property name="whatsThis" >
+              <string>This removes the currently selected tile from the list of (Lower)tiles.</string>
+             </property>
+             <property name="text" >
+              <string>Remove Tile</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer>
+             <property name="orientation" >
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" >
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QListWidget" name="m_plbTiles" >
+           <property name="sizePolicy" >
+            <sizepolicy vsizetype="Minimum" hsizetype="Minimum" >
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="statusTip" >
+            <string>This is the list of Lowertiles.</string>
+           </property>
+           <property name="whatsThis" >
+            <string>This is the list of Lowertiles.</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QGridLayout" >
+         <item row="1" column="1" >
+          <widget class="QPushButton" name="m_pbtnBrowseUppertiles" >
+           <property name="sizePolicy" >
+            <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="toolTip" >
+            <string>This opens a Dialog that lets you choose a file.</string>
+           </property>
+           <property name="statusTip" >
+            <string>This opens a Dialog that lets you choose a file.</string>
+           </property>
+           <property name="whatsThis" >
+            <string>This opens a Dialog that lets you choose a file.</string>
+           </property>
+           <property name="text" >
+            <string>...</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0" >
+          <widget class="QLineEdit" name="m_pedUppertiles" >
+           <property name="sizePolicy" >
+            <sizepolicy vsizetype="Fixed" hsizetype="Minimum" >
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="toolTip" >
+            <string>This is the path to the image file containing all your uppertiles.</string>
+           </property>
+           <property name="statusTip" >
+            <string>This is the path to the image file containing all your uppertiles.</string>
+           </property>
+           <property name="whatsThis" >
+            <string>This is the path to the image file containing all your uppertiles.</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1" >
+          <widget class="QSpinBox" name="m_psbUppertilesCount" >
+           <property name="toolTip" >
+            <string>This is how much uppertiles there are in your uppertiles map.</string>
+           </property>
+           <property name="statusTip" >
+            <string>This is how much uppertiles there are in your uppertiles map.</string>
+           </property>
+           <property name="whatsThis" >
+            <string>This is how much uppertiles there are in your uppertiles map.</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0" >
+          <widget class="QRadioButton" name="m_prbUppertiles" >
+           <property name="toolTip" >
+            <string>If you select this, you will see the image on the right, that's all.</string>
+           </property>
+           <property name="statusTip" >
+            <string>If you select this, you will see the image on the right, that's all.</string>
+           </property>
+           <property name="whatsThis" >
+            <string>If you select this, you will see the image on the right, that's all.</string>
+           </property>
+           <property name="text" >
+            <string>&amp;Upper Tiles:</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QGridLayout" >
+         <item row="1" column="1" >
+          <widget class="QPushButton" name="m_pbtnBrowseBlendmask" >
+           <property name="sizePolicy" >
+            <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="toolTip" >
+            <string>This opens a Dialog that lets you choose a file.</string>
+           </property>
+           <property name="statusTip" >
+            <string>This opens a Dialog that lets you choose a file.</string>
+           </property>
+           <property name="whatsThis" >
+            <string>This opens a Dialog that lets you choose a file.</string>
+           </property>
+           <property name="text" >
+            <string>...</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0" >
+          <widget class="QLineEdit" name="m_pedBlendmask" >
+           <property name="sizePolicy" >
+            <sizepolicy vsizetype="Fixed" hsizetype="Minimum" >
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="toolTip" >
+            <string>This is the path to your blendmask image.</string>
+           </property>
+           <property name="statusTip" >
+            <string>This is the path to your blendmask image.</string>
+           </property>
+           <property name="whatsThis" >
+            <string>This is the path to your blendmask image.</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0" >
+          <widget class="QRadioButton" name="m_prbBlendmask" >
+           <property name="toolTip" >
+            <string>If you select this, you will see the image on the right, that's all.</string>
+           </property>
+           <property name="statusTip" >
+            <string>If you select this, you will see the image on the right, that's all.</string>
+           </property>
+           <property name="whatsThis" >
+            <string>If you select this, you will see the image on the right, that's all.</string>
+           </property>
+           <property name="text" >
+            <string>&amp;Blendmask:</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QGridLayout" >
+         <item row="1" column="1" >
+          <widget class="QPushButton" name="m_pbtnBrowseDetailmap" >
+           <property name="sizePolicy" >
+            <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="toolTip" >
+            <string>This opens a Dialog that lets you choose a file.</string>
+           </property>
+           <property name="statusTip" >
+            <string>This opens a Dialog that lets you choose a file.</string>
+           </property>
+           <property name="whatsThis" >
+            <string>This opens a Dialog that lets you choose a file.</string>
+           </property>
+           <property name="text" >
+            <string>...</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0" >
+          <widget class="QLineEdit" name="m_pedDetailmap" >
+           <property name="sizePolicy" >
+            <sizepolicy vsizetype="Fixed" hsizetype="Minimum" >
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="toolTip" >
+            <string>This is the path to your detailmap image.</string>
+           </property>
+           <property name="statusTip" >
+            <string>This is the path to your detailmap image.</string>
+           </property>
+           <property name="whatsThis" >
+            <string>This is the path to your detailmap image.</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0" >
+          <widget class="QRadioButton" name="m_prbDetailmap" >
+           <property name="toolTip" >
+            <string>If you select this, you will see the image on the right, that's all.</string>
+           </property>
+           <property name="statusTip" >
+            <string>If you select this, you will see the image on the right, that's all.</string>
+           </property>
+           <property name="whatsThis" >
+            <string>If you select this, you will see the image on the right, that's all.</string>
+           </property>
+           <property name="text" >
+            <string>&amp;Detailmap:</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <widget class="QLabel" name="m_pimgCurrentPreview" >
+       <property name="sizePolicy" >
+        <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize" >
+        <size>
+         <width>256</width>
+         <height>256</height>
+        </size>
+       </property>
+       <property name="text" >
+        <string/>
+       </property>
+       <property name="pixmap" >
+        <pixmap resource="application.qrc" >:/newicon48.png</pixmap>
+       </property>
+       <property name="scaledContents" >
+        <bool>false</bool>
+       </property>
+       <property name="alignment" >
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" >
+     <item>
+      <widget class="QPushButton" name="m_pbtnCreate" >
+       <property name="toolTip" >
+        <string>This creates the tileset, but it first asks you where to save it.</string>
+       </property>
+       <property name="statusTip" >
+        <string>This creates the tileset, but it first asks you where to save it.</string>
+       </property>
+       <property name="whatsThis" >
+        <string>This creates the tileset, but it first asks you where to save it.</string>
+       </property>
+       <property name="text" >
+        <string>&amp;Create the Tileset !</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer>
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" >
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="m_pbtnQuit" >
+       <property name="statusTip" >
+        <string>This closes the TilesetMaker without saving your work.</string>
+       </property>
+       <property name="whatsThis" >
+        <string>This closes the TilesetMaker without saving your work.</string>
+       </property>
+       <property name="text" >
+        <string>&amp;Quit</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>m_pbtnAdd</tabstop>
+  <tabstop>m_pbtnRem</tabstop>
+  <tabstop>m_plbTiles</tabstop>
+  <tabstop>m_pedUppertiles</tabstop>
+  <tabstop>m_pbtnBrowseUppertiles</tabstop>
+  <tabstop>m_pedBlendmask</tabstop>
+  <tabstop>m_pbtnBrowseBlendmask</tabstop>
+  <tabstop>m_pedDetailmap</tabstop>
+  <tabstop>m_pbtnBrowseDetailmap</tabstop>
+  <tabstop>m_pbtnCreate</tabstop>
+  <tabstop>m_pbtnQuit</tabstop>
+ </tabstops>
+ <resources>
+  <include location="application.qrc" />
+ </resources>
+ <connections>
+  <connection>
+   <sender>m_pbtnQuit</sender>
+   <signal>clicked()</signal>
+   <receiver>TilesetMaker</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>620</x>
+     <y>443</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>543</x>
+     <y>388</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

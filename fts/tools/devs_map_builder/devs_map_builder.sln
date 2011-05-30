@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual C++ Express 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "devs_map_builder", "devs_map_builder.vcxproj", "{C80AEB07-6227-478C-B736-68CC481DAEB4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C80AEB07-6227-478C-B736-68CC481DAEB4}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C80AEB07-6227-478C-B736-68CC481DAEB4}.Debug|Win32.Build.0 = Debug|Win32
+		{C80AEB07-6227-478C-B736-68CC481DAEB4}.Release|Win32.ActiveCfg = Release|Win32
+		{C80AEB07-6227-478C-B736-68CC481DAEB4}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

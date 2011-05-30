@@ -1,0 +1,18 @@
+routine regvar(s) {
+   x = s.match('^ %s* %w+ %s* $');
+   b = x[0] >= 0;
+   return b;
+}
+routine regreflect(s) {
+   x = s.match('^ %s* reflect%. %w+ %s* %( %s* %w* %s* %) %s* $');
+   b = x[0] >= 0;
+   return b;
+}
+
+routine needPrintln(s) {
+    v = regvar(s)
+    if( v != 0 )
+        return v
+    reg = regreflect(s)
+    return reg
+}

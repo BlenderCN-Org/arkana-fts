@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<GUILayout>
+    <Window Type="ArkanaLook/FrameWindow" Name="dlg_confirm">
+        <Property Name="UnifiedPosition"    Value="{{0.25,0},{0.25,0}}" />
+        <Property Name="UnifiedSize"        Value="{{0.5,0},{0.5,0}}" />
+        <Property Name="UnifiedMaxSize"     Value="{{0.8,0},{0.8,0}}" />
+        <Property Name="UnifiedMinSize"     Value="{{0,400},{0,300}}" />
+        <Property Name="SizingEnabled"      Value="true" />
+        <Property Name="CloseButtonEnabled" Value="true" />
+        <Property Name="AlwaysOnTop"        Value="true" />
+        <Property Name="Text">Confirmation</Property>
+        <Window Type="ArkanaLook/StaticText" Name="dlg_confirm/Text">
+            <Property Name="UnifiedPosition" Value="{{0,015},{0,50}}" />
+            <Property Name="UnifiedSize"     Value="{{1,-30},{0,35}}" />
+            <Property Name="Text">Êtes-vous sur de vouloir faire ceci:</Property>
+        </Window>
+        <Window Type="ArkanaLook/StaticText" Name="dlg_confirm/Message">
+            <Property Name="UnifiedPosition" Value="{{0,015},{0,0100}}" />
+            <Property Name="UnifiedSize"     Value="{{1,-30},{1,-175}}" />
+            <Property Name="HorzFormatting"  Value="WordWrapLeftAligned" />
+            <Property Name="VertScrollbar"   Value="True" />
+            <Property Name="HorzScrollbar"   Value="True" />
+            <Property Name="Text">blablabla</Property>
+        </Window>
+        <Window Type="ArkanaLook/Button" Name="dlg_confirm/Yes">
+            <Property Name="UnifiedPosition" Value="{{0.0,015},{1,-55}}" />
+            <Property Name="UnifiedSize"     Value="{{0.5,-20},{0,040}}" />
+            <Property Name="ID"              Value="1" />
+            <Property Name="Text">Oui</Property>
+        </Window>
+        <Window Type="ArkanaLook/Button" Name="dlg_confirm/No">
+            <Property Name="UnifiedPosition" Value="{{0.5,005},{1,-55}}" />
+            <Property Name="UnifiedSize"     Value="{{0.5,-20},{0,040}}" />
+            <Property Name="ID"              Value="2" />
+            <Property Name="Text">Non</Property>
+        </Window>
+    </Window>
+</GUILayout>

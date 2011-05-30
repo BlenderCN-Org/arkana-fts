@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<GUILayout>
+    <Window Type="ArkanaLook/FrameWindow" Name="loadfts">
+        <Property Name="UnifiedPosition"    Value="{{0,0},{0,0}}" />
+        <Property Name="UnifiedSize"        Value="{{1,0},{1,0}}" />
+        <Property Name="UnifiedMinSize"     Value="{{1,0},{1,0}}" />
+        <Property Name="TitlebarEnabled"    Value="false" />
+        <Property Name="FrameEnabled"       Value="false" />
+        <Property Name="SizingEnabled"      Value="false" />
+        <Property Name="CloseButtonEnabled" Value="false" />
+        <Property Name="BackgroundImageEnabled" Value="set:ArkanaLook image:OneTransparentPixel" />
+        <Property Name="BackgroundImageVertFormat" Value="Stretched" />
+        <Property Name="BackgroundImageHorzFormat" Value="Stretched" />
+        <Property Name="ID"                 Value="1" />
+
+        <!-- This is the progressbar that shows how far you are with loading -->
+        <Window Type="ArkanaLook/BigProgressbar" Name="loadfts/pgMe">
+            <Property Name="UnifiedPosition"   Value="{{0.5,-140},{0.85,-50}}" />
+            <Property Name="UnifiedSize"       Value="{{0.0,0281},{0.00,042}}" />
+        </Window>
+
+        <!-- This shows what is currently being loaded, at the bottom -->
+        <Window Type="ArkanaLook/ShadowedLabel" Name="loadfts/lblState">
+            <Property Name="UnifiedPosition"  Value="{{0,0},{0.85,00}}" />
+            <Property Name="UnifiedSize"      Value="{{1,0},{0.00,32}}" />
+            <Property Name="VertFormat"       Value="CentreAligned" />
+            <Property Name="HorzFormat"       Value="CentreAligned" />
+            <Property Name="Text">HelloMoto</Property>
+        </Window>
+    </Window>
+</GUILayout>

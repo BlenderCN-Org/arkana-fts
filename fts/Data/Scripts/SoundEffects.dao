@@ -1,0 +1,59 @@
+# This script file contains the dao classes to support the FTS sound effects. 
+# They are wrappers to easily create them. This should be loaded in an map 
+# environment. So that they can be used by the scripts used in the game map.
+
+enum EffectTypes { eMusic, eUnitReaction, eEnvironment, eUnitAction, eMagic, eAttention }
+
+class SoundEffect : Music 
+{
+    routine SoundEffect( fileName : string,  soundType : EffectTypes) : Music(fileName)
+    {
+        io.println( fileName, soundType )
+        self.type = (int)soundType
+    }
+}
+
+public
+class SoundEffectUnitReaction : SoundEffect
+{
+    routine SoundEffectUnitReaction( fileName : string) : SoundEffect(fileName, EffectTypes.eUnitReaction)
+    {
+        io.println( 'load UnitReaction sound ', fileName )
+    }
+}
+
+public
+class SoundEffectEnvironment : SoundEffect
+{
+    routine SoundEffectEnvironment( fileName : string) : SoundEffect(fileName, EffectTypes.eEnvironment)
+    {
+        io.println( 'load Environment sound ', fileName )
+    }
+}
+
+public
+class SoundEffectUnitAction : SoundEffect
+{
+    routine SoundEffectUnitAction( fileName : string) : SoundEffect(fileName, EffectTypes.eUnitAction)
+    {
+        io.println( 'load UnitAction sound ', fileName )
+    }
+}
+
+public
+class SoundEffectMagic : SoundEffect
+{
+    routine SoundEffectMagic( fileName : string) : SoundEffect(fileName, EffectTypes.eMagic)
+    {
+        io.println( 'load Magic sound ', fileName )
+    }
+}
+
+public
+class SoundEffectAttention : SoundEffect
+{
+    routine SoundEffectAttention( fileName : string) : SoundEffect(fileName, EffectTypes.eAttention)
+    {
+        io.println( 'load Attention sound ', fileName )
+    }
+}

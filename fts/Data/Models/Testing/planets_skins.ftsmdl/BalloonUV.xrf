@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<HEADER MAGIC="XRF" VERSION="1200"/>
+<MATERIAL>
+    <AMBIENT>102 102 102 255</AMBIENT>
+    <DIFFUSE>163 163 163 255</DIFFUSE>
+    <SPECULAR>128 128 128 255</SPECULAR>
+    <SHININESS>1.0</SHININESS>
+    <VERTEXSHADER>balloon.vert</VERTEXSHADER>
+    <fragmentshader>texuv.frag</fragmentshader>
+</MATERIAL>

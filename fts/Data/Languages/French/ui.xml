@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ui>
+  <General_Cancel value="Annuler"/>
+  <General_ac value="av. J.-C."/>
+  <General_Player value="Joueur"/>
+  <File_Open value="Ouvrir le fichier"/>
+  <File_OpenTxt value="Choisissez le fichier à ouvrir"/>
+  <File_OpenTitle value="Ouvrir un fichier"/>
+  <File_Save value="Enregistrer ce fichier"/>
+  <File_SaveTxt value="Choisissez un endroit et un nom pour enregistrer le fichier."/>
+  <File_SaveTitle value="Enregistrer"/>
+  <File_Save_Confirm value="Ce fichier existe dejà, remplacer ?"/>
+  <Update_Found value="Une nouvelle version de FTS est disponible !
+Appuyez sur le bouton Mettre à jour pour démarrer le FTS Updater.
+Appuyez sur le bouton Annuler pour ignorer cette mise à jour."/>
+  <Update_Error value="Erreur lors de la requise de version.
+Soit vous n'êtes pas connecté à internet soit notre serveur est HS."/>
+  <Update_None value="Vous possédez déjà la version la plus actuelle de FTS.
+     Bon amusement et merci de jouer FTS ;)"/>
+  <Msg_Warn value="Avertissement"/>
+  <Msg_Err value="Erreur !"/>
+  <Msg_Horr value="Horreur !!!"/>
+  <Opts_Vid_Tex_VLow value="Bas (Nearest)"/>
+  <Opts_Vid_Tex_Low value="Moyen (Linear, Standard)"/>
+  <Opts_Vid_Tex_Mid value="Élevé (linear MipMap)"/>
+  <Opts_Vid_Mod_Low value="Bas (<100 polygônes)"/>
+  <Opts_Vid_Mod_Mid value="Moyen (100-500 polygônes)"/>
+  <Opts_Vid_Mod_Hig value="Élevé (>500 polygônes)"/>
+  <Loadscr_Stage_GetFL value="Génère une liste des fichiers dans la carte ..."/>
+  <Loadscr_Stage_Extract value="Extrais le fichier {1} ..."/>
+  <Loadscr_Stage_MapInfo value="Charge les informations détaillées de la carte ..."/>
+  <Loadscr_Stage_TerrInfo value="Charge les informations du terrain ..."/>
+  <Loadscr_Stage_TerrQuads value="Charge les quads du terrain ({1}) ..."/>
+  <Loadscr_Stage_TerrLoTi value="Charge les lowertiles du terrain ({1}) ..."/>
+  <Loadscr_Stage_TerrCompLoTi value="Compile les lowertiles du terrain ..."/>
+  <Loadscr_Stage_TerrUpTi value="Charge les uppertiles du terrain ({1}) ..."/>
+  <Loadscr_Stage_Precalc value="Précalcule les données du terrain ..."/>
+  <Loadscr_Stage_Forests value="Charge les forêts ..."/>
+  <Loadscr_Stage_Starting value="Chargement terminé, attends autres joueuers ..."/>
+  <Loadscr_Author value="Par {1}"/>
+  <Loadscr_Lastmodif value="(Dernière modification {1})"/>
+  <lblTime_fileLst value="Liste des fichiers:"/>
+  <lblTime_extract value="Extraction des fichiers:"/>
+  <lblTime_quads value="Chargement des quads:"/>
+  <lblTime_lowertiles value="Chargement des lowertiles:"/>
+  <lblTime_complowtil value="Compilation des lowertiles:"/>
+  <lblTime_uppertiles value="Chargement des uppertiles:"/>
+  <lblTime_precalc value="Précalculations:"/>
+  <lblTime_forests value="Chargement des forêts:"/>
+  <gameinfo_MapAuthorAndModif value="‣ Carte créée par |c111111{1}|d, dernière modif le |c111111{2}|d"/>
+  <gameinfo_MapnPlayers value="‣ Cette carte veut un minimum de |c111111{1}|d et un maximum de |c111111{2}|d joueurs."/>
+  <gameinfo_GameHost value="‣ Cette partie a été créée par |c111111{1}|d"/>
+  <gameinfo_GamePlayers value="‣ Les |c111111{1}|d joueurs suivants l'ont déjà rejoint:"/>
+  <Really_Quit value="Comme tout le monde, je veux vous emmer.. énnerver:
+Voulez-vous vraiment quitter cette partie ?"/>
+  <Chat_Admin_suffix value="(Admin)"/>
+  <Chat_Op_suffix value="(op)"/>
+  <Chat_Muted_suffix value="(Ignoré)"/>
+  <Chat_Join value="Bienvenue dans la salle nommée |c111111{1}|d,
+Le slogan de cette salle est: |c1B56A0{2}|d"/>
+  <Chat_MottoSet value="|c111111{1}|d à changé le slogan de la salle en: |c1B56A0{2}|d"/>
+  <Chat_Kicked value="|c111111{1}|d à expulsé |c111111{2}|d !"/>
+  <Chat_YouGotKicked value="|c111111{1}|d vous a expulsé de la salle |c111111{2}|d ! Vous vous trouvez maintenant dans la salle |c111111{3}|d."/>
+  <Chat_Oped value="|c111111{1}|d est devenu un opérateur de la salle !"/>
+  <Chat_Deoped value="|c111111{1}|d a perdu son statut d'opérateur de la salle !"/>
+  <Chat_Says value="{1}: "/>
+  <Chat_RecvWhisp value="{1} vous chuchote: "/>
+  <Chat_SentWhisp value="Vous chuchotez à {1}: "/>
+  <Chat_ChannelsList value="Voici toutes les salles que vous possédez:
+{1}"/>
+  <Chat_ChannelsList_ChanPrefix value="
+  *"/>
+  <Chat_ChannelsList_ChanSuffix value=""/>
+  <Chat_ChannelsListEmpty value="Vous ne possédez aucune salle."/>
+  <Chat_ChannelRemGood value="La salle '{1}' a été détruite avec succès."/>
+  <Chat_Unknown_cmd value="Cette commande n'existe pas! Entrez /help pour voir la liste des commandes."/>
+  <Chat_Help value="|c002277Aide générale:|d
+L'aide est divisée en chapitres, un chapitre par commande.
+
+|c1B56A0Syntaxe:|d
+          |c111111/help|d |c222222nom_commande|d
+Affiche le chapitre concernant la commande |c222222nom_commande|d.
+
+Voici les noms de commandes disponibles:
+join:         accède à/crée une salle
+motto:     modifie l'info de la salle
+kick:        expulse un joueur de la salle
+op:           rend un joueur opérateur de la salle
+deop:       supprime le statut d'opérateur de la salle à un joueur
+w:            chuchote un message à un joueur
+listchans: affiche une liste des salles qui vous appartiennent
+delchan:   détruit une salle qui vous appartient
+
+|c1B56A0Exemple:|d
+          |c111111/help|d |c222222join|d
+Affiche le chapitre d'aide concernant la commande '|c222222join|d'."/>
+  <Chat_Help_join value="|c002277Aide de la commande /join:|d
+Cette commande peut être utilisée soit pour rejoindre une salle, soit pour en créer une nouvelle. Si la salle que vous avez spécifiée existe déjà, vous allez la rejoindre. Si elle n'existe pas encore, elle sera créée automatiquement et vous devenez administrateur de la salle (avez donc tous les droits).
+
+|c1B56A0Syntaxe:|d
+          |c111111/join|d |c222222NomDeLaSalle|d
+|c222222NomDeLaSalle|d étant le nom de la salle que vous voulez rejoindre ou créer.
+
+|c1B56A0Exemple:|d
+          |c111111/join|d |c222222Ma première salle|d
+Créé ou rejoint la salle nommée '|c222222Ma première salle|d'."/>
+  <Chat_Help_motto value="|c002277Aide de la commande /motto:|d
+Cette commande modifie le slogan de la salle dans laquelle vous vous situez actuellement. Il vous faut suffisemment de droits pour pouvoir modifier le slogan de la salle (Administrateur ou Opérateur).
+
+|c1B56A0Syntaxe:|d
+          |c111111/motto|d |c222222le nouveau slogan|d
+Si vous êtes soit un opérateur soit l'administrateur de cette salle, cette commande changera le slogan en ce qui suit la commande.
+
+|c1B56A0Exemple:|d
+          |c111111/motto|d |c222222Venez voir mes nouvelles tof sur mon blog !|d
+Changera le sogan de cette salle en '|c222222Venez voir mes nouvelles tof sur mon blog !|d', si vous avez suffisemment de droits."/>
+  <Chat_Help_kick value="|c002277Aide de la commande /kick:|d
+Cette commande expulse un joueur de la salle dans laquelle vous vous situez actuellement. Il vous faut suffisemment de droits pour pouvoir expulser un joueur de la salle (Administrateur ou Opérateur).
+
+|c1B56A0Syntaxe:|d
+          |c111111/kick|d |c222222NomDuJoueur|d
+|c222222NomDuJoueur|d étant le nom du joueur que vous voulez expulser de la salle.
+
+|c1B56A0Exemple:|d
+          |c111111/kick|d |c222222RoxXxoR2007|d
+Expulse le joueur nommé '|c222222RoxXxoR2007|d' de la salle, à condition que vous ayez assez de droits."/>
+  <Chat_Help_op value="|c002277Aide de la commande /op:|d
+Cette commande rend un joueur opérateur de la salle actuelle, ce qui lui donne plus de droits (comme par exemple le droit d'expulser d'autres joueurs).
+Vous pouvez utiliser cette commande uniquement si vous êtes un administrateur ou un opérateur de la salle actuelle.
+
+|c1B56A0Syntaxe:|d
+          |c111111/op|d |c222222NomDuJoueur|d
+|c222222NomDuJoueur|d étant le nom du joueur que vous souhaitez rendre opérateur.
+
+|c1B56A0Exemple:|d
+          |c111111/op|d |c222222RoxXxoR2007|d
+Rend le joueur nommé '|c222222RoxXxoR2007|d' opérateur de la salle, à condition que vous ayez assez de droits."/>
+  <Chat_Help_deop value="|c002277Aide de la commande /deop:|d
+Cette commande ôte le statut d'opérateur (de cette salle) à un joueur, ce qui lui ôte les droits élevés.
+Vous pouvez utiliser cette commande uniquement si vous êtes un administrateur ou un opérateur de la salle actuelle.
+
+|c1B56A0Syntaxe:|d
+          |c111111/deop|d |c222222NomDuJoueur|d
+|c222222NomDuJoueur|d étant le joueur auquel vous voulez ôter le statut d'opérateur.
+
+|c1B56A0Exemple:|d
+          |c111111/deop|d |c222222RoxXxoR2007|d
+Supprime le statut d'opérateur du joueur nommé '|c222222RoxXxoR2007|d', à condition que vous ayez assez de droits."/>
+  <Chat_Help_w value="|c002277Aide de la commande /w:|d
+Cette commande chuchote un message à un autre joueur. Un message chuchoté est envoyé uniquement à ce joueur, où qu'il soit, tant qu'il est en ligne.
+Vous pouvez ainsi lui envoyer des messages secrets ou lui perler même si il joue ou si il est dans une autre salle que vous.
+
+Le fait d'utiliser la lettre '|c222222w|d' vient de l'anglais où chuchoter est appelé |c222222w|dhisper.
+
+|c1B56A0Syntaxe:|d
+          |c111111/w|d |c222222NomDuJoueur|d |c333333Message pour le joueur|d
+|c222222NomDuJoueur|d étant le nom du joueur auquel vous voulez chuchoter. Tout le reste étant le message qui lui sera envoyé.
+
+|c1B56A0Exemple:|d
+          |c111111/w|d |c222222Pompei2|d |c333333Hey, ton jeu est excellent!|d
+Envoie le message '|c333333Hey, ton jeu est excellent!|d' au joueur nommé '|c222222Pompei2|d' si celui-ci est connecté."/>
+  <Chat_Help_listchans value="|c002277Aide de la commande /listchans:|d
+Cette commande affiche une liste de toutes les salles qui vous appartiennent.
+Une salle vous appartient si vous en êtes l'administrateur. Cela est automatiquement le cas pour toutes les salles que vous avez créées."/>
+  <Chat_Help_delchan value="|c002277Aide de la commande /delchan:|d
+Cette commande détruit une salle de chat qui vous appartient.
+Une salle vous appartient si vous en êtes l'administrateur. Cela est automatiquement le cas pour toutes les salles que vous avez créées.
+
+Lorsque la salle est détruite, tous les joueurs se trouvant dans la salle sont automatiquement expulsés et se trouveront dans la salle par défaut.
+Sachez qu'une fois votre salle détruite, n'importe qui peut créer une salle du même nom et en être l'administrateur.
+
+|c1B56A0Syntaxe:|d
+          |c111111/delchan|d |c222222NomDeLaSalle|d
+|c222222NomDeLaSalle|d étant le nom de la salle que vous voulez détruire. Si vous ne vous souvenez plus du nom de votre salle, utilisez la commande /listchans.
+
+|c1B56A0Exemple:|d
+          |c111111/delchan|d |c222222Ma salle trop géniale que je n'aime plus|d
+Détruira la salle '|c222222Ma salle trop géniale que je n'aime plus|d' si elle vous appartient."/>
+</ui>

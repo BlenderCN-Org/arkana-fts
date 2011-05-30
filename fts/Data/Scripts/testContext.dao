@@ -1,0 +1,15 @@
+io.writeln('In script testContext.dao')
+load global_vars;
+load testContext2;
+printgl(55)
+tt = SndDaoOtto()
+tt.name()
+class DaoOtto : IHotkey
+{
+  sub doOtto() {
+    io.writef( 'Dao: in doOtto()\n')
+  }
+}
+klaus = DaoOtto()
+klaus.doOtto()
+io.writeln('END script testContext.dao')

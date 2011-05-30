@@ -1,0 +1,8 @@
+#io.writef('loading sound wave and whisp_recv')
+sndyeh = Music('Hydrate-Kenny_Beltrey.ogg')
+sndyeh.play()
+snd = Music('wave1.wav')
+snd.play()
+#std.sleep(4.0)
+#sndWhisper = Music('whisp_recv.ogg')
+#sndWhisper.play()

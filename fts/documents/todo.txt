@@ -1,0 +1,7 @@
+FTS:
+	DONE - Add a visible version information in main menu (mb staticTest)
+
+FTS Updater:
+	- Detect deleted files, and delete them.
+	- Link everything statically so it doesn't need .dlls to run and can update the .dlls too
+	DONE - Ability to update itself ....

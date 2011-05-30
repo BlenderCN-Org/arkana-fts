@@ -1,0 +1,927 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Main">
+      <UniqueIdentifier>{494c770d-b79e-403b-8fc7-084218497b79}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphic">
+      <UniqueIdentifier>{b209dd03-576a-4f98-94cc-5adf840d3277}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utilities">
+      <UniqueIdentifier>{c3825c2d-0330-43f4-8681-8cfa0a9616a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI">
+      <UniqueIdentifier>{5d8f3d27-2b14-4859-b464-a47407adeecf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI\cegui_items">
+      <UniqueIdentifier>{376ce266-860b-4a7e-9ae5-e7d2ab97a5c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI\cegui_items\progressbar">
+      <UniqueIdentifier>{c3f0e075-648f-4c44-b846-0dda3fee9051}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="3D">
+      <UniqueIdentifier>{106807ca-98ac-4e45-b799-dc165fee0886}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="3D\math">
+      <UniqueIdentifier>{ec249a11-d842-4748-8d7c-075130fda6e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Input">
+      <UniqueIdentifier>{6dd12a45-5fe9-490f-b12c-0d33692cb84b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dLib">
+      <UniqueIdentifier>{e6dc74f7-7e5d-42a6-9ade-7762654551d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dLib\dBrowse">
+      <UniqueIdentifier>{257877ce-9128-4dd3-b6aa-996b3428c0c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dLib\dMem">
+      <UniqueIdentifier>{636f782c-1f6c-48d2-bbf6-e55be5dbfc4f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dLib\dConf">
+      <UniqueIdentifier>{1eb37be1-2033-4513-892b-7a11b7127744}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dLib\dFile">
+      <UniqueIdentifier>{34e66ef9-facf-4f45-8eee-7d9483ccb6f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dLib\dProcess">
+      <UniqueIdentifier>{9cc9db79-3fee-42ab-94be-a9ae8c6561ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dLib\dString">
+      <UniqueIdentifier>{cb114a46-2937-4264-8061-7847a7249178}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dLib\dCompressor">
+      <UniqueIdentifier>{6a69da12-a61f-4717-b225-e8750b565f8b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dLib\dCompressor\minilzo">
+      <UniqueIdentifier>{c35b7e4c-c219-4a41-b6fb-a3255fbd898b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dLib\dArchive">
+      <UniqueIdentifier>{521353b4-3bbd-4aa0-bd9c-9da19870732c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Map">
+      <UniqueIdentifier>{6939fcc4-0c65-4ebc-80ff-a4a763484efe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game">
+      <UniqueIdentifier>{494a6105-5f5f-4386-9c0b-f82999a12c7d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Logging">
+      <UniqueIdentifier>{ca7c078d-25e5-4f96-92a5-72a97b956985}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Net">
+      <UniqueIdentifier>{83b24fd6-8aa1-48f7-9055-14030be257f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sound">
+      <UniqueIdentifier>{92bccaed-092d-4fba-81ee-efa3cad184ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="3dparty">
+      <UniqueIdentifier>{f5fb0f7d-5303-4913-8a47-128cf3fc317d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MdlViewer">
+      <UniqueIdentifier>{65230e18-ddb4-4a87-a839-50c2f49d3dff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripting">
+      <UniqueIdentifier>{d21be797-b3ee-4c02-8b86-67453e1ac81e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="3D\Movers">
+      <UniqueIdentifier>{15b7477b-cce9-4382-a8ba-c25958e05130}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests">
+      <UniqueIdentifier>{9dcdf813-85aa-42c5-8339-fb30663fca63}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dLib\aTest">
+      <UniqueIdentifier>{0a85dd4d-7441-4959-bcce-104903db711f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests\Scripting">
+      <UniqueIdentifier>{04af23a0-612a-4653-addf-c7ff8b3b5497}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\main\Exception.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="..\main\load_fts_rlv.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="..\main\main.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="..\main\runlevels.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="..\main\version.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="..\graphic\anim.cpp">
+      <Filter>Graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\graphic\cegui_ftsimg_codec.cpp">
+      <Filter>Graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\graphic\errtex.cpp">
+      <Filter>Graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\graphic\graphic.cpp">
+      <Filter>Graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\graphic\image.cpp">
+      <Filter>Graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\utilities\command.cpp">
+      <Filter>Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Utilities\console.cpp">
+      <Filter>Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\utilities\DataContainer.cpp">
+      <Filter>Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\utilities\fps_calculator.cpp">
+      <Filter>Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\utilities\parse.cpp">
+      <Filter>Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\utilities\radix.cpp">
+      <Filter>Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\utilities\Singleton.cpp">
+      <Filter>Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\utilities\StreamedDataContainer.cpp">
+      <Filter>Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\utilities\string_file.cpp">
+      <Filter>Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\utilities\threading.cpp">
+      <Filter>Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Utilities\utilities.cpp">
+      <Filter>Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ui\confirm_dialog.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ui\dlg_online_acctInfo.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ui\dlg_online_feedback.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ui\dlg_online_findGame.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ui\dlg_online_joinchannel.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ui\dlg_online_newGame.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ui\dlg_options.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ui\dlg_options_adv_video.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ui\file_dialog.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ui\ui.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ui\ui_commands.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ui\ui_menu.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ui\ui_menu_online.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ui\ui_menu_online_main.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ui\cegui_items\ArkanaResourceProvider.cpp">
+      <Filter>UI\cegui_items</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ui\cegui_items\chat.cpp">
+      <Filter>UI\cegui_items</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ui\cegui_items\imaged_list_item.cpp">
+      <Filter>UI\cegui_items</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ui\cegui_items\simple_list_item.cpp">
+      <Filter>UI\cegui_items</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ui\cegui_items\progressbar\ArkanaProgressBarWR.cpp">
+      <Filter>UI\cegui_items\progressbar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ui\cegui_items\progressbar\ArkanaProgressBarWRProperties.cpp">
+      <Filter>UI\cegui_items\progressbar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3D\3d.cpp">
+      <Filter>3D</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3d\camera.cpp">
+      <Filter>3D</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3d\light.cpp">
+      <Filter>3D</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3d\Renderer.cpp">
+      <Filter>3D</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3d\math\Matrix.cpp">
+      <Filter>3D\math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3d\math\Quaternion.cpp">
+      <Filter>3D\math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3d\math\Vector.cpp">
+      <Filter>3D\math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\input\keys.cpp">
+      <Filter>Input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dLib\dBrowse\windows.cpp">
+      <Filter>dLib\dBrowse</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dLib\dFile\dFile.cpp">
+      <Filter>dLib\dFile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dLib\dProcess\dProcess.cpp">
+      <Filter>dLib\dProcess</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dLib\dString\dPath.cpp">
+      <Filter>dLib\dString</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dLib\dString\dString.cpp">
+      <Filter>dLib\dString</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dLib\dCompressor\dCompressor.cpp">
+      <Filter>dLib\dCompressor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dLib\dCompressor\minilzo_compressor.cpp">
+      <Filter>dLib\dCompressor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dLib\dCompressor\minilzo\minilzo.c">
+      <Filter>dLib\dCompressor\minilzo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dLib\dArchive\dArchive.cpp">
+      <Filter>dLib\dArchive</Filter>
+    </ClCompile>
+    <ClCompile Include="..\map\forest.cpp">
+      <Filter>Map</Filter>
+    </ClCompile>
+    <ClCompile Include="..\map\map.cpp">
+      <Filter>Map</Filter>
+    </ClCompile>
+    <ClCompile Include="..\map\mapinfo.cpp">
+      <Filter>Map</Filter>
+    </ClCompile>
+    <ClCompile Include="..\map\quad.cpp">
+      <Filter>Map</Filter>
+    </ClCompile>
+    <ClCompile Include="..\map\terrain.cpp">
+      <Filter>Map</Filter>
+    </ClCompile>
+    <ClCompile Include="..\map\tile.cpp">
+      <Filter>Map</Filter>
+    </ClCompile>
+    <ClCompile Include="..\game\game_rlv.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\game\loadgame_rlv.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\game\objects\objects.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\game\player.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\game\player_og.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\game\objects\tree.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\logging\chronometer.cpp">
+      <Filter>Logging</Filter>
+    </ClCompile>
+    <ClCompile Include="..\logging\ftslogger.cpp">
+      <Filter>Logging</Filter>
+    </ClCompile>
+    <ClCompile Include="..\net\connection.cpp">
+      <Filter>Net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\tools\server2\checksum\md5.cpp">
+      <Filter>Net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\net\packet.cpp">
+      <Filter>Net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\tools\server2\checksum\sha2.cpp">
+      <Filter>Net</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sound\SndFile.cpp">
+      <Filter>Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sound\SndGrp.cpp">
+      <Filter>Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sound\SndPlayList.cpp">
+      <Filter>Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sound\SndSys.cpp">
+      <Filter>Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sound\SndSysOpenAL.cpp">
+      <Filter>Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rdparty\scrap.cpp">
+      <Filter>3dparty</Filter>
+    </ClCompile>
+    <ClCompile Include="..\mdlviewer\mdlviewer_main.cpp">
+      <Filter>MdlViewer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Scripting\dao_snd.cpp">
+      <Filter>Scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Scripting\dao_snd2.cpp">
+      <Filter>Scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Scripting\dao_snd3.cpp">
+      <Filter>Scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Scripting\DaoVm.cpp">
+      <Filter>Scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sound\SndObjOpenAL.cpp">
+      <Filter>Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sound\sndobjpool.cpp">
+      <Filter>Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dLib\dConf\configuration.cpp">
+      <Filter>dLib\dConf</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dLib\dConf\DefaultOptions.cpp">
+      <Filter>dLib\dConf</Filter>
+    </ClCompile>
+    <ClCompile Include="..\main\Clock.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="..\main\Updateable.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="..\logging\logger.cpp">
+      <Filter>Logging</Filter>
+    </ClCompile>
+    <ClCompile Include="..\input\Cursor.cpp">
+      <Filter>Input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\input\InputManager.cpp">
+      <Filter>Input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\scripting\Music.cpp">
+      <Filter>Scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3d\HardwareModel.cpp">
+      <Filter>3D</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3d\opengl_wrapper.cpp">
+      <Filter>3D</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3d\Shader.cpp">
+      <Filter>3D</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3d\VertexArrayObject.cpp">
+      <Filter>3D</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3d\ModelInstance.cpp">
+      <Filter>3D</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3d\ErrorMesh.cpp">
+      <Filter>3D</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3d\ModelManager.cpp">
+      <Filter>3D</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3d\DefaultShaders.cpp">
+      <Filter>3D</Filter>
+    </ClCompile>
+    <ClCompile Include="..\graphic\Color.cpp">
+      <Filter>Graphic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dLib\dConf\ArkanaDefaultSettings.cpp">
+      <Filter>dLib\dConf</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ui\ScriptConsole.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ui\cegui_items\ColorListItem.cpp">
+      <Filter>UI\cegui_items</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3d\math\AxisAlignedBoundingBox.cpp">
+      <Filter>3D\math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\scripting\DaoFunction.cpp">
+      <Filter>Scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\scripting\hotkey.cpp">
+      <Filter>Scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rdparty\lodepng.cpp">
+      <Filter>3dparty</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3d\Resolution.cpp">
+      <Filter>3D</Filter>
+    </ClCompile>
+    <ClCompile Include="..\map\DecorativeMO.cpp">
+      <Filter>Map</Filter>
+    </ClCompile>
+    <ClCompile Include="..\map\MapObject.cpp">
+      <Filter>Map</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3d\Movers\Mover.cpp">
+      <Filter>3D\Movers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3d\Movers\Translator.cpp">
+      <Filter>3D\Movers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3d\Movers\Rotator.cpp">
+      <Filter>3D\Movers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3d\Movers\Orbiter.cpp">
+      <Filter>3D\Movers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\tests\mainNice.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\tests\dLib\dFile\dFileArchiveTest.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\tests\dLib\dString\dPathTest.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\tests\dLib\dString\dStringTest.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\tests\3d\ResolutionTest.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dLib\aTest\Test.cpp">
+      <Filter>dLib\aTest</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dLib\aTest\TestRegistry.cpp">
+      <Filter>dLib\aTest</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dLib\aTest\TestResult.cpp">
+      <Filter>dLib\aTest</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dLib\aTest\TestResultCombiner.cpp">
+      <Filter>dLib\aTest</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dLib\aTest\TestResultCompiler.cpp">
+      <Filter>dLib\aTest</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dLib\aTest\TestResultDebugOut.cpp">
+      <Filter>dLib\aTest</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dLib\aTest\TestResultNiceOutput.cpp">
+      <Filter>dLib\aTest</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dLib\aTest\TestResultSQL.cpp">
+      <Filter>dLib\aTest</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dLib\aTest\TestSuite.cpp">
+      <Filter>dLib\aTest</Filter>
+    </ClCompile>
+    <ClCompile Include="..\tests\3d\ShaderTest.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\logging\MinimalLogger.cpp">
+      <Filter>Logging</Filter>
+    </ClCompile>
+    <ClCompile Include="..\tests\Scripting\DaoVmTest.cpp">
+      <Filter>Tests\Scripting</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\main\defines.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="..\main\Exception.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="..\main\load_fts_rlv.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Main\main.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="..\main\runlevels.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="..\main\support.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="..\main\version.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="..\graphic\anim.h">
+      <Filter>Graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\graphic\cegui_ftsimg_codec.h">
+      <Filter>Graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\graphic\errtex.h">
+      <Filter>Graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Graphic\graphic.h">
+      <Filter>Graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\graphic\image.h">
+      <Filter>Graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\utilities\command.h">
+      <Filter>Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\utilities\DataContainer.h">
+      <Filter>Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\utilities\fps_calculator.h">
+      <Filter>Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\utilities\Singleton.h">
+      <Filter>Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\utilities\StreamedDataContainer.h">
+      <Filter>Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\utilities\threading.h">
+      <Filter>Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Utilities\utilities.h">
+      <Filter>Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ui\confirm_dialog.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ui\dlg_online_acctInfo.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ui\dlg_online_feedback.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ui\dlg_online_findGame.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ui\dlg_online_joinchannel.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ui\dlg_online_newGame.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ui\dlg_options.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ui\dlg_options_adv_video.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ui\file_dialog.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ui\ui.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ui\ui_commands.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ui\ui_menu.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ui\ui_menu_online.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ui\ui_menu_online_main.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ui\cegui_items\ArkanaResourceProvider.h">
+      <Filter>UI\cegui_items</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ui\cegui_items\chat.h">
+      <Filter>UI\cegui_items</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ui\cegui_items\imaged_list_item.h">
+      <Filter>UI\cegui_items</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ui\cegui_items\simple_list_item.h">
+      <Filter>UI\cegui_items</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ui\cegui_items\progressbar\ArkanaProgressBarWR.h">
+      <Filter>UI\cegui_items\progressbar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ui\cegui_items\progressbar\ArkanaProgressBarWRProperties.h">
+      <Filter>UI\cegui_items\progressbar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3D\3d.h">
+      <Filter>3D</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3d\camera.h">
+      <Filter>3D</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3d\light.h">
+      <Filter>3D</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3d\Renderer.h">
+      <Filter>3D</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3d\math\Matrix.h">
+      <Filter>3D\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3d\math\Quaternion.h">
+      <Filter>3D\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3d\math\Vector.h">
+      <Filter>3D\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\input\Input.h">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dLib\dBrowse\dBrowse.h">
+      <Filter>dLib\dBrowse</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dLib\dMem\dMem.h">
+      <Filter>dLib\dMem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dLib\dFile\dFile.h">
+      <Filter>dLib\dFile</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dLib\dProcess\dProcess.h">
+      <Filter>dLib\dProcess</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dLib\dString\dPath.h">
+      <Filter>dLib\dString</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dLib\dString\dString.h">
+      <Filter>dLib\dString</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dLib\dCompressor\dCompressor.h">
+      <Filter>dLib\dCompressor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dLib\dCompressor\minilzo_compressor.h">
+      <Filter>dLib\dCompressor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dLib\dCompressor\minilzo\lzoconf.h">
+      <Filter>dLib\dCompressor\minilzo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dLib\dCompressor\minilzo\lzodefs.h">
+      <Filter>dLib\dCompressor\minilzo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dLib\dCompressor\minilzo\minilzo.h">
+      <Filter>dLib\dCompressor\minilzo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dLib\dArchive\dArchive.h">
+      <Filter>dLib\dArchive</Filter>
+    </ClInclude>
+    <ClInclude Include="..\map\forest.h">
+      <Filter>Map</Filter>
+    </ClInclude>
+    <ClInclude Include="..\map\map.h">
+      <Filter>Map</Filter>
+    </ClInclude>
+    <ClInclude Include="..\map\mapinfo.h">
+      <Filter>Map</Filter>
+    </ClInclude>
+    <ClInclude Include="..\map\quad.h">
+      <Filter>Map</Filter>
+    </ClInclude>
+    <ClInclude Include="..\map\terrain.h">
+      <Filter>Map</Filter>
+    </ClInclude>
+    <ClInclude Include="..\map\tile.h">
+      <Filter>Map</Filter>
+    </ClInclude>
+    <ClInclude Include="..\game\game_rlv.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\game\loadgame_rlv.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\game\objects\objects.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\game\player.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\game\objects\tree.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\game\objects\unit.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\logging\chronometer.h">
+      <Filter>Logging</Filter>
+    </ClInclude>
+    <ClInclude Include="..\logging\ftslogger.h">
+      <Filter>Logging</Filter>
+    </ClInclude>
+    <ClInclude Include="..\logging\logger.h">
+      <Filter>Logging</Filter>
+    </ClInclude>
+    <ClInclude Include="..\logging\MsgType.h">
+      <Filter>Logging</Filter>
+    </ClInclude>
+    <ClInclude Include="..\net\connection.h">
+      <Filter>Net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\tools\server2\checksum\md5.h">
+      <Filter>Net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\net\packet.h">
+      <Filter>Net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\tools\server2\checksum\sha2.h">
+      <Filter>Net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sound\fts_Snd.h">
+      <Filter>Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sound\SndFile.h">
+      <Filter>Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sound\SndGrp.h">
+      <Filter>Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sound\SndObj.h">
+      <Filter>Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sound\SndPlayList.h">
+      <Filter>Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sound\SndSys.h">
+      <Filter>Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sound\SndSysOpenAL.h">
+      <Filter>Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sound\SndTypes.h">
+      <Filter>Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rdparty\scrap.h">
+      <Filter>3dparty</Filter>
+    </ClInclude>
+    <ClInclude Include="..\mdlviewer\mdlviewer_main.h">
+      <Filter>MdlViewer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Scripting\dao_snd.h">
+      <Filter>Scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Scripting\DaoVm.h">
+      <Filter>Scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sound\SndObjOpenAL.h">
+      <Filter>Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sound\SndSysNone.h">
+      <Filter>Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sound\SndObjNone.h">
+      <Filter>Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sound\sndobjpool.h">
+      <Filter>Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dLib\dConf\configuration.h">
+      <Filter>dLib\dConf</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dLib\dConf\DefaultOptions.h">
+      <Filter>dLib\dConf</Filter>
+    </ClInclude>
+    <ClInclude Include="..\main\Clock.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="..\main\Updateable.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="..\scripting\Music.h">
+      <Filter>Scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3d\opengl_wrapper.h">
+      <Filter>3D</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3d\HardwareModel.h">
+      <Filter>3D</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3d\Shader.h">
+      <Filter>3D</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3d\VertexArrayObject.h">
+      <Filter>3D</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3d\ModelInstance.h">
+      <Filter>3D</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3d\ModelManager.h">
+      <Filter>3D</Filter>
+    </ClInclude>
+    <ClInclude Include="..\graphic\Color.h">
+      <Filter>Graphic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dLib\dConf\ArkanaDefaultSettings.h">
+      <Filter>dLib\dConf</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ui\ScriptConsole.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ui\cegui_items\ColorListItem.h">
+      <Filter>UI\cegui_items</Filter>
+    </ClInclude>
+    <ClInclude Include="..\input\InputConstants.h">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3d\math\AxisAlignedBoundingBox.h">
+      <Filter>3D\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\scripting\DaoFunction.h">
+      <Filter>Scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\scripting\hotkey.h">
+      <Filter>Scripting</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rdparty\lodepng.h">
+      <Filter>3dparty</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3d\Resolution.h">
+      <Filter>3D</Filter>
+    </ClInclude>
+    <ClInclude Include="..\map\MapObject.h">
+      <Filter>Map</Filter>
+    </ClInclude>
+    <ClInclude Include="..\map\CameraMO.h">
+      <Filter>Map</Filter>
+    </ClInclude>
+    <ClInclude Include="..\map\DecorativeMO.h">
+      <Filter>Map</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3d\Movers\Mover.h">
+      <Filter>3D\Movers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3d\Movers\Translator.h">
+      <Filter>3D\Movers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3d\Movers\Rotator.h">
+      <Filter>3D\Movers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3d\Movers\Orbiter.h">
+      <Filter>3D\Movers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dLib\aTest\Failure.h">
+      <Filter>dLib\aTest</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dLib\aTest\Test.h">
+      <Filter>dLib\aTest</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dLib\aTest\TestHarness.h">
+      <Filter>dLib\aTest</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dLib\aTest\TestRegistry.h">
+      <Filter>dLib\aTest</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dLib\aTest\TestResult.h">
+      <Filter>dLib\aTest</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dLib\aTest\TestResultCombiner.h">
+      <Filter>dLib\aTest</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dLib\aTest\TestResultCompiler.h">
+      <Filter>dLib\aTest</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dLib\aTest\TestResultDebugOut.h">
+      <Filter>dLib\aTest</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dLib\aTest\TestResultNiceOutput.h">
+      <Filter>dLib\aTest</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dLib\aTest\TestResultSQL.h">
+      <Filter>dLib\aTest</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dLib\aTest\TestSuite.h">
+      <Filter>dLib\aTest</Filter>
+    </ClInclude>
+    <ClInclude Include="..\logging\MinimalLogger.h">
+      <Filter>Logging</Filter>
+    </ClInclude>
+    <ClInclude Include="..\main\Stackable.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagramSound.cd" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="icon.rc" />
+  </ItemGroup>
+</Project>

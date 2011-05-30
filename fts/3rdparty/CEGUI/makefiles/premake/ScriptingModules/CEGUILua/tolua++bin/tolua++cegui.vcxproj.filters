@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="ScriptingModules">
+      <UniqueIdentifier>{a0dcfeac-85f3-4383-8a28-cf31db786e7f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ScriptingModules\CEGUILua">
+      <UniqueIdentifier>{b5096ce3-9180-4b41-a0c9-60293a13578b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ScriptingModules\CEGUILua\tolua++bin">
+      <UniqueIdentifier>{3028c817-794f-46c0-84af-19d35323067b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\..\ScriptingModules\CEGUILua\tolua++bin\tolua.c">
+      <Filter>ScriptingModules\CEGUILua\tolua++bin</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\ScriptingModules\CEGUILua\tolua++bin\toluabind.c">
+      <Filter>ScriptingModules\CEGUILua\tolua++bin</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\..\ScriptingModules\CEGUILua\tolua++bin\toluabind.h">
+      <Filter>ScriptingModules\CEGUILua\tolua++bin</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,31 @@
+<?xml version="1.0" ?>
+
+<GUILayout>
+    <Window Type="ArkanaLook/FrameWindow" Name="script_console">
+        <Property Name="UnifiedPosition"    Value="{{0,0},{0,0}}" />
+        <Property Name="UnifiedSize"        Value="{{1,0},{0.3,0}}" />
+        <Property Name="UnifiedMinSize"     Value="{{1,0},{0.3,0}}" />
+        <Property Name="TitlebarEnabled"    Value="false" />
+        <Property Name="SizingEnabled"      Value="false" />
+        <Property Name="CloseButtonEnabled" Value="false" />
+        <Property Name="ID"                 Value="1" />
+        <Property Name="AlwaysOnTop"        Value="true" />
+        <Property Name="Text">Scripting Console</Property>
+
+        <!-- Now comes the main part - the chat window. -->
+        <!-- ========================================== -->
+        <Window Type="ArkanaLook/Listbox" Name="script_console/lbOutput">
+            <Property Name="UnifiedPosition" Value="{{0,4},{0,4}}" />
+            <Property Name="UnifiedSize"     Value="{{1,-8},{1,-40}}" />
+            <Property Name="ForceVertScrollbar" Value="True" />
+            <Property Name="Font"            Value="mono1" />
+            <Property Name="ID"              Value="2" />
+        </Window>
+        <Window Type="ArkanaLook/Editbox" Name="script_console/edInput">
+            <Property Name="UnifiedPosition" Value="{{0,4},{1,-36}}" />
+            <Property Name="UnifiedSize"     Value="{{1,-8},{0,032}}" />
+            <Property Name="Font"            Value="mono1" />
+            <Property Name="ID"              Value="3" />
+        </Window>
+    </Window>
+</GUILayout>

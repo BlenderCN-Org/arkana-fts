@@ -1,0 +1,28 @@
+io.writeln('In script test2.dao')
+@@PATH(+ "..")
+load importTest;
+load global_vars;
+
+klaus=10
+
+class Willi
+{
+  sub doWilli() {
+    io.writef( 'Dao: in doWilli() \n')
+  }
+}
+
+function myfuncInTest2(a) {
+   io.writef( 'Jau mal schaun :')
+   io.writeln( 'Dao myfuncInTest2: called by C++ ',a)
+}
+
+objW = Willi()
+objW.doWilli()
+#if( global_a == 5 ) {
+#    io.writeln('found global_a')
+#}
+if( global_var == 5 ) {
+    io.writeln('found global_var')
+}
+io.writeln('END script test2.dao')

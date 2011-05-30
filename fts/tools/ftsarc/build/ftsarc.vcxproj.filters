@@ -1,0 +1,174 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
+    </Filter>
+    <Filter Include="external source files">
+      <UniqueIdentifier>{89bf7a23-13aa-4f0b-a763-de387cbe0003}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\archiver.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\compressorlister.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dearchiver.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\internaltester.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lister.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\remover.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\sfcompressor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\toolcompat.cpp">
+      <Filter>external source files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\dLib\dArchive\dArchive.cpp">
+      <Filter>external source files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\dLib\dBrowse\windows.cpp">
+      <Filter>external source files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\dLib\dCompressor\dCompressor.cpp">
+      <Filter>external source files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\dLib\dCompressor\minilzo_compressor.cpp">
+      <Filter>external source files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\dLib\dFile\dFile.cpp">
+      <Filter>external source files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\dLib\dString\dPath.cpp">
+      <Filter>external source files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\dLib\dString\dString.cpp">
+      <Filter>external source files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\logging\chronometer.cpp">
+      <Filter>external source files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\utilities\DataContainer.cpp">
+      <Filter>external source files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\utilities\Singleton.cpp">
+      <Filter>external source files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\utilities\StreamedDataContainer.cpp">
+      <Filter>external source files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\main\Exception.cpp">
+      <Filter>external source files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\dLib\dCompressor\minilzo\minilzo.c">
+      <Filter>external source files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\logging\logger.cpp">
+      <Filter>external source files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\main\Clock.cpp">
+      <Filter>external source files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\archiver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\compressorlister.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dearchiver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ftsarc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\internaltester.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lister.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\remover.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\sfcompressor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\main.h">
+      <Filter>external source files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\toolcompat.h">
+      <Filter>external source files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\dLib\dArchive\dArchive.h">
+      <Filter>external source files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\dLib\dBrowse\dBrowse.h">
+      <Filter>external source files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\dLib\dCompressor\dCompressor.h">
+      <Filter>external source files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\dLib\dCompressor\minilzo_compressor.h">
+      <Filter>external source files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\dLib\dFile\dFile.h">
+      <Filter>external source files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\dLib\dString\dPath.h">
+      <Filter>external source files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\dLib\dString\dString.h">
+      <Filter>external source files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\logging\chronometer.h">
+      <Filter>external source files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\utilities\DataContainer.h">
+      <Filter>external source files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\utilities\Singleton.h">
+      <Filter>external source files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\utilities\StreamedDataContainer.h">
+      <Filter>external source files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\main\Exception.h">
+      <Filter>external source files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\dLib\dCompressor\minilzo\lzoconf.h">
+      <Filter>external source files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\dLib\dCompressor\minilzo\lzodefs.h">
+      <Filter>external source files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\dLib\dCompressor\minilzo\minilzo.h">
+      <Filter>external source files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\main\Clock.h">
+      <Filter>external source files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

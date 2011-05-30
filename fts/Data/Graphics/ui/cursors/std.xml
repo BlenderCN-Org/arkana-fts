@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<std>
+  <Normal value = "std.png"/>
+  <Left   value = "std.png"/>
+  <Middle value = "std.png"/>
+  <Right  value = "std.png"/>
+  <hotspotX value = "0" />
+  <hotspotY value = "0" />
+</std>

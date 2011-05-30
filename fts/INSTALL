@@ -1,0 +1,93 @@
+
+
+                              -----------------
+                              INSTALL FOR LINUX
+                              -----------------
+
+
+ Requirements
+--------------
+
+  The following libraries and applications are NECESSARY to compile Arkana-FTS:
+    * CMake version 2.4 or above
+    * A threading library like pthreads (libpthreads) - For the threads
+    * The SDL library (libSDL) - For the windows
+    * OpenGL, OpenGL Utilities (libGL, libGLU) - For the 3D stuff
+
+  It is known to compile in GCC 4.4 and 4.6.
+  GCC 4.5 has known bugs and won't compile.
+
+  The following 3rd party libraries will be compiled if they are not found on your system:
+    * The OpenAL software and OpenAl Utility Toolkit library (libopenal-soft and libalut) - For the sound
+    * The Ogg and Vorbis libraries (libogg, libvorbis) - For compressed music files
+    * A modified version of CEGUI 0.5, along with:
+          o PCRE (libpcre)
+          o The FreeType library (libfreetype)
+    * A modified version of Cal3D
+    * The DaoVM - For the scripting language.
+
+ How to compile Arkana-FTS: the easy way
+-----------------------------------------
+
+  The most easy way to install Arkana-FTS is to call the build script:
+    > sh build.sh
+  And if you have all necessary librarys installed, everything will be
+  done automatically. After the installation, you will have the fts executable
+  in the fts directory and can just run it
+    > ./fts
+  and enjoy the game. For more options, see "Advanced Options" below.
+
+ How to compile Arkana-FTS: the longer way
+-------------------------------------------
+
+  Change into the directory "linux", by typing
+    > cd linux
+  There you must call CMake to check your system and create the Makefiles
+    > cmake ..
+  Or to enable debug mode you call CMake like this
+    > cmake -D CMAKE_BUILD_TYPE:STRING=Debug ..
+  If everything went fine, you should now have a Makefile in your directory
+  and thus be able to run make
+    > make
+  If everything went fine, you should have an executable called "fts"
+  in the "build" directory. Copy it over one directory back using
+    > cp fts ..
+  And go back to run fts
+    > cd ..
+    > ./fts
+
+  Enjoy the game.
+
+ Advanced Options
+------------------
+
+  Debug mode:
+  - - - - - -
+
+    The first possible fine-tuning option you can do is compile Arkana-FTS in
+    debug mode. To do this, you just need to call the build script with
+    the '-d' switch turned on
+      > sh build.sh -d
+    And Arkana-FTS will be compiled in debug mode.
+
+    Note that it will run (much) slower in debug mode then in release mode.
+    Debug mode should be used only for developpers.
+
+    Also note that the '-d' (debug, see below) switch is only needed during the
+    configure step. If you activate the '-n' switch, there is no need to
+    activate the '-d' switch aswell.
+
+  Make clean:
+  - - - - - -
+
+    If you need some disk space or you just want to rebuild everything because
+    I-don't-know-what-a-b*sh*t-happened, you can run something like a 'make clean'
+    by calling the build script with the '-c' switch turned on
+      > sh build.sh -c
+    And all object files, configure caches and whatsoever will be deleted.
+
+ Links
+-------
+
+  If you have any questions, visit the forum that you will find on the official fts page: http://arkana-fts.org
+  Developers can also visit the Doku-Wiki where they can find a lot of developper informations.

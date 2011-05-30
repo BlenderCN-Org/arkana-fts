@@ -1,0 +1,42 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual C++ Express 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ftsblends", "..\ftsblends\build\ftsblends.vcxproj", "{88BA68C8-5FE9-47A1-AA53-B5BED32FEF9E}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ftsarc", "..\ftsarc\build\ftsarc.vcxproj", "{D4C6CC1A-EB67-8FAF-7C65-9D6D479A71CA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug_Static|Mixed Platforms = Debug_Static|Mixed Platforms
+		Debug_Static|Win32 = Debug_Static|Win32
+		Debug_Static|x64 = Debug_Static|x64
+		Release_Static|Mixed Platforms = Release_Static|Mixed Platforms
+		Release_Static|Win32 = Release_Static|Win32
+		Release_Static|x64 = Release_Static|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{88BA68C8-5FE9-47A1-AA53-B5BED32FEF9E}.Debug_Static|Mixed Platforms.ActiveCfg = Debug_Static|Mixed Platforms
+		{88BA68C8-5FE9-47A1-AA53-B5BED32FEF9E}.Debug_Static|Mixed Platforms.Build.0 = Debug_Static|Mixed Platforms
+		{88BA68C8-5FE9-47A1-AA53-B5BED32FEF9E}.Debug_Static|Win32.ActiveCfg = Debug_Static|Win32
+		{88BA68C8-5FE9-47A1-AA53-B5BED32FEF9E}.Debug_Static|Win32.Build.0 = Debug_Static|Win32
+		{88BA68C8-5FE9-47A1-AA53-B5BED32FEF9E}.Debug_Static|x64.ActiveCfg = Debug_Static|x64
+		{88BA68C8-5FE9-47A1-AA53-B5BED32FEF9E}.Release_Static|Mixed Platforms.ActiveCfg = Release_Static|Mixed Platforms
+		{88BA68C8-5FE9-47A1-AA53-B5BED32FEF9E}.Release_Static|Mixed Platforms.Build.0 = Release_Static|Mixed Platforms
+		{88BA68C8-5FE9-47A1-AA53-B5BED32FEF9E}.Release_Static|Win32.ActiveCfg = Release_Static|Win32
+		{88BA68C8-5FE9-47A1-AA53-B5BED32FEF9E}.Release_Static|Win32.Build.0 = Release_Static|Win32
+		{88BA68C8-5FE9-47A1-AA53-B5BED32FEF9E}.Release_Static|x64.ActiveCfg = Release_Static|x64
+		{D4C6CC1A-EB67-8FAF-7C65-9D6D479A71CA}.Debug_Static|Mixed Platforms.ActiveCfg = Debug_Static|Mixed Platforms
+		{D4C6CC1A-EB67-8FAF-7C65-9D6D479A71CA}.Debug_Static|Mixed Platforms.Build.0 = Debug_Static|Mixed Platforms
+		{D4C6CC1A-EB67-8FAF-7C65-9D6D479A71CA}.Debug_Static|Win32.ActiveCfg = Debug_Static|Win32
+		{D4C6CC1A-EB67-8FAF-7C65-9D6D479A71CA}.Debug_Static|Win32.Build.0 = Debug_Static|Win32
+		{D4C6CC1A-EB67-8FAF-7C65-9D6D479A71CA}.Debug_Static|x64.ActiveCfg = Debug_Static|x64
+		{D4C6CC1A-EB67-8FAF-7C65-9D6D479A71CA}.Release_Static|Mixed Platforms.ActiveCfg = Release_Static|Mixed Platforms
+		{D4C6CC1A-EB67-8FAF-7C65-9D6D479A71CA}.Release_Static|Mixed Platforms.Build.0 = Release_Static|Mixed Platforms
+		{D4C6CC1A-EB67-8FAF-7C65-9D6D479A71CA}.Release_Static|Win32.ActiveCfg = Release_Static|Win32
+		{D4C6CC1A-EB67-8FAF-7C65-9D6D479A71CA}.Release_Static|Win32.Build.0 = Release_Static|Win32
+		{D4C6CC1A-EB67-8FAF-7C65-9D6D479A71CA}.Release_Static|x64.ActiveCfg = Release_Static|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

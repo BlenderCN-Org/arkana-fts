@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<GUILayout>
+    <Window Type="ArkanaLook/FrameWindow" Name="game">
+        <Property Name="UnifiedPosition"    Value="{{0,0},{0,0}}" />
+        <Property Name="UnifiedSize"        Value="{{1,0},{1,0}}" />
+        <Property Name="UnifiedMinSize"     Value="{{1,0},{1,0}}" />
+        <Property Name="TitlebarEnabled"    Value="false" />
+        <Property Name="FrameEnabled"       Value="false" />
+        <Property Name="SizingEnabled"      Value="false" />
+        <Property Name="CloseButtonEnabled" Value="false" />
+        <Property Name="BackgroundImageEnabled" Value="set:ArkanaLook image:OneTransparentPixel" />
+        <Property Name="BackgroundImageVertFormat" Value="Stretched" />
+        <Property Name="BackgroundImageHorzFormat" Value="Stretched" />
+        <Property Name="ID"                 Value="1" />
+        <Window Type="ArkanaLook/Label" Name="Info">
+            <Property Name="UnifiedPosition"  Value="{{1,-130},{0,05}}" />
+            <Property Name="UnifiedSize"      Value="{{0,0130},{0,35}}" />
+            <Property Name="InheritsAlpha"    Value="False" />
+            <Property Name="AlwaysOnTop"      Value="true" />
+            <Property Name="Text"></Property>
+        </Window>
+    </Window>
+</GUILayout>

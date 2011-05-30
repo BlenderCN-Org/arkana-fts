@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<GUILayout>
+    <Window Type="ArkanaLook/FrameWindow" Name="dlg_createOnlineAcc">
+        <Property Name="UnifiedPosition" Value="{{0.1,0},{0.1,0}}" />
+        <Property Name="UnifiedSize"     Value="{{0.8,0},{0.8,0}}" />
+        <Property Name="UnifiedMinSize"  Value="{{0,590},{0,530}}" />
+        <Property Name="AlwaysOnTop"     Value="true" />
+        <Property Name="Text">Registrierung</Property>
+
+        <Window Type="ArkanaLook/StaticFrame" Name="dlg_createOnlineAcc/frmNecess">
+            <Property Name="UnifiedPosition" Value="{{0.0,015},{0,040}}" />
+            <Property Name="UnifiedSize"     Value="{{0.5,-20},{0,270}}" />
+            <Property Name="ID"              Value="1" />
+            <Property Name="Text">Erforderliche Angaben:</Property>
+            <Window Type="ArkanaLook/Label" Name="dlg_createOnlineAcc/frmNecess/lblNick">
+                <Property Name="UnifiedPosition" Value="{{0,010},{0,15}}" />
+                <Property Name="UnifiedSize"     Value="{{1,-20},{0,30}}" />
+                <Property Name="Text">Nickname:</Property>
+            </Window>
+            <Window Type="ArkanaLook/Editbox" Name="dlg_createOnlineAcc/frmNecess/Nick">
+                <Property Name="UnifiedPosition" Value="{{0,010},{0,45}}" />
+                <Property Name="UnifiedSize"     Value="{{1,-20},{0,30}}" />
+                <Property Name="MaxTextLength"   Value="32" />
+                <Property Name="ID"              Value="1" />
+            </Window>
+            <Window Type="ArkanaLook/Label" Name="dlg_createOnlineAcc/frmNecess/lblPass">
+                <Property Name="UnifiedPosition" Value="{{0,010},{0,75}}" />
+                <Property Name="UnifiedSize"     Value="{{1,-20},{0,30}}" />
+                <Property Name="Text">Gewünschtes Passwort:</Property>
+            </Window>
+            <Window Type="ArkanaLook/Editbox" Name="dlg_createOnlineAcc/frmNecess/Pass">
+                <Property Name="UnifiedPosition" Value="{{0,010},{0,105}}" />
+                <Property Name="UnifiedSize"     Value="{{1,-20},{0,030}}" />
+                <Property Name="MaxTextLength"   Value="32" />
+                <Property Name="MaskText"        Value="True" />
+                <Property Name="MaskCodepoint"   Value="42" />
+                <Property Name="ID"              Value="2" />
+            </Window>
+            <Window Type="ArkanaLook/Label" Name="dlg_createOnlineAcc/frmNecess/lblPass2">
+                <Property Name="UnifiedPosition" Value="{{0,010},{0,135}}" />
+                <Property Name="UnifiedSize"     Value="{{1,-20},{0,030}}" />
+                <Property Name="Text">Passwort wiederholen:</Property>
+            </Window>
+            <Window Type="ArkanaLook/Editbox" Name="dlg_createOnlineAcc/frmNecess/Pass2">
+                <Property Name="UnifiedPosition" Value="{{0,010},{0,165}}" />
+                <Property Name="UnifiedSize"     Value="{{1,-20},{0,030}}" />
+                <Property Name="MaxTextLength"   Value="32" />
+                <Property Name="MaskText"        Value="True" />
+                <Property Name="MaskCodepoint"   Value="42" />
+                <Property Name="ID"              Value="3" />
+            </Window>
+            <Window Type="ArkanaLook/Label" Name="dlg_createOnlineAcc/frmNecess/lblMail">
+                <Property Name="UnifiedPosition" Value="{{0,010},{0,195}}" />
+                <Property Name="UnifiedSize"     Value="{{1,-20},{0,030}}" />
+                <Property Name="Text">Deine E-mail Adresse:</Property>
+            </Window>
+            <Window Type="ArkanaLook/CheckboxLabelRight" Name="dlg_createOnlineAcc/frmNecess/chkMail">
+                <Property Name="UnifiedPosition" Value="{{1,-135},{0,195}}" />
+                <Property Name="UnifiedSize"     Value="{{0,0124},{0,030}}" />
+                <Property Name="ID"              Value="4" />
+                <Property Name="Text">Geheim halten</Property>
+            </Window>
+            <Window Type="ArkanaLook/Editbox" Name="dlg_createOnlineAcc/frmNecess/Mail">
+                <Property Name="UnifiedPosition" Value="{{0,010},{0,225}}" />
+                <Property Name="UnifiedSize"     Value="{{1,-20},{0,030}}" />
+                <Property Name="MaxTextLength"   Value="64" />
+                <Property Name="ID"              Value="5" />
+            </Window>
+        </Window>
+
+        <Window Type="ArkanaLook/StaticFrame" Name="dlg_createOnlineAcc/frmContact">
+            <Property Name="UnifiedPosition" Value="{{0.0,015},{0,0315}}" />
+            <Property Name="UnifiedSize"     Value="{{0.5,-20},{1,-445}}" />
+            <Property Name="ID"              Value="2" />
+            <Property Name="Text">Kontakt (nicht notwendig):</Property>
+            <Window Type="ArkanaLook/Label" Name="dlg_createOnlineAcc/frmContact/lblJabber">
+                <Property Name="UnifiedPosition" Value="{{0,10},{0,25}}" />
+                <Property Name="UnifiedSize"     Value="{{0,65},{0,30}}" />
+                <Property Name="Text">Jabber:</Property>
+            </Window>
+            <Window Type="ArkanaLook/Editbox" Name="dlg_createOnlineAcc/frmContact/Jabber">
+                <Property Name="UnifiedPosition" Value="{{0,075},{0,25}}" />
+                <Property Name="UnifiedSize"     Value="{{1,-85},{0,30}}" />
+                <Property Name="MaxTextLength"   Value="32" />
+                <Property Name="ID"              Value="1" />
+            </Window>
+            <Window Type="ArkanaLook/Label" Name="dlg_createOnlineAcc/frmContact/lblContact">
+                <Property Name="UnifiedPosition" Value="{{0,010},{0,60}}" />
+                <Property Name="UnifiedSize"     Value="{{1,-20},{0,30}}" />
+                <Property Name="Text">Andere Kontaktmöglichkeiten:</Property>
+            </Window>
+            <Window Type="ArkanaLook/MultiLineEditbox" Name="dlg_createOnlineAcc/frmContact/Contact">
+                <Property Name="UnifiedPosition" Value="{{0,010},{0,0090}}" />
+                <Property Name="UnifiedSize"     Value="{{1,-20},{1,-100}}" />
+                <Property Name="MaxTextLength"   Value="255" />
+                <Property Name="ID"              Value="2" />
+            </Window>
+        </Window>
+
+        <Window Type="ArkanaLook/StaticFrame" Name="dlg_createOnlineAcc/frmPersonal">
+            <Property Name="UnifiedPosition" Value="{{0.5,005},{0,0040}}" />
+            <Property Name="UnifiedSize"     Value="{{0.5,-20},{1,-170}}" />
+            <Property Name="ID"              Value="3" />
+            <Property Name="Text">Persönliches (nicht notwendig):</Property>
+            <Window Type="ArkanaLook/Label" Name="dlg_createOnlineAcc/frmPersonal/lblFName">
+                <Property Name="UnifiedPosition" Value="{{0,010},{0,15}}" />
+                <Property Name="UnifiedSize"     Value="{{1,-20},{0,30}}" />
+                <Property Name="Text">Dein Vorname:</Property>
+            </Window>
+            <Window Type="ArkanaLook/Editbox" Name="dlg_createOnlineAcc/frmPersonal/FName">
+                <Property Name="UnifiedPosition" Value="{{0,010},{0,45}}" />
+                <Property Name="UnifiedSize"     Value="{{1,-20},{0,30}}" />
+                <Property Name="MaxTextLength"   Value="32" />
+                <Property Name="ID"              Value="1" />
+            </Window>
+            <Window Type="ArkanaLook/Label" Name="dlg_createOnlineAcc/frmPersonal/lblName">
+                <Property Name="UnifiedPosition" Value="{{0,010},{0,75}}" />
+                <Property Name="UnifiedSize"     Value="{{1,-20},{0,30}}" />
+                <Property Name="Text">Dein Name:</Property>
+            </Window>
+            <Window Type="ArkanaLook/Editbox" Name="dlg_createOnlineAcc/frmPersonal/Name">
+                <Property Name="UnifiedPosition" Value="{{0,010},{0,105}}" />
+                <Property Name="UnifiedSize"     Value="{{1,-20},{0,030}}" />
+                <Property Name="MaxTextLength"   Value="32" />
+                <Property Name="ID"              Value="2" />
+            </Window>
+            <Window Type="ArkanaLook/Label" Name="dlg_createOnlineAcc/frmPersonal/lblBDay">
+                <Property Name="UnifiedPosition" Value="{{0,010},{0,135}}" />
+                <Property Name="UnifiedSize"     Value="{{1,-20},{0,030}}" />
+                <Property Name="Text">Dein Geburtsdatum:</Property>
+            </Window>
+            <Window Type="ArkanaLook/Combobox" Name="dlg_createOnlineAcc/frmPersonal/BDay_Day">
+                <Property Name="UnifiedPosition" Value="{{0.00,10},{0.0,165}}" />
+                <Property Name="UnifiedSize"     Value="{{0.25,00},{0.5,000}}" />
+                <Property Name="ReadOnly"        Value="True" />
+                <Property Name="ID"              Value="3" />
+            </Window>
+            <Window Type="ArkanaLook/Label" Name="dlg_createOnlineAcc/frmPersonal/lblSlash1">
+                <Property Name="UnifiedPosition" Value="{{0.25,10},{0,165}}" />
+                <Property Name="UnifiedSize"     Value="{{0.10,00},{0,030}}" />
+                <Property Name="HorzFormat"      Value="CentreAligned" />
+                <Property Name="Text">/</Property>
+            </Window>
+            <Window Type="ArkanaLook/Combobox" Name="dlg_createOnlineAcc/frmPersonal/BDay_Month">
+                <Property Name="UnifiedPosition" Value="{{0.35,10},{0.0,165}}" />
+                <Property Name="UnifiedSize"     Value="{{0.25,00},{0.5,000}}" />
+                <Property Name="ReadOnly"        Value="True" />
+                <Property Name="ID"              Value="4" />
+            </Window>
+            <Window Type="ArkanaLook/Label" Name="dlg_createOnlineAcc/frmPersonal/lblSlash2">
+                <Property Name="UnifiedPosition" Value="{{0.60,10},{0,165}}" />
+                <Property Name="UnifiedSize"     Value="{{0.10,00},{0,030}}" />
+                <Property Name="HorzFormat"      Value="CentreAligned" />
+                <Property Name="Text">/</Property>
+            </Window>
+            <Window Type="ArkanaLook/Combobox" Name="dlg_createOnlineAcc/frmPersonal/BDay_Year">
+                <Property Name="UnifiedPosition" Value="{{0.70,010},{0.0,165}}" />
+                <Property Name="UnifiedSize"     Value="{{0.30,-20},{0.5,000}}" />
+                <Property Name="ReadOnly"        Value="True" />
+                <Property Name="ID"              Value="5" />
+            </Window>
+            <Window Type="ArkanaLook/Label" Name="dlg_createOnlineAcc/frmPersonal/lblSex">
+                <Property Name="UnifiedPosition" Value="{{0.0,10},{0,195}}" />
+                <Property Name="UnifiedSize"     Value="{{0.4,00},{0,030}}" />
+                <Property Name="Text">Geschlecht:</Property>
+            </Window>
+            <Window Type="ArkanaLook/RadioButtonLabelRight" Name="dlg_createOnlineAcc/frmPersonal/SexM">
+                <Property Name="UnifiedPosition" Value="{{0.00,10},{0,225}}" />
+                <Property Name="UnifiedSize"     Value="{{0.33,-5},{0,030}}" />
+                <Property Name="ID"              Value="6" />
+                <Property Name="Text">Mann</Property>
+            </Window>
+            <Window Type="ArkanaLook/RadioButtonLabelRight" Name="dlg_createOnlineAcc/frmPersonal/SexF">
+                <Property Name="UnifiedPosition" Value="{{0.33,05},{0,225}}" />
+                <Property Name="UnifiedSize"     Value="{{0.33,-5},{0,030}}" />
+                <Property Name="ID"              Value="7" />
+                <Property Name="Text">Frau</Property>
+            </Window>
+            <Window Type="ArkanaLook/RadioButtonLabelRight" Name="dlg_createOnlineAcc/frmPersonal/SexA">
+                <Property Name="UnifiedPosition" Value="{{0.66,005},{0,225}}" />
+                <Property Name="UnifiedSize"     Value="{{0.34,-12},{0,030}}" />
+                <Property Name="Selected"        Value="true" />
+                <Property Name="ID"              Value="8" />
+                <Property Name="Text">Alien</Property>
+            </Window>
+            <Window Type="ArkanaLook/Label" Name="dlg_createOnlineAcc/frmPersonal/lblComment">
+                <Property Name="UnifiedPosition" Value="{{0,010},{0,255}}" />
+                <Property Name="UnifiedSize"     Value="{{1,-20},{0,030}}" />
+                <Property Name="Text">Kommentar:</Property>
+            </Window>
+            <Window Type="ArkanaLook/MultiLineEditbox" Name="dlg_createOnlineAcc/frmPersonal/Comment">
+                <Property Name="UnifiedPosition" Value="{{0,010},{0,0285}}" />
+                <Property Name="UnifiedSize"     Value="{{1,-20},{1,-295}}" />
+                <Property Name="MaxTextLength"   Value="255" />
+                <Property Name="ID"              Value="9" />
+            </Window>
+        </Window>
+
+        <Window Type="ArkanaLook/Label" Name="dlg_createOnlineAcc/lblPrivacy">
+            <Property Name="UnifiedPosition" Value="{{0,020},{1,-127}}" />
+            <Property Name="UnifiedSize"     Value="{{1,-40},{0,0070}}" />
+            <Property Name="Font"            Value="normal2" />
+            <Property Name="Text">Dein Angaben werden nicht an Dritte weitergegeben.
+Dein E-mail Adresse wird lediglich benutzt, im Falle dass Du dein Passwort vergisst oder änderst.
+Dein Jabber Account wird benutzt, um Dich über anstehende Ereignisse (später) zu informieren.</Property>
+        </Window>
+
+        <Window Type="ArkanaLook/Button" Name="dlg_createOnlineAcc/btnOk">
+            <Property Name="UnifiedPosition" Value="{{0.0,015},{1,-55}}" />
+            <Property Name="UnifiedSize"     Value="{{0.5,-20},{0,040}}" />
+            <Property Name="ID"              Value="4" />
+            <Property Name="Text">Registrieren</Property>
+        </Window>
+        <Window Type="ArkanaLook/Button" Name="dlg_createOnlineAcc/btnCancel">
+            <Property Name="UnifiedPosition" Value="{{0.5,005},{1,-55}}" />
+            <Property Name="UnifiedSize"     Value="{{0.5,-20},{0,040}}" />
+            <Property Name="ID"              Value="5" />
+            <Property Name="Text">Abbrechen</Property>
+        </Window>
+    </Window>
+</GUILayout>

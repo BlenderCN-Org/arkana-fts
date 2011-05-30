@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<GUILayout>
+    <Window Type="ArkanaLook/FrameWindow" Name="dlg_onlineChannelJoin">
+        <Property Name="UnifiedPosition"    Value="{{0.25,0},{0.25,0}}" />
+        <Property Name="UnifiedSize"        Value="{{0.5,0},{0.5,0}}" />
+        <Property Name="UnifiedMaxSize"     Value="{{0.8,0},{0.8,0}}" />
+        <Property Name="UnifiedMinSize"     Value="{{0,425},{0,300}}" />
+        <Property Name="SizingEnabled"      Value="true" />
+        <Property Name="CloseButtonEnabled" Value="true" />
+        <Property Name="AlwaysOnTop"        Value="true" />
+        <Property Name="Text">Raum beitreten oder erstellen</Property>
+        <Window Type="ArkanaLook/Label" Name="dlg_onlineChannelJoin/TxtTitle">
+            <Property Name="UnifiedPosition" Value="{{0,015},{0,40}}" />
+            <Property Name="UnifiedSize"     Value="{{1,-30},{0,35}}" />
+            <Property Name="HorzFormatting"  Value="HorzCentred" />
+            <Property Name="Text">Wähle Deinen Raum:</Property>
+        </Window>
+        <Window Type="ArkanaLook/Listbox" Name="dlg_onlineChannelJoin/List">
+            <Property Name="UnifiedPosition" Value="{{0,015},{0,0075}}" />
+            <Property Name="UnifiedSize"     Value="{{1,-30},{1,-225}}" />
+            <Property Name="Sort"            Value="true" />
+            <Property Name="ID"              Value="1" />
+        </Window>
+        <Window Type="ArkanaLook/Label" Name="dlg_onlineChannelJoin/TxtDesc">
+            <Property Name="UnifiedPosition" Value="{{0,015},{1,-150}}" />
+            <Property Name="UnifiedSize"     Value="{{1,-30},{0,0050}}" />
+            <Property Name="HorzFormatting"  Value="HorzCentred" />
+            <Property Name="Text">Oder gebe hier den Namen des Raumes an.
+Wenn der Raum noch nicht existiert, wird er für Dich erstellt:</Property>
+        </Window>
+        <Window Type="ArkanaLook/Editbox" Name="dlg_onlineChannelJoin/edChanName">
+            <Property Name="UnifiedPosition" Value="{{0,015},{1,-100}}" />
+            <Property Name="UnifiedSize"     Value="{{1,-30},{0,0030}}" />
+            <Property Name="ID"              Value="2" />
+        </Window>
+        <Window Type="ArkanaLook/Button" Name="dlg_onlineChannelJoin/Join">
+            <Property Name="UnifiedPosition" Value="{{0.0,015},{1,-55}}" />
+            <Property Name="UnifiedSize"     Value="{{0.5,-20},{0,040}}" />
+            <Property Name="ID"              Value="3" />
+            <Property Name="Text">Beitreten</Property>
+        </Window>
+        <Window Type="ArkanaLook/Button" Name="dlg_onlineChannelJoin/Cancel">
+            <Property Name="UnifiedPosition" Value="{{0.5,005},{1,-55}}" />
+            <Property Name="UnifiedSize"     Value="{{0.5,-20},{0,040}}" />
+            <Property Name="ID"              Value="4" />
+            <Property Name="Text">Abbrechen</Property>
+        </Window>
+    </Window>
+</GUILayout>

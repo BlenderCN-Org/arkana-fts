@@ -1,0 +1,473 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug_Static|Win32">
+      <Configuration>Debug_Static</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_Static|Win32">
+      <Configuration>Release_Static</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Test_Static|Win32">
+      <Configuration>Test_Static</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{B87C1993-6C88-4835-81EF-208458B8B716}</ProjectGuid>
+    <RootNamespace>FTS</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Test_Static|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Test_Static|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">$(SolutionDir)../</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Test_Static|Win32'">$(SolutionDir)../</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">$(Configuration)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Test_Static|Win32'">$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">true</LinkIncremental>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Test_Static|Win32'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">true</GenerateManifest>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Test_Static|Win32'">true</GenerateManifest>
+    <EmbedManifest Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">true</EmbedManifest>
+    <EmbedManifest Condition="'$(Configuration)|$(Platform)'=='Test_Static|Win32'">true</EmbedManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'">$(SolutionDir)..\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'">$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'">false</LinkIncremental>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">game_d</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Test_Static|Win32'">test_d</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'">game</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+    <CustomBuildStep>
+      <Message>
+      </Message>
+      <Command>
+      </Command>
+      <Outputs>%(Outputs)</Outputs>
+    </CustomBuildStep>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..;../3rdparty/CEGUI/include;../3rdparty/CEGUI;../3rdparty/sound/libogg/include;../3rdparty/sound/libvorbis/include;../3rdparty/sound/freealut/include;../3rdparty/sound/openal-soft/include;../3rdparty/sound/openal-soft/include/AL;../main;../3rdparty/sdl/include;../3rdparty/dao/src;../3rdparty/cal3d/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG;DEBUG;D_STRING_FTS_PATHS;D_USE_CEGUI;ALL_STATIC;CEGUI_STATIC;D_SND_SYS=1;DAO_DIRECT_API;DAO_SND_STATIC;CAL3D_API=;D_CAL3D_INTEGRATION</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <DisableSpecificWarnings>4018;4267;4129;4311;4313;4005;4521;4291;4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>freetype_d.lib;pcre_d.lib;OpenGL32.lib;glu32.lib;SDL_d.lib;SDLmain_d.lib;CEGUIBase_d.lib;OpenGLGUIRenderer_d.lib;wsock32.lib;CEGUIFalagardWRBase_d.lib;CEGUITinyXMLParser_d.lib;OpenAL32_d.lib;alut_d.lib;libvorbis_d.lib;libvorbisfile_d.lib;libogg_d.lib;dao_d.lib;cal3d_d.lib;User32.lib;winmm.lib;dsound.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../3rdparty/vc10lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateMapFile>false</GenerateMapFile>
+      <MapFileName>$(TargetDir)$(TargetName).mymap</MapFileName>
+      <SubSystem>Console</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+      <Profile>false</Profile>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Test_Static|Win32'">
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+    <CustomBuildStep>
+      <Message>
+      </Message>
+      <Command>
+      </Command>
+      <Outputs>%(Outputs)</Outputs>
+    </CustomBuildStep>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..;../3rdparty/CEGUI/include;../3rdparty/CEGUI;../3rdparty/sound/libogg/include;../3rdparty/sound/libvorbis/include;../3rdparty/sound/freealut/include;../3rdparty/sound/openal-soft/include;../3rdparty/sound/openal-soft/include/AL;../main;../3rdparty/sdl/include;../3rdparty/dao/src;../3rdparty/cal3d/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG;DEBUG;D_ARKANA_TESTING;D_STRING_FTS_PATHS;D_USE_CEGUI;ALL_STATIC;CEGUI_STATIC;D_SND_SYS=1;DAO_DIRECT_API;DAO_SND_STATIC;CAL3D_API=;D_CAL3D_INTEGRATION</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <DisableSpecificWarnings>4018;4267;4129;4311;4313;4005;4521;4291;4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>freetype_d.lib;pcre_d.lib;OpenGL32.lib;glu32.lib;SDL_d.lib;SDLmain_d.lib;CEGUIBase_d.lib;OpenGLGUIRenderer_d.lib;wsock32.lib;CEGUIFalagardWRBase_d.lib;CEGUITinyXMLParser_d.lib;OpenAL32_d.lib;alut_d.lib;libvorbis_d.lib;libvorbisfile_d.lib;libogg_d.lib;dao_d.lib;cal3d_d.lib;User32.lib;winmm.lib;dsound.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../3rdparty/vc10lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateMapFile>false</GenerateMapFile>
+      <MapFileName>$(TargetDir)$(TargetName).mymap</MapFileName>
+      <SubSystem>Console</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+      <Profile>false</Profile>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <AdditionalIncludeDirectories>..;../3rdparty/CEGUI/include;../3rdparty/CEGUI;../3rdparty/sound/libogg/include;../3rdparty/sound/libvorbis/include;../3rdparty/sound/freealut/include;../3rdparty/sound/openal-soft/include;../3rdparty/sound/openal-soft/include/AL;../main;../3rdparty/sdl/include;../3rdparty/dao/src;../3rdparty/cal3d/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NDEBUG;D_STRING_FTS_PATHS;D_USE_CEGUI;ALL_STATIC;CEGUI_STATIC;D_SND_SYS=1;DAO_DIRECT_API;DAO_SND_STATIC;CAL3D_API=;D_CAL3D_INTEGRATION</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4018;4267;4129;4311;4313;4005;4521;4291;4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>main.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>freetype.lib;pcre.lib;OpenGL32.lib;glu32.lib;SDL.lib;SDLmain.lib;CEGUIBase.lib;OpenGLGUIRenderer.lib;wsock32.lib;user32.lib;CEGUIFalagardWRBase.lib;CEGUITinyXMLParser.lib;OpenAl32.lib;alut.lib;libvorbis.lib;libvorbisfile.lib;libogg.lib;dao.lib;cal3d.lib;winmm.lib;dxguid.lib;dsound.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../3rdparty/vc10lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <EnableUAC>false</EnableUAC>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <DelayLoadDLLs>%(DelayLoadDLLs)</DelayLoadDLLs>
+      <GenerateMapFile>true</GenerateMapFile>
+      <MapFileName>$(TargetDir)$(TargetName).map</MapFileName>
+      <SubSystem>Console</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX86</TargetMachine>
+      <Profile>true</Profile>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\3d\DefaultShaders.cpp" />
+    <ClCompile Include="..\3d\ErrorMesh.cpp" />
+    <ClCompile Include="..\3d\HardwareModel.cpp" />
+    <ClCompile Include="..\3d\math\AxisAlignedBoundingBox.cpp" />
+    <ClCompile Include="..\3d\ModelInstance.cpp" />
+    <ClCompile Include="..\3d\ModelManager.cpp" />
+    <ClCompile Include="..\3d\Movers\Mover.cpp" />
+    <ClCompile Include="..\3d\Movers\Orbiter.cpp" />
+    <ClCompile Include="..\3d\Movers\Translator.cpp" />
+    <ClCompile Include="..\3d\Movers\Rotator.cpp" />
+    <ClCompile Include="..\3d\opengl_wrapper.cpp" />
+    <ClCompile Include="..\3d\Resolution.cpp" />
+    <ClCompile Include="..\3d\Shader.cpp" />
+    <ClCompile Include="..\3d\VertexArrayObject.cpp" />
+    <ClCompile Include="..\3rdparty\lodepng.cpp">
+      <IntrinsicFunctions Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">true</IntrinsicFunctions>
+      <IntrinsicFunctions Condition="'$(Configuration)|$(Platform)'=='Test_Static|Win32'">true</IntrinsicFunctions>
+      <FavorSizeOrSpeed Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">Speed</FavorSizeOrSpeed>
+      <FavorSizeOrSpeed Condition="'$(Configuration)|$(Platform)'=='Test_Static|Win32'">Speed</FavorSizeOrSpeed>
+      <OmitFramePointers Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">true</OmitFramePointers>
+      <OmitFramePointers Condition="'$(Configuration)|$(Platform)'=='Test_Static|Win32'">true</OmitFramePointers>
+      <MultiProcessorCompilation Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">true</MultiProcessorCompilation>
+      <MultiProcessorCompilation Condition="'$(Configuration)|$(Platform)'=='Test_Static|Win32'">true</MultiProcessorCompilation>
+      <InlineFunctionExpansion Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'">AnySuitable</InlineFunctionExpansion>
+      <IntrinsicFunctions Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'">true</IntrinsicFunctions>
+      <OmitFramePointers Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'">true</OmitFramePointers>
+      <MultiProcessorCompilation Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'">true</MultiProcessorCompilation>
+    </ClCompile>
+    <ClCompile Include="..\dLib\aTest\Test.cpp" />
+    <ClCompile Include="..\dLib\aTest\TestRegistry.cpp" />
+    <ClCompile Include="..\dLib\aTest\TestResult.cpp" />
+    <ClCompile Include="..\dLib\aTest\TestResultCombiner.cpp" />
+    <ClCompile Include="..\dLib\aTest\TestResultCompiler.cpp" />
+    <ClCompile Include="..\dLib\aTest\TestResultDebugOut.cpp" />
+    <ClCompile Include="..\dLib\aTest\TestResultNiceOutput.cpp" />
+    <ClCompile Include="..\dLib\aTest\TestResultSQL.cpp" />
+    <ClCompile Include="..\dLib\aTest\TestSuite.cpp" />
+    <ClCompile Include="..\dLib\dConf\ArkanaDefaultSettings.cpp" />
+    <ClCompile Include="..\dLib\dConf\configuration.cpp" />
+    <ClCompile Include="..\dLib\dConf\DefaultOptions.cpp" />
+    <ClCompile Include="..\graphic\Color.cpp" />
+    <ClCompile Include="..\input\Cursor.cpp" />
+    <ClCompile Include="..\input\InputManager.cpp" />
+    <ClCompile Include="..\logging\logger.cpp" />
+    <ClCompile Include="..\logging\MinimalLogger.cpp" />
+    <ClCompile Include="..\main\Clock.cpp" />
+    <ClCompile Include="..\main\Exception.cpp" />
+    <ClCompile Include="..\main\load_fts_rlv.cpp" />
+    <ClCompile Include="..\main\main.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\main\runlevels.cpp" />
+    <ClCompile Include="..\main\Updateable.cpp" />
+    <ClCompile Include="..\main\version.cpp" />
+    <ClCompile Include="..\graphic\anim.cpp" />
+    <ClCompile Include="..\graphic\cegui_ftsimg_codec.cpp" />
+    <ClCompile Include="..\graphic\errtex.cpp" />
+    <ClCompile Include="..\graphic\graphic.cpp" />
+    <ClCompile Include="..\graphic\image.cpp" />
+    <ClCompile Include="..\map\DecorativeMO.cpp" />
+    <ClCompile Include="..\map\MapObject.cpp" />
+    <ClCompile Include="..\scripting\DaoFunction.cpp" />
+    <ClCompile Include="..\scripting\hotkey.cpp" />
+    <ClCompile Include="..\scripting\Music.cpp" />
+    <ClCompile Include="..\sound\sndobjpool.cpp" />
+    <ClCompile Include="..\tests\3d\ResolutionTest.cpp" />
+    <ClCompile Include="..\tests\3d\ShaderTest.cpp" />
+    <ClCompile Include="..\tests\dLib\dFile\dFileArchiveTest.cpp" />
+    <ClCompile Include="..\tests\dLib\dString\dPathTest.cpp" />
+    <ClCompile Include="..\tests\dLib\dString\dStringTest.cpp" />
+    <ClCompile Include="..\tests\mainNice.cpp" />
+    <ClCompile Include="..\tests\Scripting\DaoVmTest.cpp" />
+    <ClCompile Include="..\ui\cegui_items\ColorListItem.cpp" />
+    <ClCompile Include="..\ui\ScriptConsole.cpp" />
+    <ClCompile Include="..\utilities\command.cpp" />
+    <ClCompile Include="..\Utilities\console.cpp" />
+    <ClCompile Include="..\utilities\DataContainer.cpp" />
+    <ClCompile Include="..\utilities\fps_calculator.cpp" />
+    <ClCompile Include="..\utilities\parse.cpp" />
+    <ClCompile Include="..\utilities\radix.cpp" />
+    <ClCompile Include="..\utilities\Singleton.cpp" />
+    <ClCompile Include="..\utilities\StreamedDataContainer.cpp" />
+    <ClCompile Include="..\utilities\string_file.cpp" />
+    <ClCompile Include="..\utilities\threading.cpp" />
+    <ClCompile Include="..\Utilities\utilities.cpp" />
+    <ClCompile Include="..\ui\confirm_dialog.cpp" />
+    <ClCompile Include="..\ui\dlg_online_acctInfo.cpp" />
+    <ClCompile Include="..\ui\dlg_online_feedback.cpp" />
+    <ClCompile Include="..\ui\dlg_online_findGame.cpp" />
+    <ClCompile Include="..\ui\dlg_online_joinchannel.cpp" />
+    <ClCompile Include="..\ui\dlg_online_newGame.cpp" />
+    <ClCompile Include="..\ui\dlg_options.cpp" />
+    <ClCompile Include="..\ui\dlg_options_adv_video.cpp" />
+    <ClCompile Include="..\ui\file_dialog.cpp" />
+    <ClCompile Include="..\ui\ui.cpp" />
+    <ClCompile Include="..\ui\ui_commands.cpp" />
+    <ClCompile Include="..\ui\ui_menu.cpp" />
+    <ClCompile Include="..\ui\ui_menu_online.cpp" />
+    <ClCompile Include="..\ui\ui_menu_online_main.cpp" />
+    <ClCompile Include="..\ui\cegui_items\ArkanaResourceProvider.cpp" />
+    <ClCompile Include="..\ui\cegui_items\chat.cpp" />
+    <ClCompile Include="..\ui\cegui_items\imaged_list_item.cpp" />
+    <ClCompile Include="..\ui\cegui_items\simple_list_item.cpp" />
+    <ClCompile Include="..\ui\cegui_items\progressbar\ArkanaProgressBarWR.cpp" />
+    <ClCompile Include="..\ui\cegui_items\progressbar\ArkanaProgressBarWRProperties.cpp" />
+    <ClCompile Include="..\3D\3d.cpp" />
+    <ClCompile Include="..\3d\camera.cpp" />
+    <ClCompile Include="..\3d\light.cpp" />
+    <ClCompile Include="..\3d\Renderer.cpp" />
+    <ClCompile Include="..\3d\math\Matrix.cpp" />
+    <ClCompile Include="..\3d\math\Quaternion.cpp" />
+    <ClCompile Include="..\3d\math\Vector.cpp" />
+    <ClCompile Include="..\input\keys.cpp" />
+    <ClCompile Include="..\dLib\dBrowse\windows.cpp" />
+    <ClCompile Include="..\dLib\dFile\dFile.cpp" />
+    <ClCompile Include="..\dLib\dProcess\dProcess.cpp" />
+    <ClCompile Include="..\dLib\dString\dPath.cpp" />
+    <ClCompile Include="..\dLib\dString\dString.cpp" />
+    <ClCompile Include="..\dLib\dCompressor\dCompressor.cpp" />
+    <ClCompile Include="..\dLib\dCompressor\minilzo_compressor.cpp" />
+    <ClCompile Include="..\dLib\dCompressor\minilzo\minilzo.c" />
+    <ClCompile Include="..\dLib\dArchive\dArchive.cpp" />
+    <ClCompile Include="..\map\forest.cpp" />
+    <ClCompile Include="..\map\map.cpp" />
+    <ClCompile Include="..\map\mapinfo.cpp" />
+    <ClCompile Include="..\map\quad.cpp" />
+    <ClCompile Include="..\map\terrain.cpp" />
+    <ClCompile Include="..\map\tile.cpp" />
+    <ClCompile Include="..\game\game_rlv.cpp" />
+    <ClCompile Include="..\game\loadgame_rlv.cpp" />
+    <ClCompile Include="..\game\objects\objects.cpp" />
+    <ClCompile Include="..\game\player.cpp" />
+    <ClCompile Include="..\game\player_og.cpp" />
+    <ClCompile Include="..\game\objects\tree.cpp" />
+    <ClCompile Include="..\logging\chronometer.cpp" />
+    <ClCompile Include="..\logging\ftslogger.cpp" />
+    <ClCompile Include="..\net\connection.cpp" />
+    <ClCompile Include="..\tools\server2\checksum\md5.cpp" />
+    <ClCompile Include="..\net\packet.cpp" />
+    <ClCompile Include="..\tools\server2\checksum\sha2.cpp" />
+    <ClCompile Include="..\sound\SndFile.cpp" />
+    <ClCompile Include="..\sound\SndGrp.cpp" />
+    <ClCompile Include="..\sound\SndObjOpenAL.cpp" />
+    <ClCompile Include="..\sound\SndPlayList.cpp" />
+    <ClCompile Include="..\sound\SndSys.cpp" />
+    <ClCompile Include="..\sound\SndSysOpenAL.cpp" />
+    <ClCompile Include="..\3rdparty\scrap.cpp" />
+    <ClCompile Include="..\mdlviewer\mdlviewer_main.cpp" />
+    <ClCompile Include="..\Scripting\dao_snd.cpp" />
+    <ClCompile Include="..\Scripting\dao_snd2.cpp" />
+    <ClCompile Include="..\Scripting\dao_snd3.cpp" />
+    <ClCompile Include="..\Scripting\DaoVm.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\3d\HardwareModel.h" />
+    <ClInclude Include="..\3d\math\AxisAlignedBoundingBox.h" />
+    <ClInclude Include="..\3d\ModelInstance.h" />
+    <ClInclude Include="..\3d\ModelManager.h" />
+    <ClInclude Include="..\3d\Movers\Mover.h" />
+    <ClInclude Include="..\3d\Movers\Orbiter.h" />
+    <ClInclude Include="..\3d\Movers\Translator.h" />
+    <ClInclude Include="..\3d\Movers\Rotator.h" />
+    <ClInclude Include="..\3d\opengl_wrapper.h" />
+    <ClInclude Include="..\3d\Resolution.h" />
+    <ClInclude Include="..\3d\Shader.h" />
+    <ClInclude Include="..\3d\VertexArrayObject.h" />
+    <ClInclude Include="..\3rdparty\lodepng.h" />
+    <ClInclude Include="..\dLib\aTest\Failure.h" />
+    <ClInclude Include="..\dLib\aTest\Test.h" />
+    <ClInclude Include="..\dLib\aTest\TestHarness.h" />
+    <ClInclude Include="..\dLib\aTest\TestRegistry.h" />
+    <ClInclude Include="..\dLib\aTest\TestResult.h" />
+    <ClInclude Include="..\dLib\aTest\TestResultCombiner.h" />
+    <ClInclude Include="..\dLib\aTest\TestResultCompiler.h" />
+    <ClInclude Include="..\dLib\aTest\TestResultDebugOut.h" />
+    <ClInclude Include="..\dLib\aTest\TestResultNiceOutput.h" />
+    <ClInclude Include="..\dLib\aTest\TestResultSQL.h" />
+    <ClInclude Include="..\dLib\aTest\TestSuite.h" />
+    <ClInclude Include="..\dLib\dConf\ArkanaDefaultSettings.h" />
+    <ClInclude Include="..\dLib\dConf\configuration.h" />
+    <ClInclude Include="..\dLib\dConf\DefaultOptions.h" />
+    <ClInclude Include="..\graphic\Color.h" />
+    <ClInclude Include="..\input\InputConstants.h" />
+    <ClInclude Include="..\logging\MinimalLogger.h" />
+    <ClInclude Include="..\main\Clock.h" />
+    <ClInclude Include="..\main\defines.h" />
+    <ClInclude Include="..\main\Exception.h" />
+    <ClInclude Include="..\main\load_fts_rlv.h" />
+    <ClInclude Include="..\Main\main.h" />
+    <ClInclude Include="..\main\runlevels.h" />
+    <ClInclude Include="..\main\Stackable.h" />
+    <ClInclude Include="..\main\support.h" />
+    <ClInclude Include="..\main\Updateable.h" />
+    <ClInclude Include="..\main\version.h" />
+    <ClInclude Include="..\graphic\anim.h" />
+    <ClInclude Include="..\graphic\cegui_ftsimg_codec.h" />
+    <ClInclude Include="..\graphic\errtex.h" />
+    <ClInclude Include="..\Graphic\graphic.h" />
+    <ClInclude Include="..\graphic\image.h" />
+    <ClInclude Include="..\map\CameraMO.h" />
+    <ClInclude Include="..\map\DecorativeMO.h" />
+    <ClInclude Include="..\map\MapObject.h" />
+    <ClInclude Include="..\scripting\DaoFunction.h" />
+    <ClInclude Include="..\scripting\hotkey.h" />
+    <ClInclude Include="..\scripting\Music.h" />
+    <ClInclude Include="..\sound\SndObjNone.h" />
+    <ClInclude Include="..\sound\SndObjOpenAL.h" />
+    <ClInclude Include="..\sound\sndobjpool.h" />
+    <ClInclude Include="..\sound\SndSysNone.h" />
+    <ClInclude Include="..\ui\cegui_items\ColorListItem.h" />
+    <ClInclude Include="..\ui\ScriptConsole.h" />
+    <ClInclude Include="..\utilities\command.h" />
+    <ClInclude Include="..\utilities\DataContainer.h" />
+    <ClInclude Include="..\utilities\fps_calculator.h" />
+    <ClInclude Include="..\utilities\Singleton.h" />
+    <ClInclude Include="..\utilities\StreamedDataContainer.h" />
+    <ClInclude Include="..\utilities\threading.h" />
+    <ClInclude Include="..\Utilities\utilities.h" />
+    <ClInclude Include="..\ui\confirm_dialog.h" />
+    <ClInclude Include="..\ui\dlg_online_acctInfo.h" />
+    <ClInclude Include="..\ui\dlg_online_feedback.h" />
+    <ClInclude Include="..\ui\dlg_online_findGame.h" />
+    <ClInclude Include="..\ui\dlg_online_joinchannel.h" />
+    <ClInclude Include="..\ui\dlg_online_newGame.h" />
+    <ClInclude Include="..\ui\dlg_options.h" />
+    <ClInclude Include="..\ui\dlg_options_adv_video.h" />
+    <ClInclude Include="..\ui\file_dialog.h" />
+    <ClInclude Include="..\ui\ui.h" />
+    <ClInclude Include="..\ui\ui_commands.h" />
+    <ClInclude Include="..\ui\ui_menu.h" />
+    <ClInclude Include="..\ui\ui_menu_online.h" />
+    <ClInclude Include="..\ui\ui_menu_online_main.h" />
+    <ClInclude Include="..\ui\cegui_items\ArkanaResourceProvider.h" />
+    <ClInclude Include="..\ui\cegui_items\chat.h" />
+    <ClInclude Include="..\ui\cegui_items\imaged_list_item.h" />
+    <ClInclude Include="..\ui\cegui_items\simple_list_item.h" />
+    <ClInclude Include="..\ui\cegui_items\progressbar\ArkanaProgressBarWR.h" />
+    <ClInclude Include="..\ui\cegui_items\progressbar\ArkanaProgressBarWRProperties.h" />
+    <ClInclude Include="..\3D\3d.h" />
+    <ClInclude Include="..\3d\camera.h" />
+    <ClInclude Include="..\3d\light.h" />
+    <ClInclude Include="..\3d\Renderer.h" />
+    <ClInclude Include="..\3d\math\Matrix.h" />
+    <ClInclude Include="..\3d\math\Quaternion.h" />
+    <ClInclude Include="..\3d\math\Vector.h" />
+    <ClInclude Include="..\input\Input.h" />
+    <ClInclude Include="..\dLib\dBrowse\dBrowse.h" />
+    <ClInclude Include="..\dLib\dMem\dMem.h" />
+    <ClInclude Include="..\dLib\dFile\dFile.h" />
+    <ClInclude Include="..\dLib\dProcess\dProcess.h" />
+    <ClInclude Include="..\dLib\dString\dPath.h" />
+    <ClInclude Include="..\dLib\dString\dString.h" />
+    <ClInclude Include="..\dLib\dCompressor\dCompressor.h" />
+    <ClInclude Include="..\dLib\dCompressor\minilzo_compressor.h" />
+    <ClInclude Include="..\dLib\dCompressor\minilzo\lzoconf.h" />
+    <ClInclude Include="..\dLib\dCompressor\minilzo\lzodefs.h" />
+    <ClInclude Include="..\dLib\dCompressor\minilzo\minilzo.h" />
+    <ClInclude Include="..\dLib\dArchive\dArchive.h" />
+    <ClInclude Include="..\map\forest.h" />
+    <ClInclude Include="..\map\map.h" />
+    <ClInclude Include="..\map\mapinfo.h" />
+    <ClInclude Include="..\map\quad.h" />
+    <ClInclude Include="..\map\terrain.h" />
+    <ClInclude Include="..\map\tile.h" />
+    <ClInclude Include="..\game\game_rlv.h" />
+    <ClInclude Include="..\game\loadgame_rlv.h" />
+    <ClInclude Include="..\game\objects\objects.h" />
+    <ClInclude Include="..\game\player.h" />
+    <ClInclude Include="..\game\objects\tree.h" />
+    <ClInclude Include="..\game\objects\unit.h" />
+    <ClInclude Include="..\logging\chronometer.h" />
+    <ClInclude Include="..\logging\ftslogger.h" />
+    <ClInclude Include="..\logging\logger.h" />
+    <ClInclude Include="..\logging\MsgType.h" />
+    <ClInclude Include="..\net\connection.h" />
+    <ClInclude Include="..\tools\server2\checksum\md5.h" />
+    <ClInclude Include="..\net\packet.h" />
+    <ClInclude Include="..\tools\server2\checksum\sha2.h" />
+    <ClInclude Include="..\sound\fts_Snd.h" />
+    <ClInclude Include="..\sound\SndFile.h" />
+    <ClInclude Include="..\sound\SndGrp.h" />
+    <ClInclude Include="..\sound\SndObj.h" />
+    <ClInclude Include="..\sound\SndPlayList.h" />
+    <ClInclude Include="..\sound\SndSys.h" />
+    <ClInclude Include="..\sound\SndSysOpenAL.h" />
+    <ClInclude Include="..\sound\SndTypes.h" />
+    <ClInclude Include="..\3rdparty\scrap.h" />
+    <ClInclude Include="..\mdlviewer\mdlviewer_main.h" />
+    <ClInclude Include="..\Scripting\dao_snd.h" />
+    <ClInclude Include="..\Scripting\DaoVm.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagramSound.cd" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="icon.rc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

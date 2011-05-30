@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="XMLParserModules">
+      <UniqueIdentifier>{98842875-60ff-4a2a-a079-ce05d726856c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="XMLParserModules\TinyXMLParser">
+      <UniqueIdentifier>{fec01ab5-9770-476e-9e68-cd530fd227b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="XMLParserModules\TinyXMLParser\ceguitinyxml">
+      <UniqueIdentifier>{8a9a0189-cd34-41a2-b2c2-a9d288c98963}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\XMLParserModules\TinyXMLParser\CEGUITinyXMLParser.cpp">
+      <Filter>XMLParserModules\TinyXMLParser</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\XMLParserModules\TinyXMLParser\CEGUITinyXMLParserModule.cpp">
+      <Filter>XMLParserModules\TinyXMLParser</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\XMLParserModules\TinyXMLParser\ceguitinyxml\tinystr.cpp">
+      <Filter>XMLParserModules\TinyXMLParser\ceguitinyxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\XMLParserModules\TinyXMLParser\ceguitinyxml\tinyxml.cpp">
+      <Filter>XMLParserModules\TinyXMLParser\ceguitinyxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\XMLParserModules\TinyXMLParser\ceguitinyxml\tinyxmlerror.cpp">
+      <Filter>XMLParserModules\TinyXMLParser\ceguitinyxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\XMLParserModules\TinyXMLParser\ceguitinyxml\tinyxmlparser.cpp">
+      <Filter>XMLParserModules\TinyXMLParser\ceguitinyxml</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\XMLParserModules\TinyXMLParser\CEGUITinyXMLParser.h">
+      <Filter>XMLParserModules\TinyXMLParser</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\XMLParserModules\TinyXMLParser\CEGUITinyXMLParserModule.h">
+      <Filter>XMLParserModules\TinyXMLParser</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\XMLParserModules\TinyXMLParser\ceguitinyxml\tinystr.h">
+      <Filter>XMLParserModules\TinyXMLParser\ceguitinyxml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\XMLParserModules\TinyXMLParser\ceguitinyxml\tinyxml.h">
+      <Filter>XMLParserModules\TinyXMLParser\ceguitinyxml</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

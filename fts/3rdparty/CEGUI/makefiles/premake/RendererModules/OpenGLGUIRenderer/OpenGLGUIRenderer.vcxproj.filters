@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="RendererModules">
+      <UniqueIdentifier>{8a024df4-5dd9-48cf-bc7f-ed8177d81aa3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RendererModules\OpenGLGUIRenderer">
+      <UniqueIdentifier>{fb112f85-2d17-4c78-b70c-c0fedd304cae}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\RendererModules\OpenGLGUIRenderer\openglrenderer.cpp">
+      <Filter>RendererModules\OpenGLGUIRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\RendererModules\OpenGLGUIRenderer\opengltexture.cpp">
+      <Filter>RendererModules\OpenGLGUIRenderer</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\RendererModules\OpenGLGUIRenderer\openglrenderer.h">
+      <Filter>RendererModules\OpenGLGUIRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\RendererModules\OpenGLGUIRenderer\opengltexture.h">
+      <Filter>RendererModules\OpenGLGUIRenderer</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

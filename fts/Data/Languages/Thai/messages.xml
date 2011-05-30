@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<messages>
+  <SDL_Query value="SDL: Video query failed: {1}"/>
+  <SDL_Init value="SDL: initialization: {1}"/>
+  <SDL_Clipboard value="SDL: Couldn't init the clipboard (now you can't copy/paste): {1}"/>
+  <CEGUI_Init value="CEGUI initialisation failed: {1}"/>
+  <CEGUI value="CEGUI error: {1}"/>
+  <SND_NoSys value="SND: No sound system was found during the creation of Arkana, you will hear no sound."/>
+  <SND value="SND: The sound object {1} encountered the following error:
+
+{2}"/>
+  <ObjectNotExist value="The object {1} does not exist"/>
+  <ObjectNotExistIn value="The object {1} does not exist within {2}"/>
+  <ObjectAlreadyExist value="The object {1} already exists"/>
+  <SyscallFailure value="The call to the system function {1} failed with error code {2}, that means:
+
+{3}"/>
+  <NoRights value="You don't have enough rights to do that:
+
+{1}"/>
+  <CorruptData value="The data coming from {1} is corrupt:
+
+{2}"/>
+  <HardwareLimit value="Shit. A hardware limit has been encountered: {1}. The limit is {3} but we need at least {2}"/>
+  <ScriptEvalFile value="Dao reported a syntax error (for further information please have a look at the console output) in the file {1} ." />
+  <ScriptEvalStatement value="Dao found a syntax error (for further information please have a look at the console output) in the statement:
+
+ {1} " />
+  <GLError value="OpenGL error ({1}) in the function {2}"/>
+  <Graph_Load value="Couldn't load the image {1}:
+
+{2}"/>
+  <Graph_Load_ID value="Couldn't load the image {1}:
+
+It does not contain the FTSIMG ID, are you sure it is an image file?"/>
+  <Graph_Load_EOF value="Couldn't load the image {1}:
+
+The end of the file has been reached too fast. Maybe the file has been cut somehow?"/>
+  <Graph_NotUnloaded_File value="The graphic that had been loaded from the file {1} has not been unloaded"/>
+  <Graph_NotUnloaded_Mem value="The graphic that had been created from memory and has the size {1}x{2} has not been unloaded"/>
+  <Anim_NoConf value="The animation file '{1}' is missing the configuration file '{2}' in it"/>
+  <Anim_NoImg value="The animation file '{1}' is missing the picture '{2}' in it"/>
+  <Parse_eof value="Parsing file {1} at line {2}: Unexpected end of file"/>
+  <Parse_expect value="Parsing file {1} at line {2}: Expecting a '{3}' but found a '{4}' for '{5}'"/>
+  <Parse_expectI value="Parsing file {1} at line {2}: Expecting a number but found a '{3}'"/>
+  <Parse_expectF value="Parsing file {1} at line {2}: Expecting a floating number but found a '{3}'"/>
+  <Parse_expectB value="Parsing file {1} at line {2}: Expecting a boolean (true or false) but found a '{3}'"/>
+  <Parse_expectDT value="Parsing file {1} at line {2}: Expecting a date or time but found a '{3}'"/>
+  <Parse_expectXI value="Parsing file {1} at line {2}: Expecting an ensemble of {3} numbers but found a '{4}'"/>
+  <Parse_expectXF value="Parsing file {1} at line {2}: Expecting an ensemble of {3} floating numbers but found a '{4}'"/>
+  <Conf_Parse value="Conf_Parse: There is an error near the expression '{1}' in the file {2}. Taking the default value"/>
+  <Conf_Write value="Conf_Write: There is an error while writing expression '{1}' into the config file {2}"/>
+  <UnknownProtocol value="The protocol {1} is not supported. It was encountered while handling the file {2}"/>
+  <FileNotExist value="The file following file doesn't exist: {1}"/>
+  <FileAlreadyExist value="The following file already exists: {1}"/>
+  <File_Read value="Cannot read from the file {1}:
+
+{2}"/>
+  <File_Write value="Cannot write to the file {1}:
+
+{2}"/>
+  <File_Seek value="Cannot seek in the (probably corrupt) file {1}:
+
+{2}"/>
+  <File_FopenR value="Cannot open file {1} with read access:
+
+{2}"/>
+  <File_FopenW value="Cannot open file {1} with write access:
+
+{2}"/>
+  <File_UnexpEOF value="The file {1} seems to be corrupted as the end of the file was reached while not expected. Additional info: {2}"/>
+  <Archive_Invalid value="The archive file {1} seems not to be valid (too short or incorrect header '{2}')"/>
+  <Archive_Corrupt value="The archive file {1} seems corrupt (the checksums do not correspond, calculated {2} should be {3})"/>
+  <CEGUI_LoadLayout value="Failed to load the CEGUI-layout called {1}:
+
+{2}"/>
+  <Compressor_MiniLZO value="Error with the MiniLZO compressor: {1}"/>
+  <Compressor_MiniLZO_Comp value="Error while compressing data with MiniLZO: {1}"/>
+  <Compressor_MiniLZO_Decomp value="Error while uncompressing data with MiniLZO: {1}"/>
+  <Compressor_MiniLZO_CorruptData value="Some corrupt data has been encountered with MiniLZO: {1}"/>
+  <Model_Shader_TooManyTexCo value="The model {1}'s material {2} doesn't contain enough textures (only {4}) to be used with the shader {3}, the shader expects more texture coordinate attributes"/>
+  <Model_Shader_TooManyTexUniforms value="The model {1}'s material {2} doesn't contain enough textures (only {4}) to be used with the shader {3}, the shader expects more sampler uniforms"/>
+  <MAP_Terrain_InvFile value="The terrain.ftst file of the map {1} is invalid (doesn't contain the id FTST)"/>
+  <MAP_Tileset_NoInfo value="The tileset '{1}' does not contain the 'info.conf' file that is needed."/>
+  <MAP_Tileset_NoTileFile value="The info.conf file in the tileset '{1}' specifies that there should be a tile or blendmask '{2}', but such a tile is not present."/>
+  <MAP_Tileset_TileBadSize value="The tile '{2}' in the tileset '{1}' is not of the tileset's tile size (its size is {3}x{4} but should be {5}x{6}). The tile will be resized automatically."/>
+  <MAP_Tileset_BlendBadSize value="The blendmask '{2}' in the tileset '{1}' is not of the tileset's tile size (its size is {3}x{4} but should be {5}x{6}). The blendmask will be resized automatically."/>
+  <MAP_Tileset_TileNotInSet value="The tile '{2}' is not defined in the tileset '{1}'"/>
+  <MAP_Tileset_MaskNotInSet value="The blendmask '{2}' is not defined in the tileset '{1}'"/>
+  <MAP_Tileset_UpperNotInSet value="The uppertile '{2}' is not defined in the tileset '{1}'"/>
+  <MAP_Forest_InvParam value="The forest number {1} contains a wrong value for the {2} parameter !
+Taking the default value ({3})."/>
+  <Net_TCPIP_mksock value="Net: could not create a socket:
+
+{1} ({2})"/>
+  <Net_TCPIP_hostname value="Net: could not resolve the hostname {1}:
+
+{2} ({3})"/>
+  <Net_TCPIP_connect value="Net: could not connect to {1} at port {2}:
+
+{3} ({4})"/>
+  <Net_TCPIP_connect_to value="Net: connection to {1} at port {2} timed out:
+
+{3} ({4})"/>
+  <Net_TCPIP_send value="Net: could not send data:
+
+{1} ({2})"/>
+  <Net_TCPIP_recv value="Net: could not recieve data: connection lost"/>
+  <Net_TCPIP_select value="Net: error during select:
+
+{1} ({2})"/>
+  <Net_TCPIP_fcntl_get value="Net: error getting fcntl:
+
+{1} ({2})"/>
+  <Net_TCPIP_fcntl_set value="Net: error setting fcntl:
+
+{1} ({2})"/>
+  <Net_packet_len value="Net: the length of the packet is incorrect: {1}"/>
+  <Net_packet value="Net: an invalid packet has been received: {1}"/>
+  <NewOnlineAcc_NoConnection value="Arkana-FTS could not connect to the master-server. You should check your connection before going further."/>
+  <Ogm_offline value="You want to do '{1}' while being offline"/>
+  <Ogm_create_online value="You can't create an account while you are logged in. Please log out to do this"/>
+  <Ogm_create_missdata value="You haven't filled in all the necessary data (nickname, password and e-mail)"/>
+  <Ogm_create_mail value="Please enter a valid e-mail address"/>
+  <Ogm_create_nick value="You can not use a space in your nickname"/>
+  <Ogm_create_pass value="The two passwords you entered don't match"/>
+  <Ogm_create_err value="Your nickname already exists, please choose another one"/>
+  <Ogm_login_miss value="It would be a good idea to tell me your nickname and password"/>
+  <Ogm_login_err value="There was an error during login, this might be caused by one of these reasons (sorted from the most likely to the least likely):
+          * Your nickname/password combination is wrong (Please re-try)
+          * You have not yet signed up (Please sign up now)
+          * Somebody else is already logged in with your nickname (Please wait until he logs out)
+          * Somebody that has the same IP and the same password as you is already logged in. (Please wait until he logs out)"/>
+  <Ogm_set_err value="Server-error while setting an account property ! (often a programmer error, field"/>
+  <Ogm_get_err value="Server-error while getting an account property ! (often a programmer error, field"/>
+  <Ogm_set_flag_err value="Server-error while setting an account flag ! (often a programmer error, flag"/>
+  <Ogm_chat_iunai value="Error finding out in what channel I am"/>
+  <Ogm_chat_join_miss value="You have to type the name of the channel you want to join"/>
+  <Ogm_chat_join_err value="Error while joining or creating the channel '{1}'
+
+Every player can only create a limited amount of chat rooms. If you think you have created too many and want to delete some of them, you should log into the gamepage with your account, you can remove them there.
+The gamepage's address should be: http://www.arkana-fts.org"/>
+  <Ogm_chat_motto_err value="Error while getting the motto of the channel '{1}'"/>
+  <Ogm_chat_userget_err value="Error while getting the state of the player {1}"/>
+  <Ogm_chat_generr value="There was an error while doing this (error code: {1}).
+This usually means that you are not allowed/have not enough rights to do this"/>
+  <Ogm_chat_sendmsg_err value="Error sending the chat message"/>
+  <Ogm_chat_whisp_err value="The player {1} does not exist or is offline"/>
+  <Ogm_chat_operr value="Error while granting the operator-status.
+This usually happens if either you are not allowed/have not enough rights to do this, or the player you chose does not exist or is currently not in the channel, or if he already is an operator/admin"/>
+  <Ogm_chat_deoperr value="Error while removing the operator-status.
+This usually happens if either you are not allowed/have not enough rights to do this, the player you chose does not exist or is currently not in the channel or is not an operator of the channel"/>
+  <Ogm_chat_list_my_err value="Error while getting the list of your rooms"/>
+  <Ogm_chat_rem_chan_err value="Error while removing the channel '{1}'.
+Probably it isn't your channel ; you can only remove channels that you are administrator of"/>
+  <Ogm_feedback_tooshort value="Can't you write us more then {1} characters, please?"/>
+  <Ogm_game_make value="Error creating the game, maybe a game with the same name already exists. ({1})"/>
+  <Ogm_game_missdata value="You must choose a name and a map for the game"/>
+  <InvCall value="An invalid call has been made to the following function: {1}"/>
+  <InvParam value="There is one or more invalid parameter(s) to '{1}'"/>
+  <DoubleShortcut value="The keyboard shortcut with the name {1} wants to be registered twice. It will be ignored"/>
+  <SingletonNotExist value="The singleton {1} wants to be used but doesn't exist yet"/>
+  <SingletonAlreadyExist value="The singleton {1} wants to be created although it already exists"/>
+  <Init value="Initializations:
+"/>
+  <Deinit value="DeInitializations:
+"/>
+  <EnterRlv value="Entering Runlevel:"/>
+  <LeaveRlv value="Leaving  Runlevel:"/>
+  <GraphDrvL value="Loading Graphic drivers ..."/>
+  <GraphDrvU value="Unloading Graphic drivers ..."/>
+  <InputDrvL value="Loading Input drivers ..."/>
+  <InputDrvU value="Unloading Input drivers ..."/>
+  <NetDrvL value="Loading Network drivers ..."/>
+  <NetDrvU value="Unloading Network drivers ..."/>
+  <SoundDrvL value="Loading Sound drivers ..."/>
+  <SoundDrvU value="Unloading Sound drivers ..."/>
+  <FreeTmp value="Deleting cache ..."/>
+  <PressEnterToCont value="Press any key to continue"/>
+  <NotImpYet value="This is not yet implemented (or finished) ... Please have patience or help us implementing it :)"/>
+  <NoOnlineWarn value="PLEASE read this:
+It is now possible to create an online account, log in, chat (in different rooms, public or private), open a new game and see a list of all opened games and of course, log out ;)
+
+Unfortunately, all these new things can't be tryed out by you right now, as we do not have a master-server! It is too expensive for us and we didn't find someone that is ready to host our server application yet. If you own a server and want to help us, please contact us!"/>
+  <Info value="This is a christmas release of Arkana-FTS: a release to show you what progress we have made, to let you play around.
+There are a few features not working, especially the online gaming (as we lack a server) and the model viewer (as we are rewriting the model format).
+We hope you enjoy playing around with Arkana-FTS anyways.
+
+From now on, we will give our best to have one release every 1 or 2 months
+
+The team wishes you a lot of fun, a Merry Christmas and a Happy New Year!
+
+Thanks go to:
+Lucas Beyer (Pompei2, lead developer &amp; project coordinator)
+Klaus Beyer (kbey, developer, Windows-port)
+Manuel Reisch (moOshiE, main graphics artist: GUI, Logo, ...)
+Kenny Thaeter (Story)
+Thibault Beyer (Chitzui, main tester)
+Supinya (My girlfriend, for her patience the days I spend hours working on Arkana-FTS, I love you ที่รัก)"/>
+</messages>

@@ -1,0 +1,411 @@
+[P2] [les tords c comme avoir un gosse d'une pute, dur a accepter] dit :
+design frage:
+
+moOshiE[] weiß was er dit :
+die grafik von torks is aber gay
+ja erzähl
+da bin ich der richtige ansprechpartner
+
+[P2] [les tords c comme avoir un gosse d'une pute, dur a accepter] dit :
+wenn du jetzt den benutzer "Pompei2" anlegst, mit dem optionen und soweiter aussuchst, soll der dann auch in online spielen "Pompei2" heissen, oder sich diesen namen nochmal separat aussuchen können ?
+
+moOshiE[] weiß was er dit :
+apropos design: torcs is hässlich
+separat, falls es den schon gibt zb, kann er sich nen neuen acc machen und hat alle einstellung weg.....
+AU?ER
+man kann optionen vererben
+das wär perfekt, wenn man nen neuen user nehmen könnte, wo man dann en knopf anklicken kann, zum vererben von babla
+oder ?
+dann wär das sogar geil mt online gelöst
+
+[P2] [les tords c comme avoir un gosse d'une pute, dur a accepter] dit :
+mit vererben seh ich 3 möglichkeiten, sag mir welche du meinst:
+option O1 = 1 und O2 = 2 im account A1, account A2 vererbt account A1.
+
+1) alle einstellungen werden rûberkopiert in A2, danach haben A1 und A2 nix mehr miteinander zu tun
+2) jede option die in A2 nicht definiert ist, wird von A1 genommen
+3) andersrum, die optionen werden mit erster prioritât von A1 genommen
+
+aber die andere lösung ist wirklich den namen separat auszusuchen, weil was bringt uns (dem user) das vererben konkret ?)
+
+bin kurz trinken holen, also haste zeit ne gute argumentation zu bauen
+
+moOshiE[] weiß was er dit :
+ich versteh dein text net, aber nochmal von vorne::
+1) user macht neuen acc: user1
+2)will online zocken, scheiße namen gibs schon
+3)muss neuen acc machen, und alle einstellungen neu einstellen
+3b)oder, er macht neuen acc und sagt, ich will alle einstellungen von user1 übernehmen, der neue user heißt user2
+
+-> definitiv die beste lösung is 3b
+
+[P2] [les tords c comme avoir un gosse d'une pute, dur a accepter] dit :
+kann man machen. dann sind mehrere accounts (z.B. liga/fun-accounts) auch schnell gemacht
+ja 3b bin ich mit einverstanden, ist auch fûr mich relativ einfach
+
+moOshiE[] weiß was er dit :
+ja, mehrere accs braucht man eh
+fun acc, test acc, liga acc, profiacc, schwester acc, cheat acc
+lol
+
+[P2] [les tords c comme avoir un gosse d'une pute, dur a accepter] dit :
+  genau
+
+moOshiE[] weiß was er dit :
+aber mit liga lassen wir besser... bei opensource spielen is die cheatrate bei etwa 80%
+das nervt dann
+
+[P2] [les tords c comme avoir un gosse d'une pute, dur a accepter] dit :
+ja bei closed source isses das selbe
+lige kommt eh wenn dan gaaaanz am ende
+
+moOshiE[] weiß was er dit :
+ja ok
+
+[P2] [les tords c comme avoir un gosse d'une pute, dur a accepter] dit :
+wenns spiel gut balanciert und alles ist, sonst macht es sowieso kein sinn ne liga zu machen
+
+moOshiE[] weiß was er dit :
+aber bei closed source, kann sich wenigstens na anticheatpartei dadrum kümmern, es sicher zu machen
+bei open bringts nix
+verstehste^^
+
+[P2] [les tords c comme avoir un gosse d'une pute, dur a accepter] dit :
+ja
+
+moOshiE[] weiß was er dit :
+also torcs die straße und umgebung is echt ok... aber der lack von den karren ist absoluter müll
+
+[P2] [les tords c comme avoir un gosse d'une pute, dur a accepter] dit :
+ok nur nochmal zu torcs, haste recht grafik ist nicht so gut, erinnert mich an das erste need for speed was ich hate (in 19 hundert irgendwas ...  ) aber naja ich denk bei linux spiele die haben kei grafik team was 3 jahre dran arbeitet da is das wichtigste dass es bock macht   aber egal ich mach mich an die arbeit. wohl heute nicht bis 4h morgens ^^
+
+moOshiE[] weiß was er dit :
+jo letz fetz
+
+[P2] [les tords c comme avoir un gosse d'une pute, dur a accepter] dit :
+hmmm was ist alles mit dem account verbunden ? sag falls was fehlt:
+
+* optionen
+* status der kampagne
+* savegames
+
+moOshiE[] weiß was er dit :
+also wenn du so meinst, kann man einfach den namen vom acc ändern
+is noch einfacher^^
+dann braucht nix übernommen werden
+wenn er dann nen neuen acc haben will, macht er sich nen neuen
+außer jemand braucht 2 gleiche acc mit anderem namen?
+kann auch passieren
+also übernehm einfach alles
+optionen und kampagne
+und savegames
+
+[P2] [les tords c comme avoir un gosse d'une pute, dur a accepter] dit :
+ne hast recht n neuer acc soll auch wirklich NEU sein. kann ja später (in paar tagen/wochen) auch "account kopieren" als knopf anbieten.
+
+moOshiE[] weiß was er dit :
+ja
+und dann eben die funktion namen ändern (max 5 mal oder so)
+sonst hat man ejden tag nen neuen namen
+also en max muss schon renn
+rein
+was aber wiederrum nix bringt, bei opensource, dann ändert man einfach die zahl
+die gespeichert ist ^^
+
+[P2] [les tords c comme avoir un gosse d'une pute, dur a accepter] dit :
+ja aber ich stell mir grad noch ne wichtige frage
+wenn ich das mitm accounts kopieren mache, dann hat es später kein sinn wenn ich ne banlist mache, da wenn du gebannt bist du einfach dein account kopierst und den alten löschst ..... ausser ich speicher pro account auch ne ID, die mitkopiert wird und der bannt dann nach dieser ID .... ich glaub das ist das beste wa
+
+moOshiE[] weiß was er dit :
+bei opensource bringts net zu bannen, dann änderste einfach die ID
+außer die ID isn mp5 code, der per zufall generiert wird und nur dann in die datenbank gespeichert wird, wen nder acc neu gemacht wird
+damit man net einfach die ID ändern kann
+
+[P2] [les tords c comme avoir un gosse d'une pute, dur a accepter] dit :
+entweder das, aber wie will der host dann wissen wem welche IP gehört ?
+
+moOshiE[] weiß was er dit :
+host ?
+inwiefern host?
+der was das spiel leitet oder der server ?
+
+[P2] [les tords c comme avoir un gosse d'une pute, dur a accepter] dit :
+server*
+
+moOshiE[] weiß was er dit :
+ok
+ganz einfach, er guckt nach, obs den md5 code gibt, wenn ja, dann ok, wenn nicht, kein zutritt
+also beim anmelden wird der md5code verglichen, mit allen von der datenbank, wenn es halt erfolgreich ist, kann er rein
+man kann ja unter anderem auch PW und USER fragen, wobei dann wieder das problem mit namen ändern ist
+
+[P2] [les tords c comme avoir un gosse d'une pute, dur a accepter] dit :
+ne warte mal ich halt dich an ^^
+
+moOshiE[] weiß was er dit :
+oder auch nicht, wenn man den USEr namen nur auf die offizielle seite ändern kann
+oder der username unterscheidet sich vom spielname
+bin net zu bremsen^^
+
+[P2] [les tords c comme avoir un gosse d'une pute, dur a accepter] dit :
+was ich sagen wollte geht auch nicht is mir beim schreiben aufgefallen   ich muss nochmal überlegen
+
+moOshiE[] weiß was er dit :
+wieso geht mein nicht ??
+jeder acc. hat einen usernamen, ein passwort (beides zum einloggen) und eine ID, die wir per zufall aus allen zeichen errechnen
+der spielname s total unabhängig vom usernamen
+
+[P2] [les tords c comme avoir un gosse d'une pute, dur a accepter] dit :
+nicht das deins nicht geht, das in meinem kopf geht nicht
+
+moOshiE[] weiß was er dit :
+meinste wegen dem bann ?
+
+[P2] [les tords c comme avoir un gosse d'une pute, dur a accepter] dit :
+ne warte halt mal an mit deinen ideen   ich muss mal kurz an alle möglichen fälle denken
+
+moOshiE[] weiß was er dit :
+wenn die ID aufm pc gespeichert ist, und der en neuen acc macht, bekommt er ne neue ID, aber noch ne verknüpfung, das es eine 2. ID gibt, die gebannt ist
+also is die neue ID gebannt
+also kann er nie wieder zocken
+nur das problem mit der ID ist, wenn er sie vom pc schmeißt
+is aber glaub ich nicht überbrückbar
+microsoft hats so gemacht: die gucken an, welche hardware der pc besitzt...
+so erkennen die die, weil fast kein pc gleich ist
+eig. nie gleich ist, weil ja jede hardware ne eigene kennnummer hat
+so könnte man doch nen ganzen pc bannen
+voll geil
+ich hör auf, is alles unsinn^^
+
+[P2] [les tords c comme avoir un gosse d'une pute, dur a accepter] dit :
+ne warte mal ich programmiere die accounts jetzt mal ohne beachten des bans usw. weil das wirft noch viele andere fragen auf ....  eventuell soll es nicht 1 banserver geben sondern jeder hat siene lokale banlist, sonst bannt dich jemand weil er dich nicht mag und du kannst garnirgendwo mehr spielen.
+
+moOshiE[] weiß was er dit :
+nix da, nur spieler mit privilegien haben das recht
+
+[P2] [les tords c comme avoir un gosse d'une pute, dur a accepter] dit :
+und die hauptfrage: wie ist ein benutzer online eindeutig erkennbar (also an id, name, ... ?) und die fragen sind noch nicht fûr jetzt
+
+moOshiE[] weiß was er dit :
+also dur die admins
+du ich und kenny
+
+[P2] [les tords c comme avoir un gosse d'une pute, dur a accepter] dit :
+ja das ist aber auch unsinn die admins sind nicht überall
+
+moOshiE[] weiß was er dit :
+und bruno oder so
+aber man kann spielaufzeichnungen schicken, oder anders wie beweisen das er cheatet
+
+[P2] [les tords c comme avoir un gosse d'une pute, dur a accepter] dit :
+wenn du dir die alle durchgucken willst gerne ^^ ich nicht
+
+moOshiE[] weiß was er dit :
+aber ich denke, am anfang vom spiel wird eh alles verglichen, ob die eig. der einzelnen foguren mit denen vom server übereinstimmen oder ?
+wenn net = cheater
+
+[P2] [les tords c comme avoir un gosse d'une pute, dur a accepter] dit :
+jaja
+
+moOshiE[] weiß was er dit :
+so wär doch eig. perfekt
+so haste kaum möglichkeiten zu cheaten erstmal
+
+[P2] [les tords c comme avoir un gosse d'une pute, dur a accepter] dit :
+aber das soll später diskutiert werden
+
+moOshiE[] weiß was er dit :
+nein, das gehört dazu
+sonst musste wieder alles ändern danach
+
+[P2] [les tords c comme avoir un gosse d'une pute, dur a accepter] dit :
+(weil ich kann auch nicht alle einheiten übers netz übertragen, beovr ich ne partie anfange !)
+
+moOshiE[] weiß was er dit :
+wenn wir wissen, wo die cheatmöglichkeiten sind, so müssen wir accs proggen
+vergleichen wa
+die einzelnen dateien
+ob in den dateien das gleiche steht
+
+[P2] [les tords c comme avoir un gosse d'une pute, dur a accepter] dit :
+ja zum vergleichen musst du ja die vom server und benutzer haben
+
+[P2] [les tords c comme avoir un gosse d'une pute, dur a accepter] dit :
+also übertragen
+
+moOshiE[] weiß was er dit :
+aber net die einheiten, sondern deren eigenschafts tabelle
+ich würd das alles in eine tabelle speichern
+die der server vergleicht
+
+[P2] [les tords c comme avoir un gosse d'une pute, dur a accepter] dit :
+jaja ist aber trozdem viel (wenn es viele einheiten gibt)
+
+moOshiE[] weiß was er dit :
+jaja, is aber nur text
+in 5 jahren geht das ruckzuck
+wenns überhaupt an 200kb kommt... is doch sofort übertragen
+
+[P2] [les tords c comme avoir un gosse d'une pute, dur a accepter] dit :
+ja aber das sehen wir dann wenns soweit ist wie gesagt
+
+moOshiE[] weiß was er dit :
+dauert nur paar sekunden
+jede ID hat nen anderen tabellennamen, so kann man zb. keine tabelle einfach umbenennen im code
+
+[P2] [les tords c comme avoir un gosse d'une pute, dur a accepter] dit :
+??
+
+moOshiE[] weiß was er dit :
+bin der cheater: also gut, er vergleicht diese tabelle, dann nenn ich die einfach um, im code und als namen selber, und änder diese tabelle komplett, zu meinen gunsten, speicher eine neue tabelle mit richtigen werten und gut ist.... ich kann cheaten mit echter tabelle   das spiel selber greift dann aber auf andere tabelle zu, die umgenannte und veränderte.... also muss da ne blockade hin: idee:
+problem ... idee funzt net
+
+[P2] [les tords c comme avoir un gosse d'une pute, dur a accepter] dit :
+ich hab aber eine
+viiiiiiiiiiiel einfacher
+
+moOshiE[] weiß was er dit :
+ich bin der geborene betatester
+erzähl
+
+[P2] [les tords c comme avoir un gosse d'une pute, dur a accepter] dit :
+das macht sogar dass man garkein vergleich braucht !
+
+moOshiE[] weiß was er dit :
+ich zeig dir ne lücke
+der server lädt jedem user eine datei runter, die NUR im speicher gespeichert wird, auf die er zugreift
+also keine neue datei im cache, sonst kann man die umändern während dem spiel
+ich hol mir was zu saufen
+brb
+re
+sone anticheatsystem erdenken macht richtig spaß
+
+[P2] [les tords c comme avoir un gosse d'une pute, dur a accepter] dit :
+wär ne lösung, aber alles unnnötig komplex.
+die lösung ist die art wie wir das online-spielen implementeiren, wenn wir es im server <-> client modell machen, dann programmier ich das einfach so das wenn spieler 1 der einheit A1 befiehlt die einheit B2 (von spieler 2) anzugreifen, wird nur der befehl zum server geschickt, DER SERVER berechnet den angriff anhand SEINER daten, und schickt das resultat (also schaden usw.) an jeden client ! dann passiert fûr jeden das selbe, alles ist schön alle sind froh.
+also 0 chance für cheater
+
+moOshiE[] weiß was er dit :
+hmm
+
+[P2] [les tords c comme avoir un gosse d'une pute, dur a accepter] dit :
+ich hab kein bug in dem gedanken gefunden ^^
+
+moOshiE[] weiß was er dit :
+das wirdn en teurer server
+
+[P2] [les tords c comme avoir un gosse d'une pute, dur a accepter] dit :
+nein: egal wer kann server werden
+
+moOshiE[] weiß was er dit :
+und was passiert, wenn der spieler eine eigene einheit mit neuem namen erschaffen hat, die enorm stark ist
+der server erkennt den befehl net, stürtzt das spiel für beide ab
+oder er greift einfach nicht an^^
+
+[P2] [les tords c comme avoir un gosse d'une pute, dur a accepter] dit :
+die ist FTS scheiss egal, da es ja nur die einheiten der map benutzt (und gegebenfalls vom server)
+
+moOshiE[] weiß was er dit :
+ok
+
+[P2] [les tords c comme avoir un gosse d'une pute, dur a accepter] dit :
+hört sich gut an oder
+
+moOshiE[] weiß was er dit :
+was meinst du mit, jeder kann server sein ?
+wenn ich server bin, dann änder ich die datei von A1 so, das B2 keine chance hat
+
+[P2] [les tords c comme avoir un gosse d'une pute, dur a accepter] dit :
+w8 ich wasche hände und erkl£är das
+
+moOshiE[] weiß was er dit :
+man braucht dafür schon nen allgemeinen server
+nur das ding muss die härte sein... was da für befehle ankommen
+und was zurück muss...
+das istn enormer download und mit gigantischen pings verbunden
+!= fun
+
+[P2] [les tords c comme avoir un gosse d'une pute, dur a accepter] dit :
+also das wird so gehen: wir haben 1 weltweiten server (brunos) an den FTS sich verbindet. ich kann auf meinem kleinen pc, wenn ich denke der ist gut genug (wird nicht soo viel übertragen, glaub mir, komprimiert sind das dann nur n paar k/s) starte ich den server (das ist dann ein konsolenprogramm oder so, eventuell mache ich ne GUI dafür ins spiel), der meldet dann brunos server dass er existiert. brunos server hat dann ne liste aller spiele. der benutzer der spielen will sucht sich auf brunos server ne partie aus, brunos server gibt ihm die ip adresse von dem, der spieler verbindet sich mit dem und die spielen zusammen. sagen wir jetzt der server hat bei sich die einheit 'bauerbeiter' übertrieben stark gemacht, dann zâhlt das für beide spieler !! da der server ja alles mit seinen daten berechnet !! das kann man auch ausnutzen um funserver zu machen   wenn du jetzt das pech hast und fâllst auf ein server, der sich die einheit 'elfenbogenschûtze' extrem stark gemacht hat, und in der map ist definiert, nur spieler 1 kann diese einheit bauen ... tja pech, das ist dann ... (geht weiter)
+.... aber wie mit cheater maps, da joint man nnichtmehr wenns mal passiert ist, und irgendwann steht er (hoffentlich) alleine da. oder man meldet es und er wird gebannt
+hf & gl reading
+
+moOshiE[] weiß was er dit :
+merci
+bin noch net ganz überzeugt: also ein spieler erstellt nen server, der brunos server anpingt, ein weiteres spieler2 meldet sich an der ip an, wird auf spieler1server geleitet... beide spielen: nun, kommen von spieler1server die berechnungen, so kann man sich tief in den finger schneiden, weil wir mehrere völker haben. dh, er macht sein volk unschalgbar und lässt das andere zb. normal, die...
+... berechnungen sind also so gesehen unnütze
+wieso kannst du soviel in msn schreiben ??
+ich nicht
+unfair
+da muss en vergleich stattfinden finde ich
+
+[P2] [les tords c comme avoir un gosse d'une pute, dur a accepter] dit :
+kA   aber das ist was ich sagte, da kannst nix (realistisches) gegen tun, aber das ist das selbe wie mit cheater maps (wo du im mapeditor dem speler 1 einfach 1000000 gold gibst z.B.) das wirs bekannt und da geht niemand mehr hin und der wird eventuell gemeldet und gebannt (wir gehen davon aus bannen funzt, brauchen wir nicht zu beweisen, das isn 30 seiten beweis  )
+
+moOshiE[] weiß was er dit :
+doch, wir sind schlau genug, wir schaffen das
+
+[P2] [les tords c comme avoir un gosse d'une pute, dur a accepter] dit :
+man kann ja später im liga modus sowas wie einen "official check" machen vor der partie, aber nicht immer vergleichen, sonst kannste keine funserver machen, was kacke ist
+
+moOshiE[] weiß was er dit :
+dann muss man bei der erstellung vom server die option "official check" anklicken
+
+[P2] [les tords c comme avoir un gosse d'une pute, dur a accepter] dit :
+manü das ist wie alles, kannste zu guten und zu schlechten zwecken benutzen, wie die atomkraft auch.
+ja das geht auch
+
+moOshiE[] weiß was er dit :
+und bei der serverliste (die von brunos server kommt) sieht man dann sofort ob checked oder nicht
+
+[P2] [les tords c comme avoir un gosse d'une pute, dur a accepter] dit :
+genau das wollt ich sagfen !d
+
+moOshiE[] weiß was er dit :
+aber das kann man auch umgehen
+
+[P2] [les tords c comme avoir un gosse d'une pute, dur a accepter] dit :
+geniale idee !
+
+moOshiE[] weiß was er dit :
+wenn man den code so ändert, das er sagt zeige checked symbol, obwohl ern et gecheckt wurde
+
+[P2] [les tords c comme avoir un gosse d'une pute, dur a accepter] dit :
+wie denn ? man kann alles umgehen wenn man will, wir wolen uns nicht von profi-hackern/-cheater schûtzen (die <1% der cheater sind) sondern an die meisten noob cheater ...
+
+moOshiE[] weiß was er dit :
+außer brunos server generiert immer ne andere zulassung, um den checkedscheißsymbol anzuzeigen
+
+[P2] [les tords c comme avoir un gosse d'une pute, dur a accepter] dit :
+euh dann musst du den code bei dir ändern und das wâre schwachsinn
+
+moOshiE[] weiß was er dit :
+ich will MEHR
+warum, is open source
+
+[P2] [les tords c comme avoir un gosse d'une pute, dur a accepter] dit :
+der servercode wird nicht durch egal wen geândert, nur durch mich
+
+moOshiE[] weiß was er dit :
+das mein ich net
+wenn wir beim erstellen vom server official checked anklicken, im code aber geändert haben, das er net checkt, sondern sofort true setzt, dann steht bei bruno checked
+außer, man kommt da garnicht dran, weil die methode nur aufm server gespeichert ist ??
+dh, wenn man official checked anklickt, verbindet er sich dann mitm server und im servercode gibs ne methode, die checkt, wenn true rauskommt, nur dann soll er checked freizeichen setzen
+also hat checked garnix mitm spieler zu tun
+also is im endeffekt eine fast perfekte idee
+GLOBAL CHECK
+jeyh
+
+[P2] [les tords c comme avoir un gosse d'une pute, dur a accepter] dit :
+ne warte die hab ich nicht verstanden
+
+moOshiE[] weiß was er dit :
+ich hab nur in meinem anfängerkenntnisvomprogrammierensprache laut gedacht, wie man das auch sicher machen kann
+bin erst davon ausgegangen, dass wenn man official checked anklickt, er ein symbol "PASSED GLOBAL CHECK" anzeigt, bei bruno.... aber das war falsch gedacht
+den brunos server gibt nur "PASSED GLOBAL CHECK" aus, wenn der test erfolgreich war
+und wie du sagst, den code kann keiner ändern am server
+
+[P2] [les tords c comme avoir un gosse d'une pute, dur a accepter] dit :
+hab kapiert, das ist gut, und nun zurück zu unseren erbsen gurken schafen was auch immer   ich speicher die diskussion ma, da kamen paar sehr gute punkte bei raus
+
+moOshiE[] weiß was er dit :
+ja

@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ui>
+  <General_Cancel value="Abbrechen"/>
+  <General_ac value="v. Chr."/>
+  <General_Player value="Spieler"/>
+  <File_Open value="Diese Datei öffnen"/>
+  <File_OpenTxt value="Suchen Sie die zu öffnende Datei aus"/>
+  <File_OpenTitle value="Datei öffnen"/>
+  <File_Save value="Diese Datei speichern"/>
+  <File_SaveTxt value="Suchen Sie einen Ort und Namen für die zu speichernde Datei aus"/>
+  <File_SaveTitle value="Datei speichern"/>
+  <File_Save_Confirm value="Die Datei existiert bereits, überschreiben ?"/>
+  <Update_Found value="Eine neue Version von FTS ist verfügbar !
+Ein Klick auf den Updaten Knopf öffnet den FTS Updater.
+Ein Klick auf Abbrechen ignoriert dieses Update."/>
+  <Update_Error value="Fehler beim holen von Versionsinformationen.
+Entweder Sie sind nicht mit dem Internet verbunden oder unser Server ist down."/>
+  <Update_None value="Du hast bereits die aktuellste Version von
+Arkana-FTS. Vielen Dank für's Zocken! ;)"/>
+  <Msg_Warn value="Warnung"/>
+  <Msg_Err value="Fehler !"/>
+  <Msg_Horr value="Schwerer Fehler !!!"/>
+  <Opts_Vid_Tex_VLow value="Niedrig (Nearest)"/>
+  <Opts_Vid_Tex_Low value="Mittel (Linear, Standard)"/>
+  <Opts_Vid_Tex_Mid value="Hoch (Linear MipMap)"/>
+  <Opts_Vid_Mod_Low value="Niedrig (<100 Polygone)"/>
+  <Opts_Vid_Mod_Mid value="Mittel (100-500 Polygone)"/>
+  <Opts_Vid_Mod_Hig value="Hoch (>500 Polygone)"/>
+  <Loadscr_Stage_GetFL value="Erstelle eine Liste der Dateien in der Karte ..."/>
+  <Loadscr_Stage_Extract value="Entpacke die Datei {1} ..."/>
+  <Loadscr_Stage_MapInfo value="Lade detaillierte Informationen über die Karte ..."/>
+  <Loadscr_Stage_TerrInfo value="Lade Informationen über das Terrain ..."/>
+  <Loadscr_Stage_TerrQuads value="Lade die Quads des Terrains ({1}) ..."/>
+  <Loadscr_Stage_TerrLoTi value="Lade die Lowertiles des Terrains ({1}) ..."/>
+  <Loadscr_Stage_TerrCompLoTi value="Kompiliere die Lowertiles des Terrains ..."/>
+  <Loadscr_Stage_TerrUpTi value="Lade die Uppertiles des Terrains ({1}) ..."/>
+  <Loadscr_Stage_Precalc value="Berechne die Terrain-daten voraus ..."/>
+  <Loadscr_Stage_Forests value="Lade die Wälder ..."/>
+  <Loadscr_Stage_Starting value="Fertig geladen, warte auf andere Spieler ..."/>
+  <Loadscr_Author value="Von {1}"/>
+  <Loadscr_Lastmodif value="(Letzte änderung am {1})"/>
+  <lblTime_fileLst value="Dateiliste erstellen:"/>
+  <lblTime_extract value="Dateien entpacken:"/>
+  <lblTime_quads value="Lade der Quads:"/>
+  <lblTime_lowertiles value="Laden der Lowertiles:"/>
+  <lblTime_complowtil value="Kompilieren der Lowertileset:"/>
+  <lblTime_uppertiles value="Laden der Uppertiles:"/>
+  <lblTime_precalc value="Vorberechnungen:"/>
+  <lblTime_forests value="Laden der Wälder:"/>
+  <gameinfo_MapAuthorAndModif value="‣ Kartenautor: |c111111{1}|d, letzte Änderung |c111111{2}|d"/>
+  <gameinfo_MapnPlayers value="‣ Diese Karte verlangt mindestens |c111111{1}|d und höchstens |c111111{2}|d Spieler."/>
+  <gameinfo_GameHost value="‣ Dieses Spiel wurde von |c111111{1}|d eröffnet."/>
+  <gameinfo_GamePlayers value="‣ Die |c111111{1}|d folgenden Spieler sind schon in dem Spiel:"/>
+  <Really_Quit value="Bist du dir sicher, dass Du das Spiel verlassen willst?"/>
+  <Chat_Admin_suffix value="(Admin)"/>
+  <Chat_Op_suffix value="(op)"/>
+  <Chat_Muted_suffix value="(Ignoriert)"/>
+  <Chat_Join value="Herzlich willkommen im Raum namens |c111111{1}|d,
+Das Motto dieses Raumes lautet: |c1B56A0{2}|d"/>
+  <Chat_MottoSet value="|c111111{1}|d hat das Motto dieses Raumes geändert: |c1B56A0{2}|d"/>
+  <Chat_Kicked value="|c111111{1}|d hat |c111111{2}|d rausgeschmissen !"/>
+  <Chat_YouGotKicked value="|c111111{1}|d hat Sie aus dem Raum |c111111{2}|d rausgeschmissen ! Sie befinden sich jetzt im Raum |c111111{3}|d."/>
+  <Chat_Oped value="|c111111{1}|d ist ein Raum-Operator geworden !"/>
+  <Chat_Deoped value="|c111111{1}|d wurde der Raum-Operator Status entzogen !"/>
+  <Chat_Says value="{1}: "/>
+  <Chat_RecvWhisp value="{1} flüstert Ihnen zu: "/>
+  <Chat_SentWhisp value="Sie flüstern {1} zu: "/>
+  <Chat_ChannelsList value="Dies sind alle Räume die Sie besitzen:
+{1}"/>
+  <Chat_ChannelsList_ChanPrefix value="
+  *"/>
+  <Chat_ChannelsList_ChanSuffix value=""/>
+  <Chat_ChannelsListEmpty value="Sie besitzen momentan keinen Raum."/>
+  <Chat_ChannelRemGood value="Der Raum '{1}' wurde erfolgreich zerstört."/>
+  <Chat_Unknown_cmd value="Dieser Befehl existiert nicht! Nutzen Sie /help um eine Liste der Befehle zu bekommen"/>
+  <Chat_Help value="|c002277Allgemeine Hilfe:|d
+Die hilfe ist in Kapitel unterteilt, ein Kapitel für jeden Befehl.
+
+|c1B56A0Syntax:|d
+          |c111111/help|d |c222222befehl_name|d
+Zeigt das Hilfe-Kapitel zu dem Befehl namens |c222222befehl_name|d an.
+
+Hier ist die liste der verfügbaren Befehle:
+join:         einem Raum beitreten bzw. erstellen
+motto:     das Motto des Raumes ändern
+kick:        jemanden aus dem Raum werfen
+op:           gibt einem Spieler den Operator-Status für diesen Raum
+deop:       entzieht einem Spieler den Operator-Status für diesen Raum
+w:            flüstert einem Spieler eine Nachicht zu
+listchans: zeigt eine Liste der Räume an, die Ihnen gehören
+delchan:   zerstört einen Ihrer Räume
+
+|c1B56A0Beispiel:|d
+          |c111111/help|d |c222222join|d
+Zeigt das Hilfekapitel bezüglich des '|c222222join|d'-Befehls an."/>
+  <Chat_Help_join value="|c002277Hilfe zum /join Befehl:|d
+Dieser Befehl wird benutzt um einem Raum beizutreten oder einen neuen raum zu erstellen. Gibt es den Raum dem Sie beitreten wollen schon, treten Sie dem Raum bei. Gibt es diesen raum jedoch noch nicht, wird er erstellt und Sie werden Administrator dieses Raumes.
+
+|c1B56A0Syntax:|d
+          |c111111/join|d |c222222RaumName|d
+Wobei |c222222RaumName|d der Name des Raumes dem Sie beitreten oder den Sie erstellen möchten ist.
+
+|c1B56A0Beispiel:|d
+          |c111111/join|d |c222222Mein erster Raum|d
+Tritt dem Raum namens '|c222222Mein erster Raum|d' bei oder erstellt diesen."/>
+  <Chat_Help_motto value="|c002277Hilfe zum /motto Befehl:|d
+Dieser Befehl ändert das Motto des Raumes in dem Sie sich gerade befinden. Sie benötigen erhöhte Rechte in dem Raum in dem Sie das Motto ändern möchten (Sie müssen Operator oder Administrator sein).
+
+|c1B56A0Syntax:|d
+          |c111111/motto|d |c222222Das neue Motto|d
+Wenn Sie entweder ein Operator oder der Administrator dieses Raumes sind, ändert dieser Befehl das Motto dieses Raumes in das, was diesem Befehl folgt.
+
+|c1B56A0Beisiel:|d
+          |c111111/motto|d |c222222Guckt euch meine Fotos im StudiVZ an|d
+Wird das Motto dieses Raumes in '|c222222Guckt euch meine Fotos im StudiVZ an|d' ändern, vorausgesetzt Sie haben genügend Rechte."/>
+  <Chat_Help_kick value="|c002277Hilfe zum /kick Befehl:|d
+Dieser Befehl wirft einen Spieler aus dem Raum in dem Sie sich gerade befinden. Sie benötigen erhöhte Rechte in dem Raum in dem Sie das Motto ändern möchten (Sie müssen Operator oder Administrator sein).
+
+|c1B56A0Syntax:|d
+          |c111111/kick|d |c222222Spielername|d
+Wobei |c222222Spielername|d der Name des Spielers ist, welchen Sie aus dem Raum rauswerfen wollen.
+
+|c1B56A0Beisiel:|d
+          |c111111/kick|d |c222222Hanzwurst|d
+Wird den Spieler namens '|c222222Hanzwurst|d' aus dem Raum werfen, vorausgesetzt Sie haben genügend Rechte."/>
+  <Chat_Help_op value="|c002277Hilfe zum /op Befehl:|d
+Dieser Befehl gibt einem Spieler den Operator-Status in dem Raum in dem Sie sich gerade befinden, was dem Spieler mehr Rechte gibt (zum Beispiel das Recht jemanden aus dem Raum rauszuwerfen, oder das Motto zu ändern).
+Sie können diesen Befehl nur benutzen, wenn Sie ein Operator oder ein Administrator in diesem Raum sind.
+
+|c1B56A0Syntax:|d
+          |c111111/op|d |c222222Spielername|d
+Wobei |c222222Spielername|d der Name des Spielers ist, welchem der Operator-Status für diesen Raum gegeben werden soll.
+
+|c1B56A0Beispiel:|d
+          |c111111/op|d |c222222RoxXxoR2007|d
+Macht den Spieler namens |c222222RoxXxoR2007|d zu einem Operator dieses Raumes, vorausgesetzt Sie haben genügend Rechte."/>
+  <Chat_Help_deop value="|c002277Hilfe zum /deop Befehl:|d
+Dieser Befehl entzieht einem Spieler den Operator-Status in dem Raum in dem Sie sich gerade beginden, was ihm die erhöhten Rechte in diesem Raum abnimmt. (Er kann dann zum Beispiel niemanden mehr rauswerfen).
+Sie können diesen Befehl nur benutzen, wenn Sie ein Operator oder ein Administrator in diesem Raum sind.
+
+|c1B56A0Syntax:|d
+          |c111111/deop|d |c222222Spielername|d
+Wobei |c222222Spielername|d der Name des Spielers ist, welchem der Operator-Status in diesem Raum entzogen werden soll.
+
+|c1B56A0Beispiel:|d
+          |c111111/deop|d |c222222RoxXxoR2007|d
+Entzieht dem Sieler namens |c222222RoxXxoR2007|d den Operator-Status in diesem Raum, vorausgesetzt Sie haben genügend Rechte."/>
+  <Chat_Help_w value="|c002277Hilfe zum /w Befehl:|d
+Dieser Befehl flüstert einem anderen Spieler eine Nachicht zu. Eine geflüsterte Nachicht wird nur an einen Spieler geschickt, wo auch immer er sich gerade befindet, solange er angemeldet ist.
+Somit können Sie ihm eine Geheimnachicht schreiben, oder mit ihm reden, auch wenn er sich bereits in einem Spiel befindet oder nicht in dem Selben Raum wie Sie.
+
+Flüstern heisst auf englisch to |c222222w|dhisper, daher besteht dieser Befehl nur aus dem Buchstaben '|c222222w|d'.
+
+|c1B56A0Syntax:|d
+          |c111111/w|d |c222222Spielername|d |c333333Nachicht an den Spieler|d
+Wobei |c222222Spielername|d der Name des Spielers ist, dem die geheime Nachicht geschickt werden soll. Alle anderen Worte sind die Nachicht die ihm geschickt wird.
+
+|c1B56A0Beispiel:|d
+          |c111111/w|d |c222222Pompei2|d |c333333Hey, dein Spiel ist einfach grossartig!|d
+Schickt dem Spieler namens '|c222222Pompei2|d' (falls dieser gerade angemeldet ist) die Nachicht '|c333333Hey, dein Spiel ist einfach grossartig!|d', wo auch immer er ist."/>
+  <Chat_Help_listchans value="|c002277Hilfe zum /listchans Befehl:|d
+Dieser Befehl zeigt Ihnen eine Liste der Räume, die Ihnen gehören.
+Ein Raum gehört Ihnen, wenn Sie Administrator dieses Raumes sind. Das sind Sie automatisch für Räume die Sie selbst erstellt haben."/>
+  <Chat_Help_delchan value="|c002277Hilfe zum /delchan Befehl:|d
+Dieser Befehl zerstört einen Chatraum der Ihnen gehört.
+Ein Raum gehört Ihnen, wenn Sie Administrator dieses Raumes sind. Das sind Sie automatisch für Räume die Sie selbst erstellt haben.
+
+Wenn der Raum zerstört wird, werden alle Spieler die sich noch in dem Raum befinden automatisch rausgeworfen und befinden sich danach in dem Standard-Raum.
+Beachten Sie dass, nachdem Ihr Raum zerstört ist, jeder andere Spieler einen Raum mit dem selben Namen machen kann und dann Administrator des Raumes ist.
+
+|c1B56A0Syntax:|d
+          |c111111/delchan|d |c222222RaumName|d
+Wobei |c222222RaumName|d der Name des Raumes den Sie zerstören möchten ist.
+
+|c1B56A0Beispiel:|d
+          |c111111/delchan|d |c222222Mein erster Raum, den ich aber nichtmehr mag|d
+Zerstört dem Raum namens '|c222222Mein erster Raum, den ich aber nichtmehr mag|d', falls Sie der besitzer dieses Raumes sind."/>
+</ui>

@@ -1,0 +1,11 @@
+--- CEGUIWindow.cpp	Sun Nov 05 14:35:18 2006
++++ CEGUIWindow2.cpp	Thu Dec 14 22:45:29 2006
+@@ -713,7 +713,7 @@
+ 
+     for (child = d_drawList.rbegin(); child != end; ++child)
+     {
+-        if ((*child)->isVisible())
++        if ((*child)->isVisible() && !(*child)->isMousePassThroughEnabled( ))
+         {
+             // recursively scan children of this child windows...
+             Window* wnd = (*child)->getChildAtPosition(position);

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<GUILayout>
+    <Window Type="ArkanaLook/FrameWindow" Name="menu_online">
+        <Property Name="UnifiedPosition"    Value="{{0,0},{0,0}}" />
+        <Property Name="UnifiedSize"        Value="{{1,0},{1,0}}" />
+        <Property Name="UnifiedMinSize"     Value="{{1,0},{1,0}}" />
+        <Property Name="TitlebarEnabled"    Value="false" />
+        <Property Name="FrameEnabled"       Value="false" />
+        <Property Name="SizingEnabled"      Value="false" />
+        <Property Name="CloseButtonEnabled" Value="false" />
+        <Property Name="BackgroundImageEnabled" Value="set:ArkanaLook image:OneTransparentPixel" />
+        <Property Name="BackgroundImageVertFormat" Value="Stretched" />
+        <Property Name="BackgroundImageHorzFormat" Value="Stretched" />
+        <Property Name="ID"                 Value="1" />
+        <Window Type="ArkanaLook/Label" Name="Info">
+            <Property Name="UnifiedPosition"   Value="{{1,-130},{0,05}}" />
+            <Property Name="UnifiedSize"       Value="{{0,0130},{0,35}}" />
+            <Property Name="InheritsAlpha"     Value="False" />
+            <Property Name="Text"></Property>
+        </Window>
+        <Window Type="ArkanaLook/Label" Name="Version">
+            <Property Name="UnifiedPosition"  Value="{{1,-160},{1,-35}}" />
+            <Property Name="UnifiedSize"      Value="{{0,0150},{0,035}}" />
+            <Property Name="AlwaysOnTop"      Value="true" />
+            <Property Name="Text"></Property>
+        </Window>
+        <Window Type="ArkanaLook/Label" Name="menu_online/lblNickname">
+            <Property Name="UnifiedPosition" Value="{{0.8,-120},{0.3,0}}" />
+            <Property Name="UnifiedSize"     Value="{{0.00,256},{0.0,20}}" />
+            <Property Name="Text">Nickname:</Property>
+        </Window>
+        <Window Type="ArkanaLook/Editbox" Name="menu_online/Nickname">
+            <Property Name="UnifiedPosition" Value="{{0.8,-120},{0.3,25}}" />
+            <Property Name="UnifiedSize"     Value="{{0.00,256},{0.0,30}}" />
+            <Property Name="MaxTextLength"   Value="32" />
+            <Property Name="Font"            Value="old2" />
+            <Property Name="NormalTextColour" Value="FFAAAAAA" />
+            <Property Name="ID"              Value="1" />
+        </Window>
+        <Window Type="ArkanaLook/Label" Name="menu_online/lblPassword">
+            <Property Name="UnifiedPosition" Value="{{0.8,-120},{0.3,100}}" />
+            <Property Name="UnifiedSize"     Value="{{0.00,256},{0.0,20}}" />
+            <Property Name="Text">Password:</Property>
+        </Window>
+        <Window Type="ArkanaLook/Editbox" Name="menu_online/Password">
+            <Property Name="UnifiedPosition" Value="{{0.8,-120},{0.3,125}}" />
+            <Property Name="UnifiedSize"     Value="{{0.00,256},{0.0,30}}" />
+            <Property Name="MaxTextLength"   Value="32" />
+            <Property Name="MaskText"        Value="True" />
+            <Property Name="MaskCodepoint"   Value="42" />
+            <Property Name="Font"            Value="old2" />
+            <Property Name="NormalTextColour" Value="FFAAAAAA" />
+            <Property Name="ID"              Value="2" />
+        </Window>
+        <Window Type="ArkanaLook/MenuButton" Name="menu_online/btnLogin">
+            <Property Name="UnifiedPosition" Value="{{0.8,-120},{0.3,200}}" />
+            <Property Name="UnifiedSize"     Value="{{0.00,256},{0.0,50}}" />
+            <Property Name="ID"              Value="3" />
+            <Property Name="Text">Login</Property>
+        </Window>
+        <Window Type="ArkanaLook/MenuButton" Name="menu_online/btnCreate">
+            <Property Name="UnifiedPosition" Value="{{0.8,-120},{0.3,275}}" />
+            <Property Name="UnifiedSize"     Value="{{0.00,256},{0.0,50}}" />
+            <Property Name="ID"              Value="4" />
+            <Property Name="Text">Register</Property>
+        </Window>
+        <Window Type="ArkanaLook/MenuButton" Name="menu_online/btnBack">
+            <Property Name="UnifiedPosition" Value="{{0.8,-120},{0.3,350}}" />
+            <Property Name="UnifiedSize"     Value="{{0.00,256},{0.0,50}}" />
+            <Property Name="ID"              Value="5" />
+            <Property Name="Text">Back</Property>
+        </Window>
+    </Window>
+</GUILayout>

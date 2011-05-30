@@ -1,0 +1,9 @@
+# load background music.
+public global sndback = Music('Miguel Herrero - Medieval.ogg')
+sndback.play()
+
+sndEasterEgg = Music('Augmentality - Zombie Main Music.ogg')
+
+# load other sounds. TODO: sound type, ...
+# or rather: a new class Sound.
+# Music('whisp_recv.ogg')

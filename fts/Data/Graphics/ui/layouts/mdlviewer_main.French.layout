@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<GUILayout>
+    <Window Type="ArkanaLook/FrameWindow" Name="mdlviewer">
+        <Property Name="UnifiedPosition"    Value="{{0,0},{0,0}}" />
+        <Property Name="UnifiedSize"        Value="{{1,0},{1,0}}" />
+        <Property Name="UnifiedMinSize"     Value="{{1,0},{1,0}}" />
+        <Property Name="TitlebarEnabled"    Value="false" />
+        <Property Name="FrameEnabled"       Value="false" />
+        <Property Name="SizingEnabled"      Value="false" />
+        <Property Name="CloseButtonEnabled" Value="false" />
+        <Property Name="BackgroundImageEnabled" Value="set:ArkanaLook image:OneTransparentPixel" />
+        <Property Name="BackgroundImageVertFormat" Value="Stretched" />
+        <Property Name="BackgroundImageHorzFormat" Value="Stretched" />
+        <Window Type="ArkanaLook/Label" Name="Info">
+            <Property Name="UnifiedPosition"  Value="{{1,-640},{0,55}}" />
+            <Property Name="UnifiedSize"      Value="{{0,0130},{0,35}}" />
+            <Property Name="InheritsAlpha"    Value="False" />
+            <Property Name="AlwaysOnTop"      Value="true" />
+            <Property Name="Text"></Property>
+        </Window>
+        <!-- The upper line with the buttons -->
+        <Window Type="ArkanaLook/ContainerBox" Name="mdlviewer/menubar">
+            <Property Name="UnifiedPosition"    Value="{{0,0000},{0,00}}" />
+            <Property Name="UnifiedSize"        Value="{{1,-500},{0,50}}" />
+            <Property Name="UnifiedMinSize"     Value="{{0,0020},{0,20}}" />
+            <Property Name="ID"                 Value="2" />
+            <Window Type="ArkanaLook/Button" Name="mdlviewer/menubar/btnBack">
+                <Property Name="UnifiedPosition" Value="{{0,010},{0,10}}" />
+                <Property Name="UnifiedSize"     Value="{{0,150},{0,20}}" />
+                <Property Name="ID"              Value="1" />
+                <Property Name="Text">Retour</Property>
+            </Window>
+            <Window Type="ArkanaLook/Button" Name="mdlviewer/menubar/btnLoad">
+                <Property Name="UnifiedPosition" Value="{{1,-160},{0,10}}" />
+                <Property Name="UnifiedSize"     Value="{{0,0150},{0,20}}" />
+                <Property Name="ID"              Value="2" />
+                <Property Name="Text">Charger un modèle</Property>
+            </Window>
+        </Window>
+        <!-- The lower line with misc. infos. -->
+        <Window Type="ArkanaLook/ContainerBox" Name="mdlviewer/statusbar">
+            <Property Name="UnifiedPosition"    Value="{{0,0000},{1,-40}}" />
+            <Property Name="UnifiedSize"        Value="{{1,-500},{0,040}}" />
+            <Property Name="UnifiedMinSize"     Value="{{0,0020},{0,035}}" />
+            <Property Name="ID"                 Value="1" />
+            <Window Type="ArkanaLook/Label" Name="mdlviewer/statusbar/lblVerts">
+                <Property Name="UnifiedPosition"   Value="{{0,10},{0,0}}" />
+                <Property Name="UnifiedSize"       Value="{{0,70},{1,0}}" />
+                <Property Name="Text"># vertices:</Property>
+            </Window>
+            <Window Type="ArkanaLook/Label" Name="mdlviewer/statusbar/lblVertsVal">
+                <Property Name="UnifiedPosition"   Value="{{0,80},{0,0}}" />
+                <Property Name="UnifiedSize"       Value="{{0,50},{1,0}}" />
+                <Property Name="Text">50000</Property>
+            </Window>
+            <Window Type="ArkanaLook/Label" Name="mdlviewer/statusbar/lblFaces">
+                <Property Name="UnifiedPosition"   Value="{{0,140},{0,0}}" />
+                <Property Name="UnifiedSize"       Value="{{0,070},{1,0}}" />
+                <Property Name="Text"># triangles:</Property>
+            </Window>
+            <Window Type="ArkanaLook/Label" Name="mdlviewer/statusbar/lblFaceVal">
+                <Property Name="UnifiedPosition"   Value="{{0,210},{0,0}}" />
+                <Property Name="UnifiedSize"       Value="{{0,050},{1,0}}" />
+                <Property Name="Text">50000</Property>
+            </Window>
+            <Window Type="ArkanaLook/Label" Name="mdlviewer/statusbar/lblMoves">
+                <Property Name="UnifiedPosition"   Value="{{0,270},{0,0}}" />
+                <Property Name="UnifiedSize"       Value="{{0,100},{1,0}}" />
+                <Property Name="Text"># animations:</Property>
+            </Window>
+            <Window Type="ArkanaLook/Label" Name="mdlviewer/statusbar/lblMovesVal">
+                <Property Name="UnifiedPosition"   Value="{{0,370},{0,0}}" />
+                <Property Name="UnifiedSize"       Value="{{0,030},{1,0}}" />
+                <Property Name="Text">100</Property>
+            </Window>
+        </Window>
+        <!-- The right panel with all infos and commands. -->
+        <Window Type="ArkanaLook/ContainerBox" Name="mdlviewer/panel">
+            <Property Name="UnifiedPosition"    Value="{{1,-500},{0,0}}" />
+            <Property Name="UnifiedSize"        Value="{{0,0500},{1,0}}" />
+            <Property Name="UnifiedMinSize"     Value="{{0,0300},{1,0}}" />
+            <Property Name="ID"                 Value="3" />
+            <Window Type="ArkanaLook/StaticFrame" Name="mdlviewer/panel/frmMoves">
+                <Property Name="UnifiedPosition"  Value="{{0,015},{0,010}}" />
+                <Property Name="UnifiedSize"      Value="{{1,-30},{0,200}}" />
+                <Property Name="ID"               Value="1" />
+                <Property Name="Text">Actions et animations:</Property>
+                <Window Type="ArkanaLook/Label" Name="mdlviewer/panel/frmMoves/lblMove">
+                    <Property Name="UnifiedPosition"   Value="{{0,015},{0,28}}" />
+                    <Property Name="UnifiedSize"       Value="{{0,170},{0,25}}" />
+                    <Property Name="Text">Choisissez l'animation:</Property>
+                </Window>
+                <Window Type="ArkanaLook/Combobox" Name="mdlviewer/panel/frmMoves/cbMove" >
+                    <Property Name="UnifiedPosition" Value="{{0,0200},{0,028}}" />
+                    <Property Name="UnifiedSize"     Value="{{1,-215},{0,128}}" />
+                    <Property Name="ReadOnly"        Value="True" />
+                    <Property Name="ID"              Value="1" />
+                </Window>
+                <Window Type="ArkanaLook/Label" Name="mdlviewer/panel/frmMoves/lblSpeed">
+                    <Property Name="UnifiedPosition"   Value="{{0,015},{0,70}}" />
+                    <Property Name="UnifiedSize"       Value="{{0,190},{0,20}}" />
+                    <Property Name="Text">Et la vitesse de l'animation:</Property>
+                </Window>
+                <Window Type="ArkanaLook/HorizontalDecoScrollbar" Name="mdlviewer/panel/frmMoves/hsSpeed" >
+                    <Property Name="UnifiedPosition" Value="{{0,0205},{0,76}}" />
+                    <Property Name="UnifiedSize"     Value="{{1,-365},{0,14}}" />
+                    <Property Name="DocumentSize"    Value="210" />
+                    <Property Name="StepSize"        Value="1" />
+                    <Property Name="PageSize"        Value="10" />
+                    <Property Name="ID"              Value="2" />
+                </Window>
+                <Window Type="ArkanaLook/Label" Name="mdlviewer/panel/frmMoves/hsSpeedVal">
+                    <Property Name="UnifiedPosition"   Value="{{1,-155},{0,70}}" />
+                    <Property Name="UnifiedSize"       Value="{{0,0025},{0,20}}" />
+                    <Property Name="HorzFormat"        Value="RightAligned" />
+                    <Property Name="Font"              Value="old2" />
+                    <Property Name="Text">100</Property>
+                </Window>
+                <Window Type="ArkanaLook/Label" Name="mdlviewer/panel/frmMoves/hsSpeedValPercent">
+                    <Property Name="UnifiedPosition"   Value="{{1,-125},{0,70}}" />
+                    <Property Name="UnifiedSize"       Value="{{0,0010},{0,20}}" />
+                    <Property Name="Font"              Value="old2" />
+                    <Property Name="Text">%</Property>
+                </Window>
+                <Window Type="ArkanaLook/DecoButton" Name="mdlviewer/panel/frmMoves/btnAddAsAction">
+                    <Property Name="UnifiedPosition" Value="{{1,-99},{0,66}}" />
+                    <Property Name="UnifiedSize"     Value="{{0,034},{0,34}}" />
+                    <Property Name="ImageNormal"     Value="set:FTSUI image:PlayN" />
+                    <Property Name="ImageHover"      Value="set:FTSUI image:PlayH" />
+                    <Property Name="ImagePushed"     Value="set:FTSUI image:PlayN" />
+                    <Property Name="ImageDisabled"   Value="set:FTSUI image:PlayN" />
+                    <Property Name="Tooltip"         Value="Joue l'animation en tant qu'action.
+C'est à dire qu'elle sera jouée une seule fois." />
+                    <Property Name="ID"              Value="3" />
+                </Window>
+                <Window Type="ArkanaLook/DecoButton" Name="mdlviewer/panel/frmMoves/btnPlayPause">
+                    <Property Name="UnifiedPosition" Value="{{1,-49},{0,66}}" />
+                    <Property Name="UnifiedSize"     Value="{{0,034},{0,34}}" />
+                    <Property Name="ImageNormal"     Value="set:FTSUI image:PauseN" />
+                    <Property Name="ImageHover"      Value="set:FTSUI image:PauseH" />
+                    <Property Name="ImagePushed"     Value="set:FTSUI image:PauseN" />
+                    <Property Name="ImageDisabled"   Value="set:FTSUI image:PauseN" />
+                    <Property Name="Tooltip"         Value="Pause la lecture de toutes les animations
+en cours et permet de les résumer par après." />
+                    <Property Name="ID"              Value="4" />
+                </Window>
+                <Window Type="ArkanaLook/Label" Name="mdlviewer/panel/frmMoves/lblPrio">
+                    <Property Name="UnifiedPosition"   Value="{{0,015},{0,114}}" />
+                    <Property Name="UnifiedSize"       Value="{{0,190},{0,020}}" />
+                    <Property Name="Text">Et la priorité de l'animation:</Property>
+                </Window>
+                <Window Type="ArkanaLook/HorizontalDecoScrollbar" Name="mdlviewer/panel/frmMoves/hsPrio" >
+                    <Property Name="UnifiedPosition" Value="{{0,0205},{0,120}}" />
+                    <Property Name="UnifiedSize"     Value="{{1,-365},{0,014}}" />
+                    <Property Name="DocumentSize"    Value="110" />
+                    <Property Name="StepSize"        Value="1" />
+                    <Property Name="PageSize"        Value="10" />
+                    <Property Name="ID"              Value="5" />
+                </Window>
+                <Window Type="ArkanaLook/Label" Name="mdlviewer/panel/frmMoves/hsPrioVal">
+                    <Property Name="UnifiedPosition"   Value="{{1,-155},{0,114}}" />
+                    <Property Name="UnifiedSize"       Value="{{0,0025},{0,020}}" />
+                    <Property Name="HorzFormat"        Value="RightAligned" />
+                    <Property Name="Font"              Value="old2" />
+                    <Property Name="Text">50</Property>
+                </Window>
+                <Window Type="ArkanaLook/Label" Name="mdlviewer/panel/frmMoves/hsPrioValPercent">
+                    <Property Name="UnifiedPosition"   Value="{{1,-125},{0,114}}" />
+                    <Property Name="UnifiedSize"       Value="{{0,0010},{0,020}}" />
+                    <Property Name="Font"              Value="old2" />
+                    <Property Name="Text">%</Property>
+                </Window>
+                <Window Type="ArkanaLook/DecoButton" Name="mdlviewer/panel/frmMoves/btnAddAsCycle">
+                    <Property Name="UnifiedPosition" Value="{{1,-99},{0,110}}" />
+                    <Property Name="UnifiedSize"     Value="{{0,034},{0,034}}" />
+                    <Property Name="ImageNormal"     Value="set:FTSUI image:PlayLoopN" />
+                    <Property Name="ImageHover"      Value="set:FTSUI image:PlayLoopH" />
+                    <Property Name="ImagePushed"     Value="set:FTSUI image:PlayLoopN" />
+                    <Property Name="ImageDisabled"   Value="set:FTSUI image:PlayLoopN" />
+                    <Property Name="Tooltip"         Value="Joue l'animation en tant qu'animation cyclique,
+c'est à dire qu'il sera joué en boucle en même
+temps que les autres animations cycliques." />
+                    <Property Name="ID"              Value="6" />
+                </Window>
+                <Window Type="ArkanaLook/DecoButton" Name="mdlviewer/panel/frmMoves/btnStop">
+                    <Property Name="UnifiedPosition" Value="{{1,-49},{0,110}}" />
+                    <Property Name="UnifiedSize"     Value="{{0,034},{0,034}}" />
+                    <Property Name="ImageNormal"     Value="set:FTSUI image:StopN" />
+                    <Property Name="ImageHover"      Value="set:FTSUI image:StopH" />
+                    <Property Name="ImagePushed"     Value="set:FTSUI image:StopN" />
+                    <Property Name="ImageDisabled"   Value="set:FTSUI image:StopN" />
+                    <Property Name="Tooltip"         Value="Arrète toutes les animations actuelles." />
+                    <Property Name="ID"              Value="7" />
+                </Window>
+            </Window>
+            <Window Type="ArkanaLook/StaticFrame" Name="mdlviewer/panel/frmMisc">
+                <Property Name="UnifiedPosition"  Value="{{0,015},{0,220}}" />
+                <Property Name="UnifiedSize"      Value="{{1,-30},{0,190}}" />
+                <Property Name="ID"               Value="2" />
+                <Property Name="Text">Divers:</Property>
+                <Window Type="ArkanaLook/Label" Name="mdlviewer/panel/frmMisc/lblPlayerCol">
+                    <Property Name="UnifiedPosition"   Value="{{0,020},{0,25}}" />
+                    <Property Name="UnifiedSize"       Value="{{0,170},{0,25}}" />
+                    <Property Name="Text">Choisissez la couleur:</Property>
+                </Window>
+                <Window Type="ArkanaLook/Combobox" Name="mdlviewer/panel/frmMisc/cbPlayerCol" >
+                    <Property Name="UnifiedPosition" Value="{{0,0200},{0,025}}" />
+                    <Property Name="UnifiedSize"     Value="{{1,-215},{0,128}}" />
+                    <Property Name="ReadOnly"        Value="True" />
+                    <Property Name="ClippedByParent" Value="False" />
+                    <Property Name="ID"              Value="1" />
+                </Window>
+                <Window Type="ArkanaLook/Label" Name="mdlviewer/panel/frmMisc/lblSkin">
+                    <Property Name="UnifiedPosition"   Value="{{0,020},{0,60}}" />
+                    <Property Name="UnifiedSize"       Value="{{0,170},{0,25}}" />
+                    <Property Name="Text">Choisissez la peau:</Property>
+                </Window>
+                <Window Type="ArkanaLook/Combobox" Name="mdlviewer/panel/frmMisc/cbSkin" >
+                    <Property Name="UnifiedPosition" Value="{{0,0200},{0,060}}" />
+                    <Property Name="UnifiedSize"     Value="{{1,-215},{0,128}}" />
+                    <Property Name="ReadOnly"        Value="True" />
+                    <Property Name="ClippedByParent" Value="False" />
+                    <Property Name="ID"              Value="1" />
+                </Window>
+                <Window Type="ArkanaLook/CheckboxLabelLeft" Name="mdlviewer/panel/frmMisc/chkNormals">
+                    <Property Name="UnifiedPosition" Value="{{0,020},{0,90}}" />
+                    <Property Name="UnifiedSize"     Value="{{0,198},{0,24}}" />
+                    <Property Name="ID"              Value="2" />
+                    <Property Name="Text">Afficher les normales:</Property>
+                </Window>
+                <Window Type="ArkanaLook/CheckboxLabelLeft" Name="mdlviewer/panel/frmMisc/chkAttPts">
+                    <Property Name="UnifiedPosition" Value="{{0,020},{0,120}}" />
+                    <Property Name="UnifiedSize"     Value="{{0,198},{0,024}}" />
+                    <Property Name="ID"              Value="3" />
+                    <Property Name="Text">Afficher les points d'attache:</Property>
+                </Window>
+                <Window Type="ArkanaLook/CheckboxLabelLeft" Name="mdlviewer/panel/frmMisc/chkAABB">
+                    <Property Name="UnifiedPosition" Value="{{0,020},{0,150}}" />
+                    <Property Name="UnifiedSize"     Value="{{0,198},{0,024}}" />
+                    <Property Name="ID"              Value="3" />
+                    <Property Name="Text">Afficher la boîte englobante:</Property>
+                </Window>
+            </Window>
+            <Window Type="ArkanaLook/StaticFrame" Name="mdlviewer/panel/frmMass">
+                <Property Name="UnifiedPosition"  Value="{{0,015},{1,-100}}" />
+                <Property Name="UnifiedSize"      Value="{{1,-30},{0,0085}}" />
+                <Property Name="ID"               Value="3" />
+                <Property Name="Text">Armée de modèles:</Property>
+                <Window Type="ArkanaLook/Label" Name="mdlviewer/panel/frmMass/lblX">
+                    <Property Name="UnifiedPosition"   Value="{{0,020},{0,20}}" />
+                    <Property Name="UnifiedSize"       Value="{{0,200},{0,34}}" />
+                    <Property Name="Text">Nombre de modèles en largeur:</Property>
+                </Window>
+                <Window Type="ArkanaLook/HorizontalDecoScrollbar" Name="mdlviewer/panel/frmMass/hsX" >
+                    <Property Name="UnifiedPosition" Value="{{0,0230},{0,30}}" />
+                    <Property Name="UnifiedSize"     Value="{{1,-290},{0,14}}" />
+                    <Property Name="DocumentSize"    Value="110" />
+                    <Property Name="StepSize"        Value="1" />
+                    <Property Name="PageSize"        Value="10" />
+                    <Property Name="ID"              Value="1" />
+                </Window>
+                <Window Type="ArkanaLook/Label" Name="mdlviewer/panel/frmMass/hsXVal">
+                    <Property Name="UnifiedPosition"   Value="{{1,-50},{0,20}}" />
+                    <Property Name="UnifiedSize"       Value="{{0,040},{0,34}}" />
+                    <Property Name="Font"              Value="old2" />
+                    <Property Name="Text">1</Property>
+                </Window>
+                <Window Type="ArkanaLook/Label" Name="mdlviewer/panel/frmMass/lblY">
+                    <Property Name="UnifiedPosition"   Value="{{0,020},{0,45}}" />
+                    <Property Name="UnifiedSize"       Value="{{0,200},{0,34}}" />
+                    <Property Name="Text">Nombre de modèles en hauteur:</Property>
+                </Window>
+                <Window Type="ArkanaLook/HorizontalDecoScrollbar" Name="mdlviewer/panel/frmMass/hsY" >
+                    <Property Name="UnifiedPosition" Value="{{0,0230},{0,55}}" />
+                    <Property Name="UnifiedSize"     Value="{{1,-290},{0,14}}" />
+                    <Property Name="DocumentSize"    Value="110" />
+                    <Property Name="StepSize"        Value="1" />
+                    <Property Name="PageSize"        Value="10" />
+                    <Property Name="ID"              Value="2" />
+                </Window>
+                <Window Type="ArkanaLook/Label" Name="mdlviewer/panel/frmMass/hsYVal">
+                    <Property Name="UnifiedPosition"   Value="{{1,-50},{0,45}}" />
+                    <Property Name="UnifiedSize"       Value="{{0,040},{0,34}}" />
+                    <Property Name="Font"              Value="old2" />
+                    <Property Name="Text">1</Property>
+                </Window>
+            </Window>
+        </Window>
+    </Window>
+</GUILayout>

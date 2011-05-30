@@ -1,0 +1,90 @@
+Introduction
+============
+
+In this file, we need to keep track of what has been contributed by whom. This
+is only needed for contributions from non-core members and for non-contributions.
+
+For example, if any CC music is used in here, the author shall be notified and
+acknowledged in this file, along with the license.
+
+Source-code:
+============
+All the sourcecode is licensed under the GNU GPL v2 or higher, unless noted otherwise.
+
+Source-code includes shaders and scripts.
+
+These are the authors of Arkana-FTS core sourcecode:
+    - Lucas Beyer (aka Pompei2)
+    - Klaus Beyer (aka Kby)
+
+These are the authors of the core shaders:
+    - Lucas Beyer (aka Pompei2)
+
+These are the authors of the core scripts:
+    - Klaus Beyer (aka Kby)
+    - Lucas Beyer (aka Pompei2)
+
+Exceptions:
+    -
+
+For the licenses of the 3rd party libraries used, please refer to the INSTALL[.txt]
+or LICENSE[.txt] or COPYING[.txt] file in their subdirectories.
+
+2D Graphics:
+============
+All the 2D graphics are copyright by Manuel Reisch (aka moOshie) but licensed
+under CC-BY-SA 3.0 or higher unless noted otherwise.
+
+Exceptions:
+    - The round buttons in the options dialog: Unknown license, unknown author. To be replaced!
+    - Some icons in the online main menu by the KDE Crystal SVG icon team. To be replaced!
+
+3D Models:
+==========
+All the 3D models are copyright by Lucas Beyer (aka Pompei2) but licensed
+under CC-BY-SA 3.0 or higher unless noted otherwise.
+
+Exceptions:
+    - Data/Models/Gaia/Fauna/Chicken: CC-BY 3.0 By Tim Cooper (http://opengameart.org/content/posable-poultry), adapted for use in Arkana-FTS by Lucas Beyer (aka Pompei2)
+    - Data/Models/Gaia/Flora/tree2: CC-BY 3.0 By Moser Juan José (http://opengameart.org/content/tree-leave-lowpoly)
+    - Data/Models/Humans/Characters/Base[Male|Female]1: By pfunked (http://opengameart.org/content/cleaned-up-base-human-models), adapted for use in Arkana-FTS by Lucas Beyer (aka Pompei2)
+    - Data/Models/Testing/Pumpkin: CC0 By mrpoly (http://opengameart.org/content/customizable-pumpkins), adapted for use in Arkana-FTS by Lucas Beyer (aka Pompei2)
+    - Data/Models/Testing/paladin: GNU LGPL 2.1 By the Cal3D project (http://home.gna.org/cal3d)
+
+Music:
+======
+All the musics are licensed under CC-BY-SA 3.0 or higher unless noted otherwise.
+
+Exceptions:
+    - Data/Sounds/Miguel Herrero - Medieval.ogg: By Miguel Herrero ()
+    - Data/Sounds/Augmentality - Zombie Main Music.ogg: CC-BY 3.0 By Brandon Morris aka Augmentality (http://opengameart.org/content/chill-main-menu-music), adapted for use in Arkana-FTS by Lucas Beyer (aka Pompei2)
+    - Data/Sounds/Hydrate-Kenny_Beltrey.ogg: CC-BY-NC-ND 3.0 By Kenny Beltrey (http://www.kahvi.org/artists2.php?artist=Kenny+Beltrey)
+
+Sound effects:
+==============
+All the sound effects are licensed under CC-BY-SA 3.0 or higher unless noted otherwise.
+
+Exceptions:
+    - Data/Sounds/scream1.wav: By BartK (http://opengameart.org/content/25-spooky-sound-effects)
+    - Data/Sounds/whisp_recv.ogg: GNU GPL 2.0 By the Pidgin project (http://www.pidgin.im/)
+
+Maps:
+=====
+All the maps are licensed under CC-BY-SA 3.0 or higher unless noted otherwise.
+
+Exceptions:
+    -
+
+Fonts:
+======
+All fonts were mixed together and extended by Lucas Beyer (aka Pompei2). They are public domain, GPL licensed and based off the following fonts, unless noted otherwise:
+    - Free Serif (Copyleft 2002, 2003, 2005 Free Software Foundation.)
+    - Junicode Regular (Copyright (c) 1998-2007 by Peter S. Baker)
+    - Black Chancery (From Doug Miles' Black Chancery bitmap font. Outlines by Earl Allen & Doug Miles. Public domain.)
+
+Exceptions:
+    -
+
+Miscellaneous:
+==============
+Everything else.

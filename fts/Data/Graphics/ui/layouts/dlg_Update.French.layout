@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<GUILayout>
+    <Window Type="ArkanaLook/FrameWindow" Name="dlg_Update">
+        <Property Name="UnifiedPosition"    Value="{{0.25,0},{0.25,0}}" />
+        <Property Name="UnifiedSize"        Value="{{0.50,0},{0.25,0}}" />
+        <Property Name="UnifiedMaxSize"     Value="{{0.80,0},{0.80,0}}" />
+        <Property Name="UnifiedMinSize"     Value="{{0,0400},{0,0300}}" />
+        <Property Name="SizingEnabled"      Value="true" />
+        <Property Name="CloseButtonEnabled" Value="true" />
+        <Property Name="AlwaysOnTop"        Value="true" />
+        <Property Name="Text">Mise à jour de Arkana - FTS</Property>
+        <Window Type="ArkanaLook/StaticText" Name="dlg_Update/Desc">
+            <Property Name="UnifiedPosition" Value="{{0,015},{0,0050}}" />
+            <Property Name="UnifiedSize"     Value="{{1,-30},{1,-110}}" />
+            <Property Name="VertScrollbar"   Value="True" />
+            <Property Name="HorzScrollbar"   Value="True" />
+            <Property Name="HorzFormatting"  Value="WordWrapLeftAligned" />
+            <Property Name="Text">Recherche de mises à jour disponibles ...</Property>
+        </Window>
+        <Window Type="ArkanaLook/Button" Name="dlg_Update/Ok">
+            <Property Name="UnifiedPosition" Value="{{0.0,015},{1,-55}}" />
+            <Property Name="UnifiedSize"     Value="{{0.5,-20},{0,040}}" />
+            <Property Name="ID"              Value="1" />
+            <Property Name="Text">Ok</Property>
+        </Window>
+        <Window Type="ArkanaLook/Button" Name="dlg_Update/Cancel">
+            <Property Name="UnifiedPosition" Value="{{0.5,005},{1,-55}}" />
+            <Property Name="UnifiedSize"     Value="{{0.5,-20},{0,040}}" />
+            <Property Name="ID"              Value="2" />
+            <Property Name="Text">Annuler</Property>
+        </Window>
+    </Window>
+</GUILayout>

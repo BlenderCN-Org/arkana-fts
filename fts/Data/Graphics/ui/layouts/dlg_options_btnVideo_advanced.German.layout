@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<GUILayout>
+    <Window Type="ArkanaLook/FrameWindow" Name="dlg_options_btnVideo_advanced">
+        <Property Name="UnifiedPosition"    Value="{{0.25,0},{0.25,0}}" />
+        <Property Name="UnifiedSize"        Value="{{0.5,0},{0.5,0}}" />
+        <Property Name="UnifiedMaxSize"     Value="{{0.8,0},{0.8,0}}" />
+        <Property Name="UnifiedMinSize"     Value="{{0,580},{0,300}}" />
+        <Property Name="SizingEnabled"      Value="true" />
+        <Property Name="CloseButtonEnabled" Value="true" />
+        <Property Name="AlwaysOnTop"        Value="true" />
+        <Property Name="Text">Erweiterte Grafikeinstellungen</Property>
+        <Window Type="ArkanaLook/CheckboxLabelRight" Name="dlg_options_btnVideo_advanced/chkMultiTex">
+            <Property Name="UnifiedPosition" Value="{{0,015},{0,50}}" />
+            <Property Name="UnifiedSize"     Value="{{1,-30},{0,24}}" />
+            <Property Name="ID"              Value="1" />
+            <Property Name="Text">Multitexturing erlauben</Property>
+        </Window>
+        <Window Type="ArkanaLook/CheckboxLabelRight" Name="dlg_options_btnVideo_advanced/chkComplexQuads">
+            <Property Name="UnifiedPosition" Value="{{0,015},{0,80}}" />
+            <Property Name="UnifiedSize"     Value="{{1,-30},{0,024}}" />
+            <Property Name="ID"              Value="2" />
+            <Property Name="Text">Komplexe Quads erlauben</Property>
+        </Window>
+        <Window Type="ArkanaLook/CheckboxLabelRight" Name="dlg_options_btnVideo_advanced/chkAnisotropic">
+            <Property Name="UnifiedPosition" Value="{{0,015},{0,110}}" />
+            <Property Name="UnifiedSize"     Value="{{1,-30},{0,024}}" />
+            <Property Name="ID"              Value="3" />
+            <Property Name="Text">Anisotropischen Texturfilter erlauben</Property>
+        </Window>
+        <Window Type="ArkanaLook/Label" Name="dlg_options_btnVideo_advanced/lblModelRend">
+            <Property Name="UnifiedPosition"   Value="{{0,015},{0,140}}" />
+            <Property Name="UnifiedSize"       Value="{{0,180},{0,030}}" />
+            <Property Name="Text">Modellrendering:</Property>
+        </Window>
+        <Window Type="ArkanaLook/Combobox" Name="dlg_options_btnVideo_advanced/cbModelRend" >
+            <Property Name="UnifiedPosition" Value="{{0,0205},{0,140}}" />
+            <Property Name="UnifiedSize"     Value="{{1,-220},{0,128}}" />
+            <Property Name="ReadOnly"        Value="True" />
+            <Property Name="ID"              Value="4" />
+        </Window>
+        <Window Type="ArkanaLook/Label" Name="dlg_options_btnVideo_advanced/lblShaders">
+            <Property Name="UnifiedPosition"   Value="{{0,015},{0,170}}" />
+            <Property Name="UnifiedSize"       Value="{{0,180},{0,030}}" />
+            <Property Name="Text">Shaderqualität:</Property>
+        </Window>
+        <Window Type="ArkanaLook/Combobox" Name="dlg_options_btnVideo_advanced/cbShaders" >
+            <Property Name="UnifiedPosition" Value="{{0,0205},{0,170}}" />
+            <Property Name="UnifiedSize"     Value="{{1,-220},{0,128}}" />
+            <Property Name="ReadOnly"        Value="True" />
+            <Property Name="ID"              Value="5" />
+        </Window>
+        <Window Type="ArkanaLook/Button" Name="dlg_options_btnVideo_advanced/btnTestGL">
+            <Property Name="UnifiedPosition" Value="{{0,015},{1,-110}}" />
+            <Property Name="UnifiedSize"     Value="{{1,-30},{0,0040}}" />
+            <Property Name="ID"              Value="6" />
+            <Property Name="Text">OpenGL Infos</Property>
+        </Window>
+        <Window Type="DefaultWindow" Name="dlg_options_btnVideo_advanced/buttons_frame">
+            <Property Name="UnifiedPosition" Value="{{0,015},{1,-55}}" />
+            <Property Name="UnifiedSize"     Value="{{1,-30},{0,040}}" />
+            <Property Name="ID"              Value="7" />
+            <Window Type="ArkanaLook/Button" Name="dlg_options_btnVideo_advanced/btnOk">
+                <Property Name="UnifiedPosition" Value="{{0.0,0},{0,0}}" />
+                <Property Name="UnifiedSize"     Value="{{0.32,0},{1,0}}" />
+                <Property Name="ID"              Value="1" />
+                <Property Name="Text">Speichern</Property>
+            </Window>
+            <Window Type="ArkanaLook/Button" Name="dlg_options_btnVideo_advanced/btnCancel">
+                <Property Name="UnifiedPosition" Value="{{0.34,0},{0,0}}" />
+                <Property Name="UnifiedSize"     Value="{{0.32,0},{1,0}}" />
+                <Property Name="ID"              Value="2" />
+                <Property Name="Text">Abbrechen</Property>
+            </Window>
+            <Window Type="ArkanaLook/Button" Name="dlg_options_btnVideo_advanced/btnAccept">
+                <Property Name="UnifiedPosition" Value="{{0.68,0},{0,0}}" />
+                <Property Name="UnifiedSize"     Value="{{0.32,0},{1,0}}" />
+                <Property Name="ID"              Value="3" />
+                <Property Name="Text">Übernehmen</Property>
+            </Window>
+        </Window>
+    </Window>
+</GUILayout>

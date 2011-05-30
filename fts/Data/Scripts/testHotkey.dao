@@ -1,0 +1,28 @@
+io.writeln('In script testHotkey.dao')
+
+class Daokey : IHotkey 
+{
+    routine exec() {
+        io.writef( 'Daokey: in exec() \n')
+        return 17;
+    }
+    sub doAction() {
+        io.writef( 'Daokey: in doAction() \n')
+    }
+}
+
+routine lauf()
+{
+    io.writeln(' ich laufe ...')
+}
+
+ovl = Daokey()
+keywarte = Hotkey(Key::F1, ovl) 
+#keybleib = Hotkey(Key::F2, ovl, 'doAction')
+
+#keylauf = Hotkey(Key::F4, 'lauf');
+
+#keybleib.addModifier(keylauf)
+#keybleib.remove()
+
+io.writeln('END script testHotkey.dao')

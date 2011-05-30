@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<GUILayout>
+    <Window Type="DefaultWindow" Name="dlg_options/btnMisc">
+        <Property Name="UnifiedPosition" Value="{{0,005},{0,020}}" />
+        <Property Name="UnifiedSize"     Value="{{1,-10},{1,-25}}" />
+        <Property Name="ID"              Value="1" />
+        <Window Type="ArkanaLook/Label" Name="dlg_options/btnMisc/lblMouseWarp">
+            <Property Name="UnifiedPosition"   Value="{{0,010},{0,15}}" />
+            <Property Name="UnifiedSize"       Value="{{0,150},{0,30}}" />
+            <Property Name="Text">Maus &quot;dreht&quot; im Menü:</Property>
+        </Window>
+        <Window Type="ArkanaLook/CheckboxLabelRight" Name="dlg_options/btnMisc/chkMouseWarp">
+            <Property Name="UnifiedPosition" Value="{{0,164},{0,18}}" />
+            <Property Name="UnifiedSize"     Value="{{0,024},{0,24}}" />
+            <Property Name="ID"              Value="1" />
+        </Window>
+    </Window>
+</GUILayout>

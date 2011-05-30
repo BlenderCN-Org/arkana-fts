@@ -1,0 +1,39 @@
+
+
+#ifndef TESTRESULT_H
+#define TESTRESULT_H
+
+#include <time.h>
+
+
+class Failure;
+class Test;
+class TestSuite;
+
+class TestResult
+{
+public:
+    TestResult ();
+    virtual ~TestResult() {};
+
+    virtual void startTests ();
+    virtual void endTests ();
+    virtual void startTest (const Test& test);
+    virtual void addFailure (const Test& test, const Failure & failure);
+    virtual void testWasRun (const Test& test);
+    virtual void testWasSkipped (const Test& test);
+    virtual void startSuite(const TestSuite& suite);
+    virtual void endSuite(const TestSuite& suite);
+
+    int getFailureCount() const { return failureCount; }
+    int getSkipCount() const { return skipCount; }
+
+protected:
+	int failureCount;
+	int testCount;
+    int skipCount;
+    time_t startTime;
+    time_t secondsElapsed;
+};
+
+#endif

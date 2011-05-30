@@ -1,0 +1,207 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug_Static|Win32">
+      <Configuration>Debug_Static</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="ReleaseWithSymbols|Win32">
+      <Configuration>ReleaseWithSymbols</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_Static|Win32">
+      <Configuration>Release_Static</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{55458554-1A39-034C-B509-020EF6E9A94E}</ProjectGuid>
+    <RootNamespace>CEGUIFalagardWRBase</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseWithSymbols|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseWithSymbols|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">$(SolutionDir)/vc10lib/</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='ReleaseWithSymbols|Win32'">$(SolutionDir)/vc10lib/</OutDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='ReleaseWithSymbols|Win32'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'">$(SolutionDir)/vc10lib/</OutDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">$(ProjectName)_d</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>../../../../include;$(SolutionDir)/pcre/build;$(SolutionDir)/freetype/include;../../../../WindowRendererSets/Falagard/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;HAVE_CONFIG_H;FALAGARDWRBASE_EXPORTS;CEGUIWRMODULE_EXPORTS;_DEBUG;CEGUI_STATIC;TOLUA_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;HAVE_CONFIG_H;FALAGARDWRBASE_EXPORTS;CEGUIWRMODULE_EXPORTS;_DEBUG;CEGUI_STATIC;TOLUA_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>../../../../include;../../../../dependencies/include;../../../../WindowRendererSets/Falagard/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Lib />
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseWithSymbols|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories>../../../../include;$(SolutionDir)/pcre/build;$(SolutionDir)/freetype/include;../../../../WindowRendererSets/Falagard/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;HAVE_CONFIG_H;FALAGARDWRBASE_EXPORTS;CEGUIWRMODULE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;HAVE_CONFIG_H;FALAGARDWRBASE_EXPORTS;CEGUIWRMODULE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>../../../../include;../../../../dependencies/include;../../../../WindowRendererSets/Falagard/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <AdditionalDependencies>../../../../lib/CEGUIBase.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../../../../lib;../../../../dependencies/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)CEGUIFalagardWRBase.pdb</ProgramDatabaseFile>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <ImportLibrary>../../../../lib/CEGUIFalagardWRBase.lib</ImportLibrary>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <OmitFramePointers>true</OmitFramePointers>
+      <AdditionalIncludeDirectories>../../../../include;$(SolutionDir)/pcre/build;$(SolutionDir)/freetype/include;../../../../WindowRendererSets/Falagard/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;HAVE_CONFIG_H;CEGUI_STATIC;TOLUA_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;HAVE_CONFIG_H;FALAGARDWRBASE_EXPORTS;CEGUIWRMODULE_EXPORTS;CEGUI_STATIC;TOLUA_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>../../../../include;../../../../dependencies/include;../../../../WindowRendererSets/Falagard/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Lib />
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\WindowRendererSets\Falagard\src\FalButton.cpp" />
+    <ClCompile Include="..\..\..\..\WindowRendererSets\Falagard\src\FalDefault.cpp" />
+    <ClCompile Include="..\..\..\..\WindowRendererSets\Falagard\src\FalEditbox.cpp" />
+    <ClCompile Include="..\..\..\..\WindowRendererSets\Falagard\src\FalFrameWindow.cpp" />
+    <ClCompile Include="..\..\..\..\WindowRendererSets\Falagard\src\FalItemEntry.cpp" />
+    <ClCompile Include="..\..\..\..\WindowRendererSets\Falagard\src\FalItemListbox.cpp" />
+    <ClCompile Include="..\..\..\..\WindowRendererSets\Falagard\src\FalListbox.cpp" />
+    <ClCompile Include="..\..\..\..\WindowRendererSets\Falagard\src\FalListHeader.cpp" />
+    <ClCompile Include="..\..\..\..\WindowRendererSets\Falagard\src\FalListHeaderProperties.cpp" />
+    <ClCompile Include="..\..\..\..\WindowRendererSets\Falagard\src\FalListHeaderSegment.cpp" />
+    <ClCompile Include="..\..\..\..\WindowRendererSets\Falagard\src\FalMenubar.cpp" />
+    <ClCompile Include="..\..\..\..\WindowRendererSets\Falagard\src\FalMenuItem.cpp" />
+    <ClCompile Include="..\..\..\..\WindowRendererSets\Falagard\src\FalModule.cpp" />
+    <ClCompile Include="..\..\..\..\WindowRendererSets\Falagard\src\FalMultiColumnList.cpp" />
+    <ClCompile Include="..\..\..\..\WindowRendererSets\Falagard\src\FalMultiLineEditbox.cpp" />
+    <ClCompile Include="..\..\..\..\WindowRendererSets\Falagard\src\FalPopupMenu.cpp" />
+    <ClCompile Include="..\..\..\..\WindowRendererSets\Falagard\src\FalProgressBar.cpp" />
+    <ClCompile Include="..\..\..\..\WindowRendererSets\Falagard\src\FalProgressBarProperties.cpp" />
+    <ClCompile Include="..\..\..\..\WindowRendererSets\Falagard\src\FalScrollablePane.cpp" />
+    <ClCompile Include="..\..\..\..\WindowRendererSets\Falagard\src\FalScrollbar.cpp" />
+    <ClCompile Include="..\..\..\..\WindowRendererSets\Falagard\src\FalScrollbarProperties.cpp" />
+    <ClCompile Include="..\..\..\..\WindowRendererSets\Falagard\src\FalSlider.cpp" />
+    <ClCompile Include="..\..\..\..\WindowRendererSets\Falagard\src\FalSliderProperties.cpp" />
+    <ClCompile Include="..\..\..\..\WindowRendererSets\Falagard\src\FalStatic.cpp" />
+    <ClCompile Include="..\..\..\..\WindowRendererSets\Falagard\src\FalStaticImage.cpp" />
+    <ClCompile Include="..\..\..\..\WindowRendererSets\Falagard\src\FalStaticImageProperties.cpp" />
+    <ClCompile Include="..\..\..\..\WindowRendererSets\Falagard\src\FalStaticProperties.cpp" />
+    <ClCompile Include="..\..\..\..\WindowRendererSets\Falagard\src\FalStaticText.cpp" />
+    <ClCompile Include="..\..\..\..\WindowRendererSets\Falagard\src\FalStaticTextProperties.cpp" />
+    <ClCompile Include="..\..\..\..\WindowRendererSets\Falagard\src\FalSystemButton.cpp" />
+    <ClCompile Include="..\..\..\..\WindowRendererSets\Falagard\src\FalTabButton.cpp" />
+    <ClCompile Include="..\..\..\..\WindowRendererSets\Falagard\src\FalTabControl.cpp" />
+    <ClCompile Include="..\..\..\..\WindowRendererSets\Falagard\src\FalTabControlProperties.cpp" />
+    <ClCompile Include="..\..\..\..\WindowRendererSets\Falagard\src\FalTitlebar.cpp" />
+    <ClCompile Include="..\..\..\..\WindowRendererSets\Falagard\src\FalToggleButton.cpp" />
+    <ClCompile Include="..\..\..\..\WindowRendererSets\Falagard\src\FalTooltip.cpp" />
+    <ClCompile Include="..\..\..\..\WindowRendererSets\Falagard\src\FalTree.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\WindowRendererSets\Falagard\include\FalButton.h" />
+    <ClInclude Include="..\..\..\..\WindowRendererSets\Falagard\include\FalDefault.h" />
+    <ClInclude Include="..\..\..\..\WindowRendererSets\Falagard\include\FalEditbox.h" />
+    <ClInclude Include="..\..\..\..\WindowRendererSets\Falagard\include\FalFrameWindow.h" />
+    <ClInclude Include="..\..\..\..\WindowRendererSets\Falagard\include\FalItemEntry.h" />
+    <ClInclude Include="..\..\..\..\WindowRendererSets\Falagard\include\FalItemListbox.h" />
+    <ClInclude Include="..\..\..\..\WindowRendererSets\Falagard\include\FalListbox.h" />
+    <ClInclude Include="..\..\..\..\WindowRendererSets\Falagard\include\FalListHeader.h" />
+    <ClInclude Include="..\..\..\..\WindowRendererSets\Falagard\include\FalListHeaderProperties.h" />
+    <ClInclude Include="..\..\..\..\WindowRendererSets\Falagard\include\FalListHeaderSegment.h" />
+    <ClInclude Include="..\..\..\..\WindowRendererSets\Falagard\include\FalMenubar.h" />
+    <ClInclude Include="..\..\..\..\WindowRendererSets\Falagard\include\FalMenuItem.h" />
+    <ClInclude Include="..\..\..\..\WindowRendererSets\Falagard\include\FalModule.h" />
+    <ClInclude Include="..\..\..\..\WindowRendererSets\Falagard\include\FalMultiColumnList.h" />
+    <ClInclude Include="..\..\..\..\WindowRendererSets\Falagard\include\FalMultiLineEditbox.h" />
+    <ClInclude Include="..\..\..\..\WindowRendererSets\Falagard\include\FalPopupMenu.h" />
+    <ClInclude Include="..\..\..\..\WindowRendererSets\Falagard\include\FalProgressBar.h" />
+    <ClInclude Include="..\..\..\..\WindowRendererSets\Falagard\include\FalProgressBarProperties.h" />
+    <ClInclude Include="..\..\..\..\WindowRendererSets\Falagard\include\FalScrollablePane.h" />
+    <ClInclude Include="..\..\..\..\WindowRendererSets\Falagard\include\FalScrollbar.h" />
+    <ClInclude Include="..\..\..\..\WindowRendererSets\Falagard\include\FalScrollbarProperties.h" />
+    <ClInclude Include="..\..\..\..\WindowRendererSets\Falagard\include\FalSlider.h" />
+    <ClInclude Include="..\..\..\..\WindowRendererSets\Falagard\include\FalSliderProperties.h" />
+    <ClInclude Include="..\..\..\..\WindowRendererSets\Falagard\include\FalStatic.h" />
+    <ClInclude Include="..\..\..\..\WindowRendererSets\Falagard\include\FalStaticImage.h" />
+    <ClInclude Include="..\..\..\..\WindowRendererSets\Falagard\include\FalStaticImageProperties.h" />
+    <ClInclude Include="..\..\..\..\WindowRendererSets\Falagard\include\FalStaticProperties.h" />
+    <ClInclude Include="..\..\..\..\WindowRendererSets\Falagard\include\FalStaticText.h" />
+    <ClInclude Include="..\..\..\..\WindowRendererSets\Falagard\include\FalStaticTextProperties.h" />
+    <ClInclude Include="..\..\..\..\WindowRendererSets\Falagard\include\FalSystemButton.h" />
+    <ClInclude Include="..\..\..\..\WindowRendererSets\Falagard\include\FalTabButton.h" />
+    <ClInclude Include="..\..\..\..\WindowRendererSets\Falagard\include\FalTabControl.h" />
+    <ClInclude Include="..\..\..\..\WindowRendererSets\Falagard\include\FalTabControlProperties.h" />
+    <ClInclude Include="..\..\..\..\WindowRendererSets\Falagard\include\FalTitlebar.h" />
+    <ClInclude Include="..\..\..\..\WindowRendererSets\Falagard\include\FalToggleButton.h" />
+    <ClInclude Include="..\..\..\..\WindowRendererSets\Falagard\include\FalTooltip.h" />
+    <ClInclude Include="..\..\..\..\WindowRendererSets\Falagard\include\FalTree.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

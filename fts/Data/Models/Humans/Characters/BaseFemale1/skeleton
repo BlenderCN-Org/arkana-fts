@@ -1,0 +1,204 @@
+<?xml version="1.0"?>
+<HEADER MAGIC="XSF" VERSION="1200"/>
+            <SKELETON NUMBONES="25">
+                            <BONE ID="0" NAME="Back" NUMCHILD="4">
+                    <TRANSLATION>0.00011 0.06740 1.45033</TRANSLATION>
+                    <ROTATION>-0.72486 0.00000 -0.00000 -0.68889</ROTATION>
+                    <LOCALTRANSLATION>-0.00011 1.45188 0.00644</LOCALTRANSLATION>
+                    <LOCALROTATION>0.72486 -0.00000 0.00000 -0.68889</LOCALROTATION>
+                    <PARENTID>-1</PARENTID>
+                    <CHILDID>1</CHILDID>
+        <CHILDID>10</CHILDID>
+        <CHILDID>17</CHILDID>
+        <CHILDID>18</CHILDID>
+    </BONE>
+                        <BONE ID="1" NAME="Hip" NUMCHILD="2">
+                    <TRANSLATION>-0.00000 0.28709 0.00000</TRANSLATION>
+                    <ROTATION>0.02105 -0.00000 -0.00000 -0.99978</ROTATION>
+                    <LOCALTRANSLATION>-0.00011 1.16403 -0.04260</LOCALTRANSLATION>
+                    <LOCALROTATION>0.71020 0.00000 -0.00000 -0.70400</LOCALROTATION>
+                    <PARENTID>0</PARENTID>
+                    <CHILDID>2</CHILDID>
+        <CHILDID>6</CHILDID>
+    </BONE>
+                        <BONE ID="2" NAME="Thigh_Right" NUMCHILD="1">
+                    <TRANSLATION>-0.08070 0.19085 -0.00584</TRANSLATION>
+                    <ROTATION>-0.00451 0.93123 -0.01182 -0.36422</ROTATION>
+                    <LOCALTRANSLATION>-0.05083 0.97382 0.06344</LOCALTRANSLATION>
+                    <LOCALROTATION>0.26185 -0.64719 0.66968 -0.25321</LOCALROTATION>
+                    <PARENTID>1</PARENTID>
+                    <CHILDID>3</CHILDID>
+    </BONE>
+                        <BONE ID="3" NAME="Shin_Right" NUMCHILD="1">
+                    <TRANSLATION>-0.00000 0.42770 0.00000</TRANSLATION>
+                    <ROTATION>-0.05205 0.88604 -0.01924 -0.46027</ROTATION>
+                    <LOCALTRANSLATION>-0.08264 0.54134 -0.07053</LOCALTRANSLATION>
+                    <LOCALROTATION>0.44722 0.55205 -0.51143 -0.48340</LOCALROTATION>
+                    <PARENTID>2</PARENTID>
+                    <CHILDID>4</CHILDID>
+    </BONE>
+                        <BONE ID="4" NAME="Foot_Right" NUMCHILD="1">
+                    <TRANSLATION>0.00000 0.47943 0.00000</TRANSLATION>
+                    <ROTATION>-0.39650 0.60947 0.45197 -0.51677</ROTATION>
+                    <LOCALTRANSLATION>0.08122 0.08574 0.04108</LOCALTRANSLATION>
+                    <LOCALROTATION>0.98399 -0.00868 0.00868 -0.17779</LOCALROTATION>
+                    <PARENTID>3</PARENTID>
+                    <CHILDID>5</CHILDID>
+    </BONE>
+                        <BONE ID="5" NAME="Toes_Right" NUMCHILD="0">
+                    <TRANSLATION>0.00000 0.13395 0.00000</TRANSLATION>
+                    <ROTATION>-0.15265 -0.00892 -0.00848 -0.98820</ROTATION>
+                    <LOCALTRANSLATION>0.08270 -0.05677 0.02339</LOCALTRANSLATION>
+                    <LOCALROTATION>0.99967 0.00002 -0.00002 -0.02550</LOCALROTATION>
+                    <PARENTID>4</PARENTID>
+                </BONE>
+                        <BONE ID="6" NAME="Thigh_Left" NUMCHILD="1">
+                    <TRANSLATION>0.08070 0.19085 -0.00584</TRANSLATION>
+                    <ROTATION>-0.00451 -0.93123 0.01182 -0.36422</ROTATION>
+                    <LOCALTRANSLATION>0.05099 0.97382 0.06359</LOCALTRANSLATION>
+                    <LOCALROTATION>0.26185 0.64719 -0.66968 -0.25321</LOCALROTATION>
+                    <PARENTID>1</PARENTID>
+                    <CHILDID>7</CHILDID>
+    </BONE>
+                        <BONE ID="7" NAME="Shin_Left" NUMCHILD="1">
+                    <TRANSLATION>0.00000 0.42770 0.00000</TRANSLATION>
+                    <ROTATION>-0.05204 -0.88604 0.01924 -0.46027</ROTATION>
+                    <LOCALTRANSLATION>0.08266 0.54134 -0.07074</LOCALTRANSLATION>
+                    <LOCALROTATION>0.44722 -0.55205 0.51143 -0.48340</LOCALROTATION>
+                    <PARENTID>6</PARENTID>
+                    <CHILDID>8</CHILDID>
+    </BONE>
+                        <BONE ID="8" NAME="Foot_Left" NUMCHILD="1">
+                    <TRANSLATION>0.00000 0.47943 -0.00000</TRANSLATION>
+                    <ROTATION>-0.39650 -0.60947 -0.45197 -0.51677</ROTATION>
+                    <LOCALTRANSLATION>-0.08144 0.08573 0.04109</LOCALTRANSLATION>
+                    <LOCALROTATION>0.98399 0.00868 -0.00868 -0.17780</LOCALROTATION>
+                    <PARENTID>7</PARENTID>
+                    <CHILDID>9</CHILDID>
+    </BONE>
+                        <BONE ID="9" NAME="Toes_Left" NUMCHILD="0">
+                    <TRANSLATION>-0.00000 0.13395 0.00000</TRANSLATION>
+                    <ROTATION>-0.15265 0.00892 0.00848 -0.98820</ROTATION>
+                    <LOCALTRANSLATION>-0.08292 -0.05677 0.02339</LOCALTRANSLATION>
+                    <LOCALROTATION>0.99967 -0.00002 0.00002 -0.02550</LOCALROTATION>
+                    <PARENTID>8</PARENTID>
+                </BONE>
+                        <BONE ID="10" NAME="Upperarm_Right" NUMCHILD="1">
+                    <TRANSLATION>-0.13893 0.00811 0.01625</TRANSLATION>
+                    <ROTATION>0.06988 -0.98100 -0.04204 -0.17601</ROTATION>
+                    <LOCALTRANSLATION>-0.35151 1.40654 0.04397</LOCALTRANSLATION>
+                    <LOCALROTATION>0.07944 0.70628 -0.68214 -0.17191</LOCALROTATION>
+                    <PARENTID>0</PARENTID>
+                    <CHILDID>11</CHILDID>
+    </BONE>
+                        <BONE ID="11" NAME="Forearm_Right" NUMCHILD="1">
+                    <TRANSLATION>0.00000 0.29366 -0.00000</TRANSLATION>
+                    <ROTATION>0.05930 -0.03348 -0.06434 -0.99560</ROTATION>
+                    <LOCALTRANSLATION>-0.49220 1.05758 -0.05694</LOCALTRANSLATION>
+                    <LOCALROTATION>0.00063 0.67358 -0.71262 -0.19610</LOCALROTATION>
+                    <PARENTID>10</PARENTID>
+                    <CHILDID>12</CHILDID>
+    </BONE>
+                        <BONE ID="12" NAME="Hand_Right" NUMCHILD="2">
+                    <TRANSLATION>0.00000 0.24221 -0.00000</TRANSLATION>
+                    <ROTATION>0.00959 -0.00883 0.00513 -0.99990</ROTATION>
+                    <LOCALTRANSLATION>-0.48489 0.81923 -0.06398</LOCALTRANSLATION>
+                    <LOCALROTATION>-0.00409 0.66841 -0.72002 -0.18649</LOCALROTATION>
+                    <PARENTID>11</PARENTID>
+                    <CHILDID>13</CHILDID>
+        <CHILDID>15</CHILDID>
+    </BONE>
+                        <BONE ID="13" NAME="Fingers1_Right" NUMCHILD="1">
+                    <TRANSLATION>0.00112 0.11542 -0.00144</TRANSLATION>
+                    <ROTATION>-0.00311 0.01122 0.13298 -0.99105</ROTATION>
+                    <LOCALTRANSLATION>-0.28179 0.80723 -0.06649</LOCALTRANSLATION>
+                    <LOCALROTATION>0.09349 0.66312 -0.73634 -0.09658</LOCALROTATION>
+                    <PARENTID>12</PARENTID>
+                    <CHILDID>14</CHILDID>
+    </BONE>
+                        <BONE ID="14" NAME="Fingers2_Right" NUMCHILD="0">
+                    <TRANSLATION>0.00000 0.04902 -0.00000</TRANSLATION>
+                    <ROTATION>-0.00270 0.00226 0.26077 -0.96540</ROTATION>
+                    <LOCALTRANSLATION>0.13866 0.79724 -0.06248</LOCALTRANSLATION>
+                    <LOCALROTATION>-0.26510 -0.61756 0.73405 -0.09753</LOCALROTATION>
+                    <PARENTID>13</PARENTID>
+                </BONE>
+                        <BONE ID="15" NAME="Thumb1_Right" NUMCHILD="1">
+                    <TRANSLATION>-0.00264 0.04788 0.04005</TRANSLATION>
+                    <ROTATION>0.04765 -0.09955 0.46026 -0.88090</ROTATION>
+                    <LOCALTRANSLATION>0.32698 0.83745 -0.17350</LOCALTRANSLATION>
+                    <LOCALROTATION>-0.22347 -0.57495 0.75154 -0.23386</LOCALROTATION>
+                    <PARENTID>12</PARENTID>
+                    <CHILDID>16</CHILDID>
+    </BONE>
+                        <BONE ID="16" NAME="Thumb2_Right" NUMCHILD="0">
+                    <TRANSLATION>0.00000 0.05128 0.00000</TRANSLATION>
+                    <ROTATION>-0.08388 -0.23148 -0.11335 -0.96257</ROTATION>
+                    <LOCALTRANSLATION>0.06189 0.85787 -0.12375</LOCALTRANSLATION>
+                    <LOCALROTATION>0.04365 -0.58766 0.75341 -0.29175</LOCALROTATION>
+                    <PARENTID>15</PARENTID>
+                </BONE>
+                        <BONE ID="17" NAME="Head" NUMCHILD="0">
+                    <TRANSLATION>-0.00000 -0.08171 -0.02478</TRANSLATION>
+                    <ROTATION>-0.99712 -0.00000 0.00000 -0.07589</ROTATION>
+                    <LOCALTRANSLATION>-0.00011 -1.52065 0.20123</LOCALTRANSLATION>
+                    <LOCALROTATION>-0.74192 0.00000 0.00000 -0.67049</LOCALROTATION>
+                    <PARENTID>0</PARENTID>
+                </BONE>
+                        <BONE ID="18" NAME="Upperarm_Left" NUMCHILD="1">
+                    <TRANSLATION>0.13893 0.00811 0.01625</TRANSLATION>
+                    <ROTATION>0.06988 0.98100 0.04204 -0.17601</ROTATION>
+                    <LOCALTRANSLATION>0.35171 1.40651 0.04390</LOCALTRANSLATION>
+                    <LOCALROTATION>0.07944 -0.70628 0.68214 -0.17191</LOCALROTATION>
+                    <PARENTID>0</PARENTID>
+                    <CHILDID>19</CHILDID>
+    </BONE>
+                        <BONE ID="19" NAME="Forearm_Left" NUMCHILD="1">
+                    <TRANSLATION>0.00000 0.29366 -0.00000</TRANSLATION>
+                    <ROTATION>0.05930 0.03348 0.06434 -0.99560</ROTATION>
+                    <LOCALTRANSLATION>0.49240 1.05752 -0.05700</LOCALTRANSLATION>
+                    <LOCALROTATION>0.00063 -0.67358 0.71262 -0.19610</LOCALROTATION>
+                    <PARENTID>18</PARENTID>
+                    <CHILDID>20</CHILDID>
+    </BONE>
+                        <BONE ID="20" NAME="Hand_Left" NUMCHILD="2">
+                    <TRANSLATION>-0.00000 0.24221 0.00000</TRANSLATION>
+                    <ROTATION>0.00959 0.00883 -0.00513 -0.99990</ROTATION>
+                    <LOCALTRANSLATION>0.48509 0.81917 -0.06404</LOCALTRANSLATION>
+                    <LOCALROTATION>-0.00409 -0.66841 0.72002 -0.18649</LOCALROTATION>
+                    <PARENTID>19</PARENTID>
+                    <CHILDID>21</CHILDID>
+        <CHILDID>23</CHILDID>
+    </BONE>
+                        <BONE ID="21" NAME="Fingers1_Left" NUMCHILD="1">
+                    <TRANSLATION>-0.00112 0.11542 -0.00144</TRANSLATION>
+                    <ROTATION>-0.00311 -0.01122 -0.13298 -0.99105</ROTATION>
+                    <LOCALTRANSLATION>0.28200 0.80723 -0.06655</LOCALTRANSLATION>
+                    <LOCALROTATION>0.09349 -0.66312 0.73634 -0.09658</LOCALROTATION>
+                    <PARENTID>20</PARENTID>
+                    <CHILDID>22</CHILDID>
+    </BONE>
+                        <BONE ID="22" NAME="Fingers2_Left" NUMCHILD="0">
+                    <TRANSLATION>-0.00000 0.04902 0.00000</TRANSLATION>
+                    <ROTATION>-0.00270 -0.00226 -0.26077 -0.96540</ROTATION>
+                    <LOCALTRANSLATION>-0.13849 0.79734 -0.06254</LOCALTRANSLATION>
+                    <LOCALROTATION>-0.26510 0.61756 -0.73405 -0.09753</LOCALROTATION>
+                    <PARENTID>21</PARENTID>
+                </BONE>
+                        <BONE ID="23" NAME="Thumb1_Left" NUMCHILD="1">
+                    <TRANSLATION>0.00264 0.04788 0.04005</TRANSLATION>
+                    <ROTATION>0.04765 0.09955 -0.46026 -0.88090</ROTATION>
+                    <LOCALTRANSLATION>-0.32681 0.83758 -0.17351</LOCALTRANSLATION>
+                    <LOCALROTATION>-0.22347 0.57495 -0.75154 -0.23386</LOCALROTATION>
+                    <PARENTID>20</PARENTID>
+                    <CHILDID>24</CHILDID>
+    </BONE>
+                        <BONE ID="24" NAME="Thumb2_Left" NUMCHILD="0">
+                    <TRANSLATION>0.00000 0.05128 -0.00000</TRANSLATION>
+                    <ROTATION>-0.08388 0.23148 0.11335 -0.96257</ROTATION>
+                    <LOCALTRANSLATION>-0.06171 0.85795 -0.12366</LOCALTRANSLATION>
+                    <LOCALROTATION>0.04365 0.58766 -0.75341 -0.29175</LOCALROTATION>
+                    <PARENTID>23</PARENTID>
+                </BONE>
+        </SKELETON>
+        

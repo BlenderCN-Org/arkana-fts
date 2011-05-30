@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<GUILayout>
+    <Window Type="ArkanaLook/Image" Name="loadscreen">
+        <Property Name="UnifiedPosition"    Value="{{0,0},{0,0}}" />
+        <Property Name="UnifiedSize"        Value="{{1,0},{1,0}}" />
+        <Property Name="UnifiedMinSize"     Value="{{1,0},{1,0}}" />
+        <Property Name="ImageEnabled"       Value="set:loadscreen image:image" />
+        <Property Name="VertFormat"         Value="Stretched" />
+        <Property Name="HorzFormat"         Value="Stretched" />
+
+        <!-- This displays the title on the top in the middle. There is only place for one line. -->
+        <Window Type="ArkanaLook/ShadowedLabel" Name="loadscreen/lblTitle">
+            <Property Name="UnifiedPosition"  Value="{{0,0},{0,05}}" />
+            <Property Name="UnifiedSize"      Value="{{1,0},{0,50}}" />
+            <Property Name="VertFormat"       Value="TopAligned" />
+            <Property Name="HorzFormat"       Value="WordWrapCentreAligned" />
+            <Property Name="Font"             Value="old5" />
+            <Property Name="Text"></Property>
+        </Window>
+
+        <!-- This displays the author right under the title. -->
+        <Window Type="ArkanaLook/Label" Name="loadscreen/lblAuthor">
+            <Property Name="UnifiedPosition"  Value="{{0,0},{0,55}}" />
+            <Property Name="UnifiedSize"      Value="{{1,0},{0,40}}" />
+            <Property Name="VertFormat"       Value="TopAligned" />
+            <Property Name="HorzFormat"       Value="CentreAligned" />
+            <Property Name="Font"             Value="old4" />
+            <Property Name="Text"></Property>
+        </Window>
+
+        <!-- This displays the last modification time right under the author. -->
+        <Window Type="ArkanaLook/Label" Name="loadscreen/lblModif">
+            <Property Name="UnifiedPosition"  Value="{{0,0},{0,90}}" />
+            <Property Name="UnifiedSize"      Value="{{1,0},{0,35}}" />
+            <Property Name="VertFormat"       Value="TopAligned" />
+            <Property Name="HorzFormat"       Value="CentreAligned" />
+            <Property Name="TextColourNormal" Value="FFAAAAAA" />
+            <Property Name="Text"></Property>
+        </Window>
+
+        <!-- This stores the description of the map, can be a multiline text. -->
+        <Window Type="ArkanaLook/Label" Name="loadscreen/lblDescription">
+            <Property Name="UnifiedPosition"  Value="{{0.00,0350},{0.25,0000}}" />
+            <Property Name="UnifiedSize"      Value="{{0.57,-350},{0.75,-125}}" />
+            <Property Name="TextColourNormal" Value="FF000000" />
+            <Property Name="VertFormat"       Value="TopAligned" />
+            <Property Name="HorzFormat"       Value="WordWrapLeftAligned" />
+            <Property Name="Text"></Property>
+        </Window>
+
+        <!-- This is the region that can be used to put the progressbars of the
+             other players in there.
+             These are the rules for a minimum size to still look good:
+             Height: 24*max_players
+             Width: with 130, there is just the progressbar, all the names are cut off.
+        -->
+        <Window Type="DefaultWindow" Name="loadscreen/progs">
+            <Property Name="UnifiedPosition"   Value="{{0,030},{0,0100}}" />
+            <Property Name="UnifiedSize"       Value="{{0,300},{1,-168}}" />
+        </Window>
+
+        <!-- This is the progressbar that shows how far you are with loading -->
+        <Window Type="ArkanaLook/BigProgressbar" Name="loadscreen/pgMe">
+            <Property Name="UnifiedPosition"   Value="{{0.5,-140},{1,-100}}" />
+            <Property Name="UnifiedSize"       Value="{{0.0,0281},{0,0042}}" />
+        </Window>
+
+        <!-- This shows what is currently being loaded, at the bottom -->
+        <Window Type="ArkanaLook/ShadowedLabel" Name="loadscreen/lblState">
+            <Property Name="UnifiedPosition"  Value="{{0,0},{1,-50}}" />
+            <Property Name="UnifiedSize"      Value="{{1,0},{0,0030}}" />
+            <Property Name="VertFormat"       Value="CentreAligned" />
+            <Property Name="HorzFormat"       Value="WordWrapCentreAligned" />
+            <Property Name="Text"></Property>
+        </Window>
+
+        <!-- This shows how much time something needed to load, you know, the
+             "Loading quads: 0.25s" things.
+             They are initially invisible, they will be turned visible during
+             the loading process automatically. -->
+        <!--
+        <Window Type="ArkanaLook/ShadowedLabel" Name="loadscreen/lblTime_fileLst">
+            <Property Name="UnifiedPosition"  Value="{{1,-250},{0,30}}" />
+            <Property Name="UnifiedSize"      Value="{{0,0300},{0,30}}" />
+            <Property Name="VertFormat"       Value="CentreAligned" />
+            <Property Name="HorzFormat"       Value="LeftAligned" />
+            <Property Name="Visible"          Value="False" />
+            <Property Name="Text"></Property>
+        </Window>
+        <Window Type="ArkanaLook/ShadowedLabel" Name="loadscreen/lblTime_extract">
+            <Property Name="UnifiedPosition"  Value="{{1,-250},{0,60}}" />
+            <Property Name="UnifiedSize"      Value="{{0,0300},{0,30}}" />
+            <Property Name="VertFormat"       Value="CentreAligned" />
+            <Property Name="HorzFormat"       Value="LeftAligned" />
+            <Property Name="Visible"          Value="False" />
+            <Property Name="Text"></Property>
+        </Window>
+        <Window Type="ArkanaLook/ShadowedLabel" Name="loadscreen/lblTime_quads">
+            <Property Name="UnifiedPosition"  Value="{{1,-250},{0,90}}" />
+            <Property Name="UnifiedSize"      Value="{{0,0300},{0,30}}" />
+            <Property Name="VertFormat"       Value="CentreAligned" />
+            <Property Name="HorzFormat"       Value="LeftAligned" />
+            <Property Name="Visible"          Value="False" />
+            <Property Name="Text"></Property>
+        </Window>
+        <Window Type="ArkanaLook/ShadowedLabel" Name="loadscreen/lblTime_lowertiles">
+            <Property Name="UnifiedPosition"  Value="{{1,-250},{0,120}}" />
+            <Property Name="UnifiedSize"      Value="{{0,0300},{0,030}}" />
+            <Property Name="VertFormat"       Value="CentreAligned" />
+            <Property Name="HorzFormat"       Value="LeftAligned" />
+            <Property Name="Visible"          Value="False" />
+            <Property Name="Text"></Property>
+        </Window>
+        <Window Type="ArkanaLook/ShadowedLabel" Name="loadscreen/lblTime_complowtil">
+            <Property Name="UnifiedPosition"  Value="{{1,-250},{0,150}}" />
+            <Property Name="UnifiedSize"      Value="{{0,0300},{0,030}}" />
+            <Property Name="VertFormat"       Value="CentreAligned" />
+            <Property Name="HorzFormat"       Value="LeftAligned" />
+            <Property Name="Visible"          Value="False" />
+            <Property Name="Text"></Property>
+        </Window>
+        <Window Type="ArkanaLook/ShadowedLabel" Name="loadscreen/lblTime_uppertiles">
+            <Property Name="UnifiedPosition"  Value="{{1,-250},{0,180}}" />
+            <Property Name="UnifiedSize"      Value="{{0,0300},{0,030}}" />
+            <Property Name="VertFormat"       Value="CentreAligned" />
+            <Property Name="HorzFormat"       Value="LeftAligned" />
+            <Property Name="Visible"          Value="False" />
+            <Property Name="Text"></Property>
+        </Window>
+        <Window Type="ArkanaLook/ShadowedLabel" Name="loadscreen/lblTime_precalc">
+            <Property Name="UnifiedPosition"  Value="{{1,-250},{0,210}}" />
+            <Property Name="UnifiedSize"      Value="{{0,0300},{0,030}}" />
+            <Property Name="VertFormat"       Value="CentreAligned" />
+            <Property Name="HorzFormat"       Value="LeftAligned" />
+            <Property Name="Visible"          Value="False" />
+            <Property Name="Text"></Property>
+        </Window>
+        <Window Type="ArkanaLook/ShadowedLabel" Name="loadscreen/lblTime_forests">
+            <Property Name="UnifiedPosition"  Value="{{1,-250},{0,240}}" />
+            <Property Name="UnifiedSize"      Value="{{0,0300},{0,030}}" />
+            <Property Name="VertFormat"       Value="CentreAligned" />
+            <Property Name="HorzFormat"       Value="LeftAligned" />
+            <Property Name="Visible"          Value="False" />
+            <Property Name="Text"></Property>
+        </Window>
+        -->
+    </Window>
+</GUILayout>

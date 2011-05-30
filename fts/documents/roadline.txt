@@ -1,0 +1,36 @@
+NOTE: this is a long-term roadline and it is not a strict order !
+that means things from version 0.5 can be done before everything from version 0.4 is done !
+
+Version 0.1:
+------------
+	- Fully support the 3D Model files with animations using OpenGL.
+	- Have a first (temporary ?) menu working and using LUA scripts combined with CEGUI.
+	- Being able to set all the current options in a nice in-game options dialog.
+	- Finish and display the Pompei2 demo.
+
+Version 0.2:
+------------
+	- Complete the new game menu.
+	- Load a map (that the user chose before) and display it.
+	- Display some objects (units, buildings) on the map.
+
+Version 0.3:
+------------
+	- Be able to select these objects.
+	- Implement actions on selected objects (like walk, attack, build, train, ...)
+
+Version 0.4:
+------------
+	- Add some nice 3D rendering special effects (maybe an intro demo ?)
+	- Create the first campaign (with LUA scripting ?)
+
+Version 0.4.5:
+--------------
+	- Begin two new projects: FTS Map Editor and FTS Campaign Creator
+
+--- A LOT OF VERSIONS ---
+
+Version 1.0:
+------------
+	- Have a fully working game with multiplayer, campaigns, editor, ... everything !
+	! I think that's why there will never be a version 1.0: I'll aways find something to add :)

@@ -1,0 +1,37 @@
+--- svn/trunk/3rdparty/cegui/include/CEGUIFont.h	2008-01-20 01:40:12.000000000 +0100
++++ cegui_svn/cegui_mk2/trunk/include/CEGUIFont.h	2007-07-11 20:35:37.000000000 +0200
+@@ -274,6 +274,15 @@
+     */
+     uint *d_glyphPageLoaded;
+ 
++    String d_colourFormatStopTrigger;
++    String d_colourFormatTrigger;
++    bool d_colourFormatEnabled;
++
++    /// The width (in pixels) of the tab character.
++    size_t d_tabWidth;
++    /// Whether to enable support of the tab escape sign (\t) or not.
++    bool d_tabEnabled;
++
+     /*************************************************************************
+         Construction & Destruction
+     *************************************************************************/
+@@ -446,6 +455,18 @@
+     /// Colour value used whenever a colour is not specified.
+     static const argb_t DefaultColour;
+ 
++    void setColourTriggerEnabled(bool setting) { d_colourFormatEnabled = setting; }
++    void setColourTrigger(String trigger) { d_colourFormatTrigger = trigger; }
++    String getColourTrigger() { return d_colourFormatTrigger; }
++    void setColourStopTrigger(String trigger) { d_colourFormatStopTrigger = trigger; }
++    String getColourStopTrigger() { return d_colourFormatStopTrigger; }
++    bool isColourTriggerEnabled() { return d_colourFormatEnabled; }
++
++    void setTabEnabled(bool setting) { d_tabEnabled = setting; }
++    void setTabWidth(size_t width) { d_tabWidth = width; }
++    size_t getTabWidth() { return d_tabWidth; }
++    bool isTabEnabled() { return d_tabEnabled; }
++
+     /*!
+     \brief
+         Complete font loading. If you create the font from an XML file,

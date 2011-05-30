@@ -1,0 +1,47 @@
+io.writeln('In script test.dao')
+global global_var : int = 5;
+
+class DaoOtto 
+{
+  var a : int = 5 ;
+  var b : double = 10.0 ;
+  sub geta() { return a }
+  sub getb() { return b }
+  sub doOtto() {
+    io.writef( 'Dao: in doOtto() a=%d b=%g\n', geta(), getb())
+  }
+}
+
+
+function myfunc(a,b,c) {
+   io.writef( 'Jau mal schaun')
+   io.writeln( 'Dao: called by C++',a,b,c)
+   return 123
+}
+function testemb(c) {
+    io.writef('testemb get(%d)\n',c.geta())
+}
+
+function getSomeString() {
+   io.writeln( 'Dao: getSomeString')
+    return 'SomeStringFromTestDao';
+}
+
+function getSomeDouble() {
+   io.writeln( 'Dao: getSomeDouble')
+   d : double = 123.45e0
+    return d
+}
+
+function getSomeFloat() {
+   io.writeln( 'Dao: getSomeFloat')
+    return 123.45e0
+}
+
+obj = DaoOtto()
+obj.doOtto()
+testemb(obj);
+str = getSomeString();
+io.writeln('show f :',str)
+
+io.writeln('END script test.dao')

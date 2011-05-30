@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<conf>
+  <Scene0 value="Earth" />
+  <Scene1 value="Mars" />
+</conf>

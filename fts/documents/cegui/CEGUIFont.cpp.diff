@@ -1,0 +1,217 @@
+--- src/CEGUIFont.cpp	2008-01-20 00:38:43.000000000 +0100
++++ ../../../../cegui_svn/cegui_mk2/trunk/src/CEGUIFont.cpp	2008-01-15 22:20:18.000000000 +0100
+@@ -67,7 +67,10 @@
+     d_nativeHorzRes (DefaultNativeHorzRes),
+     d_nativeVertRes (DefaultNativeVertRes),
+     d_maxCodepoint (0),
+-    d_glyphPageLoaded (0)
++    d_glyphPageLoaded (0),
++    d_colourFormatEnabled(false),
++    d_tabEnabled(false),
++    d_tabWidth(80)
+ {
+     addFontProperties ();
+ }
+@@ -84,7 +87,10 @@
+     d_nativeHorzRes (attributes.getValueAsInteger (FontNativeHorzResAttribute, int (DefaultNativeHorzRes))),
+     d_nativeVertRes (attributes.getValueAsInteger (FontNativeVertResAttribute, int (DefaultNativeVertRes))),
+     d_maxCodepoint (0),
+-    d_glyphPageLoaded (0)
++    d_glyphPageLoaded (0),
++    d_colourFormatEnabled(false),
++    d_tabEnabled(false),
++    d_tabWidth(0)
+ {
+     addFontProperties ();
+ 
+@@ -163,20 +169,80 @@
+ {
+     const FontGlyph* glyph;
+     float cur_extent = 0, adv_extent = 0, width;
++    size_t trigStoplen = d_colourFormatStopTrigger.length();
++    size_t triglen = d_colourFormatTrigger.length();
++    size_t textlen = text.length();
++    bool containsColourTrigger = false;
++    bool containsColourStopTrigger = false;
+ 
+-    for (size_t c = 0; c < text.length(); ++c)
++    if (d_colourFormatEnabled)
++    {
++        // find first occurance of colour trigger string.
++        if (text.find_first_of(d_colourFormatTrigger) != String::npos)
++            containsColourTrigger = true;
++        // find first occurance of colour trigger string.
++        if (text.find_first_of(d_colourFormatStopTrigger) != String::npos)
++            containsColourStopTrigger = true;
++    }
++
++    for (size_t c = 0; c < textlen;)
+     {
+         glyph = getGlyphData(text[c]);
+ 
+         if (glyph)
+         {
+-            width = glyph->getRenderedAdvance(x_scale);
++            if (containsColourTrigger)
++            {
++                // only continue if enough chars exist
++                if (c + triglen <= textlen)
++                {
++                    // look for colour format string
++                    if (text.compare(c, triglen, d_colourFormatTrigger) == 0)
++                    {
++                        // Found the trigger, skip past it.
++                        c += triglen;
++
++                        // Skip past the color code (up to 6 letters).
++                        int i;
++                        for (i = 0 ; (i < 6) && (text[c] != '\0') && isxdigit(text[c]) ; i++, c++)
++                            ;
++
++                        continue;
++                    }
++                }
++            }
++
++            if (containsColourStopTrigger)
++            {
++                // only continue if enough chars exist
++                if (c + trigStoplen <= textlen)
++                {
++                    // look for colour format string
++                    if (text.compare(c, trigStoplen, d_colourFormatStopTrigger) == 0)
++                    {
++                        // Found the trigger, skip past it.
++                        c += trigStoplen;
++                    }
++                }
++            }
++
++            if (d_tabEnabled && text[c] == '\t')
++            {
++                // Calculate the width of the tab.
++                // Not sure about the difference of cur_extent and adv_extent.
++                // I need the current position here.
++                width = d_tabWidth - (((size_t)PixelAligned(adv_extent)) % d_tabWidth);
++            } else {
++                width = glyph->getRenderedAdvance(x_scale);
++            }
+ 
+             if (adv_extent + width > cur_extent)
+                 cur_extent = adv_extent + width;
+ 
+             adv_extent += glyph->getAdvance(x_scale);
+         }
++
++        ++c;
+     }
+ 
+     return ceguimax(adv_extent, cur_extent);
+@@ -439,17 +505,99 @@
+     const FontGlyph* glyph;
+     float base_y = position.d_y;
+ 
+-    for (size_t c = 0; c < text.length(); ++c)
++    // copy colours.
++    ColourRect origColour = colours;
++    ColourRect curColour = colours;
++
++    size_t trigStoplen = d_colourFormatStopTrigger.length();
++    size_t triglen = d_colourFormatTrigger.length();
++    size_t textlen = text.length();
++    char buf[7];
++    argb_t argb;
++
++    bool containsColourTrigger = false;
++    bool containsColourStopTrigger = false;
++
++    if (d_colourFormatEnabled)
+     {
+-        glyph = getGlyphData(text[c]);
++        // find first occurance of colour trigger string.
++        if (text.find_first_of(d_colourFormatTrigger) != String::npos)
++            containsColourTrigger = true;
++        // find first occurance of colour trigger string.
++        if (text.find_first_of(d_colourFormatStopTrigger) != String::npos)
++            containsColourStopTrigger = true;
++    }
+ 
+-        if (glyph)
+-        {
+-            const Image* img = glyph->getImage();
+-            cur_pos.d_y = base_y - (img->getOffsetY() - img->getOffsetY() * y_scale);
+-            img->draw(cur_pos, glyph->getSize(x_scale, y_scale), clip_rect, colours);
+-            cur_pos.d_x += glyph->getAdvance(x_scale);
++    for (size_t c = 0; c < textlen;)
++    {
++        // If we encounter a tab character, we go to the next tab line.
++        if(text[c] == '\t' && d_tabEnabled) {
++            size_t pixel_now = (size_t)PixelAligned(cur_pos.d_x - position.d_x);
++            cur_pos.d_x += (float)(d_tabWidth - (pixel_now % d_tabWidth));
++        } else {
++            glyph = getGlyphData(text[c]);
++
++            if (glyph)
++            {
++                if (containsColourTrigger)
++                {
++                    // only continue if enough chars exist
++                    if (c + triglen <= textlen)
++                    {
++                        // look for colour format string
++                        if (text.compare(c, triglen, d_colourFormatTrigger) == 0)
++                        {
++                            // Found the trigger, skip past it.
++                            c += triglen;
++
++                            // Skip past the color code (up to 6 letters).
++                            int i;
++                            for (i = 0 ; (i < 6) && (text[c] != '\0') && isxdigit(text[c]) ; i++, c++)
++                                ;
++
++                            if (i != 0)
++                            {
++                                CEGUI::String s(text,c-i,c);
++                                 // copy colour string into buffer
++                                 memcpy(buf, s.c_str(), i);
++                                 buf[i] = '\0';
++
++                                 // convert colour string into hex format (RRGGBB)
++                                 sscanf(buf, "%x", &argb);
++                                 argb += 0xFF000000;
++                                 curColour.setColours(argb);
++                            }
++
++                            continue;
++                        }
++                    }
++                }
++
++                if (containsColourStopTrigger)
++                {
++                    // only continue if enough chars exist
++                    if (c + trigStoplen <= textlen)
++                    {
++                        // look for colour format string
++                        if (text.compare(c, trigStoplen, d_colourFormatStopTrigger) == 0)
++                        {
++                            // Found the trigger, skip past it.
++                            c += trigStoplen;
++
++                            // Reset the colour to default when none is specified.
++                            curColour = origColour;
++                            continue;
++                        }
++                    }
++                }
++
++                const Image* img = glyph->getImage();
++                cur_pos.d_y = base_y - (img->getOffsetY() - img->getOffsetY() * y_scale);
++                img->draw(cur_pos, glyph->getSize(x_scale, y_scale), clip_rect, curColour);
++                cur_pos.d_x += glyph->getAdvance(x_scale);
++            }
+         }
++        ++c;
+     }
+ }
+ 

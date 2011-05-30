@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<GUILayout>
+    <Window Type="DefaultWindow" Name="dlg_options/btnVideo">
+        <Property Name="UnifiedPosition" Value="{{0,005},{0,020}}" />
+        <Property Name="UnifiedSize"     Value="{{1,-10},{1,-25}}" />
+        <Property Name="ID"              Value="1" />
+        <Window Type="ArkanaLook/Label" Name="dlg_options/btnVideo/lblResol">
+            <Property Name="UnifiedPosition"   Value="{{0,010},{0,15}}" />
+            <Property Name="UnifiedSize"       Value="{{0,180},{0,30}}" />
+            <Property Name="Text">Mode vidéo:</Property>
+        </Window>
+        <Window Type="ArkanaLook/Combobox" Name="dlg_options/btnVideo/cbResol" >
+            <Property Name="UnifiedPosition" Value="{{0,0200},{0,015}}" />
+            <Property Name="UnifiedSize"     Value="{{1,-215},{0,108}}" />
+            <Property Name="ReadOnly"        Value="True" />
+            <Property Name="ID"              Value="1" />
+        </Window>
+        <Window Type="ArkanaLook/Label" Name="dlg_options/btnVideo/lblFullscr">
+            <Property Name="UnifiedPosition"   Value="{{0,010},{0,55}}" />
+            <Property Name="UnifiedSize"       Value="{{0,180},{0,30}}" />
+            <Property Name="Text">Plein-écran:</Property>
+        </Window>
+        <Window Type="ArkanaLook/CheckboxLabelRight" Name="dlg_options/btnVideo/chkFullscr">
+            <Property Name="UnifiedPosition" Value="{{0,194},{0,58}}" />
+            <Property Name="UnifiedSize"     Value="{{0,024},{0,24}}" />
+            <Property Name="ID"              Value="3" />
+            <Property Name="Text"></Property>
+        </Window>
+        <Window Type="ArkanaLook/Label" Name="dlg_options/btnVideo/lblFilt">
+            <Property Name="UnifiedPosition"   Value="{{0,010},{0,95}}" />
+            <Property Name="UnifiedSize"       Value="{{0,180},{0,30}}" />
+            <Property Name="Text">Filtre Texture:</Property>
+        </Window>
+        <Window Type="ArkanaLook/Combobox" Name="dlg_options/btnVideo/cbFilt" >
+            <Property Name="UnifiedPosition" Value="{{0,0200},{0,95}}" />
+            <Property Name="UnifiedSize"     Value="{{1,-215},{0,108}}" />
+            <Property Name="ReadOnly"        Value="True" />
+            <Property Name="ID"              Value="4" />
+        </Window>
+        <Window Type="ArkanaLook/Label" Name="dlg_options/btnVideo/lblModDet">
+            <Property Name="UnifiedPosition"   Value="{{0,010},{0,135}}" />
+            <Property Name="UnifiedSize"       Value="{{0,180},{0,030}}" />
+            <Property Name="Text">Détails des modèles:</Property>
+        </Window>
+        <Window Type="ArkanaLook/Combobox" Name="dlg_options/btnVideo/cbModDet" >
+            <Property Name="UnifiedPosition" Value="{{0,0200},{0,135}}" />
+            <Property Name="UnifiedSize"     Value="{{1,-215},{0,108}}" />
+            <Property Name="ReadOnly"        Value="True" />
+            <Property Name="ID"              Value="5" />
+        </Window>
+        <Window Type="ArkanaLook/Button" Name="dlg_options/btnVideo/Advanced">
+            <Property Name="UnifiedPosition" Value="{{1,-215},{0,175}}" />
+            <Property Name="UnifiedSize"     Value="{{0,0200},{0,040}}" />
+            <Property Name="ID"              Value="6" />
+            <Property Name="Text">Avancé</Property>
+        </Window>
+    </Window>
+</GUILayout>

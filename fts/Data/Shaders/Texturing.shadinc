@@ -1,0 +1,15 @@
+vec3 getTextureColor(in sampler2D in_tex, in vec2 in_texCo)
+{
+    vec4 texCol = texture(in_tex, in_texCo);
+
+#ifdef D_HAS_PLAYER_COLOR_UNIFORM
+    vec4 finalCol = vec4(mix(uPlayerColor.rgb, texCol.rgb, texCol.a), texCol.a + uPlayerColor.a);
+#else
+    vec4 finalCol = texCol;
+#endif
+
+    if(finalCol.a < 0.95)
+        discard;
+
+    return finalCol.rgb;
+}

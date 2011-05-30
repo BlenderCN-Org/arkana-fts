@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ui>
+  <General_Cancel value="Cancel"/>
+  <General_ac value="AD"/>
+  <General_Player value="Player"/>
+  <File_Open value="Open the file"/>
+  <File_OpenTxt value="Choose the file to open"/>
+  <File_OpenTitle value="Open a file"/>
+  <File_Save value="Save this file"/>
+  <File_SaveTxt value="Choose a place and a name to save the file."/>
+  <File_SaveTitle value="Save"/>
+  <File_Save_Confirm value="This file already exists, replace ?"/>
+  <Update_Found value="There is a new version of FTS avaible !
+Click on the Update button to launch the FTS Updater.
+Click on the Cancel button to ignore this update."/>
+  <Update_Error value="Error getting the version informations.
+Maybe you are not connected to the internet, or our server is down."/>
+  <Update_None value="You already have the newest version of FTS.
+     Have fun and thank you for playing ;)"/>
+  <Msg_Warn value="Warning"/>
+  <Msg_Err value="Error !"/>
+  <Msg_Horr value="Horror !!!"/>
+  <Opts_Vid_Tex_VLow value="Low (Nearest)"/>
+  <Opts_Vid_Tex_Low value="Normal (Linear, Standard)"/>
+  <Opts_Vid_Tex_Mid value="High (linear MipMap)"/>
+  <Opts_Vid_Mod_Low value="Low (<100 polygons)"/>
+  <Opts_Vid_Mod_Mid value="Mid (100-500 polygons)"/>
+  <Opts_Vid_Mod_Hig value="High (>500 polygons)"/>
+  <Loadscr_Stage_GetFL value="Getting list of files in the map ..."/>
+  <Loadscr_Stage_Extract value="Extracting file {1} ..."/>
+  <Loadscr_Stage_MapInfo value="Loading the detailed map informations ..."/>
+  <Loadscr_Stage_TerrInfo value="Loading terrain informations ..."/>
+  <Loadscr_Stage_TerrQuads value="Loading terrain quads ({1}) ..."/>
+  <Loadscr_Stage_TerrLoTi value="Loading terrain lowertiles ({1}) ..."/>
+  <Loadscr_Stage_TerrCompLoTi value="Compiling terrain lowertiles ..."/>
+  <Loadscr_Stage_TerrUpTi value="Loading terrain uppertiles ({1}) ..."/>
+  <Loadscr_Stage_Precalc value="Precalculating terrain data ..."/>
+  <Loadscr_Stage_Forests value="Loading the forests ..."/>
+  <Loadscr_Stage_Starting value="Loading done, waiting for the other players to load ..."/>
+  <Loadscr_Author value="By {1}"/>
+  <Loadscr_Lastmodif value="(Last modified on {1})"/>
+  <lblTime_fileLst value="Getting file list:"/>
+  <lblTime_extract value="Extracting the files:"/>
+  <lblTime_quads value="Reading the quads:"/>
+  <lblTime_lowertiles value="Loading the lowertiles:"/>
+  <lblTime_complowtil value="Compiling the lowertileset:"/>
+  <lblTime_uppertiles value="Loading the uppertiles:"/>
+  <lblTime_precalc value="Precalculating terrain data:"/>
+  <lblTime_forests value="Loading forests:"/>
+  <gameinfo_MapAuthorAndModif value="‣ Map created by |c111111{1}|d, last modified on |c111111{2}|d"/>
+  <gameinfo_MapnPlayers value="‣ This map needs at least |c111111{1}|d and at most |c111111{2}|d players."/>
+  <gameinfo_GameHost value="‣ This game has been opened by |c111111{1}|d."/>
+  <gameinfo_GamePlayers value="‣ The following |c111111{1}|d players already joined the game:"/>
+  <Really_Quit value="Like everybody else, I want to annoy you, so ...
+Do you really want to leave this game ?"/>
+  <Chat_Admin_suffix value="(Admin)"/>
+  <Chat_Op_suffix value="(op)"/>
+  <Chat_Muted_suffix value="(Muted)"/>
+  <Chat_Join value="Welcome to the channel called |c111111{1}|d,
+The channel motto is: |c1B56A0{2}|d"/>
+  <Chat_MottoSet value="|c111111{1}|d changed the channel's motto to: |c1B56A0{2}|d"/>
+  <Chat_Kicked value="|c111111{1}|d has kicked |c111111{2}|d out of the channel !"/>
+  <Chat_YouGotKicked value="|c111111{1}|d kicked you out of the channel |c111111{2}|d ! You are now in the channel |c111111{3}|d."/>
+  <Chat_Oped value="|c111111{1}|d has become a channel operator !"/>
+  <Chat_Deoped value="|c111111{1}|d has lost his channel operator state !"/>
+  <Chat_Says value="{1}: "/>
+  <Chat_RecvWhisp value="{1} whispers: "/>
+  <Chat_SentWhisp value="You whisper to {1}: "/>
+  <Chat_ChannelsList value="Here is the list of the channels that you own:
+{1}"/>
+  <Chat_ChannelsList_ChanPrefix value="
+  *"/>
+  <Chat_ChannelsList_ChanSuffix value=""/>
+  <Chat_ChannelsListEmpty value="You currently own no channel."/>
+  <Chat_ChannelRemGood value="The room '{1}' has successfully been destroyed."/>
+  <Chat_Unknown_cmd value="This command does not exist! Try /help to see a list of commands."/>
+  <Chat_Help value="|c002277General help:|d
+The help is subdivided in chapters, one chapter for every command.
+
+|c1B56A0Syntax:|d
+          |c111111/help|d |c222222CommandName|d
+Displays the help chapter about the command |c222222CommandName|d.
+
+These are the available commands:
+join:         joins or creates a channel
+motto:     changes the motto of the channel
+kick:        kicks a player out of the channel
+op:           grants a player operator status for this channel
+deop:       makes a player loose operator status for this channel
+w:            whispers a message to a player
+listchans: shows you a list of all the channels that belong to you
+delchan:   destroys a channel that belongs to you
+
+|c1B56A0Sample:|d
+          |c111111/help|d |c222222join|d
+Shows the help chapter concerning the '|c222222join|d' command."/>
+  <Chat_Help_join value="|c002277Help for the /join command:|d
+This command will either join or create a channel. If the channel you want to join already exists, you will just join it. If the channel you want to join does not yet exist, it will be created and you will become administrator of that channel.
+
+|c1B56A0Syntax:|d
+          |c111111/join|d |c222222ChannelName|d
+|c222222ChannelName|d being the channel you want to join or create.
+
+|c1B56A0Sample:|d
+          |c111111/join|d |c222222My first channel|d
+Creates or joins a channel named '|c222222My first channel|d'."/>
+  <Chat_Help_motto value="|c002277Help for the /motto command:|d
+This command will modify the motto of the channel. You may only modify the motto of the channel if you are either channel operator or channel administrator.
+
+|c1B56A0Syntax:|d
+          |c111111/motto|d |c222222the new motto|d
+That will change the motto of the current channel into what follows the command.
+
+|c1B56A0Sample:|d
+          |c111111/motto|d |c222222Check out my new pictures @ my myspace !|d
+Changes the motto of this channel into '|c222222Check out my new pictures @ my myspace !|d', if you have enough rights."/>
+  <Chat_Help_kick value="|c002277Help for the /kick command:|d
+This command will kick a player out of the channel. You may only kick a player out of the channel if you are a channel administrator or a channel operator. The player may come back into the channel.
+
+|c1B56A0Syntax:|d
+          |c111111/kick|d |c222222PlayerName|d
+|c222222PlayerName|d being the name of the player you want to kick.
+
+|c1B56A0Sample:
+          |c111111/kick|d |c222222Smithers|d
+Kicks the player with the name '|c222222Smithers|d' out of the channel, if you have enough rights."/>
+  <Chat_Help_op value="|c002277Help for the /op command:|d
+This command grants a player the operator status for this room. The player will have more rights in this room, like kicking out other players, changing the motto of the room, ...
+You can only use this command if you are the administrator or an operator of the current channel.
+
+|c1B56A0Syntax:|d
+          |c111111/op|d |c222222PlayerName|d
+|c222222PlayerName|d being the name of the player you want to promote.
+
+|c1B56A0Sample:|d
+          |c111111/op|d |c222222RoxXxoR2007|d
+Gives the player named |c222222RoxXxoR2007|d the operator status for this room, if you have enough rights to do so."/>
+  <Chat_Help_deop value="|c002277Help for the /deop command:|d
+This command makes a player loose his operator status for the current channel, what effectively lowers his rights.
+You can only use this command if you are the administrator or an operator of the current channel.
+
+|c1B56A0Syntax:|d
+          |c111111/deop|d |c222222PlayerName|d
+|c222222PlayerName|d being the name of the player you want to remove the operator status.
+
+|c1B56A0Sample:|d
+          |c111111/deop|d |c222222RoxXxoR2007|d
+Removes the operator status from the player called |c222222RoxXxoR2007|d in the current room, if you have enough rights to do so."/>
+  <Chat_Help_w value="|c002277Help for the /w command:|d
+This command whispers a message to another player. A whispered message is sent only to one player, wherever he is, as long as he is online.
+You may even whisper him a message while he is playing in a different game then you or when he is in another chat channel then you.
+
+|c1B56A0Syntax:|d
+          |c111111/w|d |c222222PlayerName|d |c333333Message to the player|d
+|c222222PlayerName|d being the name of the player you want to whisper to. All the other words are the message that will be sent to him.
+
+|c1B56A0Sample:|d
+          |c111111/w|d |c222222Pompei2|d |c333333Hey, your game is great!!|d
+Sends the message '|c333333Hey, your game is great!!|d' to the player named '|c222222Pompei2|d' if he is online."/>
+  <Chat_Help_listchans value="|c002277Help for the /listchans command:|d
+This command shows you a list of all channels that belong to you.
+A channel belongs to you if you are its administrator. This is automatically the case for all the channels you created."/>
+  <Chat_Help_delchan value="|c002277Aide de la commande /delchan:|d
+This command deletes a channel that belongs to you.
+A channel belongs to you if you are its administrator. This is automatically the case for all the channels you created."/>
+</ui>

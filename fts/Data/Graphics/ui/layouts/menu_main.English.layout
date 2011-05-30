@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<GUILayout>
+    <Window Type="ArkanaLook/FrameWindow" Name="menu_main">
+        <Property Name="UnifiedPosition"    Value="{{0,0},{0,0}}" />
+        <Property Name="UnifiedSize"        Value="{{1,0},{1,0}}" />
+        <Property Name="UnifiedMinSize"     Value="{{1,0},{1,0}}" />
+        <Property Name="TitlebarEnabled"    Value="false" />
+        <Property Name="FrameEnabled"       Value="false" />
+        <Property Name="SizingEnabled"      Value="false" />
+        <Property Name="CloseButtonEnabled" Value="false" />
+        <Property Name="BackgroundImageEnabled" Value="set:ArkanaLook image:OneTransparentPixel" />
+        <Property Name="BackgroundImageVertFormat" Value="Stretched" />
+        <Property Name="BackgroundImageHorzFormat" Value="Stretched" />
+        <Property Name="ID"                 Value="1" />
+        <Window Type="ArkanaLook/Label" Name="Info">
+            <Property Name="UnifiedPosition"  Value="{{1,-130},{0,05}}" />
+            <Property Name="UnifiedSize"      Value="{{0,0130},{0,35}}" />
+            <Property Name="InheritsAlpha"    Value="False" />
+            <Property Name="AlwaysOnTop"      Value="true" />
+            <Property Name="Text"></Property>
+        </Window>
+        <Window Type="ArkanaLook/Label" Name="Version">
+            <Property Name="UnifiedPosition"   Value="{{1,-160},{1,-35}}" />
+            <Property Name="UnifiedSize"       Value="{{0,150},{0,35}}" />
+            <Property Name="Text"></Property>
+        </Window>
+        <Window Type="ArkanaLook/MenuButton" Name="menu_main/btnNewGame">
+            <Property Name="UnifiedPosition" Value="{{0.8,-120},{0.3,0}}" />
+            <Property Name="UnifiedSize"     Value="{{0,256},{0,50}}" />
+            <Property Name="ID"              Value="1" />
+            <Property Name="Text">New game</Property>
+        </Window>
+        <Window Type="ArkanaLook/MenuButton" Name="menu_main/btnOnlineGame">
+            <Property Name="UnifiedPosition" Value="{{0.8,-120},{0.3,75}}" />
+            <Property Name="UnifiedSize"     Value="{{0,256},{0,50}}" />
+            <Property Name="ID"              Value="2" />
+            <Property Name="Text">Play Online</Property>
+        </Window>
+        <Window Type="ArkanaLook/MenuButton" Name="menu_main/btnOptions">
+            <Property Name="UnifiedPosition" Value="{{0.8,-120},{0.3,150}}" />
+            <Property Name="UnifiedSize"     Value="{{0,256},{0,50}}" />
+            <Property Name="ID"              Value="3" />
+            <Property Name="Text">Settings</Property>
+        </Window>
+        <Window Type="ArkanaLook/MenuButton" Name="menu_main/btnOpen">
+            <Property Name="UnifiedPosition" Value="{{0.8,-120},{0.3,225}}" />
+            <Property Name="UnifiedSize"     Value="{{0,256},{0,50}}" />
+            <Property Name="ID"              Value="4" />
+            <Property Name="Text">Model viewer</Property>
+        </Window>
+        <Window Type="ArkanaLook/MenuButton" Name="menu_main/btnUpdate">
+            <Property Name="UnifiedPosition" Value="{{0.8,-120},{0.3,300}}" />
+            <Property Name="UnifiedSize"     Value="{{0,256},{0,50}}" />
+            <Property Name="ID"              Value="5" />
+            <Property Name="Text">Check for updates</Property>
+        </Window>
+        <Window Type="ArkanaLook/MenuButton" Name="menu_main/btnInfo">
+            <Property Name="UnifiedPosition" Value="{{0.8,-120},{0.3,375}}" />
+            <Property Name="UnifiedSize"     Value="{{0,256},{0,50}}" />
+            <Property Name="ID"              Value="6" />
+            <Property Name="Text">Informations</Property>
+        </Window>
+        <Window Type="ArkanaLook/MenuButton" Name="menu_main/btnQuit">
+            <Property Name="UnifiedPosition" Value="{{0.8,-120},{0.3,450}}" />
+            <Property Name="UnifiedSize"     Value="{{0,256},{0,50}}" />
+            <Property Name="ID"              Value="7" />
+            <Property Name="Text">Quit</Property>
+        </Window>
+    </Window>
+</GUILayout>

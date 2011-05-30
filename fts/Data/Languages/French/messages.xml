@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<messages>
+  <SDL_Query value="SDL: Demande vidéo a échoué: {1}"/>
+  <SDL_Init value="SDL: initialisation: {1}"/>
+  <SDL_Clipboard value="SDL: Echec lors de l'initialisation du copier/coller: {1}"/>
+  <CEGUI_Init value="CEGUI n'a pas pu être initialisé: {1}"/>
+  <CEGUI value="CEGUI erreur: {1}"/>
+  <SND_NoSys value="SND: Aucun système son n'a pu être trouvé lors de la création d'Arkana, vous n'entendrez aucun son."/>
+  <SND value="SND: L'objet son {1} a encotré l'erreur suivante:
+
+{2}"/>
+  <ObjectNotExist value="L'objet {1} n'existe pas"/>
+  <ObjectNotExistIn value="L'objet {1} n'existe pas dans {2}"/>
+  <ObjectAlreadyExist value="L'objet {1} existe déjà"/>
+  <SyscallFailure value="L'appel à la fonction système {1} à causé une erreur. Le code de cette erreur est {2}, ce qui signifie:
+
+{3}"/>
+  <NoRights value="Vous n'avez pas la permission de faire ceci:
+
+{1}"/>
+  <CorruptData value="Les données provenant de {1} sont corrompues:
+
+{2}"/>
+  <HardwareLimit value="Zut. Votre matériel informatique est trop ancien et me limite en: {1}. La limite est de {3} mais j'ai besoin d'au moins {2}"/>
+  <ScriptEvalFile value="Dao à rencontré une erreur (trouvez les informations détaillées ci-dessus) dans le script {1} ." />
+  <ScriptEvalStatement value="Dao à rencontré une erreur (trouvez les informations détaillées ci-dessus) dans la commande suivante:
+
+ {1} " />
+  <GLError value="Erreur OpenGL ({1}) dans la fonction {2}"/>
+  <TooOldOpenGL value="Votre version OpenGL ({1}) est trop ancienne pour ce jeu! Il faut au moins la version {2}. Vous pouvez essayer de mettre a jour vos pilotes graphiques."/>
+  <Graph_Load value="Ne sais pas charger l'image {1}:
+
+{2}"/>
+  <Graph_Load_ID value="Ne sais pas charger l'image {1}:
+
+Elle ne contient pas l'identification FTSIMG, êtes vous sur que c'est une image FTS?"/>
+  <Graph_Load_EOF value="Ne sais pas charger l'image {1}:
+
+La fin du fichier a été atteinte trop tôt, peut-être le fichier a-t-il été coupé d'une manière ou d'une autre?"/>
+  <Graph_NotUnloaded_File value="L'image qui a été chargée à partir du fichier {1} n'a pas été déchargée"/>
+  <Graph_NotUnloaded_Mem value="L'image qui a été créée en mémoire, de taille {1}x{2} n'a pas été déchargée"/>
+  <Anim_NoConf value="Il manque le fichier de configuration '{2}' dans le fichier d'animation '{1}'"/>
+  <Anim_NoImg value="Il manque l'image '{2}' dans le fichier d'animation '{1}'"/>
+  <Parse_eof value="Interprétation du fichier {1}, linie {2}: Fin de fichier inattendu"/>
+  <Parse_expect value="Interprétation du fichier {1}, linie {2}: Attends un '{3}' mais trouve un '{4}' pour '{5}'"/>
+  <Parse_expectI value="Interprétation du fichier {1}, linie {2}: Attends un nombre mais trouve un '{3}'"/>
+  <Parse_expectF value="Interprétation du fichier {1}, linie {2}: Attends un nombre à virgule mais trouve un '{3}'"/>
+  <Parse_expectB value="Interprétation du fichier {1}, linie {2}: Attends une booléenne (true ou false) mais trouve un '{3}'"/>
+  <Parse_expectDT value="Interprétation du fichier {1}, linie {2}: Attends une date ou heure mais trouve un '{3}'"/>
+  <Parse_expectXI value="Interprétation du fichier {1}, linie {2}: Attends un ensemble de {3} nombre mais trouve un '{4}'"/>
+  <Parse_expectXF value="Interprétation du fichier {1}, linie {2}: Attends un ensemble de {3} nombre à virgule mais trouve un '{4}'"/>
+  <Conf_Parse value="Il y a une erreur près de l'expression '{1}' dans le fichier de configuration {2}. Je vais prendre la valeur par défaut"/>
+  <Conf_Write value="Une erreur est survenue lors de l'écriture de l'expression '{1}' dans le fichier de configuration {2}"/>
+  <UnknownProtocol value="Le protocole {1} n'est pas (encore) supporté par Arkana-FTS, pourtant il est nécessaire pour ouvrir le fichier {2}"/>
+  <FileNotExist value="Ce fichier n'existe pas: {1}"/>
+  <FileAlreadyExist value="Ce fichier existe déjà: {1}"/>
+  <File_Read value="Je ne sais pas lire le fichier {1}:
+
+{2}"/>
+  <File_Write value="Je ne sais pas écrire dans le fichier {1}:
+
+{2}"/>
+  <File_Seek value="Je ne sais pas me positionner dans le fichier {1} (Probablement fichier incorrect):
+
+{2}"/>
+  <File_FopenR value="Je ne sais pas ouvrir le fichier {1} avec droits de lecture:
+
+{2}"/>
+  <File_FopenW value="Je ne sais pas ouvrir le fichier {1} avec droits d'écriture:
+
+{2}"/>
+  <File_UnexpEOF value="Le fichier {1} semble être corrompu, vu que la fin du fichier à été atteinte avant que tout ait pu être lu. Information complémentaire: {2}"/>
+  <Archive_Invalid value="L'archive {1} semble invalide (fichier trop petit ou en-tête '{2}' incorrecte)"/>
+  <Archive_Corrupt value="L'archive {1} semble corrompue (la somme de contrôle est incorrecte. Somme calculée: {2}, somme attendue: {3})"/>
+  <CEGUI_LoadLayout value="CEGUI erreur lors du chargement de la fenètre {1}:
+
+{2}"/>
+  <Compressor_MiniLZO value="Erreur lors de l'utilisation du décompresseur MiniLZO: {1}"/>
+  <Compressor_MiniLZO_Comp value="Erreur lors de la compression de données avec le compresseur MiniLZO: {1}"/>
+  <Compressor_MiniLZO_Decomp value="Erreur lors de la décompression de données avec le compresseur MiniLZO: {1}"/>
+  <Compressor_MiniLZO_CorruptData value="Le (dé)compresseur MiniLZO à détecté des données corrompues: {1}"/>
+  <Model_Shader_TooManyTexCo value="Dans le modèle 3D {1}, la matière {2} ne contient pas assez de textures (seulement {4}) pour être utilisé avec le shader {3}, le shader requiert plus de coordonnées de textures par sommet"/>
+  <Model_Shader_TooManyTexUniforms value="Dans le modèle 3D {1}, la matière {2} ne contient pas assez de textures (seulement {4}) pour être utilisé avec le shader {3}, le shader requiert plus de &quot;sampler uniforms&quot;"/>
+  <MAP_Terrain_InvFile value="Le fichier terrain.ftst de la carte '{1}' n'est pas valide (ne contient pas l'ID FTST)"/>
+  <MAP_Tileset_NoInfo value="Le fichier 'info.conf' est manquant dans le tileset '{1}'."/>
+  <MAP_Tileset_NoTileFile value="Le fichier 'info.conf' du tileset '{1}' cite le tile ou blendmask '{2}' qui est manquant dans le tileset."/>
+  <MAP_Tileset_TileBadSize value="Les dimensions du tile '{2}' du tileset '{1}' ne correspondent pas aux dimensions requises. (ses dimensions sont de {3}x{4} alors qu'elles devraient être de {5}x{6}). Ce tile sera redimensioné automatiquement."/>
+  <MAP_Tileset_BlendBadSize value="Les dimensions du blendmask '{2}' du tileset '{1}' ne correspondent pas aux dimensions requises. (ses dimensions sont de {3}x{4} alors qu'elles devraient être de {5}x{6}). Ce blendmask sera redimensioné automatiquement."/>
+  <MAP_Tileset_TileNotInSet value="Le tile '{2}' n'est pas défini dans le tileset '{1}'"/>
+  <MAP_Tileset_MaskNotInSet value="Le Blendmask '{2}' n'est pas défini dans le tileset '{1}'"/>
+  <MAP_Tileset_UpperNotInSet value="Le uppertile '{2}' n'est pas défini dans le tileset '{1}'"/>
+  <MAP_Forest_InvParam value="La forêt no {1} contient une mauvaise valeur au paramètre {2} !
+Prends la valeur par défaut ({3})."/>
+  <Net_TCPIP_mksock value="Réseau: Erreur lors de la création du socket:
+
+{1} ({2})"/>
+  <Net_TCPIP_hostname value="Réseau: Erreur lors de la résolution de l'hôte {1}:
+
+{2} ({3})"/>
+  <Net_TCPIP_connect value="Réseau: Erreur lors de la connection à {1} au port {2}:
+
+{3} ({4})"/>
+  <Net_TCPIP_connect_to value="Réseau: connection à {1} au port {2} a surpassé le temps limite, {3} ({4})"/>
+  <Net_TCPIP_send value="Réseau: Erreur lors de l'envoi de données:
+
+{1} ({2})"/>
+  <Net_TCPIP_recv value="Réseau: Erreur lors de la réception de données: connection perdue"/>
+  <Net_TCPIP_select value="Réseau: Erreur lors d'une opération select:
+
+{1} ({2})"/>
+  <Net_TCPIP_fcntl_get value="Réseau: Erreur lors d'une opération get fcntl:
+
+{1} ({2})"/>
+  <Net_TCPIP_fcntl_set value="Réseau: Erreur lors d'une opération set fcntl:
+
+{1} ({2})"/>
+  <Net_packet_len value="Réseau: La longueur du paquet est incorrecte: {1}"/>
+  <Net_packet value="Réseau: Paquet incorrect a été recu: {1}"/>
+  <NewOnlineAcc_NoConnection value="Arkana-FTS n'a pas réussi à se connecter au serveur-maître. Il est préférable que vous vérifiez votre connection avant de continuer."/>
+  <Ogm_offline value="Vous voulez faire '{1}' en étant hors-ligne"/>
+  <Ogm_create_online value="Vous ne pouvez pas créer un compte quand vous êtes connectés.
+Veuillez vous déconnecter pour créer un compte"/>
+  <Ogm_create_missdata value="Vous n'avez pas rempli tous les champs obligatoires (surnom, mot de passe et e-mail)"/>
+  <Ogm_create_mail value="Veuillez entrer une addresse e-mail valide"/>
+  <Ogm_create_nick value="Vous ne pouvez pas mettre un espace dans votre surnom"/>
+  <Ogm_create_pass value="Les deux mots de passe que vous avez entré ne correspondent pas"/>
+  <Ogm_create_err value="Votre surnom est déjà utilisé par qqun d'autre, veuillez en choisir un autre"/>
+  <Ogm_login_miss value="Veuillez entrer votre surnom et votre mot de passe"/>
+  <Ogm_login_err value="Erreur lors de la connection. Cela peut être la suite de l'un des problèmes suivants, du plus probable au moins probable:
+          * Votre paire surnom/mot de passe n'est pas correcte (Veuillez ré-essayer)
+          * Vous n'êtes pas encore inscrit (Veuillez vous inscrire)
+          * Une autre personne est déjà connectée avec votre surnom (Veuillez attendre qu'elle se déconnecte)
+          * Une autre personne ayant la même addresse IP et le même mot de passe que vous est déjà connectée (Veuillez attendre qu'elle se déconnecte)"/>
+  <Ogm_set_err value="Erreur du serveur lors de la modification d'une propriété d'un compte ! (souvent une erreur de programmeur, field"/>
+  <Ogm_get_err value="Erreur du serveur lors de la demande d'une propriété d'un compte ! (souvent une erreur de programmeur, field"/>
+  <Ogm_set_flag_err value="Erreur du serveur lors de la modification d'un drapeau d'un compte ! (souvent une erreur de programmeur, flag"/>
+  <Ogm_chat_iunai value="Erreur lors de la recherche de la salle courante"/>
+  <Ogm_chat_join_miss value="Vous devez spécifier le nom de la salle à laquelle vous voulez accéder"/>
+  <Ogm_chat_join_err value="Erreur lors de l'accès à (ou la création de) la salle '{1}'
+
+Chaque joueur peut créer un nombre limité de salles. Si vous pensez avoir atteint votre limite et souhaitez détruire une de vos salles, vous pouvez le faire sur notre site-web. Pour cela, veuillez visiter http://www.arkana-fts.org et vous connecter avec votre compte actuel. Vous pourrez alors détruire vos salles superflues"/>
+  <Ogm_chat_motto_err value="Erreur lors de l'aquisition d'infos sur la salle '{1}'"/>
+  <Ogm_chat_userget_err value="Erreur lors de la requète du joueur {1}"/>
+  <Ogm_chat_generr value="Il y a eu une erreur lors de votre dernière action (code d'erreur {1}).
+D'habitude, ça veut dire que vous n'avez pas la permission/suffisemment de droits pour performer cette action"/>
+  <Ogm_chat_sendmsg_err value="Erreur lors de l'envoi du message chat"/>
+  <Ogm_chat_whisp_err value="Le joueur {1} n'existe pas ou n'est pas connecté"/>
+  <Ogm_chat_operr value="Vous ne pouvez pas rendre le joueur opérateur.
+D'habitude, c'est le cas si vous n'avez pas suffisemment de droits (seul un administrateur ou un opérateur peuvent rendre un joueur opérateur) ou si le joueur en question n'est pas dans la salle en ce moment même ou s'il est déjà opérateur/administrateur"/>
+  <Ogm_chat_deoperr value="Vous ne pouvez pas retirer le statut d'opérateur au joueur.
+D'habitude, c'est le cas si vous n'avez pas suffisemment de droits (seul un administrateur ou un opérateur peuvent retirer le statut d'opérateur à un joueur), si le joueur en question n'est pas dans la salle en ce moment même ou s'il n'est pas opérateur de la salle"/>
+  <Ogm_chat_list_my_err value="Erreur lors de l'obtention de la liste de vos salles"/>
+  <Ogm_chat_rem_chan_err value="Ne sais pas détruire la salle '{1}'.
+Probablement, ce n'est pas votre salle. Vous ne pouvez détruire que les salles dont vous êtes administrateur"/>
+  <Ogm_feedback_tooshort value="Vous pouvez quand même nous écrire plus que {1} lettres, non?"/>
+  <Ogm_game_make value="Erreur lors de la création de la partie. Peut-être une partie ayant ce nom existe déjà. ({1})"/>
+  <Ogm_game_missdata value="Vous devez choisir un nom et une carte pour la partie"/>
+  <InvCall value="La fonction suivante a été appelée de façon erronnée: {1}"/>
+  <InvParam value="Un ou plusieurs paramètre(s) invalide(s) ont (a) été passé(s) à la fonction '{1}'"/>
+  <DoubleShortcut value="Le raccourcis clavier portant le nom {1} veut être enregistré plusieurs fois. Il sera ignoré"/>
+  <SingletonNotExist value="Le singleton {1} veut être utilisé avant même qu'il n'ait été créé"/>
+  <SingletonAlreadyExist value="Le singleton {1} veut être créé alors qu'il existe déjà"/>
+  <Init value="Initialisations:
+"/>
+  <Deinit value="Deinitialisations:
+"/>
+  <EnterRlv value="Accede au Runlevel:"/>
+  <LeaveRlv value="Quitte le Runlevel:"/>
+  <GraphDrvL value="Charge le pilote graphique ..."/>
+  <GraphDrvU value="Decharge le pilote graphique ..."/>
+  <InputDrvL value="Charge le pilote d'entree ..."/>
+  <InputDrvU value="Decharge le pilote d'entree ..."/>
+  <NetDrvL value="Charge le pilote reseau ..."/>
+  <NetDrvU value="Decharge le pilote reseau ..."/>
+  <SoundDrvL value="Charge le pilote de son ..."/>
+  <SoundDrvU value="Decharge le pilote de son ..."/>
+  <MusicL value="Chargement des mélodies ..."/>
+  <FreeTmp value="Efface le cache ..."/>
+  <PressEnterToCont value="Appuyez une touche pour continuer"/>
+  <NotImpYet value="Ceci n'est pas encore implémenté (terminé) ... Veuillez avoir de la patience ou nous aider :)"/>
+  <Info value="Ceci est une release tardive pour Halloween: une release dans laquelle nous voulons vous montrer le progrès que nous avons fait, et vous laisser tester.
+Les deux principales fonctionnalités manquantes ou incomplètes de la dernière version sont maintenant pleinement opératives: le salon en ligne et l'afficheur de modèles.
+Nous espérons que vous aurez du plaisir à tester Arkana-FTS, malgré le manque de 'jeu'.
+
+A partir de maintenant, nous allons tout faire pour vous apporter une nouvelle release une fois par 1 ou 2 mois.
+
+L'équipe toute entière vous souhaite beaucoup de plaisir!
+
+Remerciements à:
+Lucas Beyer (Pompei2, dévelopeur principal &amp; coordinateur du projet)
+Klaus Beyer (kbey, dévelopeur)
+Manuel Reisch (moOshiE, artiste graphique principal)
+Kenny Thaeter (Histoire)
+Thibault Beyer (Chitzui, testeur principal)
+Supinya (Ma copine, pour sa patience les jours où je travaille à Arkana-FTS pendant des heures, je t'aime ที่รัก)"/>
+</messages>

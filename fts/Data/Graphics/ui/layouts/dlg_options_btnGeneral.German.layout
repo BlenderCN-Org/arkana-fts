@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<GUILayout>
+    <Window Type="DefaultWindow" Name="dlg_options/btnGeneral">
+        <Property Name="UnifiedPosition" Value="{{0,005},{0,020}}" />
+        <Property Name="UnifiedSize"     Value="{{1,-10},{1,-25}}" />
+        <Property Name="ID"              Value="1" />
+        <Window Type="ArkanaLook/Label" Name="dlg_options/btnGeneral/lblLang">
+            <Property Name="UnifiedPosition" Value="{{0,010},{0,15}}" />
+            <Property Name="UnifiedSize"     Value="{{0,180},{0,30}}" />
+            <Property Name="Text">Sprache:</Property>
+        </Window>
+        <Window Type="ArkanaLook/Combobox" Name="dlg_options/btnGeneral/cbLang" >
+            <Property Name="UnifiedPosition" Value="{{0,0200},{0,015}}" />
+            <Property Name="UnifiedSize"     Value="{{1,-215},{0,132}}" />
+            <Property Name="ReadOnly"        Value="True" />
+            <Property Name="ID"              Value="1" />
+        </Window>
+        <Window Type="ArkanaLook/Label" Name="dlg_options/btnGeneral/lblGDLL">
+            <Property Name="UnifiedPosition" Value="{{0,010},{0,55}}" />
+            <Property Name="UnifiedSize"     Value="{{0,180},{0,30}}" />
+            <Property Name="Text">Verbosität:</Property>
+        </Window>
+        <Window Type="ArkanaLook/Spinner" Name="dlg_options/btnGeneral/spGDLL" >
+            <Property Name="UnifiedPosition" Value="{{0,0200},{0,57}}" />
+            <Property Name="UnifiedSize"     Value="{{1,-215},{0,28}}" />
+            <Property Name="CurrentValue"    Value="2" />
+            <Property Name="MaximumValue"    Value="5" />
+            <Property Name="MinimumValue"    Value="1" />
+            <Property Name="ID"              Value="2" />
+        </Window>
+        <Window Type="ArkanaLook/Label" Name="dlg_options/btnGeneral/lblMouseScroll">
+            <Property Name="UnifiedPosition" Value="{{0,010},{0,95}}" />
+            <Property Name="UnifiedSize"     Value="{{0,210},{0,30}}" />
+            <Property Name="Text">Maus-Scrollgeschwindigkeit:</Property>
+        </Window>
+        <Window Type="ArkanaLook/HorizontalDecoScrollbar" Name="dlg_options/btnGeneral/hsMouseScroll" >
+            <Property Name="UnifiedPosition" Value="{{0,0220},{0,103}}" />
+            <Property Name="UnifiedSize"     Value="{{1,-285},{0,014}}" />
+            <Property Name="DocumentSize"    Value="310" />
+            <Property Name="StepSize"        Value="1" />
+            <Property Name="PageSize"        Value="10" />
+            <Property Name="ID"              Value="3" />
+        </Window>
+        <Window Type="ArkanaLook/Label" Name="dlg_options/btnGeneral/hsMouseScrollVal">
+            <Property Name="UnifiedPosition" Value="{{1,-65},{0,95}}" />
+            <Property Name="UnifiedSize"     Value="{{0,050},{0,30}}" />
+            <Property Name="HorzFormat"      Value="CentreAligned" />
+            <Property Name="Text">0</Property>
+        </Window>
+        <Window Type="ArkanaLook/Label" Name="dlg_options/btnGeneral/lblKbdScroll">
+            <Property Name="UnifiedPosition" Value="{{0,010},{0,135}}" />
+            <Property Name="UnifiedSize"     Value="{{0,210},{0,030}}" />
+            <Property Name="Text">Tastatur-Scrollgeschwindigkeit:</Property>
+        </Window>
+        <Window Type="ArkanaLook/HorizontalDecoScrollbar" Name="dlg_options/btnGeneral/hsKbdScroll" >
+            <Property Name="UnifiedPosition" Value="{{0,0220},{0,143}}" />
+            <Property Name="UnifiedSize"     Value="{{1,-285},{0,014}}" />
+            <Property Name="DocumentSize"    Value="310" />
+            <Property Name="StepSize"        Value="1" />
+            <Property Name="PageSize"        Value="10" />
+            <Property Name="ID"              Value="4" />
+        </Window>
+        <Window Type="ArkanaLook/Label" Name="dlg_options/btnGeneral/hsKbdScrollVal">
+            <Property Name="UnifiedPosition" Value="{{1,-65},{0,135}}" />
+            <Property Name="UnifiedSize"     Value="{{0,050},{0,30}}" />
+            <Property Name="HorzFormat"      Value="CentreAligned" />
+            <Property Name="Text">0</Property>
+        </Window>
+    </Window>
+</GUILayout>

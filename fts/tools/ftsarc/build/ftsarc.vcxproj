@@ -1,0 +1,140 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug_Static|Win32">
+      <Configuration>Debug_Static</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_Static|Win32">
+      <Configuration>Release_Static</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'" Label="Configuration">
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'" Label="Configuration">
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <TargetName>$(ProjectName)_d</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <TargetName>$(ProjectName)_d</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">
+    <ClCompile>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;D_STRING_FTS_LIBS;D_NOCEGUI;D_NONET;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>../../..;../../../main;../../../3rdparty/sdl/include</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <TargetMachine>MachineX86</TargetMachine>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'">
+    <ClCompile>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;D_STRING_FTS_LIBS;D_NOCEGUI;D_NONET;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <AdditionalIncludeDirectories>../../..;../../../main;../../../3rdparty/sdl/include</AdditionalIncludeDirectories>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\dLib\dArchive\dArchive.cpp" />
+    <ClCompile Include="..\..\..\dLib\dBrowse\windows.cpp" />
+    <ClCompile Include="..\..\..\dLib\dCompressor\dCompressor.cpp" />
+    <ClCompile Include="..\..\..\dLib\dCompressor\minilzo\minilzo.c" />
+    <ClCompile Include="..\..\..\dLib\dCompressor\minilzo_compressor.cpp" />
+    <ClCompile Include="..\..\..\dLib\dFile\dFile.cpp" />
+    <ClCompile Include="..\..\..\dLib\dString\dPath.cpp" />
+    <ClCompile Include="..\..\..\dLib\dString\dString.cpp" />
+    <ClCompile Include="..\..\..\logging\chronometer.cpp" />
+    <ClCompile Include="..\..\..\logging\logger.cpp" />
+    <ClCompile Include="..\..\..\main\Clock.cpp" />
+    <ClCompile Include="..\..\..\main\Exception.cpp" />
+    <ClCompile Include="..\..\..\utilities\DataContainer.cpp" />
+    <ClCompile Include="..\..\..\utilities\Singleton.cpp" />
+    <ClCompile Include="..\..\..\utilities\StreamedDataContainer.cpp" />
+    <ClCompile Include="..\..\toolcompat.cpp" />
+    <ClCompile Include="..\archiver.cpp" />
+    <ClCompile Include="..\compressorlister.cpp" />
+    <ClCompile Include="..\dearchiver.cpp" />
+    <ClCompile Include="..\internaltester.cpp" />
+    <ClCompile Include="..\lister.cpp" />
+    <ClCompile Include="..\main.cpp" />
+    <ClCompile Include="..\remover.cpp" />
+    <ClCompile Include="..\sfcompressor.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\dLib\dArchive\dArchive.h" />
+    <ClInclude Include="..\..\..\dLib\dBrowse\dBrowse.h" />
+    <ClInclude Include="..\..\..\dLib\dCompressor\dCompressor.h" />
+    <ClInclude Include="..\..\..\dLib\dCompressor\minilzo\lzoconf.h" />
+    <ClInclude Include="..\..\..\dLib\dCompressor\minilzo\lzodefs.h" />
+    <ClInclude Include="..\..\..\dLib\dCompressor\minilzo\minilzo.h" />
+    <ClInclude Include="..\..\..\dLib\dCompressor\minilzo_compressor.h" />
+    <ClInclude Include="..\..\..\dLib\dFile\dFile.h" />
+    <ClInclude Include="..\..\..\dLib\dString\dPath.h" />
+    <ClInclude Include="..\..\..\dLib\dString\dString.h" />
+    <ClInclude Include="..\..\..\logging\chronometer.h" />
+    <ClInclude Include="..\..\..\main\Clock.h" />
+    <ClInclude Include="..\..\..\main\Exception.h" />
+    <ClInclude Include="..\..\..\utilities\DataContainer.h" />
+    <ClInclude Include="..\..\..\utilities\Singleton.h" />
+    <ClInclude Include="..\..\..\utilities\StreamedDataContainer.h" />
+    <ClInclude Include="..\..\main.h" />
+    <ClInclude Include="..\..\toolcompat.h" />
+    <ClInclude Include="..\archiver.h" />
+    <ClInclude Include="..\compressorlister.h" />
+    <ClInclude Include="..\dearchiver.h" />
+    <ClInclude Include="..\ftsarc.h" />
+    <ClInclude Include="..\internaltester.h" />
+    <ClInclude Include="..\lister.h" />
+    <ClInclude Include="..\remover.h" />
+    <ClInclude Include="..\sfcompressor.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

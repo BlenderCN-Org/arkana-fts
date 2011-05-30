@@ -1,0 +1,120 @@
+<?xml version="1.0" ?>
+
+<GUILayout>
+    <Window Type="ArkanaLook/FrameWindow" Name="dlg_options">
+        <Property Name="UnifiedPosition" Value="{{0.1,0},{0.1,0}}" />
+        <Property Name="UnifiedSize"     Value="{{0.7,0},{0.7,0}}" />
+        <Property Name="UnifiedMinSize"  Value="{{0,565},{0,550}}" />
+        <Property Name="AlwaysOnTop"     Value="true" />
+        <Property Name="Text">Choisissez vos options</Property>
+
+        <Window Type="ArkanaLook/StaticFrameNoText" Name="left_btns_bg">
+            <Property Name="UnifiedPosition" Value="{{0,15},{0,050}}" />
+            <Property Name="UnifiedSize"     Value="{{0,88},{0,485}}" />
+            <Property Name="ID"              Value="1" />
+            <Window Type="ArkanaLook/SystemButton" Name="btnGeneral">
+                <Property Name="UnifiedPosition" Value="{{0,06},{0,06}}" />
+                <Property Name="UnifiedSize"     Value="{{0,75},{0,92}}" />
+                <Property Name="ImageNormal"     Value="set:FTSUI image:SettingsGeneral1" />
+                <Property Name="ImageHover"      Value="set:FTSUI image:SettingsGeneral2" />
+                <Property Name="ImagePushed"     Value="set:FTSUI image:SettingsGeneral2" />
+                <Property Name="ImageDisabled"   Value="set:FTSUI image:SettingsGeneral2" />
+                <Property Name="ID"              Value="1" />
+                <Window Type="ArkanaLook/Label" Name="lblGeneral">
+                    <Property Name="UnifiedPosition" Value="{{0,0},{1,-23}}" />
+                    <Property Name="UnifiedSize"     Value="{{1,0},{0,023}}" />
+                    <Property Name="HorzFormat"      Value="CentreAligned" />
+                    <Property Name="Text">Général</Property>
+                </Window>
+            </Window>
+            <Window Type="ArkanaLook/SystemButton" Name="btnVideo">
+                <Property Name="UnifiedPosition" Value="{{0,06},{0,100}}" />
+                <Property Name="UnifiedSize"     Value="{{0,75},{0,092}}" />
+                <Property Name="ImageNormal"     Value="set:FTSUI image:SettingsVideo1" />
+                <Property Name="ImageHover"      Value="set:FTSUI image:SettingsVideo2" />
+                <Property Name="ImagePushed"     Value="set:FTSUI image:SettingsVideo2" />
+                <Property Name="ImageDisabled"   Value="set:FTSUI image:SettingsVideo2" />
+                <Property Name="ID"              Value="2" />
+                <Window Type="ArkanaLook/Label" Name="lblVideo">
+                    <Property Name="UnifiedPosition" Value="{{0,0},{1,-23}}" />
+                    <Property Name="UnifiedSize"     Value="{{1,0},{0,023}}" />
+                    <Property Name="HorzFormat"      Value="CentreAligned" />
+                    <Property Name="Text">Vidéo</Property>
+                </Window>
+            </Window>
+            <Window Type="ArkanaLook/SystemButton" Name="btnAudio">
+                <Property Name="UnifiedPosition" Value="{{0,06},{0,194}}" />
+                <Property Name="UnifiedSize"     Value="{{0,75},{0,092}}" />
+                <Property Name="ImageNormal"     Value="set:FTSUI image:SettingsAudio1" />
+                <Property Name="ImageHover"      Value="set:FTSUI image:SettingsAudio2" />
+                <Property Name="ImagePushed"     Value="set:FTSUI image:SettingsAudio2" />
+                <Property Name="ImageDisabled"   Value="set:FTSUI image:SettingsAudio2" />
+                <Property Name="ID"              Value="3" />
+                <Window Type="ArkanaLook/Label" Name="lblAudio">
+                    <Property Name="UnifiedPosition" Value="{{0,0},{1,-23}}" />
+                    <Property Name="UnifiedSize"     Value="{{1,0},{0,023}}" />
+                    <Property Name="HorzFormat"      Value="CentreAligned" />
+                    <Property Name="Text">Audio</Property>
+                </Window>
+            </Window>
+            <Window Type="ArkanaLook/SystemButton" Name="btnNetwork">
+                <Property Name="UnifiedPosition" Value="{{0,06},{0,288}}" />
+                <Property Name="UnifiedSize"     Value="{{0,75},{0,092}}" />
+                <Property Name="ImageNormal"     Value="set:FTSUI image:SettingsNetwork1" />
+                <Property Name="ImageHover"      Value="set:FTSUI image:SettingsNetwork2" />
+                <Property Name="ImagePushed"     Value="set:FTSUI image:SettingsNetwork2" />
+                <Property Name="ImageDisabled"   Value="set:FTSUI image:SettingsNetwork2" />
+                <Property Name="ID"              Value="4" />
+                <Window Type="ArkanaLook/Label" Name="lblNetwork">
+                    <Property Name="UnifiedPosition" Value="{{0,0},{1,-23}}" />
+                    <Property Name="UnifiedSize"     Value="{{1,0},{0,023}}" />
+                    <Property Name="HorzFormat"      Value="CentreAligned" />
+                    <Property Name="Text">Réseau</Property>
+                </Window>
+            </Window>
+            <Window Type="ArkanaLook/SystemButton" Name="btnMisc">
+                <Property Name="UnifiedPosition" Value="{{0,06},{0,382}}" />
+                <Property Name="UnifiedSize"     Value="{{0,75},{0,092}}" />
+                <Property Name="ImageNormal"     Value="set:FTSUI image:SettingsMisc1" />
+                <Property Name="ImageHover"      Value="set:FTSUI image:SettingsMisc2" />
+                <Property Name="ImagePushed"     Value="set:FTSUI image:SettingsMisc2" />
+                <Property Name="ImageDisabled"   Value="set:FTSUI image:SettingsMisc2" />
+                <Property Name="ID"              Value="5" />
+                <Window Type="ArkanaLook/Label" Name="lblMisc">
+                    <Property Name="UnifiedPosition" Value="{{0,0},{1,-23}}" />
+                    <Property Name="UnifiedSize"     Value="{{1,0},{0,023}}" />
+                    <Property Name="HorzFormat"      Value="CentreAligned" />
+                    <Property Name="Text">Autres</Property>
+                </Window>
+            </Window>
+        </Window>
+        <Window Type="ArkanaLook/StaticFrameNoText" Name="dlg_options/options_bg">
+            <Property Name="UnifiedPosition" Value="{{0,0110},{0,0050}}" />
+            <Property Name="UnifiedSize"     Value="{{1,-135},{1,-110}}" />
+            <Property Name="ID"              Value="2" />
+        </Window>
+        <Window Type="DefaultWindow" Name="dlg_options/buttons_frame">
+            <Property Name="UnifiedPosition" Value="{{0,0110},{1,-55}}" />
+            <Property Name="UnifiedSize"     Value="{{1,-135},{0,040}}" />
+            <Property Name="ID"              Value="3" />
+            <Window Type="ArkanaLook/Button" Name="dlg_options/buttons_frame/btnOk">
+                <Property Name="UnifiedPosition" Value="{{0.0,0},{0,0}}" />
+                <Property Name="UnifiedSize"     Value="{{0.3,0},{1,0}}" />
+                <Property Name="ID"              Value="1" />
+                <Property Name="Text">Ok</Property>
+            </Window>
+            <Window Type="ArkanaLook/Button" Name="dlg_options/buttons_frame/btnCancel">
+                <Property Name="UnifiedPosition" Value="{{0.35,0},{0,0}}" />
+                <Property Name="UnifiedSize"     Value="{{0.30,0},{1,0}}" />
+                <Property Name="ID"              Value="2" />
+                <Property Name="Text">Annuler</Property>
+            </Window>
+            <Window Type="ArkanaLook/Button" Name="dlg_options/buttons_frame/btnAccept">
+                <Property Name="UnifiedPosition" Value="{{0.7,0},{0,0}}" />
+                <Property Name="UnifiedSize"     Value="{{0.3,0},{1,0}}" />
+                <Property Name="ID"              Value="3" />
+                <Property Name="Text">Accepter</Property>
+            </Window>
+        </Window>
+    </Window>
+</GUILayout>

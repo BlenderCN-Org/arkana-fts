@@ -1,0 +1,13 @@
+
+io.writeln('In script importTest.dao')
+function importTest(s : string) {
+   io.writef( 'import test :')
+   io.writeln( 'Parameter: ',s)
+}
+
+class DaoImport : IHotkey
+{
+}
+
+importTest('from dao script');
+io.writeln('END script importTest.dao')

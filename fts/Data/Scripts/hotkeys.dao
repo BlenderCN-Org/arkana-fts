@@ -1,0 +1,56 @@
+# This is a sample on how a hot key can be generated and accessed from the scipting system.
+# One way is to define a dao class which derives from the IHotkey interface and overrides the exec
+# routine. exec() is always called on a key pressed event.
+# In addition FTS exports a class named Hotkey which can be used to bínd keys to a method. See the examples below.
+
+class Daokey : IHotkey
+{
+    # this method must be exists, since IHotkey is an interface.
+    routine exec() 
+    {
+        io.println('exec Daokey')
+    }
+    # additional routine for binding, see example below.
+    routine doAction() 
+    {
+        io.println('doAction Daokey')
+    }
+}
+
+public routine run()
+{
+    io.println('running')
+}
+
+public routine runfast()
+{
+    io.println('running even faster')
+}
+
+public routine print_screenposition()
+{
+    # mouseX and mouseY are methods exported by FTS.
+    io.println('Screen position X = ', mouseX(), ' Y = ', mouseY())
+}
+# This shows how a key can be bound to a single routine.
+# If F4 is pressed the routine 
+running = Hotkey(Key::F4, "run")
+# Shows a way to add a modifier to a bounded key.
+# First generate the key binding, here Shift and method runfast
+runningfaster = Hotkey(SpecialKey::Shift, "runfast")
+# Bind this to the F4 key
+# If F4 and then the shift key is pressed the methode runfast is 
+# called in addition.
+running.addModifier(runningfaster)
+# The modifier can be removed, if no longer needed.
+#runningfaster.remove()
+# Here we use the dao class defined in this file for the binding.
+ovl = Daokey()
+drink = Hotkey(Key::F1, ovl)
+# In addition we can bind an other methode (instead of exec()) of the 
+# given class to the key action.
+swig = Hotkey(Key::ArrowDown, ovl,"doAction")
+# and use it as an modifier to the key F1
+drink.addModifier(swig)
+#Another example for binding a key to a routine.
+Hotkey(Key::F3, 'print_screenposition')

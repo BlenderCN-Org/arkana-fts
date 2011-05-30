@@ -1,0 +1,15 @@
+# This script will be loaded and executed while a map is loaded.
+# First load the hotkeys. As an example have a look at the hotkeys.dao
+load MapHotkeys;
+
+# The classes to create sound effects.
+load SoundEffects;
+
+# This is called after loading the map (load game).
+routine OnLoadMap(name : string)
+{
+    io.println('loading map ', name)
+    sndTest = Music('Augmentality - Zombie Main Music.ogg')
+    sndTest.play()
+}
+

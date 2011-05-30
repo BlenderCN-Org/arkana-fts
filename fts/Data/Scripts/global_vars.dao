@@ -1,0 +1,12 @@
+io.writeln('In script global_vars.dao')
+
+global global_a : int = 5;
+
+routine printgl( a : int)
+{
+    io.writeln('global_a=', a)
+}
+
+printgl(global_a)
+
+io.writeln('END script global.dao')

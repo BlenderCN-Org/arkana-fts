@@ -1,0 +1,1019 @@
+/** \page peetsa_tutorial The pizza tutorial
+
+\section toc Table of contents
+
+  - \ref sec_the_project
+  - \ref sec_tdd_framework
+  - \ref sec_first_test
+  - \ref sec_pizza_luigi
+  - \ref sec_suite
+  - \ref sec_fixture
+  - \ref sec_selection
+  - \ref sec_integrate_ctest
+  - \ref sec_things_to_remember
+  - \ref sec_check_exprs
+  - \ref sec_exceptions
+  - \ref sec_notes
+
+  The example explored in this article can be found in \c examples/pizza/.
+
+\section sec_the_project About the project (codename: peetsa)
+
+Quick-and-dirty-hands-on-first hackers, please take a deep breath now and bang
+your head onto your desk. We will first analyze the project that will accompagny
+us trough this tutorial.
+
+We all love the italians, some for their food, some for other reasons, some for
+both! We all love customisation and control, else we would've left c++ long time
+ago for one of its big brothers (I won't cite any names here). It seems obvious
+that we should investigate pizzas, probably the most customisable italian food
+that ever existed. (Note that for some strange reasons I will sometimes refer to
+them as "peetsa", do not worry in this case and just use pizza in your mind.)
+
+So you want to model a pizza, Tony? Fine.
+
+With grateful reminiscences to the coffee that kept us awake during Systematic
+Software Engineering (et al.) courses, we first analyse our domain: peetsa.
+Let me make it short:
+We notice that a pizza consists of a pizza dough (base) that is topped with
+sauce and then an arbitrary amount of other ingredients. Pizza is an aggregation
+of a Dough, a Sauce and Ingredients. All of the three have different kinds, so
+we model all three as abstract base classes and think of some concrete classes
+that can implement them later. Then we will have the peetsa's constructor take a
+Dough and a Sauce object and have methods to top the Pizza as well as methods to
+get informations out of it. You get the idea? I got the picture:
+\dot
+  digraph example {
+      pagedir=TL;
+      rankdir=BT;
+      node [shape=record, fontname=Helvetica, fontsize=10];
+      Pizza [label="\<\<abstract\>\>\nPizza"];
+      Dough -> Pizza [arrowhead="dot"];
+      Sauce -> Pizza [arrowhead="dot"];
+      Ingredients -> Pizza [arrowhead="dot"];
+      PizzaHutDough -> Dough;
+      FineItalianDough -> Dough;
+      TomatoeSauce -> Sauce;
+      HotChiliSauce -> Sauce;
+      Cheese -> Ingredients;
+      Salami -> Ingredients;
+      Ham -> Ingredients;
+      Tuna -> Ingredients;
+      Mais -> Ingredients;
+  }
+\enddot
+
+\section sec_tdd_framework Test Driven Development (TDD) Frameworks
+Although I'm not a big convincer of TDD, I like the key concept. They preach
+that whenever you have an idea, you shouldn't immediately get your hands onto
+the implementation but you should write the test cases first. Yes, write tests
+whithout ever having written the code that you are testing! Why? I mean this
+seems insane, writing a test for something that doesn't exist yet! But they have
+very good reasons to advocate so:
+  - It forces you to think of \e how your class will be used,
+  - eventually, you will find \e usage problems that soon,
+  - the tests define all your class needs, you won't implement more,
+  - and many more.
+If you would first implement the class, your test cases would be polluted by:
+  - You being very prudent, (You're exhausted after hours of implementing the
+    class, you're happy it finally seems to work and you don't want to break it)
+  - your knowings of the insights of the class, but these should \e not be tested.
+
+Now that we're convinced that it's a good idea, we need a tool that makes it
+easy to write unit tests (better called developer tests) quickly. We clearly
+don't want to waste much time typing the same stuff for our tests again and
+again. That's where unit-testing frameworks come in handy.
+
+In java, there is only one prominent framework:
+<a href="www.junit.org">junit</a>, but in C++ there are dozens of frameworks,
+and even worse: they all seem to be twins! You should clearly take a look at
+most of them and choose the one that fits you best. Noel Llopis wrote a quite
+nice <a href="http://gamesfromwithin.com/exploring-the-c-unit-testing-framework-jungle">
+article that compares most of 'em</a>, you should have a read on it!
+To sum it up, if you already use Boost (I don't, you should!), use
+<a href="http://boost.org/libs/test/doc/index.html">Boost.Test</a>. If not,
+you're left to <a href="http://cppunit.sourceforge.net/">CppUnit</a> and
+<a href="http://cxxtest.sourceforge.net/">CxxTest</a>, the former being an old-
+style library using autoconf and co, the latter being a modern python script
+running over your sourcecode.
+
+As my project uses CMake, integrating something based on autotools is a mess,
+thus I kicked CppUnit out. CxxTest flew out of the window too, as it needs
+python, that is not a problem for most users but I don't want to mess around
+with it on windows. These may sound like stupid reasons, but hey, everybody
+got his reasons.
+
+Then there was CppUnitLite. A \e really lite framework that every user is
+intended to extend as he wishes. So I did. Few days (hours) later, this came out.
+
+\section sec_first_test A first test
+
+To ensure that everything works, we'll first generate a very simplistic test
+that has nothing to do with our peetsa project. I'll assume that you put this
+library's files into a subdirectory called "aTest". First, we write a main file
+like this:
+
+\code
+#include "aTest/TestHarness.h"
+#include "aTest/TestResultCompiler.h"
+#include <iostream>
+
+int main()
+{
+    TestResultCompiler result(std::cerr);
+    TestRegistry::runAllTests(result);
+    return (result.getFailureCount());
+}
+\endcode
+
+That is not much code and will be the same for every new application you want to
+test. What it does is first create a TestResult* object that will be used to
+output the results of the test somehow. There are various TestResult classes
+readily available:
+  - TestResultStdErr
+  - TestResultCompilerOut
+  - TestResultSQL
+
+If none of those fits your needs, write your own. All you need is to subclass
+TestResult and override the virtual methods that you want to use. Remember to
+call the base-class's methods at first in your override, like this:
+\code
+void TestResultStdErr::addFailure (const Test&, const Failure & failure)
+{
+    TestResult::addFailure(failure);
+    std::cerr << failure;
+}
+\endcode
+
+The next thing that is done in our main function is calling runAllTests. This
+function will, like its name sais, run all registered tests. During this call,
+your TestResult object will be used to do something with the results.
+
+You can now compile the first test using your favourite C++ (!) compiler. Don't
+forget to compile and link all the cpp files from aTest to your project or
+you'll have loads of "undefined reference" linkage errors.
+
+Execute your program and you'll see something along these lines:
+\code
+Starting the tests ...
+No test failed.
+\endcode
+That's what we expected, as we wrote no test.
+It would be a shame if something failed here ;-)
+
+Second, let's write the trivial test.
+\code
+#include "../../TestHarness.h"
+
+TEST (MyTest)
+{
+    float fnum = 2.00001f;
+    CHECK_EQUAL("Hello", std::string("World!"));
+    CHECK_DOUBLES_EQUAL (3.0f, fnum);
+}
+\endcode
+
+What we are doing here is that we first define our simplistic test-case. It's
+as simple as it gets: just a testcase that has a name: "MyTest". (Note that the
+name is not a string but an expression, like classnames.) Then we can write
+whatever code we want in it to execute our test. Things that have to be compared
+by the test case are written in terms of CHECK_* things. For instance
+CHECK_EQUAL(expectation, real) compares the real object to an expected object
+(note that classes have to meet some criteria, more on that later in
+\ref sec_check_exprs) and records a failure in case they don't equal.
+That's why we don't just compare two string literals, these are not objects.\n
+We can use CHECK_DOUBLES_EQUAL that is useful because doubles (and floats)
+should not be compared for equality but using an error-treshold.
+
+Let's compile and run our test again ...
+\code
+trivial.cpp:6: Test MyTest failed: expected 'Hello' but was: 'World!'
+trivial.cpp:7: Test MyTest failed: expected 2.000010 but was: 3.000000
+1 tests run, 2 failures
+\endcode
+
+Oh noes! Failure!
+
+First interesting thing we see here is that even though the first check failed,
+the case is run till the end and even more checks can fail, thus we can correct
+all of them in one run.
+
+Another thing to note is that the output format should be similar to the most-
+widely spread compilers, making it easy for you to integrate the test as a
+post-build-process and your IDE of choice will treat test errors just as compile
+errors, allowing you to doubleclick on them to jump right into the offending
+code line.
+
+Correcting these "bugs" is left as an exercise.
+
+\section sec_pizza_luigi But the pizza, Luigi! (Detailed first steps)
+
+Ok, now that we got the grisp on the basics, we can move on to test our pizzas!
+
+The first thing I expect is that creating a peetsa without any dough should
+throw an error. Let's write a test for that (peetsaTest.cpp):
+
+\code
+#include "../../TestHarness.h"
+
+TEST(PeetsaWithoutDoughThrows)
+{
+    try {
+        // This is expected to throw.
+        Peetsa p(NULL);
+
+        // Thus we should never reach the following code ; if we reach it, the
+        // above didn't throw and our test should record a failure.
+        FAIL("Peetsa p(NULL) doesn't throw an exception!");
+    } catch(const std::exception& e) {
+        // It is good to come here.
+    }
+}
+\endcode
+
+Compile it, the compiler gives us an error:
+\code
+peetsaTest.cpp:6: error: ‘Peetsa’ was not declared in this scope
+peetsaTest.cpp:6: error: expected `;' before ‘p’
+\endcode
+
+In the lines of Test Driven Development, we write just enough code to fix that
+error (peetsa.h):
+\code
+#ifndef D_PEETSA_H
+#define D_PEETSA_H
+
+class Peetsa {
+public:
+    Peetsa() {};
+};
+
+#endif // D_PEETSA_H
+\endcode
+
+and include that file in peetsaTest.cpp. Compile it again:
+\code
+peetsaTest.cpp:7: error: no matching function for call to ‘Peetsa::Peetsa(NULL)’
+peetsa.h:6: note: candidates are: Peetsa::Peetsa()
+peetsa.h:4: note:                 Peetsa::Peetsa(const Peetsa&)
+\endcode
+
+Write just enough to fix this error ; we add a void* argument to the Peetsa's
+constructor, this will let the code compile (peetsa.h):
+\code
+#ifndef D_PEETSA_H
+#define D_PEETSA_H
+
+class Peetsa {
+public:
+    Peetsa(void *) {};
+};
+
+#endif // D_PEETSA_H
+\endcode
+Compiling now succeeds but running the test records a failure:
+\code
+peetsaTest.cpp:12: Test PeetsaWithoutDoughThrows failed: Peetsa p(NULL) doesn't throw an exception!
+\endcode
+Yeah, we kind of expected this. Now write just enough code to make this test
+pass (peetsa.h):
+\code
+#ifndef D_PEETSA_H
+#define D_PEETSA_H
+
+#include <exception>
+
+class Peetsa {
+public:
+    Peetsa(void *) {throw std::exception();};
+};
+
+#endif // D_PEETSA_H
+\endcode
+Compile and test ...
+\code
+Starting the tests ...
+No test failed.
+\endcode
+Yay, no test failed! This is the flow of Test Driven Development. "But, your
+code makes no sense, the constructor always throws!", I hear you say. You're
+right, to us it makes no sense yet, but it passes all our tests! Thus to make
+it have some sense, we need to design a test for that. Let's do it
+(still peetsaTest.cpp, below the old test):
+\code
+TEST(PeetsaGetsDough)
+{
+    ThinItalianDough *d = new ThinItalianDough(PeetsaSize::Big);
+    Peetsa p(d);
+
+    CHECK_EQUAL(*d, p.getDough());
+}
+\endcode
+This is the last time that I will fix our code to work step by step, I promise.
+What is interesting here, is that I check an user-type (ThinItalianDough) for
+equality. We'll see how easy it is to do that. So let's skip the compile-fix
+process and write what we want right now (dough.h):
+\code
+#ifndef D_DOUGH_H
+#define D_DOUGH_H
+
+namespace PeetsaSize {
+    enum Enum {
+        Big,
+        Medium,
+        Kid,
+    };
+}
+
+class Dough {
+    PeetsaSize::Enum m_size;
+
+public:
+    Dough(const PeetsaSize::Enum& size)
+        : m_size(size)
+    { }
+
+    virtual ~Dough() {};
+
+    inline PeetsaSize::Enum getSize() const {return m_size;}
+};
+
+class ThinItalianDough : public Dough {
+public:
+    ThinItalianDough(const PeetsaSize::Enum& size)
+        : Dough(size)
+    { }
+
+    virtual ~ThinItalianDough() {};
+};
+
+#endif // D_DOUGH_H
+\endcode
+And in peetsa.h, we add a getter (let's not fix the constructor for now):
+\code
+#include "dough.h"
+
+class Peetsa {
+    Dough *m_pDough;
+
+public:
+    Peetsa(void *) {throw std::exception();};
+    Dough& getDough() {return *m_pDough;};
+};
+\endcode
+Compiling it now gives us a huge bunch of errors, essentially those two:
+\code
+peetsaTest.cpp:24: error: no match for ‘operator==’ in ‘p.Peetsa::getDough() == * d’
+peetsaTest.cpp:24: error: no match for ‘operator<<’ in ‘std::operator<< [...]
+\endcode
+I shortened the second one. It indicates our error comes from the call to
+CHECK_EQUAL. Yeah, that's correct. We forgot a comparison operator in our Dough.
+Let's implement it right now, in the class Dough (dough.h):
+\code
+virtual bool operator==(const Dough& o) const {return m_size == o.size;}
+\endcode
+And for the second error, why the **** do we need an operator<< in our Dough
+class?? The truth is that in case the check fails, you want to record a failure,
+including as much informations as possible. The CHECK_EQUAL call uses operator<<
+to let you give him all informations you want to see in the failure report. Let
+me show you (in global scope in dough.h):
+\code
+std::ostream& operator<< (std::ostream& os, const Dough& me)
+{
+    switch(me.getSize()) {
+    case PeetsaSize::Big: return os << "Big pizza dough";
+    case PeetsaSize::Medium: return os << "Medium pizza dough";
+    case PeetsaSize::Kid: return os << "Pizza dough for kiddies";
+    }
+
+    return os;
+}
+\endcode
+Now the compilation succeeds and we can run the tests. Pretty sure they will
+succeed heh?
+\code
+:0: Test PeetsaGetsDough failed: Unhandled exception: std::exception
+\endcode
+What is THAT!? No filename, no linenumber. The only information we have here
+is that the problem is that somewhere in the PeetsaGetsDough test case somebody
+throws an std::exception that we never catch! We really have no idea where
+\e that comes from! (Ok, you probably have an idea, but let's assume our code is
+more complex than you ever imagined.) We'd like to stop aTest from catching this
+exception and rather run our tests in a debugger to catch the exception and see
+where it really comes from. To achieve this, we just need to pass false as
+second parameter to \a TestRegistry::runAllTests in \a main, like this:
+\code
+    TestRegistry::runAllTests(result, false);
+\endcode
+For more informations on this topic, see \ref sec_exceptions.
+
+We compile it and run it in our debugger and ... ooooooh yes right! we forgot to
+fix the Peetsa's constructor to do something useful! Let's fix that:
+\code
+    Peetsa(Dough *d) : m_dough(d) { }
+\endcode
+That looks much better to me. Compile&run the tests:
+\code
+peetsaTest.cpp:13: Test PeetsaWithoutDoughThrows failed: Peetsa p(NULL) doesn't throw an exception!
+\endcode
+Oh, well! We now forgot to protect the pizza from living without a dough.
+\code
+    Peetsa(Dough *d) : m_dough(d) {
+        if(m_dough == NULL)
+            throw std::exception();
+    }
+    virtual ~Peetsa() {delete m_dough;}
+\endcode
+Now that solves our problem. All tests pass. (I added the destructor not to have
+memory leaks in my tutorial, that would suck.) Now we can be pretty sure that it
+all does what it is expected to do and will always do so. If future changes on
+the code break something, our tests will report that immediately.
+
+I hope you also got to see how Test Driven Development works, or should work. Of
+course it is an exageration of how to do it (you may \e of \e course fix more
+bugs then the compiler/tests tell you) but the main point is that you write
+your test \e before you write the implementation.
+
+I promise the next sections will be shorter :)
+
+\section sec_suite Giving them the sauce (Testsuites)
+Let's forget about the other Dough for brevity and give the peetsa its sauce.
+That will be quite similar to the dough, we will want to give it in the
+constructor as a pizza without sauce doesn't make much sense.
+
+As it is essentially the same as for the dough, I won't show you the
+implementation of the sauce here, I will only show you the test cases. (If
+you're interested in it, you can look into the accompagning sourcecode.)
+
+\code
+TEST(PeetsaWithoutSauceThrows)
+{
+    try {
+        // This is expected to throw.
+        Peetsa p(new ThinItalianDough(PeetsaSize::Medium));
+        p.addSauce(NULL);
+
+        // Thus we should never reach the following code ; if we reach it, the
+        // above didn't throw and our test should record a failure.
+        FAIL("Adding NULL sauce to the Peetsa p.addSauce(NULL) doesn't throw an exception!");
+    } catch(const std::exception& e) {
+        // It is good to come here.
+    }
+}
+
+TEST(PeetsaGetsTomatoeSauce)
+{
+    Peetsa p(new ThinItalianDough(PeetsaSize::Medium));
+    p.addSauce(new TomatoeSauce(0.5));
+
+    CHECK_EQUAL(TomatoeSauce(0.5), p.getSauce());
+}
+
+TEST(PeetsaGetsHotChiliSauce)
+{
+    Peetsa p(new PizzaHutDough(PeetsaSize::Big, 437));
+    p.addSauce(new HotChiliSauce(ChiliHotness::Hot, 0.3));
+
+    CHECK_EQUAL(HotChiliSauce(ChiliHotness::Hot, 0.3), p.getSauce());
+}
+\endcode
+
+So now we're up with kind of "two categories" of tests, the first one being
+the three test cases that test the Dough and the second one being the three test
+cases above, testing some sauce-stuff. Let's put them into categories, called
+\e test-suites. For now, they are nothing more than a tool to group our tests.
+One test-suite contains one or more test-cases. Later we will see that it can do
+more.
+
+First, we need to create one (or more) suite(s), this is just as simple as:
+\code
+SUITE(TS_Dough)
+SUITE(TS_Sauce)
+\endcode
+
+The only thing you should care about is that you don't have any class or object
+named either "TS_Dough" or "TS_Sauce", that would cause a name clash. That's why
+we decided to use the prefix "TS_" (Test Suite _) for our suitenames, to avoid
+clashes of the names. You're, of course, free to omit that prefix and use any
+other name.
+
+Now, we need to tell the test-cases that they belong to a suite. Instead of
+defining them like we did before:
+\code
+TEST(PeetsaWithoutDoughThrows)
+...
+\endcode
+we will now define them slightly differently:
+\code
+TEST_INSUITE(TS_Dough, WithoutThrows)
+{
+    try {
+        // This is expected to throw.
+        Peetsa p(NULL);
+
+        // Thus we should never reach the following code ; if we reach it, the
+        // above didn't throw and our test should record a failure.
+        FAIL("Peetsa p(NULL) doesn't throw an exception!");
+    } catch(const std::exception& e) {
+        // It is good to come here.
+    }
+}
+...
+TEST_INSUITE(TS_Dough, GetsPizzaHut)
+...
+TEST_INSUITE(TS_Sauce, WithoutThrows)
+...
+\endcode
+
+This is rather straightforward: the first argument is the name of the suite, the
+second argument is the name of the test-case you want to define. As you may have
+noted in the above example, two different test-cases may have the same name as
+long as they stay in different suites.
+
+\subsection subsec_suite_insuite A test suite inside another test suite
+
+Yeah, this makes sense! Just think of bigger projects, they may have one
+test-suite for the Graphics-related classes, other test-suites for the
+sound-related classes and yet another one for the AI-related classes. Now other
+suites within such a suite (like OggSuite, MP3Suite, ... in Sound) make perfect
+sense. Just like in the real life, It's all about hierarchy.
+
+For our peetsa tutorial, I couldn't really think of a \e simple yet useful
+example of a suite within a suite. We could have had one suite per ingredient
+and group all of them together into an ingredients suite, that makes sense but
+is way too much code for this tutorial.
+
+Instead, I will just show you how we would declare the suites and test cases
+under such circumstances. It's quite straightforward, first we declare our
+master-testsuites:
+\code
+SUITE(TS_Graphics)
+SUITE(TS_Sound)
+SUITE(TS_AI)
+\endcode
+It is fully legal to put some test cases into these suites, for example:
+\code
+TEST_INSUITE(TS_Sound, SoundInitFailsCleanly)
+{
+    // ...
+}
+\endcode
+Now we want to make those sub-suites:
+\code
+SUITE_INSUITE(TS_Sound, TS_Ogg)
+SUITE_INSUITE(TS_Sound, TS_MP3)
+\endcode
+Those suites (\a TS_Ogg and \a TS_MP3) are now just like any other suites, you
+add test-cases or sub-suites into them just like you do wth the master-suites
+above (\a TS_Graphics, ...). For instance, you may now do the following:
+\code
+TEST_INSUITE(TS_Ogg, LoadsValidFile)
+TEST_INSUITE(TS_Ogg, ExceptionForInvalidFile1)
+\endcode
+
+\note If one test of a suite fails, the other tests in the suite are still run!
+      This is such that you can run the test once (over night) and then come
+      back later and fix the issues one by one, without having to retest after
+      having fixed a single issue. Makes sense huh?
+
+\note Suites are not only good for organising your tests, they also provide
+      benefits to the output you get, it is hierarchically browsable.
+
+\section sec_fixture Topping it with some ingredients (Test Fixtures)
+
+Ok, now let's write code to top the pizza with some ingredients. Assume we
+already have a specialized ingredient class for Cheese that should take a float
+between 0.0 and 1.0 that specifies of how much percent milk the cheese is done.
+Now we would write a few test-cases like the following ones:
+\code
+TEST(CheeseWithNegativeMilkThrows)
+{
+    Peetsa p(new PizzaHutDough(PeetsaSize::Big, 437));
+    p.addSauce(new HotChiliSauce(ChiliHotness::Hot, 0.3));
+
+    try {
+        p.addIngredient(new Cheese(-1.0f));
+
+        FAIL("I am able to make negative cheese without getting an exception");
+    } catch(...) {
+        // All good, we expect an exception
+    }
+}
+
+TEST(CheeseWithTooLittleMilkThrows)
+{
+    Peetsa p(new PizzaHutDough(PeetsaSize::Big, 437));
+    p.addSauce(new HotChiliSauce(ChiliHotness::Hot, 0.3));
+
+    try {
+        p.addIngredient(new Cheese(0.49999f));
+
+        FAIL("I am able to make cheese with less than 50% milk without getting an exception");
+    } catch(...) {
+        // All good, we expect an exception
+    }
+}
+
+TEST(CheeseWithTooMuchMilkThrows)
+{
+    Peetsa p(new PizzaHutDough(PeetsaSize::Big, 437));
+    p.addSauce(new HotChiliSauce(ChiliHotness::Hot, 0.3));
+
+    try {
+        p.addIngredient(new Cheese(1.0001f));
+
+        FAIL("I am able to make cheese with more than 100% milk without getting an exception");
+    } catch(...) {
+        // All good, we expect an exception
+    }
+}
+\endcode
+As you can see, all three test cases begin with the exact same two lines of code.
+Those two lines do only init some valid pizza so we can begin our real testing,
+that is adding cheese. This is quite a repetitive task and will probably be
+handled by copy-pasting that code. Copy&pasted code is the \e most
+\e error-prone \e piece \e of \e code \e ever.
+
+We want to avoid this by putting the whole "initialisation" code into some
+thingy that will be called automatically before every test-case. While this
+is not the case here, we may also need some de-init code at the end of every
+test-case that should be executed regardless of the success/failure of the test.
+
+A \e test \e fixture is exactly what I called "thingy" above. A fixture contains
+some code to be executed right before a test-case is run and some other code
+to be executed right after the test-case has run. (regardless of the test-case's
+result.) This is how you define such a \e fixture:
+\code
+class MakeValidPizzaSetup : public TestSetup
+{
+public:
+    void setup()
+    {
+        p = new Peetsa(new PizzaHutDough(PeetsaSize::Big, 437));
+        p->addSauce(new HotChiliSauce(ChiliHotness::Hot, 0.3));
+    }
+
+    void teardown()
+    {
+        if(p) delete p;
+    }
+
+protected:
+    Peetsa* p;
+};
+\endcode
+A fixture is a class that inherits from TestSetup and overrides both the setup
+and the teardown methods. The setup method will be called right before every
+single test-case that uses this fixture is run while the teardown method will be
+called right after the test-case has run. If the setup fails (throws an
+exception), the test-case is \e not run and an error is reported. The teardown
+is run regardless of the test result, but only if the setup succeeded!
+
+Now, let's see how we can re-write our test-cases to use that fixture:
+\code
+TEST_WITHSETUP(MakeValidPizza, CheeseWithNegativeMilkThrows)
+{
+    try {
+        p->addIngredient(new Cheese(-1.0f));
+
+        FAIL("I am able to make negative cheese without getting an exception");
+    } catch(...) {
+        // All good, we expect an exception
+    }
+}
+
+TEST_WITHSETUP(MakeValidPizza, CheeseWithTooLittleMilkThrows)
+{
+    try {
+        p->addIngredient(new Cheese(0.49999f));
+
+        FAIL("I am able to make cheese with less than 50% milk without getting an exception");
+    } catch(...) {
+        // All good, we expect an exception
+    }
+}
+
+TEST_WITHSETUP(MakeValidPizza, CheeseWithTooMuchMilkThrows)
+{
+    try {
+        p->addIngredient(new Cheese(1.0001f));
+
+        FAIL("I am able to make cheese with more than 100% milk without getting an exception");
+    } catch(...) {
+        // All good, we expect an exception
+    }
+}
+\endcode
+Just use the \a TESTWITHSETUP macro to define the test-case. The first argument
+is the name of the fixture you want to use (only one per test-case!) and the
+second argument is the name of the test-case.
+
+Note that here, the name of the fixture is referred to as \a MakeValidPizza
+while above, it has been defined as \a MakeValidPizzaSetup. This is \e not a
+typo. The fixture's name needs to end with \c Setup during its definition but
+will be referred to without \c Setup during usage.
+
+Also note that in the test-cases, we can just access any public and private
+members of our fixture. This comes in really handy :-)
+
+\subsection subsec_advanced_fixtures More advanced uses of a fixture
+There are more things you can use fixtures for.
+
+\subsubsection subsubsec_test_fixture_insuite Using a test-case with a fixture in a suite
+If you want to put your test-cases that use a fixture into a suite (or give your
+testcases in a suite a fixture, whatever), you can achieve this using the
+following construct:
+\code
+TEST_INSUITE_WITHSETUP(MySuiteName,MyFixtureName,MyTestCaseName)
+\endcode
+This defines a test-case named \a MyTestCaseName within the suite \a MySuiteName
+that uses the fixture \a MyFixtureName. Note that it is the test case that uses
+the fixture!
+
+\subsubsection subsubsec_suite_fixture Giving your suite a fixture
+You may make some of your suites use a fixture if they have to setup something,
+keep it during any of the test cases (making changes visible through cases):
+\code
+SUITE_WITHSETUP(MySuiteName, MyFixtureName);
+\endcode
+This creates the suite \a MySuiteName that uses the fixture \a MyFixtureName.
+If the setup of the fixture fails, the whole suite is discarded. That's the only
+reason you should use it.
+\warning Do \e not rely on the order of execution of the tests
+within a suite, this may change randomly on every system/compiler/IDE/... It is
+a \e bad, \e bad, \b bad idea to create chains of tests, i.e. test cases that
+need to be run in a certain order and modify a certain object of the fixture
+one after the other. This won't work as I said before: do not rely on the order
+the tests are executed. Tests should be independent.
+
+To access the members of the suite within your test, you have to make them public
+in the fixture. You can then use them in the following way:
+\code
+class MyFixtureSetup : public TestSetup {
+public:
+    void setup() {i = 1;}
+    void teardown() {}
+
+    int i;
+};
+
+SUITE_WITHSETUP(MySuite, MyFixture)
+
+TEST_INSUITE(MySuite, MyTest)
+{
+    CHECK_EQUAL(1, MySuite.i);
+}
+\endcode
+You could also access other public methods of the fixture this way, those could
+be accessor to data members. But bear in mind that you really shouldn't need to
+do this very often.
+
+\subsubsection subsubsec_suite_insuite_fixture giving your suite that resides in a suite a fixture
+It is of course possible to put test suites into other test suites, as stated
+before. For such a suite that resides in another suite, this is how you give it
+a fixture:
+\code
+SUITE_INSUITE_WITHSETUP(MyParentSuite, MyChildSuite, MyFixtureName)
+\endcode
+This creates a suite \a MyChildSuite that uses the fixture \a MyFixtureName and
+resides in the suite \a MyParentSuite. Note that \a MyParentSuite does not know
+that its child uses a fixture, neither does it change anything for the parent.
+
+\section sec_selection Keeping your firends ... and killing the others (Test Case selection)
+Sometimes you want to "put aside" some people for some time. The same is for
+unit tests: sometimes you just don't want to execute some test ; for example
+it is senseless to run any test relating to Sound when sound has been disabled
+at compile-time. You can achieve this easily by giving "Dont's" to the test
+registry. These dont's are strings. Any test case and test suite that contains
+one of these strings will be skipped, aswell as all other cases or suites that
+are child of that suite:
+\code
+TestRegistry::addDont("Tomatoe");
+\endcode
+will skip all tests that are somehow related to tomatoes.
+
+Likewise, sometimes you want to explicitly specify a few tests you want to run,
+skipping all others. This is done by giving the test registry some "Do's". Only
+tests that are \e not \e skipped because of a dont \e and contain any of the
+do's will be run:
+\code
+TestRegistry::addDo("Sauce");
+TestRegistry::addDont("Tomatoe");
+\endcode
+Will run any sauce-related tests (and only those) but not tomatoe-sauce related
+tests! See how powerful it can get?
+
+The usual way to use those features is by making your test program take
+arguments: any argument passed that begins with a minus (-) will be treated as
+a don't (but remove the - first!) while any other argument will be treated as a
+do. Here is the usual code to treat your arguments that way:
+\code
+#include "../../TestHarness.h"
+#include "../../TestResultNiceOutput.h"
+
+int main(int argc, char *argv[])
+{
+    for(int i = 1 ; i < argc ; ++i) {
+        if(argv[i][0] == '-')
+            TestRegistry::addDont(&argv[i][1]);
+        else
+            TestRegistry::addDo(argv[i]);
+    }
+
+    TestResultNiceOutput result(std::cerr);
+    TestRegistry::runAllTests(result);
+    return (result.getFailureCount());
+}
+\endcode
+
+\section sec_integrate_ctest Finding allies (CMake & CTest integration)
+You don't want to struggle alone ; you want to find others that help you!
+
+We found CMake and CTest, a very powerful build-tool. aTest is very easy to
+integrate with CMake (and CTest) so you can run any tests automatically after
+a build, or even better on a dedicated test-machine that won't hinder your work.
+
+First, you need a CMakeLists.txt file that will compile your test, we will use
+a trivial one (for details, read a <a href='http://www.cmake.org/cmake/help/examples.html'>tutorial</a>)
+linking our program with the aTest library:
+\code
+cmake_minimum_required(VERSION 2.4)
+project(peetsa)
+add_executable(peetsa dough.cpp ingredients.cpp main.cpp peetsaTest.cpp peetsaTestSuites.cpp sauce.cpp)
+target_link_libraries(peetsa aTest)
+\endcode
+This will be enough to build our test. Now let's check how to use it from within
+our main project. I assume you have your tests in a sub-directory called "tests".
+
+In your main project's CMakeLists file, you'll need to add the following:
+\code
+add_subdirectory(tests)
+\endcode
+This will include and execute the file tests/CMakeLists.txt that we wrote before.
+Now we need to specify single tests that CTest shall execute. Here, the testcase
+selection feature (described in \ref sec_selection) come in handy, let me show
+you:
+\code
+enable_testing()
+add_test(PeetsaGeneral examples/pizza/peetsa -TS)
+add_test(PeetsaDough examples/pizza/peetsa TS_Dough)
+add_test(PeetsaSauce examples/pizza/peetsa TS_Sauce)
+add_test(PeetsaIngredients examples/pizza/peetsa TS_Ingredients)
+\endcode
+This creates four tests that CTest will execute:
+  - PeetsaGeneral, that runs all tests that are not in any suite (better: skips all tests that contain the keyword 'TS'),
+  - PeetsaDough, will run the TS_Dough test-suite only,
+  - PeetsaSauce, will run the TS_Sauce test-suite only and
+  - PeetsaIngredients, will run the TS_Ingredients test-suite only.
+
+CTest will hide the test's output from you and only check the return-code of the
+tests. A return code of 0 means the test succeeded while any other return code
+means that the test failed. For all this to work, you should really use a main
+function like the one presented in \ref sec_selection, it just works like a
+charm. Now I hope that you agree that suites are useful, too :-)
+
+If one of those test-runs fails and you want to know why, CTest logs the output
+of every test-run into the folder Testing/Temporary/LastTest.log.
+
+\subsection subsec_result_combiner Using more than one test result
+If it annoys you that running the tests with CTest does not give you your test's
+output immediately (for example because your output should be sql and
+automatically inserted into a sql table), you can have more than one result!
+
+This is possible because we have a \a TestResultCombiner class. The usage is
+pretty straightforward, as shows this example:
+\code
+#include "../../TestHarness.h"
+#include "../../TestResultCombiner.h"
+#include "../../TestResultNiceOutput.h"
+#include "../../TestResultSQL.h"
+
+#include <fstream>
+
+int main(int argc, char *argv[])
+{
+    for(int i = 1 ; i < argc ; ++i) {
+        if(argv[i][0] == '-')
+            TestRegistry::addDont(&argv[i][1]);
+        else
+            TestRegistry::addDo(argv[i]);
+    }
+
+    std::ofstream sql("result.sql");
+    TestResultNiceOutput hello(std::cerr);
+    TestResultSQL world(sql, "peetsa");
+    TestResultCombiner result(hello, world);
+    TestRegistry::runAllTests(result);
+    return (result.getFailureCount());
+}
+\endcode
+You will get the nice output shown in the console (or logged by CTest) while the
+SQL script you so eagerly want to have for your automation gets saved to a
+separate file. I suppose that's what you wanted anyways and always dreamed of :)
+
+\section sec_things_to_remember You better not forget, Luigi! (Important notes)
+Like the mafiosi, we too have some rules-of-thumb that you better don't forget
+if you want to have a long and peaceful life.
+
+\subsection subsec_always_make_it_fail Always, always make your test fail immediately
+If you code your test (and the code you're testing) in a way that the test will
+immediately succeed, you won't be sure your test was run! (Well, if you use the
+SqlOutput, you can go check that, but it's tedious and error-prone.) If you just
+insert a FAIL("Yes, dude") at the very beginning of every new test-case you
+write, you can easily see if your test is run.
+
+\note This is really only needed once per file, as if the file gets compiled
+      in, all its test-cases and suites get registered automagically. But it
+      quite often happens you forget to add your file to the compiler!
+
+\subsection subsec_prefer_check_equal Prefer CHECK_EQUAL over CHECK
+As long as you want to check for equality (that is most of the time), you should
+prefer \ref subsec_check_equal over \ref subsec_check as in case of a failure,
+the former prints your object's value to the output while the latter only shows
+you the failed expression, without any of the content.
+
+As long as you want to check for equality (that is most of the time), you should
+prefer \ref subsec_check_equal over \ref subsec_check as in case of a failure,
+the former prints your object's value to the output while the latter only shows
+you the failed expression, without any of the content.
+
+\subsection subsec_order_of_arguments How to remember the order of the arguments?
+I hear you ask. We have a lot of macros and do not want to always have to lookup
+the reference to know if the fixture's name or the case's name or maybe the
+suite's name comes first!
+
+There is a simple rule-of-thumb: SFT. Suite, Fixture, Test(-case). Sweet, Fruity
+Taste. (For the not-so-sensible ones: Start to Fucking Test!) You get the idea.
+
+If one of those components has to be omitted, the order still holds, for example
+to declare a suite with a fixture, the order is Suite, Fixture.
+
+If you need to specify a parent (for a suite), it comes first.
+
+\section sec_check_exprs CHECK_* expressions
+As you saw before, there are various macros that begin with CHECK_. These are
+used to check if a condition is met ; if it is not, a check failure is filed.
+
+\subsection subsec_check_doubles_equal CHECK_DOUBLES_EQUAL(expected,actual)
+This macro may be used to check if \a actual is equal to \a expected with a
+treshold of some little delta. This delta defaults to 0.001, that means that
+2.0009 is equal to 2.0 but 2.001 and 2.01 aren't.
+
+This is important because doubles aren't exact numbers but rather only
+approximations of exact numbers, so calculations that you do with them will
+accumulate an ever-growing error.
+
+You may customize that delta value by defining \a D_TEST_DOUBLE_DELTA to any
+value \e before including any aTest header files.
+
+\subsection subsec_check_equal CHECK_EQUAL(expected, actual)
+This macro will compare any two objects that meet the following criteria:
+  - A meaningful operator== is defined that compares the type of \a expected
+    with the type of \a actual. This operator needs to return true if they equal
+    and false if not,
+  - and an operator<< (std::ostream&, const Class&); where Class is to be
+    replaced by both the type of \a expected and \a actual. The operator needs
+    not to return an std::ostream& (but it's a good idea to do so) but it has to
+    write the content of its second parameter into the ostream in a way that
+    makes sense to humans.
+
+If those two conditions are met by the class of \a expected and \a actual, the
+check reports failure if they do not equal. These conditions are met by most of
+the primitive data types (int, long, ...) but \e NOT by pointers! Thus you
+better not try to compare two pointers! (String literals are pointers too.)
+
+\subsection subsec_check CHECK(condition)
+This is probably the most generic macro that you can use in any case. It only
+checks if \a condition evaluates to true or not. If it evaluates to true, the
+check succeeds, else it fails and a failure is registered.
+
+The point in using \ref subsec_check_equal is that in case of a failure, it
+gives you the value of both expressions that are to be tested for equality
+while \ref subsec_check can only show you the expression, not the contents
+of the variables involved in it.
+
+Thus when should you use this simple \ref subsec_check, I hear you ask? Use it
+whenever you have to test something that can't be tested by equality, for
+example use it to check if a value is greater than another value.
+
+\section sec_exceptions Exceptions within the unit tests
+
+As you already noticed, by default any exceptions thrown within the test cases
+will be catched by aTest and reported as a failure. Exceptions occuring within
+a check (see \ref sec_check_exprs) will be catched by the check and reported as
+a failure, allowing your test case to continue its test.
+
+An exception within a test case that occurs outside a check will abort that test
+case with a failure. But if an exception occurs in a test case within a test
+suite, that suite will continue with the next test case.
+
+You can disable all exception handling of aTest by passing the
+TestRegistry::runAllTests method a second argument having the value false.
+Note that this will abort the whole test run as soon as one of its test cases
+throws an error, as you need to catch it yourself. This is mainly interesting in
+case you want to jump right into the exception using your debugger.
+
+\section sec_notes Not-so important Notes
+
+Still wondering about that peetsa thing? Check this out: http://icanhascheezburger.com/2008/08/15/funny-pictures-no-can-haz-peetsa/
+*/

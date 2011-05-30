@@ -1,0 +1,18 @@
+io.writeln('In script process2.dao')
+load testContext2;
+class P2Otto : IHotkey
+{
+  sub doOtto() {
+    io.writef( 'Dao P2: in doOtto()\n')
+  }
+}
+routine P2Routine( in : int )
+{
+  io.writef( 'Dao P2: in P2Rountine() in=%d\n', in)
+}
+p2obj = P2Otto()
+p2obj.doOtto()
+p2snd = SndDaoOtto()
+p2snd.doOtto()
+
+io.writeln('END script process2.dao')

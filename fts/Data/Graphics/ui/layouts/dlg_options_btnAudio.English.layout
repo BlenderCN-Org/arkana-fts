@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<GUILayout>
+    <Window Type="DefaultWindow" Name="dlg_options/btnAudio">
+        <Property Name="UnifiedPosition" Value="{{0,005},{0,020}}" />
+        <Property Name="UnifiedSize"     Value="{{1,-10},{1,-30}}" />
+        <Property Name="ID"              Value="1" />
+        <Window Type="ArkanaLook/Label" Name="dlg_options/btnAudio/lblSnd">
+            <Property Name="UnifiedPosition"   Value="{{0,010},{0,15}}" />
+            <Property Name="UnifiedSize"       Value="{{0,180},{0,30}}" />
+            <Property Name="Text">Enable sound:</Property>
+        </Window>
+        <Window Type="ArkanaLook/CheckboxLabelRight" Name="dlg_options/btnAudio/chkSnd">
+            <Property Name="UnifiedPosition" Value="{{0,194},{0,18}}" />
+            <Property Name="UnifiedSize"     Value="{{0,024},{0,24}}" />
+            <Property Name="ID"              Value="1" />
+        </Window>
+        <!-- SoundVolumeMusic -->
+        <Window Type="ArkanaLook/Label" Name="dlg_options/btnAudio/lblMusicVol">
+            <Property Name="UnifiedPosition" Value="{{0,010},{0,55}}" />
+            <Property Name="UnifiedSize"     Value="{{0,180},{0,30}}" />
+            <Property Name="Text">Music volume:</Property>
+        </Window>
+        <Window Type="ArkanaLook/HorizontalDecoScrollbar" Name="dlg_options/btnAudio/hsMusicVol" >
+            <Property Name="UnifiedPosition" Value="{{0,0200},{0,63}}" />
+            <Property Name="UnifiedSize"     Value="{{1,-265},{0,14}}" />
+            <Property Name="DocumentSize"    Value="110" />
+            <Property Name="StepSize"        Value="1" />
+            <Property Name="PageSize"        Value="10" />
+            <Property Name="ID"              Value="2" />
+        </Window>
+        <Window Type="ArkanaLook/Label" Name="dlg_options/btnAudio/hsMusicVolVal">
+            <Property Name="UnifiedPosition" Value="{{1,-65},{0,55}}" />
+            <Property Name="UnifiedSize"     Value="{{0,050},{0,30}}" />
+            <Property Name="HorzFormat"      Value="CentreAligned" />
+            <Property Name="Text">0 %</Property>
+        </Window>
+        <!-- SoundVolumeSFXUnitReaction -->
+        <Window Type="ArkanaLook/Label" Name="dlg_options/btnAudio/lblUnitReacVol">
+            <Property Name="UnifiedPosition" Value="{{0,010},{0,95}}" />
+            <Property Name="UnifiedSize"     Value="{{0,180},{0,30}}" />
+            <Property Name="Text">Units speech volume:</Property>
+        </Window>
+        <Window Type="ArkanaLook/HorizontalDecoScrollbar" Name="dlg_options/btnAudio/hsUnitReacVol" >
+            <Property Name="UnifiedPosition" Value="{{0,0200},{0,103}}" />
+            <Property Name="UnifiedSize"     Value="{{1,-265},{0,014}}" />
+            <Property Name="DocumentSize"    Value="110" />
+            <Property Name="StepSize"        Value="1" />
+            <Property Name="PageSize"        Value="10" />
+            <Property Name="ID"              Value="3" />
+        </Window>
+        <Window Type="ArkanaLook/Label" Name="dlg_options/btnAudio/hsUnitReacVolVal">
+            <Property Name="UnifiedPosition" Value="{{1,-65},{0,95}}" />
+            <Property Name="UnifiedSize"     Value="{{0,050},{0,30}}" />
+            <Property Name="HorzFormat"      Value="CentreAligned" />
+            <Property Name="Text">0 %</Property>
+        </Window>
+        <!-- SoundVolumeSFXAction -->
+        <Window Type="ArkanaLook/Label" Name="dlg_options/btnAudio/lblActionVol">
+            <Property Name="UnifiedPosition" Value="{{0,010},{0,135}}" />
+            <Property Name="UnifiedSize"     Value="{{0,180},{0,030}}" />
+            <Property Name="Text">Battles volume:</Property>
+        </Window>
+        <Window Type="ArkanaLook/HorizontalDecoScrollbar" Name="dlg_options/btnAudio/hsActionVol" >
+            <Property Name="UnifiedPosition" Value="{{0,0200},{0,143}}" />
+            <Property Name="UnifiedSize"     Value="{{1,-265},{0,014}}" />
+            <Property Name="DocumentSize"    Value="110" />
+            <Property Name="StepSize"        Value="1" />
+            <Property Name="PageSize"        Value="10" />
+            <Property Name="ID"              Value="3" />
+        </Window>
+        <Window Type="ArkanaLook/Label" Name="dlg_options/btnAudio/hsActionVolVal">
+            <Property Name="UnifiedPosition" Value="{{1,-65},{0,135}}" />
+            <Property Name="UnifiedSize"     Value="{{0,050},{0,030}}" />
+            <Property Name="HorzFormat"      Value="CentreAligned" />
+            <Property Name="Text">0 %</Property>
+        </Window>
+        <!-- SoundVolumeSFXEnvironment -->
+        <Window Type="ArkanaLook/Label" Name="dlg_options/btnAudio/lblEnvironmentVol">
+            <Property Name="UnifiedPosition" Value="{{0,010},{0,175}}" />
+            <Property Name="UnifiedSize"     Value="{{0,180},{0,030}}" />
+            <Property Name="Text">Environment volume:</Property>
+        </Window>
+        <Window Type="ArkanaLook/HorizontalDecoScrollbar" Name="dlg_options/btnAudio/hsEnvironmentVol" >
+            <Property Name="UnifiedPosition" Value="{{0,0200},{0,183}}" />
+            <Property Name="UnifiedSize"     Value="{{1,-265},{0,014}}" />
+            <Property Name="DocumentSize"    Value="110" />
+            <Property Name="StepSize"        Value="1" />
+            <Property Name="PageSize"        Value="10" />
+            <Property Name="ID"              Value="3" />
+        </Window>
+        <Window Type="ArkanaLook/Label" Name="dlg_options/btnAudio/hsEnvironmentVolVal">
+            <Property Name="UnifiedPosition" Value="{{1,-65},{0,175}}" />
+            <Property Name="UnifiedSize"     Value="{{0,050},{0,030}}" />
+            <Property Name="HorzFormat"      Value="CentreAligned" />
+            <Property Name="Text">0 %</Property>
+        </Window>
+        <!-- SoundVolumeSFXAttention -->
+        <Window Type="ArkanaLook/Label" Name="dlg_options/btnAudio/lblAttentionVol">
+            <Property Name="UnifiedPosition" Value="{{0,010},{0,215}}" />
+            <Property Name="UnifiedSize"     Value="{{0,180},{0,030}}" />
+            <Property Name="Text">Signals volume:</Property>
+        </Window>
+        <Window Type="ArkanaLook/HorizontalDecoScrollbar" Name="dlg_options/btnAudio/hsAttentionVol" >
+            <Property Name="UnifiedPosition" Value="{{0,0200},{0,223}}" />
+            <Property Name="UnifiedSize"     Value="{{1,-265},{0,014}}" />
+            <Property Name="DocumentSize"    Value="110" />
+            <Property Name="StepSize"        Value="1" />
+            <Property Name="PageSize"        Value="10" />
+            <Property Name="ID"              Value="3" />
+        </Window>
+        <Window Type="ArkanaLook/Label" Name="dlg_options/btnAudio/hsAttentionVolVal">
+            <Property Name="UnifiedPosition" Value="{{1,-65},{0,215}}" />
+            <Property Name="UnifiedSize"     Value="{{0,050},{0,030}}" />
+            <Property Name="HorzFormat"      Value="CentreAligned" />
+            <Property Name="Text">0 %</Property>
+        </Window>
+        <!-- SoundVolumeSFXMagic -->
+        <Window Type="ArkanaLook/Label" Name="dlg_options/btnAudio/lblMagicVol">
+            <Property Name="UnifiedPosition" Value="{{0,010},{0,255}}" />
+            <Property Name="UnifiedSize"     Value="{{0,180},{0,030}}" />
+            <Property Name="Text">Magic spells volume:</Property>
+        </Window>
+        <Window Type="ArkanaLook/HorizontalDecoScrollbar" Name="dlg_options/btnAudio/hsMagicVol" >
+            <Property Name="UnifiedPosition" Value="{{0,0200},{0,263}}" />
+            <Property Name="UnifiedSize"     Value="{{1,-265},{0,014}}" />
+            <Property Name="DocumentSize"    Value="110" />
+            <Property Name="StepSize"        Value="1" />
+            <Property Name="PageSize"        Value="10" />
+            <Property Name="ID"              Value="3" />
+        </Window>
+        <Window Type="ArkanaLook/Label" Name="dlg_options/btnAudio/hsMagicVolVal">
+            <Property Name="UnifiedPosition" Value="{{1,-65},{0,255}}" />
+            <Property Name="UnifiedSize"     Value="{{0,050},{0,030}}" />
+            <Property Name="HorzFormat"      Value="CentreAligned" />
+            <Property Name="Text">0 %</Property>
+        </Window>
+        <Window Type="ArkanaLook/Label" Name="dlg_options/btnAudio/lblMessage">
+            <Property Name="UnifiedPosition"  Value="{{0,010},{1,-60}}" />
+            <Property Name="UnifiedSize"      Value="{{1,-20},{0,050}}" />
+            <Property Name="HorzFormat"       Value="WordWrapCentreAligned" />
+            <Property Name="TextColourNormal" Value="FF944400" />
+            <Property Name="Text"></Property>
+        </Window>
+    </Window>
+</GUILayout>

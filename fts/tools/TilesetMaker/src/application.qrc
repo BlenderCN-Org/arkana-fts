@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/" >
+        <file>newicon16.png</file>
+        <file>newicon32.png</file>
+        <file>newicon48.png</file>
+    </qresource>
+</RCC>

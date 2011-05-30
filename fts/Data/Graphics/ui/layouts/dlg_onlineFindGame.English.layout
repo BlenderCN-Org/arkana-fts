@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<GUILayout>
+    <Window Type="ArkanaLook/FrameWindow" Name="dlg_onlineFindGame">
+        <Property Name="UnifiedPosition"    Value="{{0,0},{0,0}}" />
+        <Property Name="UnifiedMinSize"     Value="{{1,0},{1,0}}" />
+        <Property Name="UnifiedSize"        Value="{{0,0},{0,0}}" />
+        <Property Name="TitlebarEnabled"    Value="false" />
+        <Property Name="FrameEnabled"       Value="true"  />
+        <Property Name="SizingEnabled"      Value="false" />
+        <Property Name="CloseButtonEnabled" Value="false" />
+        <Property Name="AlwaysOnTop"        Value="true"  />
+        <Property Name="Text">Find a game</Property>
+
+        <!-- The left side. -->
+        <Window Type="ArkanaLook/Label" Name="dlg_onlineFindGame/lblGames">
+            <Property Name="UnifiedPosition" Value="{{0.0,030},{0,10}}" />
+            <Property Name="UnifiedSize"     Value="{{0.4,-30},{0,24}}" />
+            <Property Name="HorzFormat"      Value="LeftAligned" />
+            <Property Name="Text">Available games:</Property>
+        </Window>
+        <Window Type="ArkanaLook/Listbox" Name="dlg_onlineFindGame/lbGames">
+            <Property Name="UnifiedPosition" Value="{{0.0,015},{0,0040}}" />
+            <Property Name="UnifiedSize"     Value="{{0.4,-30},{1,-170}}" />
+            <Property Name="ID"              Value="1" />
+        </Window>
+        <Window Type="ArkanaLook/Label" Name="dlg_onlineFindGame/lblFilter">
+            <Property Name="UnifiedPosition" Value="{{0.0,015},{1,-125}}" />
+            <Property Name="UnifiedSize"     Value="{{0.4,-30},{0,0025}}" />
+            <Property Name="Text">Filter the games:</Property>
+        </Window>
+        <Window Type="ArkanaLook/Editbox" Name="dlg_onlineFindGame/edFilter">
+            <Property Name="UnifiedPosition" Value="{{0.0,015},{1,-100}}" />
+            <Property Name="UnifiedSize"     Value="{{0.4,-30},{0,0030}}" />
+            <Property Name="ID"              Value="2" />
+            <Property Name="Text">Type text here to filter</Property>
+        </Window>
+        <Window Type="ArkanaLook/Button" Name="dlg_onlineFindGame/btnJoin">
+            <Property Name="UnifiedPosition" Value="{{0.00,015},{1,-55}}" />
+            <Property Name="UnifiedSize"     Value="{{0.13,-20},{0,040}}" />
+            <Property Name="ID"              Value="3" />
+            <Property Name="Text">Join</Property>
+        </Window>
+        <Window Type="ArkanaLook/Button" Name="dlg_onlineFindGame/btnRefresh">
+            <Property Name="UnifiedPosition" Value="{{0.13,010},{1,-55}}" />
+            <Property Name="UnifiedSize"     Value="{{0.13,-15},{0,040}}" />
+            <Property Name="ID"              Value="4" />
+            <Property Name="Text">Refresh</Property>
+        </Window>
+        <Window Type="ArkanaLook/Button" Name="dlg_onlineFindGame/btnCancel">
+            <Property Name="UnifiedPosition" Value="{{0.27,000},{1,-55}}" />
+            <Property Name="UnifiedSize"     Value="{{0.13,-15},{0,040}}" />
+            <Property Name="ID"              Value="5" />
+            <Property Name="Text">Cancel</Property>
+        </Window>
+
+        <!-- The top right side (map infos). -->
+        <Window Type="ArkanaLook/StaticFrame" Name="dlg_onlineFindGame/lblMapName">
+            <Property Name="UnifiedPosition" Value="{{0.4,000},{0,029}}" />
+            <Property Name="UnifiedSize"     Value="{{0.6,-15},{0,300}}" />
+            <Window Type="ArkanaLook/DecoButton" Name="dlg_onlineFindGame/MapImage">
+                <Property Name="UnifiedPosition" Value="{{0,010},{0,030}}" />
+                <Property Name="UnifiedSize"     Value="{{0,204},{0,204}}" />
+                <Property Name="ImageNormal"     Value="set:ArkanaLook image:OneTransparentPixel" />
+                <Property Name="ImageHover"      Value="set:ArkanaLook image:OneTransparentPixel" />
+                <Property Name="ImagePushed"     Value="set:ArkanaLook image:OneTransparentPixel" />
+                <Property Name="ImageDisabled"   Value="set:ArkanaLook image:OneTransparentPixel" />
+                <Property Name="MousePassThroughEnabled" Value="True" />
+            </Window>
+            <Window Type="ArkanaLook/Label" Name="dlg_onlineFindGame/lblMapDesc">
+                <Property Name="UnifiedPosition" Value="{{0,0220},{0,030}}" />
+                <Property Name="UnifiedSize"     Value="{{1,-230},{0,204}}" />
+                <Property Name="HorzFormat"      Value="WordWrapLeftAligned" />
+                <Property Name="VertFormat"      Value="TopAligned" />
+                <Property Name="Font"            Value="normal2" />
+            </Window>
+            <Window Type="ArkanaLook/Label" Name="dlg_onlineFindGame/lblMapAuthorAndModif">
+                <Property Name="UnifiedPosition" Value="{{0,010},{0,240}}" />
+                <Property Name="UnifiedSize"     Value="{{1,-20},{0,025}}" />
+                <Property Name="HorzFormat"      Value="LeftAligned" />
+                <Property Name="Font"            Value="normal2" />
+            </Window>
+            <Window Type="ArkanaLook/Label" Name="dlg_onlineFindGame/lblMapPlayers">
+                <Property Name="UnifiedPosition" Value="{{0,010},{0,265}}" />
+                <Property Name="UnifiedSize"     Value="{{1,-20},{0,025}}" />
+                <Property Name="HorzFormat"      Value="LeftAligned" />
+                <Property Name="Font"            Value="normal2" />
+            </Window>
+        </Window>
+        <!-- The bottom right side (game infos). -->
+        <Window Type="ArkanaLook/StaticFrame" Name="dlg_onlineFindGame/lblGameName">
+            <Property Name="UnifiedPosition" Value="{{0.4,000},{0,0335}}" />
+            <Property Name="UnifiedSize"     Value="{{0.6,-15},{1,-350}}" />
+            <Property Name="ID"              Value="6" />
+            <Window Type="ArkanaLook/Label" Name="dlg_onlineFindGame/lblGameHost">
+                <Property Name="UnifiedPosition" Value="{{0,010},{0,30}}" />
+                <Property Name="UnifiedSize"     Value="{{1,-20},{0,25}}" />
+                <Property Name="HorzFormat"      Value="LeftAligned" />
+                <Property Name="Font"            Value="normal2" />
+            </Window>
+            <Window Type="ArkanaLook/Label" Name="dlg_onlineFindGame/lblGameSuggLbl">
+                <Property Name="UnifiedPosition" Value="{{0,010},{0,55}}" />
+                <Property Name="UnifiedSize"     Value="{{1,-20},{0,25}}" />
+                <Property Name="HorzFormat"      Value="LeftAligned" />
+                <Property Name="Font"            Value="normal2" />
+                <Property Name="Text">‣ The author of the map suggests the following player count:</Property>
+            </Window>
+            <Window Type="ArkanaLook/Label" Name="dlg_onlineFindGame/lblGameSugg">
+                <Property Name="UnifiedPosition" Value="{{0,030},{0,85}}" />
+                <Property Name="UnifiedSize"     Value="{{1,-20},{0,25}}" />
+                <Property Name="HorzFormat"      Value="LeftAligned" />
+                <Property Name="Font"            Value="normal2" />
+            </Window>
+            <Window Type="ArkanaLook/Label" Name="dlg_onlineFindGame/lblGamePlayers">
+                <Property Name="UnifiedPosition" Value="{{0,010},{0,115}}" />
+                <Property Name="UnifiedSize"     Value="{{1,-20},{0,025}}" />
+                <Property Name="HorzFormat"      Value="LeftAligned" />
+                <Property Name="Font"            Value="normal2" />
+            </Window>
+            <Window Type="ArkanaLook/Listbox" Name="dlg_onlineFindGame/lbPlayers">
+                <Property Name="UnifiedPosition" Value="{{0,020},{0,0145}}" />
+                <Property Name="UnifiedSize"     Value="{{1,-40},{1,-160}}" />
+                <Property Name="Sort"            Value="false" />
+                <Property Name="ID"              Value="1" />
+            </Window>
+        </Window>
+    </Window>
+</GUILayout>

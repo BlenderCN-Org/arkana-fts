@@ -1,0 +1,182 @@
+<?xml version="1.0" ?>
+
+<GUILayout>
+    <Window Type="ArkanaLook/FrameWindow" Name="menu_online_main">
+        <Property Name="UnifiedPosition"    Value="{{0,0},{0,0}}" />
+        <Property Name="UnifiedSize"        Value="{{1,0},{1,0}}" />
+        <Property Name="UnifiedMinSize"     Value="{{1,0},{1,0}}" />
+        <Property Name="TitlebarEnabled"    Value="false" />
+        <Property Name="SizingEnabled"      Value="false" />
+        <Property Name="CloseButtonEnabled" Value="false" />
+        <Property Name="ID"                 Value="1" />
+        <Property Name="Text">Online Menü</Property>
+
+        <Window Type="ArkanaLook/Label" Name="Info">
+            <Property Name="UnifiedPosition"  Value="{{1,-130},{0,05}}" />
+            <Property Name="UnifiedSize"      Value="{{0,0130},{0,35}}" />
+            <Property Name="InheritsAlpha"    Value="False" />
+            <Property Name="AlwaysOnTop"      Value="true" />
+            <Property Name="Text"></Property>
+        </Window>
+
+        <!-- Here comes the first part - the button list on the left. -->
+        <!-- ======================================================== -->
+
+        <Window Type="ArkanaLook/DecoButtonTxt" Name="menu_online_main/btnFind">
+            <Property Name="UnifiedPosition" Value="{{0,010},{0,10}}" />
+            <Property Name="UnifiedSize"     Value="{{0,100},{0,80}}" />
+            <Property Name="ImageNormal"     Value="set:FTSUI image:OnlineFindN" />
+            <Property Name="ImageHover"      Value="set:FTSUI image:OnlineFindH" />
+            <Property Name="ImagePushed"     Value="set:FTSUI image:OnlineFindH" />
+            <Property Name="ImageDisabled"   Value="set:FTSUI image:OnlineFindN" />
+            <Property Name="ID"              Value="1" />
+            <Property Name="Tooltip">Suche ein Spiel, welches Du beitreten möchtest</Property>
+            <Property Name="Text">Spiel suchen</Property>
+        </Window>
+        <Window Type="ArkanaLook/DecoButtonTxt" Name="menu_online_main/btnHost">
+            <Property Name="UnifiedPosition" Value="{{0,010},{0,100}}" />
+            <Property Name="UnifiedSize"     Value="{{0,100},{0,080}}" />
+            <Property Name="ImageNormal"     Value="set:FTSUI image:OnlineHostN" />
+            <Property Name="ImageHover"      Value="set:FTSUI image:OnlineHostH" />
+            <Property Name="ImagePushed"     Value="set:FTSUI image:OnlineHostH" />
+            <Property Name="ImageDisabled"   Value="set:FTSUI image:OnlineHostN" />
+            <Property Name="ID"              Value="2" />
+            <Property Name="Tooltip">Erstelle ein eigenes Spiel, welches andere Spieler beitreten können</Property>
+            <Property Name="Text">Spiel hosten</Property>
+        </Window>
+        <Window Type="ArkanaLook/DecoButtonTxt" Name="menu_online_main/btnChat">
+            <Property Name="UnifiedPosition" Value="{{0,010},{0,190}}" />
+            <Property Name="UnifiedSize"     Value="{{0,100},{0,080}}" />
+            <Property Name="ImageNormal"     Value="set:FTSUI image:OnlineChatN" />
+            <Property Name="ImageHover"      Value="set:FTSUI image:OnlineChatH" />
+            <Property Name="ImagePushed"     Value="set:FTSUI image:OnlineChatH" />
+            <Property Name="ImageDisabled"   Value="set:FTSUI image:OnlineChatN" />
+            <Property Name="ID"              Value="3" />
+            <Property Name="Tooltip">Wähle einen Raum oder erstelle einen eigenen</Property>
+            <Property Name="Text">Raum</Property>
+        </Window>
+        <Window Type="ArkanaLook/DecoButtonTxt" Name="menu_online_main/btnAcct">
+            <Property Name="UnifiedPosition" Value="{{0,010},{0,280}}" />
+            <Property Name="UnifiedSize"     Value="{{0,100},{0,080}}" />
+            <Property Name="ImageNormal"     Value="set:FTSUI image:OnlineAcctN" />
+            <Property Name="ImageHover"      Value="set:FTSUI image:OnlineAcctH" />
+            <Property Name="ImagePushed"     Value="set:FTSUI image:OnlineAcctH" />
+            <Property Name="ImageDisabled"   Value="set:FTSUI image:OnlineAcctN" />
+            <Property Name="ID"              Value="4" />
+            <Property Name="Tooltip">Ändere Angaben deines Accounts</Property>
+            <Property Name="Text">Account</Property>
+        </Window>
+        <Window Type="ArkanaLook/DecoButtonTxt" Name="menu_online_main/btnFeedback">
+            <Property Name="UnifiedPosition" Value="{{0,010},{0,370}}" />
+            <Property Name="UnifiedSize"     Value="{{0,100},{0,080}}" />
+            <Property Name="ImageNormal"     Value="set:FTSUI image:OnlineFeedbackN" />
+            <Property Name="ImageHover"      Value="set:FTSUI image:OnlineFeedbackH" />
+            <Property Name="ImagePushed"     Value="set:FTSUI image:OnlineFeedbackH" />
+            <Property Name="ImageDisabled"   Value="set:FTSUI image:OnlineFeedbackN" />
+            <Property Name="ID"              Value="5" />
+            <Property Name="Tooltip">Wir freuen uns über jedes Feedback. Danke!</Property>
+            <Property Name="Text">Feedback</Property>
+        </Window>
+        <Window Type="ArkanaLook/DecoButtonTxt" Name="menu_online_main/btnSettings">
+            <Property Name="UnifiedPosition" Value="{{0,010},{1,-180}}" />
+            <Property Name="UnifiedSize"     Value="{{0,100},{0,0080}}" />
+            <Property Name="ImageNormal"     Value="set:FTSUI image:OnlineSettingsN" />
+            <Property Name="ImageHover"      Value="set:FTSUI image:OnlineSettingsH" />
+            <Property Name="ImagePushed"     Value="set:FTSUI image:OnlineSettingsH" />
+            <Property Name="ImageDisabled"   Value="set:FTSUI image:OnlineSettingsN" />
+            <Property Name="ID"              Value="6" />
+            <Property Name="Text">Einstellungen</Property>
+        </Window>
+        <Window Type="ArkanaLook/DecoButtonTxt" Name="menu_online_main/btnQuit">
+            <Property Name="UnifiedPosition" Value="{{0,010},{1,-90}}" />
+            <Property Name="UnifiedSize"     Value="{{0,100},{0,080}}" />
+            <Property Name="ImageNormal"     Value="set:FTSUI image:OnlineQuitN" />
+            <Property Name="ImageHover"      Value="set:FTSUI image:OnlineQuitH" />
+            <Property Name="ImagePushed"     Value="set:FTSUI image:OnlineQuitH" />
+            <Property Name="ImageDisabled"   Value="set:FTSUI image:OnlineQuitN" />
+            <Property Name="ID"              Value="7" />
+            <Property Name="Text">Ausloggen</Property>
+        </Window>
+
+        <!-- Now comes the main part - the chat window. -->
+        <!-- ========================================== -->
+        <Window Type="ArkanaLook/Editbox" Name="menu_online_main/edChanName">
+            <Property Name="UnifiedPosition" Value="{{0,120},{0,10}}" />
+            <Property Name="UnifiedSize"     Value="{{0,300},{0,30}}" />
+            <Property Name="ReadOnly"        Value="true" />
+            <Property Name="Text">TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT</Property>
+            <Property Name="ID"              Value="8" />
+        </Window>
+        <Window Type="ArkanaLook/Editbox" Name="menu_online_main/edChanInfo">
+            <Property Name="UnifiedPosition" Value="{{0,0430},{0,10}}" />
+            <Property Name="UnifiedSize"     Value="{{1,-440},{0,30}}" />
+            <Property Name="ReadOnly"        Value="true" />
+            <Property Name="ID"              Value="9" />
+        </Window>
+        <Window Type="ArkanaLook/Listbox" Name="menu_online_main/lbChat">
+            <Property Name="UnifiedPosition" Value="{{0.00,0120},{0,0050}}" />
+            <Property Name="UnifiedSize"     Value="{{0.75,-130},{1,-100}}" />
+            <Property Name="ForceVertScrollbar" Value="True" />
+            <Property Name="ID"              Value="10" />
+        </Window>
+        <Window Type="ArkanaLook/Editbox" Name="menu_online_main/edMessage">
+            <Property Name="UnifiedPosition" Value="{{0,0120},{1,-42}}" />
+            <Property Name="UnifiedSize"     Value="{{1,-240},{0,032}}" />
+            <Property Name="ID"              Value="12" />
+        </Window>
+        <Window Type="ArkanaLook/Button" Name="menu_online_main/btnSend">
+            <Property Name="UnifiedPosition" Value="{{1,-110},{1,-42}}" />
+            <Property Name="UnifiedSize"     Value="{{0,0100},{0,032}}" />
+            <Property Name="ID"              Value="13" />
+            <Property Name="Text">Senden</Property>
+        </Window>
+
+        <!-- And here comes the last part - the list of users. -->
+        <!-- ================================================= -->
+        <Window Type="ArkanaLook/Listbox" Name="menu_online_main/lbUsers">
+            <Property Name="UnifiedPosition" Value="{{0.75,000},{0,0050}}" />
+            <Property Name="UnifiedSize"     Value="{{0.25,-10},{1,-100}}" />
+            <Property Name="ID"              Value="11" />
+        </Window>
+
+        <!-- And here comes the invisible part - the popup menu(s). -->
+        <!-- ====================================================== -->
+        <Window Type="ArkanaLook/PopupMenu" Name="menu_online_main/pmUser" >
+            <Property Name="UnifiedPosition" Value="{{0.75,0},{0,0}}" />
+            <Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+            <Property Name="UnifiedMinSize" Value="{{0,175},{0,238}}" />
+            <Property Name="AlwaysOnTop" Value="True" />
+            <Property Name="FadeOutTime" Value="0.25" />
+            <Property Name="FadeInTime" Value="0.25" />
+            <Property Name="ItemSpacing" Value="2" />
+            <Window Type="ArkanaLook/MenuItem" Name="menu_online_main/pmUser/info" >
+                <Property Name="Tooltip">Öffnet die Angaben des Spielers</Property>
+                <Property Name="Text">Infos</Property>
+            </Window>
+            <Window Type="ArkanaLook/MenuItem" Name="menu_online_main/pmUser/whisp" >
+                <Property Name="Tooltip">Schreibe eine private Nachricht, du nur der Empfänger lesen kann</Property>
+                <Property Name="Text">Private Nachricht</Property>
+            </Window>
+            <Window Type="ArkanaLook/MenuItem" Name="menu_online_main/pmUser/mute" >
+                <Property Name="Tooltip">Du wirst nichts mehr von diesem Spieler lesen können</Property>
+                <Property Name="Text">Ignorieren</Property>
+            </Window>
+            <Window Type="ArkanaLook/MenuItem" Name="menu_online_main/pmUser/unmute" >
+                <Property Name="Tooltip">Hebt das Ignorieren auf</Property>
+                <Property Name="Text">Nicht mehr ignorieren</Property>
+            </Window>
+            <Window Type="ArkanaLook/MenuItem" Name="menu_online_main/pmUser/kick" >
+                <Property Name="Tooltip">Entfernt einen Spieler vom Raum</Property>
+                <Property Name="Text">Rausschmeißen</Property>
+            </Window>
+            <Window Type="ArkanaLook/MenuItem" Name="menu_online_main/pmUser/op" >
+                <Property Name="Tooltip">Gebe einem Spieler mehr Rechte</Property>
+                <Property Name="Text">Befördern</Property>
+            </Window>
+            <Window Type="ArkanaLook/MenuItem" Name="menu_online_main/pmUser/deop" >
+                <Property Name="Tooltip">Operatorrechte entziehen</Property>
+                <Property Name="Text">Degradieren</Property>
+            </Window>
+        </Window>
+    </Window>
+</GUILayout>

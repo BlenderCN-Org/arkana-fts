@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<GUILayout>
+    <Window Type="ArkanaLook/FrameWindow" Name="file_dlg">
+        <Property Name="UnifiedPosition"    Value="{{0.25,0},{0.25,0}}" />
+        <Property Name="UnifiedSize"        Value="{{0.50,0},{0.50,0}}" />
+        <Property Name="UnifiedMaxSize"     Value="{{0.80,0},{0.80,0}}" />
+        <Property Name="UnifiedMinSize"     Value="{{0.25,0},{0.25,0}}" />
+        <Property Name="SizingEnabled"      Value="true" />
+        <Property Name="CloseButtonEnabled" Value="true" />
+        <Property Name="AlwaysOnTop"        Value="true" />
+        <Property Name="Text">Choose a file</Property>
+        <Window Type="ArkanaLook/StaticText" Name="file_dlg/TxtEdit">
+            <Property Name="UnifiedPosition" Value="{{0,015},{0,50}}" />
+            <Property Name="UnifiedSize"     Value="{{1,-30},{0,35}}" />
+            <Property Name="HorzFormatting"  Value="HorzCentred" />
+            <Property Name="Text">blablabla</Property>
+        </Window>
+        <Window Type="ArkanaLook/Editbox" Name="file_dlg/FName">
+            <Property Name="UnifiedPosition" Value="{{0,015},{0,95}}" />
+            <Property Name="UnifiedSize"     Value="{{1,-30},{0,30}}" />
+            <Property Name="MaxTextLength"   Value="255" />
+            <Property Name="ID"              Value="1" />
+        </Window>
+        <Window Type="ArkanaLook/Listbox" Name="file_dlg/FList">
+            <Property Name="UnifiedPosition" Value="{{0,015},{0,0130}}" />
+            <Property Name="UnifiedSize"     Value="{{1,-30},{1,-195}}" />
+            <Property Name="Sort"            Value="false" />
+            <Property Name="ID"              Value="2" />
+        </Window>
+        <Window Type="ArkanaLook/Button" Name="file_dlg/Ok">
+            <Property Name="UnifiedPosition" Value="{{0.0,015},{1,-55}}" />
+            <Property Name="UnifiedSize"     Value="{{0.5,-20},{0,040}}" />
+            <Property Name="ID"              Value="3" />
+            <Property Name="Text">Ok</Property>
+        </Window>
+        <Window Type="ArkanaLook/Button" Name="file_dlg/Cancel">
+            <Property Name="UnifiedPosition" Value="{{0.5,005},{1,-55}}" />
+            <Property Name="UnifiedSize"     Value="{{0.5,-20},{0,040}}" />
+            <Property Name="ID"              Value="4" />
+            <Property Name="Text">Cancel</Property>
+        </Window>
+    </Window>
+</GUILayout>

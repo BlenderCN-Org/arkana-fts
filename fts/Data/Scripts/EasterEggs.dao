@@ -1,0 +1,13 @@
+routine HalloweenEasterEgg(in_sLoadingModel : string)
+{
+    io.println('Loading the model:', in_sLoadingModel)
+
+    # If the user loads the pumpkin model, we want to play the zombie sound :)
+    if(in_sLoadingModel.find('Pumpkin') >= 0) {
+        sndback.pause()
+        sndEasterEgg.resume()
+    } else {
+        sndEasterEgg.pause()
+        sndback.resume()
+    }
+}

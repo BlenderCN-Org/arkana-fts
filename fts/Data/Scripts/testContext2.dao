@@ -1,0 +1,14 @@
+io.writeln('In script testContext2.dao')
+
+class SndDaoOtto : IHotkey
+{
+  sub doOtto() {
+    io.writef( 'Dao: in doOtto()\n')
+  }
+  sub name() { io.println('DaoOtto')}
+}
+global objSnd = SndDaoOtto()
+objSnd.doOtto()
+objSnd.name()
+
+io.writeln('END script testContext2.dao')

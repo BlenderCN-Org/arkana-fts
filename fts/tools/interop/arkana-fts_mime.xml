@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mime-info xmlns="http://www.freedesktop.org/standards/shared-mime-info">
+    <mime-type type="application/ftsmap">
+        <comment>Arkana-FTS map</comment>
+        <comment xml:lang="de">Arkana-FTS Karte</comment>
+        <comment xml:lang="fr">Carte Arkana-FTS</comment>
+        <acronym>FTSM</acronym>
+        <expanded-acronym>FTS Map</expanded-acronym>
+
+        <icon name="application-x-archive" />
+        <generic-icon name="application-x-archive" />
+
+        <magic priority="25">
+            <match type="string" value="FTSARC" offset="0"/>
+        </magic>
+        <magic priority="10">
+            <match type="string" value="FTSLZO" offset="0"/>
+        </magic>
+        <glob pattern="*.ftsm"/>
+    </mime-type>
+
+    <mime-type type="image/ftsimg">
+        <comment>Arkana-FTS image</comment>
+        <comment xml:lang="de">Arkana-FTS Bild</comment>
+        <comment xml:lang="fr">Image Arkana-FTS</comment>
+        <acronym>FTSIMG</acronym>
+        <expanded-acronym>FTS IMaGe</expanded-acronym>
+
+        <icon name="image-x-generic" />
+        <generic-icon name="image-x-generic" />
+
+        <magic priority="50">
+            <match type="string" value="FTSIMG" offset="0"/>
+        </magic>
+        <magic priority="10">
+            <match type="string" value="FTSLZO" offset="0"/>
+        </magic>
+        <glob pattern="*.ftsimg"/>
+    </mime-type>
+
+    <mime-type type="application/ftsarc">
+        <comment>Arkana-FTS archive</comment>
+        <comment xml:lang="de">Arkana-FTS Archiv</comment>
+        <comment xml:lang="fr">Archive Arkana-FTS</comment>
+        <acronym>FTSARC</acronym>
+        <expanded-acronym>FTS ARChive</expanded-acronym>
+
+        <icon name="application-x-archive" />
+        <generic-icon name="application-x-archive" />
+
+        <magic priority="50">
+            <match type="string" value="FTSARC" offset="0"/>
+        </magic>
+        <magic priority="10">
+            <match type="string" value="FTSLZO" offset="0"/>
+        </magic>
+        <glob pattern="*.ftsarc"/>
+    </mime-type>
+
+    <mime-type type="application/ftslzo">
+        <comment>Arkana-FTS Datafile (LZO-compressed)</comment>
+        <comment xml:lang="de">Arkana-FTS Datei (LZO-komprimiert)</comment>
+        <comment xml:lang="fr">Fichier Arkana-FTS (comprimé par LZO)</comment>
+
+        <icon name="application-x-lzop" />
+        <generic-icon name="application-x-compress" />
+
+        <magic priority="10">
+            <match type="string" value="FTSLZO" offset="0"/>
+        </magic>
+    </mime-type>
+</mime-info>

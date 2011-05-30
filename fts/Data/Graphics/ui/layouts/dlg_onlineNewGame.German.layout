@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<GUILayout>
+    <Window Type="ArkanaLook/FrameWindow" Name="dlg_onlineNewGame">
+        <Property Name="UnifiedPosition"    Value="{{0.1,0},{0.1,0}}" />
+        <Property Name="UnifiedSize"        Value="{{0.8,0},{0.8,0}}" />
+        <Property Name="UnifiedMinSize"     Value="{{0,700},{0,500}}" />
+        <Property Name="SizingEnabled"      Value="true" />
+        <Property Name="CloseButtonEnabled" Value="true" />
+        <Property Name="AlwaysOnTop"        Value="true" />
+        <Property Name="Text">Neues Spiel erstellen</Property>
+        <Window Type="ArkanaLook/Label" Name="dlg_onlineNewGame/lblGameName">
+            <Property Name="UnifiedPosition" Value="{{0,015},{0,40}}" />
+            <Property Name="UnifiedSize"     Value="{{0,110},{0,35}}" />
+            <Property Name="Text">Name des Spiels:</Property>
+        </Window>
+        <Window Type="ArkanaLook/Editbox" Name="dlg_onlineNewGame/edGameName">
+            <Property Name="UnifiedPosition" Value="{{0,015},{0,80}}" />
+            <Property Name="UnifiedSize"     Value="{{0,250},{0,30}}" />
+            <Property Name="ID"              Value="1" />
+        </Window>
+        <Window Type="ArkanaLook/StaticFrame" Name="dlg_onlineNewGame/frmMap">
+            <Property Name="UnifiedPosition" Value="{{0,015},{0,0120}}" />
+            <Property Name="UnifiedSize"     Value="{{0,250},{1,-185}}" />
+            <Property Name="ID"              Value="2" />
+            <Property Name="Text">Karte:</Property>
+            <Window Type="ArkanaLook/RadioButtonLabelRight" Name="dlg_onlineNewGame/frmMap/Load">
+                <Property Name="UnifiedPosition" Value="{{0,007},{0,20}}" />
+                <Property Name="UnifiedSize"     Value="{{1,-20},{0,24}}" />
+                <Property Name="ID"              Value="1" />
+                <Property Name="Text">Von Datei laden:</Property>
+            </Window>
+            <Window Type="ArkanaLook/Editbox" Name="dlg_onlineNewGame/frmMap/edLoadFile">
+                <Property Name="UnifiedPosition" Value="{{0,020},{0,50}}" />
+                <Property Name="UnifiedSize"     Value="{{1,-67},{0,30}}" />
+                <Property Name="ID"              Value="2" />
+            </Window>
+            <Window Type="ArkanaLook/DecoButton" Name="dlg_onlineNewGame/frmMap/btnLoadFile">
+                <Property Name="UnifiedPosition" Value="{{1,-42},{0,48}}" />
+                <Property Name="UnifiedSize"     Value="{{0,034},{0,34}}" />
+                <Property Name="ImageNormal"     Value="set:FTSUI image:DirIcon2" />
+                <Property Name="ImageHover"      Value="set:FTSUI image:DirIcon2H" />
+                <Property Name="ImagePushed"     Value="set:FTSUI image:DirIcon2" />
+                <Property Name="ImageDisabled"   Value="set:FTSUI image:DirIcon2D" />
+                <Property Name="ID"              Value="3" />
+            </Window>
+            <Window Type="ArkanaLook/RadioButtonLabelRight" Name="dlg_onlineNewGame/frmMap/Resume">
+                <Property Name="UnifiedPosition" Value="{{0,05},{0,100}}" />
+                <Property Name="UnifiedSize"     Value="{{1,-20},{0,24}}" />
+                <Property Name="ID"              Value="4" />
+                <Property Name="Text">Gespeichertes Spiel:</Property>
+            </Window>
+            <Window Type="ArkanaLook/Editbox" Name="dlg_onlineNewGame/frmMap/edResumeFile">
+                <Property Name="UnifiedPosition" Value="{{0,020},{0,130}}" />
+                <Property Name="UnifiedSize"     Value="{{1,-67},{0,030}}" />
+                <Property Name="ID"              Value="5" />
+            </Window>
+            <Window Type="ArkanaLook/DecoButton" Name="dlg_onlineNewGame/frmMap/btnResumeFile">
+                <Property Name="UnifiedPosition" Value="{{1,-42},{0,128}}" />
+                <Property Name="UnifiedSize"     Value="{{0,034},{0,034}}" />
+                <Property Name="ImageNormal"     Value="set:FTSUI image:DirIcon2" />
+                <Property Name="ImageHover"      Value="set:FTSUI image:DirIcon2H" />
+                <Property Name="ImagePushed"     Value="set:FTSUI image:DirIcon2" />
+                <Property Name="ImageDisabled"   Value="set:FTSUI image:DirIcon2D" />
+                <Property Name="ID"              Value="6" />
+            </Window>
+            <Window Type="ArkanaLook/RadioButtonLabelRight" Name="dlg_onlineNewGame/frmMap/Random">
+                <Property Name="Selected" Value="true" />
+                <Property Name="UnifiedPosition" Value="{{0,05},{0,180}}" />
+                <Property Name="UnifiedSize"     Value="{{1,-20},{0,24}}" />
+                <Property Name="ID"              Value="7" />
+                <Property Name="Text">Zufällig generieren:</Property>
+            </Window>
+            <Window Type="ArkanaLook/Label" Name="dlg_onlineNewGame/frmMap/lblRandomType">
+                <Property Name="UnifiedPosition" Value="{{0.0,010},{0,210}}" />
+                <Property Name="UnifiedSize"     Value="{{0.5,-13},{0,030}}" />
+                <Property Name="Text">Kartentyp:</Property>
+            </Window>
+            <Window Type="ArkanaLook/Combobox" Name="dlg_onlineNewGame/frmMap/cbRandomType">
+                <Property Name="UnifiedPosition" Value="{{0.5,002},{0,210}}" />
+                <Property Name="UnifiedSize"     Value="{{0.5,-12},{0,128}}" />
+                <Property Name="ReadOnly"        Value="True" />
+                <Property Name="ID"              Value="8" />
+            </Window>
+            <Window Type="ArkanaLook/Button" Name="dlg_onlineNewGame/frmMap/btnRandomSetup">
+                <Property Name="UnifiedPosition" Value="{{0.5,002},{0,240}}" />
+                <Property Name="UnifiedSize"     Value="{{0.5,-12},{0,030}}" />
+                <Property Name="ID"              Value="9" />
+                <Property Name="Text">Einstellen</Property>
+            </Window>
+        </Window>
+        <Window Type="ArkanaLook/Label" Name="dlg_onlineNewGame/lblMapImage">
+            <Property Name="UnifiedPosition" Value="{{0,280},{0,40}}" />
+            <Property Name="UnifiedSize"     Value="{{0,100},{0,35}}" />
+            <Property Name="Text">Vorschau:</Property>
+        </Window>
+        <Window Type="ArkanaLook/DecoButton" Name="dlg_onlineNewGame/MapImage">
+            <Property Name="UnifiedPosition" Value="{{0,280},{0,080}}" />
+            <Property Name="UnifiedSize"     Value="{{0,200},{0,200}}" />
+            <Property Name="ImageNormal"     Value="set:ArkanaLook image:OneTransparentPixel" />
+            <Property Name="ImageHover"      Value="set:ArkanaLook image:OneTransparentPixel" />
+            <Property Name="ImagePushed"     Value="set:ArkanaLook image:OneTransparentPixel" />
+            <Property Name="ImageDisabled"   Value="set:ArkanaLook image:OneTransparentPixel" />
+            <Property Name="MousePassThroughEnabled" Value="True" />
+        </Window>
+        <Window Type="ArkanaLook/StaticFrame" Name="dlg_onlineNewGame/frmMapInfo">
+            <Property Name="UnifiedPosition" Value="{{0,0490},{0,070}}" />
+            <Property Name="UnifiedSize"     Value="{{1,-500},{0,210}}" />
+            <Property Name="ID"              Value="2" />
+            <Property Name="Text">Map Infos:</Property>
+            <Window Type="ArkanaLook/Label" Name="dlg_onlineNewGame/frmMapInfo/lblName">
+                <Property Name="UnifiedPosition" Value="{{0,10},{0,20}}" />
+                <Property Name="UnifiedSize"     Value="{{0,43},{0,24}}" />
+                <Property Name="Text">Name:</Property>
+            </Window>
+            <Window Type="ArkanaLook/Label" Name="dlg_onlineNewGame/frmMapInfo/sName">
+                <Property Name="UnifiedPosition" Value="{{0,058},{0,20}}" />
+                <Property Name="UnifiedSize"     Value="{{1,-68},{0,24}}" />
+                <Property Name="HorzFormat"      Value="RightAligned" />
+            </Window>
+            <Window Type="ArkanaLook/Label" Name="dlg_onlineNewGame/frmMapInfo/lblAuthor">
+                <Property Name="UnifiedPosition" Value="{{0,10},{0,50}}" />
+                <Property Name="UnifiedSize"     Value="{{0,43},{0,24}}" />
+                <Property Name="Text">Autor:</Property>
+            </Window>
+            <Window Type="ArkanaLook/Label" Name="dlg_onlineNewGame/frmMapInfo/sAuthor">
+                <Property Name="UnifiedPosition" Value="{{0,058},{0,50}}" />
+                <Property Name="UnifiedSize"     Value="{{1,-68},{0,24}}" />
+                <Property Name="HorzFormat"      Value="RightAligned" />
+            </Window>
+            <Window Type="ArkanaLook/Label" Name="dlg_onlineNewGame/frmMapInfo/lblLastModif">
+                <Property Name="UnifiedPosition" Value="{{0,010},{0,80}}" />
+                <Property Name="UnifiedSize"     Value="{{0,115},{0,024}}" />
+                <Property Name="Text">Letzte Änderung:</Property>
+            </Window>
+            <Window Type="ArkanaLook/Label" Name="dlg_onlineNewGame/frmMapInfo/sLastModif">
+                <Property Name="UnifiedPosition" Value="{{0,0125},{0,80}}" />
+                <Property Name="UnifiedSize"     Value="{{1,-135},{0,024}}" />
+                <Property Name="HorzFormat"      Value="RightAligned" />
+            </Window>
+            <Window Type="ArkanaLook/Label" Name="dlg_onlineNewGame/frmMapInfo/lblMinMax">
+                <Property Name="UnifiedPosition" Value="{{0,010},{0,110}}" />
+                <Property Name="UnifiedSize"     Value="{{0,115},{0,024}}" />
+                <Property Name="Text">Spieler min/max:</Property>
+            </Window>
+            <Window Type="ArkanaLook/Label" Name="dlg_onlineNewGame/frmMapInfo/sMinMax">
+                <Property Name="UnifiedPosition" Value="{{0,0125},{0,110}}" />
+                <Property Name="UnifiedSize"     Value="{{1,-135},{0,024}}" />
+                <Property Name="HorzFormat"      Value="RightAligned" />
+            </Window>
+            <Window Type="ArkanaLook/Label" Name="dlg_onlineNewGame/frmMapInfo/lblSugg">
+                <Property Name="UnifiedPosition" Value="{{0,010},{0,140}}" />
+                <Property Name="UnifiedSize"     Value="{{1,-20},{0,024}}" />
+                <Property Name="Text">Empfohlene Spielerzahl:</Property>
+            </Window>
+            <Window Type="ArkanaLook/Label" Name="dlg_onlineNewGame/frmMapInfo/sSugg">
+                <Property Name="UnifiedPosition" Value="{{0,010},{0,170}}" />
+                <Property Name="UnifiedSize"     Value="{{1,-20},{0,024}}" />
+                <Property Name="HorzFormat"      Value="LeftAligned" />
+            </Window>
+        </Window>
+        <Window Type="ArkanaLook/StaticFrame" Name="dlg_onlineNewGame/frmTechnology">
+            <Property Name="UnifiedPosition" Value="{{0,0280},{0,0290}}" />
+            <Property Name="UnifiedSize"     Value="{{1,-290},{1,-355}}" />
+            <Property Name="ID"              Value="2" />
+            <Property Name="Text">Spieleinstellungen:</Property>
+        </Window>
+        <Window Type="ArkanaLook/Button" Name="dlg_onlineNewGame/btnOk">
+            <Property Name="UnifiedPosition" Value="{{0.0,015},{1,-55}}" />
+            <Property Name="UnifiedSize"     Value="{{0.5,-20},{0,040}}" />
+            <Property Name="ID"              Value="3" />
+            <Property Name="Text">Erstellen</Property>
+        </Window>
+        <Window Type="ArkanaLook/Button" Name="dlg_onlineNewGame/btnCancel">
+            <Property Name="UnifiedPosition" Value="{{0.5,005},{1,-55}}" />
+            <Property Name="UnifiedSize"     Value="{{0.5,-20},{0,040}}" />
+            <Property Name="ID"              Value="4" />
+            <Property Name="Text">Abbrechen</Property>
+        </Window>
+    </Window>
+</GUILayout>

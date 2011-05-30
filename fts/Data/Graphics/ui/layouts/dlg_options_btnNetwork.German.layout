@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<GUILayout>
+    <Window Type="DefaultWindow" Name="dlg_options/btnNetwork">
+        <Property Name="UnifiedPosition" Value="{{0,005},{0,020}}" />
+        <Property Name="UnifiedSize"     Value="{{1,-10},{1,-25}}" />
+        <Property Name="ID"              Value="1" />
+        <Window Type="ArkanaLook/Label" Name="dlg_options/btnNetwork/lblPort">
+            <Property Name="UnifiedPosition"   Value="{{0,010},{0,15}}" />
+            <Property Name="UnifiedSize"       Value="{{0,140},{0,30}}" />
+            <Property Name="Text">Port:</Property>
+        </Window>
+        <Window Type="ArkanaLook/Spinner" Name="dlg_options/btnNetwork/spPort" >
+            <Property Name="UnifiedPosition" Value="{{0,150},{0,17}}" />
+            <Property Name="UnifiedSize"     Value="{{0,100},{0,28}}" />
+            <Property Name="CurrentValue"    Value="44917" />
+            <Property Name="MaximumValue"    Value="44927" />
+            <Property Name="MinimumValue"    Value="44912" />
+            <Property Name="ID"              Value="1" />
+        </Window>
+        <Window Type="ArkanaLook/Label" Name="dlg_options/btnNetwork/lblMaster">
+            <Property Name="UnifiedPosition"   Value="{{0,010},{0,50}}" />
+            <Property Name="UnifiedSize"       Value="{{0,140},{0,30}}" />
+            <Property Name="Text">Masterserver:</Property>
+        </Window>
+        <Window Type="ArkanaLook/Combobox" Name="dlg_options/btnNetwork/cbMaster" >
+            <Property Name="UnifiedPosition" Value="{{0,0150},{0,50}}" />
+            <Property Name="UnifiedSize"     Value="{{1,-270},{0,128}}" />
+            <Property Name="ID"              Value="2" />
+        </Window>
+        <Window Type="ArkanaLook/Button" Name="dlg_options/btnNetwork/btnUpdateMS" >
+            <Property Name="UnifiedPosition" Value="{{1,-115},{0,50}}" />
+            <Property Name="UnifiedSize"     Value="{{0,0100},{0,30}}" />
+            <Property Name="ID"              Value="3" />
+            <Property Name="Text">Aktualisieren</Property>
+            <Property Name="Tooltip">Wenn Du hier klickst, wird Arkana-FTS eine Verbindung mit dem Internet herstellen
+und eine Liste der aktuellen Masterserver laden.</Property>
+        </Window>
+        <Window Type="ArkanaLook/Label" Name="dlg_options/btnNetwork/lblChannel">
+            <Property Name="UnifiedPosition"   Value="{{0,010},{0,85}}" />
+            <Property Name="UnifiedSize"       Value="{{0,140},{0,30}}" />
+            <Property Name="Text">Standard Raum:</Property>
+        </Window>
+        <Window Type="ArkanaLook/Editbox" Name="dlg_options/btnNetwork/edChannel" >
+            <Property Name="UnifiedPosition" Value="{{0,0150},{0,85}}" />
+            <Property Name="UnifiedSize"     Value="{{1,-165},{0,30}}" />
+            <Property Name="ID"              Value="4" />
+        </Window>
+        <Window Type="ArkanaLook/Label" Name="dlg_options/btnNetwork/lblMisc">
+            <Property Name="UnifiedPosition"   Value="{{0,010},{0,125}}" />
+            <Property Name="UnifiedSize"       Value="{{0,140},{0,030}}" />
+            <Property Name="Text">Verschiedenes:</Property>
+        </Window>
+        <Window Type="ArkanaLook/CheckboxLabelRight" Name="dlg_options/btnNetwork/chkClearChat" >
+            <Property Name="UnifiedPosition" Value="{{0,0150},{0,128}}" />
+            <Property Name="UnifiedSize"     Value="{{1,-165},{0,024}}" />
+            <Property Name="ID"              Value="5" />
+            <Property Name="Text">Den Chat leeren bei Raumwechsel</Property>
+        </Window>
+        <Window Type="ArkanaLook/Button" Name="dlg_options/btnNetwork/btnDefault" >
+            <Property Name="UnifiedPosition" Value="{{1,-465},{1,-45}}" />
+            <Property Name="UnifiedSize"     Value="{{0,0460},{0,040}}" />
+            <Property Name="ID"              Value="6" />
+            <Property Name="Text">Den offiziellen Masterserver verwenden (Standard wiederherstellen)</Property>
+            <Property Name="Tooltip">Wenn Du hier klickst, wird Arkana-FTS eine Verbindung mit dem Internet herstellen
+und eine Liste der aktuellen Masterserver laden.
+Wenn Du nicht mit dem Internet verbunden bist, wird die Standard-Adresse angezeigt.
+Auch der Chatraum wird auf den Standardraum zurückgesetzt. </Property>
+        </Window>
+    </Window>
+</GUILayout>
