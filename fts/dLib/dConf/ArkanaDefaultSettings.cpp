@@ -39,9 +39,9 @@ ArkanaDefaultSettings::ArkanaDefaultSettings()
     }
     #else
     char *p = getenv("LANG");
-    if(String(p).nicmp("fr", 2)) {
+    if(String(p).nieq("fr", 2)) {
         sDefLang = "French";
-    } else if(String(p).nicmp("de", 2)) {
+    } else if(String(p).nieq("de", 2)) {
         sDefLang = "German";
     } else {
         sDefLang = "English";

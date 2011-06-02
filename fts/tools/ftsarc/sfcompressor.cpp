@@ -9,7 +9,7 @@ using namespace FTSArc;
 using namespace FTS;
 
 SingleFileCompressor::SingleFileCompressor(const Path& in_sOutPat, Compressor::Ptr in_pComp, bool in_bRecurse)
-    : ArchiverBase(in_sOutPat.isEmpty() ? SingleFileCompressor::defaultOutName() : in_sOutPat,
+    : ArchiverBase(in_sOutPat.empty() ? SingleFileCompressor::defaultOutName() : in_sOutPat,
                    in_pComp,
                    in_bRecurse)
 {

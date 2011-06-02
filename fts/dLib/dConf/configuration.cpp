@@ -172,17 +172,17 @@ String Configuration::get ( String in_optName )
 
 bool Configuration::getBool ( String in_optName )
 {
-    return m_opts[in_optName].to_Boolean();
+    return m_opts[in_optName].to<bool>();
 }
 
 int Configuration::getInt ( String in_optName )
 {
-    return m_opts[in_optName].to_Integer();
+    return m_opts[in_optName].to<int>();
 }
 
 float Configuration::getFloat ( String in_optName )
 {
-    return m_opts[in_optName].to_Float();
+    return m_opts[in_optName].to<float>();
 }
 
 void Configuration::set ( String in_optName, String value )
@@ -212,7 +212,7 @@ void Configuration::set ( String in_optName, float value )
 
 void Configuration::save()
 {
-    if ( m_confFileName.isEmpty() )
+    if ( m_confFileName.empty() )
     {
         return;
     }

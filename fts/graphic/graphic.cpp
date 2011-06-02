@@ -332,7 +332,7 @@ CEGUI::Imageset *Graphic::createCEGUI(const String &in_sImagesetName, bool in_bR
         return NULL;
 
     // Find a disponible random name for the imageset ...
-    if(in_sImagesetName.isEmpty()) {
+    if(in_sImagesetName.empty()) {
         do {
             String sName = String::random("##########", random<int>);
             if(!pImgMgr->isImagesetPresent(sName))
@@ -983,7 +983,7 @@ Graphic *GraphicManager::getOrLoadGraphic(File& out_file, String in_sGraphicName
                                           Graphic::Anisotropy in_forceAnisotropy)
 {
     // No name specified? Use the file's name.
-    if(in_sGraphicName.isEmpty()) {
+    if(in_sGraphicName.empty()) {
         in_sGraphicName = out_file.getName();
     }
 

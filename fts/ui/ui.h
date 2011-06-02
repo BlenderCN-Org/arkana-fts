@@ -167,7 +167,7 @@ CEGUIType *FTSGetConvertWin(const String &in_sWindowName, const String &in_sType
 
     CEGUIType *pWin = dynamic_cast<CEGUIType *>(pWM->getWindow(in_sWindowName));
     if(pWin == NULL) {
-        throw(CEGUI::InvalidRequestException(String::sfmt("Bad cast: The window named {1} should be of type {2}", in_sWindowName, in_sTypeName)));
+        throw(CEGUI::InvalidRequestException(String("Bad cast: The window named {1} should be of type {2}").fmt(in_sWindowName, in_sTypeName)));
     }
 
     return pWin;

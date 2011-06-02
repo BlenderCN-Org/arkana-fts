@@ -30,7 +30,7 @@ bool ArchiverBase::addDirectoryRecursive(const FTS::Path& in_sDir)
         return false;
 
     // It is a directory and we want to recurse into it.
-    for(FTS::Path sElem = dBrowse_GetNext(pdbi) ; !sElem.isEmpty() ; sElem = dBrowse_GetNext(pdbi)) {
+    for(FTS::Path sElem = dBrowse_GetNext(pdbi) ; !sElem.empty() ; sElem = dBrowse_GetNext(pdbi)) {
 #if !WINDOOF
         // If it is hidden, do not add it.
         if(sElem.getCharAt(0) == '.')
@@ -54,7 +54,7 @@ bool ArchiverBase::addDirectoryRecursive(const FTS::Path& in_sDir)
 }
 
 Archiver::Archiver(const FTS::Path& in_sOutName, Compressor::Ptr in_pComp, bool in_bRecurse)
-    : ArchiverBase(in_sOutName.isEmpty() ? Archiver::defaultOutName() : in_sOutName,
+    : ArchiverBase(in_sOutName.empty() ? Archiver::defaultOutName() : in_sOutName,
                    in_pComp,
                    in_bRecurse)
 {

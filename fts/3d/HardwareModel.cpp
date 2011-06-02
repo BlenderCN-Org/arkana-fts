@@ -55,16 +55,16 @@ struct MaterialUserData {
         , drawMode(GL_TRIANGLES)
     {
         String sAlphaAsPlayerColor = in_coreMat.getProprety("AlphaAsPlayerColor");
-        if(!sAlphaAsPlayerColor.isEmpty()) {
+        if(!sAlphaAsPlayerColor.empty()) {
             // Either, we set the player color, fully opaque or we don't use player
             // color thus make it fully transparent.
             // The shader makes the rest. standard c++ says true -> 1.0f, false -> 0.0f
             // and that's exactly what we need, cool :)
-            this->alphaAsPlayerCol = static_cast<float>(sAlphaAsPlayerColor.to_Boolean());
+            this->alphaAsPlayerCol = static_cast<float>(sAlphaAsPlayerColor.to<bool>());
         }
 
         String sDrawMode = in_coreMat.getProprety("Mode");
-        if(!sDrawMode.isEmpty()) {
+        if(!sDrawMode.empty()) {
             // They want us to draw something other than GL_TRIANGLES... Do so.
             if(sDrawMode.ieq("Lines"))
                 this->drawMode = GL_LINES;
@@ -296,7 +296,7 @@ FTS::HardwareModel::HardwareModel(const String& in_sName, Archive& in_modelArch)
 
                 // If the material doesn't exist, or such an entry for this
                 // submesh doesn't exist in the conf file, take the error mat.
-                if(iMatId == -1 || sMatName.isEmpty()) {
+                if(iMatId == -1 || sMatName.empty()) {
                     iMatId = this->getOrCreateErrorMatId(in_sName);
                 }
 

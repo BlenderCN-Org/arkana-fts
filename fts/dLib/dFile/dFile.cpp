@@ -441,7 +441,7 @@ const File& File::save(const Compressor& in_comp) const
 {
 #ifndef D_FILE_NO_ARCHMAP
     // Maybe the file came from an archive? save it back.
-    if(!m_sMyArchiveID.isEmpty()) {
+    if(!m_sMyArchiveID.empty()) {
         if(m_lArchivesToLook.find(m_sMyArchiveID) != m_lArchivesToLook.end()) {
             // If the archive is still open, we can just use it.
             Archive* pArch = m_lArchivesToLook[m_sMyArchiveID];
@@ -972,7 +972,7 @@ int FileUtils::mkdirIfNeeded(const Path& in_sPath, const bool in_bWithFile)
     struct stat buf;
     int ret = 0;
 
-    if(in_sPath.isEmpty()) {
+    if(in_sPath.empty()) {
         FTS18N("InvParam", MsgType::Horror, "mkdirIfNeeded(in_sPath = empty)");
         return -1;
     }
@@ -984,7 +984,7 @@ int FileUtils::mkdirIfNeeded(const Path& in_sPath, const bool in_bWithFile)
         sDirPath = in_sPath.directory();
 
         // This happens if it's just a file, w/o path.
-        if(sDirPath.isEmpty())
+        if(sDirPath.empty())
             return ERR_OK;
     }
 

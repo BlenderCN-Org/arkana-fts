@@ -63,7 +63,7 @@ bool FTS::LoginMenuRlv::load()
     // Find the correct menu background image.
     std::list<Resolution> lAvail;
     PDBrowseInfo dbi = dBrowse_Open(Path::datadir("Graphics/ui/menubg"));
-    for(String file = dBrowse_GetNextWithWildcard(dbi, "*.png") ; !file.isEmpty() ; file = dBrowse_GetNextWithWildcard(dbi, "*.png")) {
+    for(String file = dBrowse_GetNextWithWildcard(dbi, "*.png") ; !file.empty() ; file = dBrowse_GetNextWithWildcard(dbi, "*.png")) {
         lAvail.push_back(Resolution(Path(file).withoutExt()));
     }
     dBrowse_Close(dbi);

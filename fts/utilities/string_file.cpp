@@ -55,13 +55,13 @@ String FTS::getTranslatedString(const String & in_sString,
     ret = confTranslation.get(in_sString);
 
     // If there was an error, first try in english. If that doesn't work, load default error string.
-    if(ret.isEmpty()) {
+    if(ret.empty()) {
         sFile = Path::datadir("Languages/English") + Path(in_sFile + ".xml");;
         Options optTranslation = Configuration::buildFromFile(sFile);
         Configuration conf(optTranslation);
         ret = conf.get(in_sString);
         // Print a warning to the logfile.
-        if(ret.isEmpty()) {
+        if(ret.empty()) {
             FTSMSG(String("Missing translation for ") + in_sString, MsgType::WarningNoMB);
         }
     }

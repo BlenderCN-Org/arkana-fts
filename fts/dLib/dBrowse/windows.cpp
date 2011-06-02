@@ -101,7 +101,7 @@ FTS::String dBrowse_GetNextWithWildcard( PDBrowseInfo dbi, const FTS::String &wc
     if( dbi->bFirst ) {
         ret = dBrowse_DoGetNextWWInitial( dbi, wc );
 
-        if( !ret.isEmpty( ) )
+        if( !ret.empty( ) )
             return ret;
     }
 

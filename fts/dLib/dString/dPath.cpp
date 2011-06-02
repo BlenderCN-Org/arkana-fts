@@ -316,7 +316,7 @@ Path Path::withoutExt() const
 
     Path sTrimmed = this->trimRight(".");
     String sExt = sTrimmed.ext();
-    if(sExt.isEmpty()) {
+    if(sExt.empty()) {
         return sTrimmed;
     } else {
         return Path(sTrimmed.left(sTrimmed.len()-sTrimmed.ext().len()-1));
@@ -400,7 +400,7 @@ Path Path::cdUp() const
     Path curr(*this);
 
     // If we are in the app's directory, determine it.
-    if(*this == "." || this->isEmpty()) {
+    if(*this == "." || this->empty()) {
         curr = Path::wd();
     }
 
@@ -435,7 +435,7 @@ String Path::protocol() const
 
 Path Path::appendWithSeparator(const Path& right) const
 {
-    if(this->isEmpty())
+    if(this->empty())
         return right;
     // convert to string in order to avoid infinite recursion because
     // of the overloaded + operator.

@@ -24,7 +24,7 @@ FTSSrv2::Client::~Client()
 
 int FTSSrv2::Client::getID() const
 {
-    if( !m_bLoggedIn || m_sNick.isEmpty() ) {
+    if( !m_bLoggedIn || m_sNick.empty() ) {
         FTSMSG("Want to get ID of not logged-in client", MsgType::Error);
         return -1;
     }
@@ -545,7 +545,7 @@ bool FTSSrv2::Client::onPlayerSet(uint8_t in_cField, Packet *out_pPacket)
 
     // Create the query string that modifies this field.
     sField = DataBase::TblUsrField(in_cField);
-    if(sField.isEmpty()) {
+    if(sField.empty()) {
         FTSMSG("failed: unknown field definer (0x"+String::nr(in_cField,-1,'0',std::ios::hex)+")", MsgType::Error);
         iRet = 2;
         goto error;

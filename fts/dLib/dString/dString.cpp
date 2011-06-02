@@ -1,10 +1,8 @@
-/**
- * \file dString.cpp
- * \author Pompei2
- * \date 07 January 2007
- * \brief This file implements my string class, why reinvent the wheel ?
- *        I prefer this then extending existing ones ... maybe i'll rewrite OpenGL ... nooo
- **/
+/// \file dString.cpp
+/// \author Pompei2
+/// \date 07 January 2007
+/// \brief This file implements my string class, why reinvent the wheel ?
+///       I prefer this then extending existing ones ... maybe i'll rewrite OpenGL ... nooo
 
 #include "dLib/dString/dString.h"
 
@@ -38,18 +36,9 @@ String String::fromSpecialNumber(T number)
     return String::EMPTY;
 }
 
-/** Default constructor, creates an empty string. */
 String::String()
-{
-}
+{ }
 
-/// Creates a string containing 1 char.
-/** Creates a string based on one single charachter.
- *
- * \param in_cChar The charachter wich to copy in the string.
- *
- * \author Pompei2
- */
 String String::chr(unsigned char in_cChar)
 {
     return String(std::string(1, in_cChar));
@@ -57,23 +46,19 @@ String String::chr(unsigned char in_cChar)
 
 String::String(const char* in_pszString)
     : m_s(in_pszString == NULL ? "" : in_pszString)
-{
-}
+{ }
 
 String::String(const unsigned char* in_pszString)
     : m_s(reinterpret_cast<const char*>(in_pszString == NULL ? reinterpret_cast<const unsigned char*>("") : in_pszString))
-{
-}
+{ }
 
 String::String(const String& in_sString)
     : m_s(in_sString.str())
-{
-}
+{ }
 
 String::String(const std::string& in_sString)
     : m_s(in_sString)
-{
-}
+{ }
 
 String::StringSize String::strlen() const
 {
@@ -94,13 +79,13 @@ String::StringSize String::strlen() const
             // 4 byte len
             byteSize +=4 ; p += 4;
         } else {
-            // handle as a default 8 bit ASCII 
+            // handle as a default 8 bit ASCII
             byteSize ++ ; p ++;
         }
         len++;
     }
     std::tuple<std::string::size_type, int> ret(len, byteSize);
-    return ret;  
+    return ret;
 }
 
 const char* String::advance(const char* in_pszString, std::string::size_type in_utf8Len)
@@ -151,7 +136,7 @@ int String::getByteCount(const char* in_pszString, std::string::size_type in_utf
         }
     }
     return byteSize;
-    
+
 }
 
 int String::byteCount() const
@@ -166,7 +151,7 @@ void String::fromStringWithLength(const char* in_pszString, std::string::size_ty
         m_s.clear();
         return;
     }
-    
+
     // This is the expression in_iStart + in_iLength, but saturated at
     // (std::string::size_type)-1, instead of creating an overlow.
     std::string::size_type startPlusLen = (in_iLength <= (std::string::size_type)-1 - in_iStart) ?
@@ -204,57 +189,21 @@ String::String(const CEGUI::String& in_sString, std::string::size_type in_iStart
 }
 #endif
 
-/// Construct the string with a maximum lenght, only starting from the
-/// \a in_iStart th character.
-/** Creates a string based on a C-string, but with a maximum length and
- *  starting only from a specified character index. If the index is higher
- *  then then string length, the created string is empty.
- *
- * \param in_pszString The C-String to use.
- * \param in_iStart    The (0-based) index of the first character to copy.
- * \param in_iLength   The maximum lenght of the string.
- *
- * \author Pompei2
- */
 String::String(const char* in_pszString, std::string::size_type in_iStart, std::string::size_type in_iLength)
 {
     this->fromStringWithLength(in_pszString, in_iStart, in_iLength);
 }
 
-/// Construct the string with a maximum lenght
-/** Creates a string based on a C-string, but with a maximum length.
- *
- * \param in_pszString The C-String to use.
- * \param in_iLength   The maximum lenght of the string.
- *
- * \author Pompei2
- */
 String::String(const int8_t *in_pszString, std::string::size_type in_iStart, std::string::size_type in_iLength)
 {
     this->fromStringWithLength(reinterpret_cast<const char*>(in_pszString), in_iStart, in_iLength);
 }
 
-/// Construct the string with a maximum lenght
-/** Creates a string based on a C-string, but with a maximum length.
- *
- * \param in_pszString The C-String to use.
- * \param in_iLength   The maximum lenght of the string.
- *
- * \author Pompei2
- */
 String::String(const uint8_t *in_pszString, std::string::size_type in_iStart, std::string::size_type in_iLength)
 {
     this->fromStringWithLength(reinterpret_cast<const char*>(in_pszString), in_iStart, in_iLength);
 }
 
-/// Construct the string with a maximum lenght
-/** Creates a string based on another string, but with a maximum length.
- *
- * \param in_pszString The String to use.
- * \param in_iLength   The maximum lenght of the string.
- *
- * \author Pompei2
- */
 String::String(const String& in_sString, std::string::size_type in_iStart, std::string::size_type in_iLength)
 {
     this->fromStringWithLength(in_sString.c_str(), in_iStart, in_iLength);
@@ -268,7 +217,7 @@ String::String(const std::string& in_sString, std::string::size_type in_iStart, 
 String String::nr(const int8_t& o, std::streamsize in_iWidth, char in_cFill, std::ios_base::fmtflags in_fmtfl)
 {
     String s = String::fromSpecialNumber<int8_t>(o);
-    if(!s.isEmpty())
+    if(!s.empty())
         return s;
 
     std::stringstream out;
@@ -286,7 +235,7 @@ String String::nr(const int8_t& o, std::streamsize in_iWidth, char in_cFill, std
 String String::nr(const uint8_t& o, std::streamsize in_iWidth, char in_cFill, std::ios_base::fmtflags in_fmtfl)
 {
     String s = String::fromSpecialNumber<uint8_t>(o);
-    if(!s.isEmpty())
+    if(!s.empty())
         return s;
 
     std::stringstream out;
@@ -304,7 +253,7 @@ String String::nr(const uint8_t& o, std::streamsize in_iWidth, char in_cFill, st
 String String::nr(const int16_t& o, std::streamsize in_iWidth, char in_cFill, std::ios_base::fmtflags in_fmtfl)
 {
     String s = String::fromSpecialNumber<int16_t>(o);
-    if(!s.isEmpty())
+    if(!s.empty())
         return s;
 
     std::stringstream out;
@@ -319,7 +268,7 @@ String String::nr(const int16_t& o, std::streamsize in_iWidth, char in_cFill, st
 String String::nr(const uint16_t& o, std::streamsize in_iWidth, char in_cFill, std::ios_base::fmtflags in_fmtfl)
 {
     String s = String::fromSpecialNumber<uint16_t>(o);
-    if(!s.isEmpty())
+    if(!s.empty())
         return s;
 
     std::stringstream out;
@@ -334,7 +283,7 @@ String String::nr(const uint16_t& o, std::streamsize in_iWidth, char in_cFill, s
 String String::nr(const int32_t& o, std::streamsize in_iWidth, char in_cFill, std::ios_base::fmtflags in_fmtfl)
 {
     String s = String::fromSpecialNumber<int32_t>(o);
-    if(!s.isEmpty())
+    if(!s.empty())
         return s;
 
     std::stringstream out;
@@ -349,7 +298,7 @@ String String::nr(const int32_t& o, std::streamsize in_iWidth, char in_cFill, st
 String String::nr(const uint32_t& o, std::streamsize in_iWidth, char in_cFill, std::ios_base::fmtflags in_fmtfl)
 {
     String s = String::fromSpecialNumber<uint32_t>(o);
-    if(!s.isEmpty())
+    if(!s.empty())
         return s;
 
     std::stringstream out;
@@ -364,7 +313,7 @@ String String::nr(const uint32_t& o, std::streamsize in_iWidth, char in_cFill, s
 String String::nr(const int64_t& o, std::streamsize in_iWidth, char in_cFill, std::ios_base::fmtflags in_fmtfl)
 {
     String s = String::fromSpecialNumber<int64_t>(o);
-    if(!s.isEmpty())
+    if(!s.empty())
         return s;
 
     std::stringstream out;
@@ -379,7 +328,7 @@ String String::nr(const int64_t& o, std::streamsize in_iWidth, char in_cFill, st
 String String::nr(const uint64_t& o, std::streamsize in_iWidth, char in_cFill, std::ios_base::fmtflags in_fmtfl)
 {
     String s = String::fromSpecialNumber<uint64_t>(o);
-    if(!s.isEmpty())
+    if(!s.empty())
         return s;
 
     std::stringstream out;
@@ -394,7 +343,7 @@ String String::nr(const uint64_t& o, std::streamsize in_iWidth, char in_cFill, s
 String String::nr(const float& o, std::streamsize in_iPrecision, std::streamsize in_iWidth, char in_cFill, std::ios_base::fmtflags in_fmtfl)
 {
     String s = String::fromSpecialNumber<float>(o);
-    if(!s.isEmpty()) {
+    if(!s.empty()) {
         std::stringstream out;
         out.width(in_iWidth);
         out.fill(in_cFill);
@@ -416,7 +365,7 @@ String String::nr(const float& o, std::streamsize in_iPrecision, std::streamsize
 String String::nr(const double& o, std::streamsize in_iPrecision, std::streamsize in_iWidth, char in_cFill, std::ios_base::fmtflags in_fmtfl)
 {
     String s = String::fromSpecialNumber<double>(o);
-    if(!s.isEmpty()) {
+    if(!s.empty()) {
         std::stringstream out;
         out.width(in_iWidth);
         out.fill(in_cFill);
@@ -440,34 +389,20 @@ String String::b(const bool& o)
     return o ? String("True") : String("False");
 }
 
-/** Default destructor. */
 String::~String()
-{
-}
+{ }
 
-/// Returns a string consisting of only the first \a in_iLength characters of
-/// this one.
-///
-/// \param in_iLength The number of characters to take from the left of this string.
-///
-/// \return A string consisting of the first \a in_iLenght characters of this one.
 String String::left(std::string::size_type in_iLength) const
 {
-    if(this->isEmpty() || in_iLength < 1)
+    if(this->empty() || in_iLength < 1)
         return String::EMPTY;
 
     return String(m_s, 0, in_iLength);
 }
 
-/// Returns a string consisting of only the last \a in_iLength characters of
-/// this one.
-///
-/// \param in_iLength The number of characters to take from the right of this string.
-///
-/// \return A string consisting of the last \a in_iLenght characters of this one.
 String String::right(std::string::size_type in_iLength) const
 {
-    if(this->isEmpty() || in_iLength < 1)
+    if(this->empty() || in_iLength < 1)
         return String::EMPTY;
 
     if(in_iLength >= this->len())
@@ -476,20 +411,10 @@ String String::right(std::string::size_type in_iLength) const
     return String(this->str(), this->len()-in_iLength, in_iLength);
 }
 
-/// Returns a string consisting of only the middle part of this one. So you can
-/// cut-off something on the left and something on the right.
-///
-/// \param in_iLengthLeft The number of characters to cut-off on the left.
-/// \param in_iLengthRight The number of characters to cut-off on the right.
-///
-/// \note If \a in_iLengthRight is 0, then it will take the string from
-///       \a in_iLengthLeft until the end of the string.
-///
-/// \return A string consisting of the characters in the middle of this string.
 String String::mid(std::string::size_type in_iLengthLeft, std::string::size_type in_iLengthRight) const
 {
     // In some special cases, just copy the whole string.
-    if((in_iLengthLeft == 0 && in_iLengthRight == 0) || this->isEmpty())
+    if((in_iLengthLeft == 0 && in_iLengthRight == 0) || this->empty())
         return String(this->c_str());
 
     // Or return an empty string if nothing would fit.
@@ -499,19 +424,6 @@ String String::mid(std::string::size_type in_iLengthLeft, std::string::size_type
     return String(this->str(), in_iLengthLeft, this->len()-in_iLengthLeft-in_iLengthRight);
 }
 
-/// Converts one byte into a two-letters-hex-string.
-/** Creates a string that contains two letters that represent the hex value
- *  of the given number.
- *
- * \param in_cNumber The number to create the string with.
- * \param in_bCaps Shall the alphabeticals in the string be capitals or not?
- *
- * \return The string containing the number.
- *
- * \example Let in_cNumber be 0x6A, in_bCaps be true, then the string returned will be "6A"
- *
- * \author Pompei2
- */
 String String::sfromHex(uint8_t in_cNumber, bool in_bCaps)
 {
     uint8_t c[3] = {0, 0, 0};
@@ -530,24 +442,6 @@ String String::sfromHex(uint8_t in_cNumber, bool in_bCaps)
     return String(c2);
 }
 
-/// Converts a one-or-two-letters-hex-string into a byte.
-/** Creates one byte using a string that contains two letters that represent
- *  the hex value of the given byte.
- *
- * \param in_sString The string to get the byte from.
- * \param out_bSuccess Was the conversion successfull or not?
- *
- * \return The data byte.
- *
- * \example Let in_sString be "6A", then the returned byte will be 106
- *
- * \note If the string contains more then 2 chars, only the two first are taken.\n
- *       A leading "0x" or similar in the string will make the conversion fail.\n
- *       \n
- *       Module-tested.
- *
- * \author Pompei2
- */
 uint8_t String::byteFromHex(const String& in_sString, bool& out_bSuccess)
 {
     out_bSuccess = false;
@@ -589,21 +483,6 @@ uint8_t String::byteFromHex(const String& in_sString, bool& out_bSuccess)
     return valHigh*16 + valLow;
 }
 
-/// Construct a hexadecimal string from some arbitrary data.
-/** Creates a string that contains the data, stored as a hexadecimal string.
- *  That means that every byte from the data is stored into this string, using
- *  hexadecimal numbers.
- *
- * \param in_pData The data to convert into a hex string.
- * \param in_uiLen The length of the data in bytes. This may also be 0, meaning
- *                 that the data is zero-terminated (stops at the first byte that is 0).
- * \param in_bCaps Shall the alphabeticals in the string be capitals or not?
- *
- * \return The string containing the data, stored using hexadecimal numbers.
- *
- * \note Module-tested
- * \author Pompei2
- */
 String String::hexFromData(const void *in_pData, uint32_t in_uiLen, bool in_bCaps)
 {
     if(in_pData == NULL) {
@@ -626,19 +505,6 @@ String String::hexFromData(const void *in_pData, uint32_t in_uiLen, bool in_bCap
     return sRet;
 }
 
-/// Constructs data from an hexadecimal string.
-/** Creates data from the hexadecimal string.
- *  That means that every two-signs in the string will be converted into a byte
- *  that corresponds to the hexadecimal represented by the two signs.
- *
- * \return The data (allocated automatically). This has to be freed (delete [])
- *         by the user !\n
- *         NULL on failure.
- *
- * \note If there is any non-hex sign in the string, NULL will be returned.
- *
- * \author Pompei2
- */
 uint8_t *String::dataFromHex() const
 {
     std::string::size_type len = this->len();
@@ -666,40 +532,20 @@ uint8_t *String::dataFromHex() const
     return pData;
 }
 
-/// Get the C-String (read-only).
-/** Get the C-string that builds this string, in read-only mode.
- *
- * \return the C-string.
- *
- * \author Pompei2
- */
 const char *String::c_str() const
 {
     return m_s.c_str();
 }
 
-/** Get a copy of this string as a C++ std::string.
- *
- * \return A copy of this string as a C++ std::string.
- *
- * \author Pompei2
- */
 std::string String::str() const
 {
     return m_s;
 }
 
 #ifdef D_USE_CEGUI
-/// Get the CEGUI-String.
-/** Get the CEGUI-string pendant to this string. A copy is returned.
- *
- * \return A CEGUI-style copy of this string.
- *
- * \author Pompei2
- */
 CEGUI::String String::cegui() const
 {
-    if(this->isEmpty())
+    if(this->empty())
         return CEGUI::String("");
     else
         return CEGUI::String((const CEGUI::utf8 *)this->c_str());
@@ -714,35 +560,25 @@ String String::fmt(const String& in_sArg1,
                   ) const
 {
     String s2(this->c_str());
-    if(!in_sArg1.isEmpty())
+    if(!in_sArg1.empty())
         s2.replaceStr("{1}", in_sArg1);
-    if(!in_sArg2.isEmpty())
+    if(!in_sArg2.empty())
         s2.replaceStr("{2}", in_sArg2);
-    if(!in_sArg3.isEmpty())
+    if(!in_sArg3.empty())
         s2.replaceStr("{3}", in_sArg3);
-    if(!in_sArg4.isEmpty())
+    if(!in_sArg4.empty())
         s2.replaceStr("{4}", in_sArg4);
-    if(!in_sArg5.isEmpty())
+    if(!in_sArg5.empty())
         s2.replaceStr("{5}", in_sArg5);
-    if(!in_sArg6.isEmpty())
+    if(!in_sArg6.empty())
         s2.replaceStr("{6}", in_sArg6);
-    if(!in_sArg7.isEmpty())
+    if(!in_sArg7.empty())
         s2.replaceStr("{7}", in_sArg7);
-    if(!in_sArg8.isEmpty())
+    if(!in_sArg8.empty())
         s2.replaceStr("{8}", in_sArg8);
-    if(!in_sArg9.isEmpty())
+    if(!in_sArg9.empty())
         s2.replaceStr("{9}", in_sArg9);
     return s2;
-}
-
-String String::sfmt(const String& in_sFmt, const String& in_sArg1,
-                    const String& in_sArg2,const String& in_sArg3,
-                    const String& in_sArg4,const String& in_sArg5,
-                    const String& in_sArg6,const String& in_sArg7,
-                    const String& in_sArg8,const String& in_sArg9)
-{
-    return in_sFmt.fmt(in_sArg1, in_sArg2, in_sArg3, in_sArg4, in_sArg5,
-                       in_sArg6, in_sArg7, in_sArg8, in_sArg9);
 }
 
 String String::fmtRemoveEmpty(const String& in_sArg1,
@@ -765,82 +601,26 @@ String String::fmtRemoveEmpty(const String& in_sArg1,
     return s2;
 }
 
-String String::sfmtRemoveEmpty(const String& in_sFmt, const String& in_sArg1,
-                               const String& in_sArg2,const String& in_sArg3,
-                               const String& in_sArg4,const String& in_sArg5,
-                               const String& in_sArg6,const String& in_sArg7,
-                               const String& in_sArg8,const String& in_sArg9)
-{
-    return in_sFmt.fmtRemoveEmpty(in_sArg1, in_sArg2, in_sArg3, in_sArg4, in_sArg5,
-                                  in_sArg6, in_sArg7, in_sArg8, in_sArg9);
-}
-
-/// Wether the string is empty or not.
-/** Returns a boolean specifying wether the string is empty or not.
- *  It is empty if it hasn't been initialised AND if it's "".
- *
- * \return true if the string is empty, else false.
- *
- * \author Pompei2
- */
-bool String::isEmpty() const
+bool String::empty() const
 {
     return m_s.empty();
 }
 
-/// get the length of the string.
-/** This function returns the length of the string, in a quick way (see notes).
- *
- * \return the length of the string, 0 if it is empty.
- *
- * \note This function is always very quick, because it doesn't need to calculate
- *       the strings lenght, the lenght is calculated only once, when the string changes.
- *
- * \author Pompei2
- */
 std::string::size_type String::len() const
 {
     StringSize len = strlen();
     return std::get<0>(len);
 }
 
-/// get the length of the string.
-/** This function returns the length of the string, in a quick way (see notes).
- *
- * \return the length of the string, 0 if it is empty.
- *
- * \note This function is always very quick, because it doesn't need to calculate
- *       the strings length, the length is calculated only once, when the string changes.
- *
- * \author Pompei2
- */
 int String::lenInt() const
 {
     StringSize len = strlen();
     return (int)std::get<0>(len);
 }
 
-/// Remove Nth character from a string.
-/** Removes the \a in_ulIndex the character from the string.
- *
- * \param in_ulIndex The index of the character you want to delete.
- *
- * \return *this.
- *
- * \note If in_ulIndex is 0, the first character is deleted (it is 0-based).
- * \note If in_ulIndex is bigger then the length of the string, the last
- *       character of the string is deleted.
- *
- * Example: \n \code
- *       String str( "HelloO, World !" );
- *       str.removeChar( 5 )
- *       // str is now "Hello, World !"\endcode
- *
- * \author Pompei2
- */
 String& String::removeChar(std::string::size_type in_ulIndex)
 {
-    if(this->isEmpty())
+    if(this->empty())
         return *this;
 
     if(in_ulIndex >= this->len()) {
@@ -855,25 +635,6 @@ String& String::removeChar(std::string::size_type in_ulIndex)
     return *this;
 }
 
-/// Adds Nth character to a sring.
-/** Adds the character \a in_cChar at the \a in_ulIndex th place of the string.
- *
- * \param in_ulIndex The index where to add the character. (If higher then the
- *                   length of the string, the character is added at the end.)
- * \param in_cChar   The character you want to add.
- *
- * \return this.
- *
- * \Note If \a in_ulIndex is 0, the charachter is added at the beginning. (0-based)
- *
- * Example: \n \code
- *       String str( "ello, World" );
- *       str.addChar( 0, 'H' )
- *       str.addChar( 99, '!' )
- *       // str is now "Hello, World!"\endcode
- *
- * \author Pompei2
- */
 String& String::addChar(std::string::size_type in_ulIndex, unsigned char in_cChar)
 {
     if(in_ulIndex == 0) {
@@ -893,28 +654,11 @@ String& String::addChar(std::string::size_type in_ulIndex, unsigned char in_cCha
     return *this;
 }
 
-/// Replace a part of a string with another one.
-/** Replaces the part of the string that goes from \a in_ulIndex to
- *  \a in_ulIndex + \a in_ulLenght with \a in_pszNew.
- *
- * \param in_ulIndex  The index of the first charachter to replace (begins at 0).
- * \param in_ulLenght The lenght of the string to replace.
- * \param in_pszNew   The string with wich to replace the part index -> lenght.
- *
- * \return this.
- *
- * Example: \n \code
- *       String str( "Hello, Awful World !" );
- *       str.replaceStr( 7, 5, "Beautifull" );
- *       // str is now "Hello, Beautifull World !"
- *
- * \author Pompei2
- */
 String& String::replaceStr(std::string::size_type in_ulIndex,
                            std::string::size_type in_ulLenght,
                            const char *in_pszNew)
 {
-    if(this->isEmpty()) {
+    if(this->empty()) {
         *this = in_pszNew;
         return *this;
     }
@@ -932,23 +676,6 @@ String& String::replaceStr(std::string::size_type in_ulIndex,
     return *this;
 }
 
-/// Replace a part of a string with another one.
-/** Replaces the part of the string that goes from \a in_ulIndex to
- *  \a in_ulIndex + \a in_ulLenght with \a in_sNew.
- *
- * \param in_ulIndex  The index of the first charachter to replace (begins at 0).
- * \param in_ulLenght The lenght of the string to replace.
- * \param in_sNew     The string with wich to replace the part index -> lenght.
- *
- * \return this.
- *
- * Example: \n \code
- *       String str( "Hello, Awful World !" );
- *       str.replaceStr( 7, 5, "Beautifull" );
- *       // str is now "Hello, Beautifull World !"
- *
- * \author Pompei2
- */
 String& String::replaceStr(std::string::size_type in_ulIndex,
                            std::string::size_type in_ulLenght,
                            const String& in_sNew)
@@ -956,17 +683,6 @@ String& String::replaceStr(std::string::size_type in_ulIndex,
     return this->replaceStr(in_ulIndex, in_ulLenght, in_sNew.c_str());
 }
 
-/// Replace all occurrences of \a in_sNeedle with \a in_sNew.
-/** Replaces all occurrences of \a in_sNeedle found in this string by
- *  \a in_sNew.
- *
- * \param in_sNeedle  The string to replace with \a in_ulLenght.
- * \param in_ulLenght The string that replaces \a in_sNeedle.
- *
- * \return this.
- *
- * \author Pompei2
- */
 String& String::replaceStr(const String& in_sNeedle,
                            const String& in_sNew)
 {
@@ -980,187 +696,54 @@ String& String::replaceStr(const String& in_sNeedle,
     return *this;
 }
 
-/// Removes all leading characters.
-/** This removes all characters included in \a in_sWhat that are at the front
- *  of the string.
- *
- * \param in_sWhat A list of all characters that shall be trimmed (removed).
- *
- * \return this.
- *
- * \author Pompei2
- */
-String& String::trimThisLeft(const String& in_sWhat)
-{
-    while(this->len() > 0 && in_sWhat.contains(String::chr(this->getCharAt(0)))) {
-        this->removeChar(0);
-    }
-
-    return *this;
-}
-
-/// Removes all trailing characters.
-/** This removes all characters included in \a in_sWhat that are at the back
- *  of the string.
- *
- * \param in_sWhat A list of all characters that shall be trimmed (removed).
- *
- * \return this.
- *
- * \author Pompei2
- */
-String& String::trimThisRight(const String& in_sWhat)
-{
-    while(this->len() > 0 && in_sWhat.contains(String::chr(this->getCharAt(this->len()-1)))) {
-        this->removeChar(this->len()-1);
-    }
-
-    return *this;
-}
-
-/// Removes all leading and trailing characters.
-/** This removes all characters included in \a in_sWhat that are at the front and
- *  at the back of the string.
- *
- * \param in_sWhat A list of all characters that shall be trimmed.
- *
- * \return this.
- *
- * \author Pompei2
- */
-String& String::trimThis(const String& in_sWhat)
-{
-    return this->trimThisLeft(in_sWhat).trimThisRight(in_sWhat);
-}
-
-/// Creates a copy of the string that has removes all leading characters.
-/** This removes all characters included in \a in_sWhat that are at the front
- *  of the string (in a copy of that string).\n
- *  The original string does not get touched at all.
- *
- * \param in_sWhat A list of all characters that shall be trimmed (removed).
- *
- * \return the new, trimmed string
- *
- * \author Pompei2
- */
 String String::trimLeft(const String& in_sWhat) const
 {
-    String sCopy(this->c_str());
-    sCopy.trimThisLeft(in_sWhat);
-    return sCopy;
+    // Move start to the first position that has a charachter which is not in "in_sWhat"
+    std::size_t start = 0;
+    while(start < this->len() && in_sWhat.contains(String::chr(this->getCharAt(start)))) {
+        start++;
+    }
+
+    return String(*this, start);
 }
 
-/// Creates a copy of the string that has removes all trailing characters.
-/** This removes all characters included in \a in_sWhat that are at the back
- *  of the string (in a copy of that string).\n
- *  The original string does not get touched at all.
- *
- * \param in_sWhat A list of all characters that shall be trimmed (removed).
- *
- * \return the new, trimmed string
- *
- * \author Pompei2
- */
 String String::trimRight(const String& in_sWhat) const
 {
-    String sCopy(this->c_str());
-    sCopy.trimThisRight(in_sWhat);
-    return sCopy;
+    // Move start to the first position that has a charachter which is not in "in_sWhat"
+    std::size_t len = this->len();
+    while(len > 0 && in_sWhat.contains(String::chr(this->getCharAt(len-1)))) {
+        len--;
+    }
+
+    return String(*this, 0, len);
 }
 
-/// Creates a copy of the string that has removes all leading and trailing characters.
-/** This removes all characters included in \a in_sWhat that are at the front and
- *  at the back of the string (in a copy of that string).
- *  The original string does not get touched at all.
- *
- * \param in_sWhat A list of all characters that shall be trimmed (removed).
- *
- * \return the new, trimmed string
- *
- * \author Pompei2
- */
 String String::trim(const String& in_sWhat) const
 {
-    String sCopy(this->c_str());
-    sCopy.trimThis(in_sWhat);
-    return sCopy;
+    // Could be optimized if it turns out to be a bottleneck, which I guess it won't
+    return this->trimLeft(in_sWhat).trimRight(in_sWhat);
 }
 
-/// Converts this string to lowercase.
-/** This converts the string itself to lowercase contents.
- *
- * \return This
- *
- * \author Pompei2
- */
-String& String::lowerThis()
-{
-    std::transform(m_s.begin(), m_s.end(), m_s.begin(), ::tolower);
-    return *this;
-}
-
-/// Converts this string to uppercase.
-/** This converts the string itself to uppercase contents.
- *
- * \return This
- *
- * \author Pompei2
- */
-String& String::upperThis()
-{
-    std::transform(m_s.begin(), m_s.end(), m_s.begin(), ::toupper);
-    return *this;
-}
-
-/// Returns (a copy of) the lowercase version of this string.
-/** this creates a string that is a copy of this one and then makes it all lowercase.
- *
- * \return The lowercase copy of this string.
- *
- * \author Pompei2
- */
 String String::lower() const
 {
-    String ret(*this);
-    ret.lowerThis();
-    return ret;
+    std::string copy = this->str();
+    std::transform(copy.begin(), copy.end(), copy.begin(), ::tolower);
+    return String(copy);
 }
 
-/// Returns (a copy of) the uppercase version of this string.
-/** this creates a string that is a copy of this one and then makes it all uppercase.
- *
- * \return The uppercase copy of this string.
- *
- * \author Pompei2
- */
 String String::upper() const
 {
-    String ret(*this);
-    ret.upperThis();
-    return ret;
+    std::string copy = this->str();
+    std::transform(copy.begin(), copy.end(), copy.begin(), ::toupper);
+    return String(copy);
 }
 
-/// Searches for a sub-string in this string.
-/** Searches for a sub-string in this string and returns the (0-based) index
- *  of the first occurence found.
- *
- * \param in_pszNeedle The string you want to search for.
- * \param in_nIdx      The index where to begin the search (0 = search the whole string).
- *
- * \return If the string was found, the index (0-based) of the first occurence of it.
- * \return If the string wasn't found, std::string::npos.
- *
- * \note searching for the empty string will always return std::string::npos.
- *
- * \author Pompei2
- */
 std::string::size_type String::find(const char *in_pszNeedle, std::string::size_type in_nIdx) const
 {
     if(in_pszNeedle == NULL || in_pszNeedle[0] == '\0')
         return std::string::npos;
 
-    if(in_nIdx > this->len() || this->isEmpty())
+    if(in_nIdx > this->len() || this->empty())
         return std::string::npos;
 
     const char *p = strstr(&this->c_str()[in_nIdx], in_pszNeedle);
@@ -1171,33 +754,11 @@ std::string::size_type String::find(const char *in_pszNeedle, std::string::size_
     return this->len() - ::strlen(p);
 }
 
-/// Searches for a sub-string in this string.
-/** Searches for a sub-string in this string and returns the (0-based) index
- *  of the first occurence found.
- *
- * \param in_sNeedle The string you want to search for.
- * \param in_nIdx    The index where to begin the search (0 = search the whole string).
- *
- * \return If the string was found, the index (0-based) of the first occurence of it.
- * \return If the string wasn't found, -1.
- *
- * \author Pompei2
- */
 std::string::size_type String::find(const String& in_sNeedle, std::string::size_type in_nIdx) const
 {
     return this->find(in_sNeedle.c_str(), in_nIdx);
 }
 
-/// Compares this string to another, ignoring the case.
-/** This compares the current string with the string \a in_pszOther, ignoring
- *  case. If they are the same (ignoring case), true is returned, else false.
- *
- * \param in_pszOther The string you want to compare to.
- *
- * \return True if they are the same (ignoring case), false else.
- *
- * \author Pompei2
- */
 bool String::ieq(const char *in_pszOther) const
 {
     // First, compare lengths.
@@ -1213,16 +774,6 @@ bool String::ieq(const char *in_pszOther) const
     return true;
 }
 
-/// Compares this string to another, ignoring the case.
-/** This compares the current string with the string \a in_pszOther, ignoring
- *  case. If they are the same (ignoring case), true is returned, else false.
- *
- * \param in_sOther The string you want to compare to.
- *
- * \return True if they are the same (ignoring case), false else.
- *
- * \author Pompei2
- */
 bool String::ieq(const String& in_sOther) const
 {
     // First, compare lengths.
@@ -1238,29 +789,14 @@ bool String::ieq(const String& in_sOther) const
     return true;
 }
 
-/// Acts like strncmp
-/** Compare the first in_nChars charachters of in_pszNeedle with the first
- *  in_nChars charachters of this, if they all equal, returns true, else it
- *  returns false. If in_nChars is 0, the amount of chars to compare will be
- *  equal to the amount of char in_pszNeedle or this (if lower) has.
- *
- * \param in_pszNeedle The string you want to compare to.
- * \param in_nChars    The number of charachters to compare, or 0 to compare the
- *                     whole \a in_pszNeedle string.
- *
- * \return If the string beginning matches, true.
- * \return If the string beginning doesn't match, false.
- *
- * \author Pompei2
- */
-bool String::ncmp(const char *in_pszNeedle, std::string::size_type in_nChars) const
+bool String::neq(const char *in_pszNeedle, std::string::size_type in_nChars) const
 {
     std::string::size_type nChars = in_nChars;
 
-    if((in_pszNeedle == NULL || in_pszNeedle[0] == '\0') && this->isEmpty())
+    if((in_pszNeedle == NULL || in_pszNeedle[0] == '\0') && this->empty())
         return true;
 
-    if(in_pszNeedle == NULL || in_pszNeedle[0] == '\0' || this->isEmpty())
+    if(in_pszNeedle == NULL || in_pszNeedle[0] == '\0' || this->empty())
         return false;
 
     if(nChars == 0 || nChars > ::strlen(in_pszNeedle))
@@ -1278,103 +814,31 @@ bool String::ncmp(const char *in_pszNeedle, std::string::size_type in_nChars) co
     return true;
 }
 
-/// Acts like strncmp
-/** Compare the first in_nChars charachters of in_pszNeedle with the first
- *  in_nChars charachters of this, if they all equal, returns true, else it
- *  returns false. If in_nChars is 0, the amount of chars to compare will be
- *  equal to the amount of char in_pszNeedle or this (if lower) has.
- *
- * \param in_sNeedle  The string you want to compare to.
- * \param in_nChars   The number of charachters to compare, or 0 to compare the whole string.
- *
- * \return If the string beginning matches, true.
- * \return If the string beginning doesn't match, false.
- *
- * \author Pompei2
- */
-bool String::ncmp(const String& in_sNeedle, std::string::size_type in_nChars) const
+bool String::neq(const String& in_sNeedle, std::string::size_type in_nChars) const
 {
-    return this->ncmp(in_sNeedle.c_str(), in_nChars);
+    return this->neq(in_sNeedle.c_str(), in_nChars);
 }
 
-/// Acts like strncmp, but ignoring the case.
-/** Compare the first in_nChars charachters of in_pszNeedle with the first
- *  in_nChars charachters of this, if they all equal (ignoring case), returns true, else it
- *  returns false. If in_nChars is 0, the amount of chars to compare will be
- *  equal to the amount of char in_pszNeedle or this (if lower) has.
- *
- * \param in_pszNeedle The string you want to compare to.
- * \param in_nChars    The number of charachters to compare, or 0 to compare the whole string.
- *
- * \return If the string beginning matches, true.
- * \return If the string beginning doesn't match, false.
- *
- * \author Pompei2
- */
-bool String::nicmp(const char *in_pszNeedle, std::string::size_type in_nChars) const
+bool String::nieq(const char *in_pszNeedle, std::string::size_type in_nChars) const
 {
-    return this->lower().ncmp(String(in_pszNeedle).lower(), in_nChars);
+    return this->lower().neq(String(in_pszNeedle).lower(), in_nChars);
 }
 
-/// Acts like strncmp, but ignoring the case.
-/** Compare the first in_nChars charachters of in_pszNeedle with the first
- *  in_nChars charachters of this, if they all equal (ignoring case), returns true, else it
- *  returns false. If in_nChars is 0, the amount of chars to compare will be
- *  equal to the amount of char in_pszNeedle or this (if lower) has.
- *
- * \param in_sNeedle The string you want to compare to.
- * \param in_nChars  The number of charachters to compare, or 0 to compare the whole string.
- *
- * \return If the string beginning matches, true.
- * \return If the string beginning doesn't match, false.
- *
- * \author Pompei2
- */
-bool String::nicmp(const String& in_sNeedle, std::string::size_type in_nChars) const
+bool String::nieq(const String& in_sNeedle, std::string::size_type in_nChars) const
 {
-    return this->lower().ncmp(in_sNeedle.lower(), in_nChars);
+    return this->lower().neq(in_sNeedle.lower(), in_nChars);
 }
 
-/// Looks wether a sub-string is present in this string.
-/** Looks wether a sub-string is present in this string.
- *
- * \param in_pszNeedle The string you want to search for.
- *
- * \return If the string is present true, else false.
- *
- * \note the empty string is contained nowhere.
- *
- * \author Pompei2
- */
 bool String::contains(const char *in_pszNeedle) const
 {
     return std::string::npos != this->find(in_pszNeedle);
 }
 
-/// Looks wether a sub-string is present in this string.
-/** Looks wether a sub-string is present in this string.
- *
- * \param in_sNeedle The string you want to search for.
- *
- * \return If the string is present true, else false.
- *
- * \author Pompei2
- */
 bool String::contains(const String& in_sNeedle) const
 {
     return this->contains(in_sNeedle.c_str());
 }
 
-/// Matches a pattern onto this string. The pattern is not a regular expression!
-/// It can have * (a star), that means to match any string of any length,
-/// including nothing ; it can have a question mark, that means to match any
-/// single character (or nothing if D_QUEST_CAN_BE_NONE is defined as 1) and
-/// it can have a range of characters using the syntax [a-z] or [xah].
-///
-/// \param in_pszPat The pattern to try to match.
-///
-/// \return true if this matches the pattern, false if not or if there is a
-///         syntax error in the pattern.
 bool String::matchesPattern(const char *in_pszPat) const
 {
     char c, p, l;
@@ -1436,31 +900,12 @@ bool String::matchesPattern(const char *in_pszPat) const
     }
 }
 
-/// Matches a pattern onto this string. The pattern is not a regular expression!
-/// It can have * (a star), that means to match any string of any length,
-/// including nothing ; it can have a question mark, that means to match any
-/// single character (or nothing if D_QUEST_CAN_BE_NONE is defined as 1) and
-/// it can have a range of characters using the syntax [a-z] or [xah].
-///
-/// \param in_sPat The pattern to try to match.
-///
-/// \return true if this matches the pattern, false if not or if there is a
-///         syntax error in the pattern.
 bool String::matchesPattern(const String& in_sPat) const
 {
     return this->matchesPattern(in_sPat.c_str());
 }
 
 #ifdef D_STRING_MYSQL
-/// Returns the MySQL escaped version of this string.
-/** this creates a string that is a copy of this one, but escaped for mysql commands.
- *
- * \param in_pSQL The SQL context used to escape the string.
- *
- * \return The MySQL escaped copy of this string.
- *
- * \author Pompei2
- */
 String String::mysqlEscaped( MYSQL *in_pSQL ) const
 {
     char *buf = new char[this->len()*2+1];
@@ -1494,7 +939,7 @@ String& String::operator =(const String& in_sString)
         return *this;
 
     // Set me to the empty string.
-    if(in_sString.isEmpty())
+    if(in_sString.empty())
         this->m_s = String::EMPTY.str();
 
     m_s = in_sString.str();
@@ -1535,7 +980,7 @@ void String::operator +=(const char *in_pszString)
 
 void String::operator +=(const String& in_sString)
 {
-    if(in_sString.isEmpty())
+    if(in_sString.empty())
         return;
 
     this->operator +=(in_sString.c_str());
@@ -1544,7 +989,7 @@ void String::operator +=(const String& in_sString)
 bool String::operator == (const char *in_pszString) const
 {
     if(in_pszString == NULL || in_pszString[0] == '\0') {
-        if(this->isEmpty())
+        if(this->empty())
             return true;
         return false;
     }
@@ -1555,7 +1000,7 @@ bool String::operator == (const char *in_pszString) const
 bool String::operator == (const String& in_sString) const
 {
     if(in_sString == NULL || in_sString.getCharAt(0) == '\0') {
-        if(this->isEmpty())
+        if(this->empty())
             return true;
         return false;
     }
@@ -1575,13 +1020,13 @@ bool String::operator != (const String& in_sString) const
 
 bool String::operator ! () const
 {
-    return this->isEmpty();
+    return this->empty();
 }
 
 bool String::operator <(const char *in_pszString) const
 {
     if(in_pszString == NULL || in_pszString[0] == '\0') {
-        if(this->isEmpty())
+        if(this->empty())
             return false; // False, because they are equal.
         return false; // Else, the empty string is smaller as anything else.
     }
@@ -1594,7 +1039,6 @@ bool String::operator <(const String& in_sString) const
     return this->operator <(in_sString.c_str());
 }
 
-/// \throw std::out_of_range if \a in_iIndex is bigger than the string.
 unsigned char& String::operator[] (std::string::size_type in_iIndex)
 {
     return reinterpret_cast<unsigned char&>(m_s.at(in_iIndex));
@@ -1602,39 +1046,10 @@ unsigned char& String::operator[] (std::string::size_type in_iIndex)
 
 unsigned char String::getCharAt(std::string::size_type in_iIndex) const
 {
-    if(this->isEmpty() || in_iIndex >= this->len())
+    if(this->empty() || in_iIndex >= this->len())
         return 0;
 
     return m_s[in_iIndex];
-}
-
-int String::to_Integer()
-{
-    if(this->isEmpty())
-        return 0;
-    int retVal ;
-    if( convert<int>(retVal) ) {
-        return retVal;
-    }
-    return 0;
-}
-
-float String::to_Float()
-{
-    if(this->isEmpty())
-        return 0.0f;
-    float retVal ;
-    if( convert<float>(retVal) ) {
-        return retVal;
-    }
-    return 0.0f;
-}
-
-bool String::to_Boolean()
-{
-    if(this->isEmpty())
-        return 0;
-    return this->ieq("True") ? true : false;
 }
 
 bool operator ==(const char *in_pszString, const String& in_sString)
@@ -1660,6 +1075,26 @@ bool operator !=(const std::string& in_s, const FTS::String& in_sString)
 bool operator <(const char *in_pszString, const FTS::String& in_sString)
 {
     return FTS::String(in_pszString) < in_sString;
+}
+
+namespace FTS {
+    template<>
+    bool String::to<bool>() const
+    {
+        return this->ieq("True");
+    }
+
+    template<>
+    bool String::toExactly<bool>() const
+    {
+        if(this->ieq("True")) {
+            return true;
+        } else if(this->ieq("False")) {
+            return false;
+        } else {
+            throw std::bad_cast();
+        }
+    }
 }
 
 std::ostream& operator<< (std::ostream& os, const FTS::String& me)

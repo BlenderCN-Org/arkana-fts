@@ -232,7 +232,7 @@ FTS::ServerListItem::ServerListItem(const String& in_sAddr, const String& in_sDe
 
 String FTS::ServerListItem::calcText(const String& in_sAddr, const String& in_sDesc)
 {
-    if(in_sDesc.isEmpty()) {
+    if(in_sDesc.empty()) {
         return in_sAddr;
     } else {
         return in_sDesc + " (" + in_sAddr + ")";

@@ -822,7 +822,7 @@ String FTS::ClipboardBase::getClipboard()
 bool FTS::CopyCmd::exec()
 {
     String s = this->extractText();
-    if(s.isEmpty())
+    if(s.empty())
         return false;
 
     this->setClipboard(s);
@@ -832,7 +832,7 @@ bool FTS::CopyCmd::exec()
 bool FTS::CutCmd::exec()
 {
     String s = this->extractText();
-    if(s.isEmpty())
+    if(s.empty())
         return false;
 
     this->setClipboard(s);
@@ -865,7 +865,7 @@ bool FTS::PasteCmd::exec()
         return false;
 
     String sNewText = this->getClipboard();
-    if(sNewText.isEmpty())
+    if(sNewText.empty())
         return false;
 
     // Convert mac newlines to unix newlines or spaces, whatever is needed.

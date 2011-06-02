@@ -52,7 +52,7 @@ CParser::~CParser(void)
  */
 int CParser::load(const String & in_sFileName)
 {
-    if(!in_sFileName.isEmpty())
+    if(!in_sFileName.empty())
         m_sFile = in_sFileName;
 
     try {
@@ -316,18 +316,15 @@ size_t CParser::skipComments(void)
 int CParser::jumpToLineBeginning(const String & in_sBegin)
 {
     char *p = m_p;
-    size_t nNeedleLen = 0;
     size_t nChars = 0;
     size_t nLines = 0;
 
     if(m_bEOF || !in_sBegin)
         return -2;
 
-    nNeedleLen = in_sBegin.len();
-
     while(p && *p != '\0') {
         // Compare the beginning of the line with the needle.
-        if( !in_sBegin.ncmp(p) )
+        if( !in_sBegin.neq(p) )
             goto skipline;
 
         // If we got a line beginning with it, we're done.
@@ -565,9 +562,9 @@ int CParser::parse(String in_sFmt, ...)
                     goto error_end;
                 }
 
-                if(String("true").nicmp(pszTmp)) {
+                if(String("true").nieq(pszTmp)) {
                     *bVal = true;
-                } else if(String("false").nicmp(pszTmp)) {
+                } else if(String("false").nieq(pszTmp)) {
                     *bVal = false;
                 } else {
                     FTS18N("Parse_expectB", MsgType::Error, m_sFile, String::nr(m_nLine), pszTmp);

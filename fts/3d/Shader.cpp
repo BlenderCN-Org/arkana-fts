@@ -70,7 +70,7 @@ std::size_t findVersionLineEnd(const String& code)
 
 String injectExtensionRequirement(const String& code, const String& name)
 {
-    if(name.isEmpty())
+    if(name.empty())
         return code;
     
     std::size_t endOfVersionLine = findVersionLineEnd(code);
@@ -167,7 +167,7 @@ public:
             std::set<String> namesDone;
 
             // We replace all #include lines until there is no more left.
-            while(!(sName = this->findIncludeLine(in_sShaderName, in_sSrc, start, end, line)).isEmpty()) {
+            while(!(sName = this->findIncludeLine(in_sShaderName, in_sSrc, start, end, line)).empty()) {
                 // Check if it is registered.
                 if(m_names.find(sName) == m_names.end()) {
                     throw CorruptDataException(in_sShaderName, "Shader preprocessor"
@@ -309,7 +309,7 @@ public:
         m_id = glCreateShader(in_type);
         String sErr = in_pIncMgr->compileShader(m_id, in_sShaderName, in_sSourceCode);
 
-        if(!sErr.isEmpty()) {
+        if(!sErr.empty()) {
             throw CorruptDataException(in_sShaderName, sErr);
         }
 
@@ -320,7 +320,7 @@ public:
         glGetShaderInfoLog(m_id, loglen, NULL, &pszLog[0]);
         m_sLog = &pszLog[0];
 
-        if(!m_sLog.isEmpty()) {
+        if(!m_sLog.empty()) {
             FTSMSGDBG("Shader::CompiledShader: info-log of " + in_sShaderName + ":\n" + m_sLog, 2);
         }
 
@@ -373,7 +373,7 @@ FTS::Shader::Shader(CompiledShader* in_pVert, CompiledShader* in_pFrag, Compiled
     glGetProgramInfoLog(this->id(), loglen, NULL, &pszLog[0]);
     m_sLog = &pszLog[0];
 
-    if(!m_sLog.isEmpty()) {
+    if(!m_sLog.empty()) {
         FTSMSGDBG("Shader::ShaderLinker: info-log of " + in_sShaderName + ":\n" + m_sLog, 2);
     }
 
@@ -774,7 +774,7 @@ FTS::ShaderManager::ShaderManager()
     // First, load every possible shader include files.
     Path sPath;
     PDBrowseInfo dbi = dBrowse_Open(Path::datadir(D_SHADERS_DIRNAME));
-    while(!(sPath = dBrowse_GetNextWithWildcard(dbi, "*.shadinc")).isEmpty()) {
+    while(!(sPath = dBrowse_GetNextWithWildcard(dbi, "*.shadinc")).empty()) {
         this->loadShader(sPath);
     }
     dBrowse_Close(dbi);
@@ -789,19 +789,19 @@ FTS::ShaderManager::ShaderManager()
     // And now we load every shader we can find in the folder and try to compile
     // it, so later on we can get a list of "working shaders".
     dbi = dBrowse_Open(Path::datadir(D_SHADERS_DIRNAME));
-    while(!(sPath = dBrowse_GetNextWithWildcard(dbi, "*.vert")).isEmpty()) {
+    while(!(sPath = dBrowse_GetNextWithWildcard(dbi, "*.vert")).empty()) {
         this->loadShader(sPath);
     }
     dBrowse_Close(dbi);
 
     dbi = dBrowse_Open(Path::datadir(D_SHADERS_DIRNAME));
-    while(!(sPath = dBrowse_GetNextWithWildcard(dbi, "*.frag")).isEmpty()) {
+    while(!(sPath = dBrowse_GetNextWithWildcard(dbi, "*.frag")).empty()) {
         this->loadShader(sPath);
     }
     dBrowse_Close(dbi);
 
     dbi = dBrowse_Open(Path::datadir(D_SHADERS_DIRNAME));
-    while(!(sPath = dBrowse_GetNextWithWildcard(dbi, "*.geom")).isEmpty()) {
+    while(!(sPath = dBrowse_GetNextWithWildcard(dbi, "*.geom")).empty()) {
         this->loadShader(sPath);
     }
     dBrowse_Close(dbi);
@@ -848,7 +848,7 @@ FTS::ShaderManager::~ShaderManager()
 
 bool FTS::ShaderManager::loadShader(const Path& in_sFile, const String& in_sShaderName)
 {
-    String sShaderName = in_sShaderName.isEmpty() ? in_sFile : in_sShaderName;
+    String sShaderName = in_sShaderName.empty() ? in_sFile : in_sShaderName;
 
     try {
         // Already loaded?
@@ -975,9 +975,9 @@ void FTS::ShaderManager::destroyShader(const FTS::String& in_sShaderName)
 FTS::Shader* FTS::ShaderManager::getOrLinkShader(const String& in_sVertexShader, const String& in_sFragmentShader, const String& in_sGeometryShader)
 {
     // Check if we got that one cached (linked) already?
-    String sLinkedShaderName = (in_sVertexShader.isEmpty() ? DefaultVertexShader : in_sVertexShader) + m_sep
-                             + (in_sFragmentShader.isEmpty() ? DefaultFragmentShader : in_sFragmentShader) + m_sep
-                             + (in_sGeometryShader.isEmpty() ? DefaultGeometryShader : in_sGeometryShader);
+    String sLinkedShaderName = (in_sVertexShader.empty() ? DefaultVertexShader : in_sVertexShader) + m_sep
+                             + (in_sFragmentShader.empty() ? DefaultFragmentShader : in_sFragmentShader) + m_sep
+                             + (in_sGeometryShader.empty() ? DefaultGeometryShader : in_sGeometryShader);
     auto iCached = m_linkedShaders.find(sLinkedShaderName);
     if(iCached != m_linkedShaders.end())
         return iCached->second;
