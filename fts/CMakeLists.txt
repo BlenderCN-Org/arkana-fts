@@ -180,19 +180,24 @@ if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
     if(${GCC_VERSION} VERSION_LESS "4.4")
         message(FATAL_ERROR "You need at least GCC version 4.4 in order to compile Arkana-FTS")
     endif()
-
-    # Note that GCC 4.5 has a known bug with our nullptr workaround.
-    if(${GCC_VERSION} VERSION_EQUAL "4.5")
-        add_definitions(-DD_GCC_IS_45)
-        message(WARNING "Some GCC 4.5 subversions are known to be broken. Please use GCC 4.4 or 4.6 or higher. Good luck!")
-    endif()
-
-    # Do we need to emulate C++0x nullptr constant?
-    if(${GCC_VERSION} VERSION_LESS "4.6")
-        add_definitions(-DD_NEED_NULLPTR_WORKAROUND)
-        message(STATUS "GCC Version is less than 4.6, using nullptr workaround")
-    endif()
 elseif(MSVC)
+endif()
+
+# Compiler-dependent and build-dependend flags. Doing this before adding any 3rd party lib
+# In order to have them built with the same flags.
+if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
+# -Wextra -Wold-style-cast -Wfloat-equal -Wswitch-enum -Wundef -Wpointer-arith -Wcast-align
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -std=c++0x -Wno-non-virtual-dtor -Wall -O0 -pg -fstack-protector-all -Winvalid-pch")
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -std=c++0x -Wall -s -O2 -Winvalid-pch")
+elseif(MSVC)
+endif()
+
+# Debug or release ?
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    message(STATUS "Configuring for debug")
+    add_definitions(-DDEBUG=1)
+else()
+    message(STATUS "Configuring for release")
 endif()
 
 # Search for the different needed libs. #
@@ -210,8 +215,11 @@ endif()
 
 # The different standard libraries already supported by CMake.
 find_package(Threads REQUIRED)
+list(APPEND FTS_LIBS ${CMAKE_THREAD_LIBS_INIT})
+
 find_package(OpenGL REQUIRED)
 find_package(GLU REQUIRED)
+list(APPEND FTS_LIBS ${OPENGL_LIBRARIES})
 
 find_package(SDL)
 if(${SDL_FOUND} STREQUAL "NO")
@@ -225,11 +233,15 @@ endif()
 set(PCRE_FIND_QUIETLY 1)
 find_package(PCRE)
 if(${PCRE_FOUND} STREQUAL "NO")
-    message(FATAL_ERROR "Could not find PCRE installed on your system. This means you have to install the PCRE development files. This can be done by installing a package called something in the lines of PCRE-devel or PCRE-dev.")
+    message(WARNING "Could not find PCRE installed on your system. Using the bundled PCRE version. You may want to install the PCRE development files by installing a package called something in the lines of PCRE-devel or PCRE-dev.")
+    set(PCRE_SUPPORT_UTF8 ON CACHE BOOL "Enable support for the Unicode UTF-8 encoding.")
+    set(PCRE_SUPPORT_UNICODE_PROPERTIES ON CACHE BOOL "Enable support for Unicode properties. (If set, UTF-8 support will be enabled as well)")
+    option(PCRE_BUILD_PCRECPP "Build the PCRE C++ library (pcrecpp)." OFF)
+    add_subdirectory(${fts_SOURCE_DIR}/3rdparty/pcre)
+    set(PCRE_INCLUDE_DIR "${PCRE_BINARY_DIR}")
+    set(PCRE_LIBRARIES "pcre")
 else()
     message(STATUS "Found PCRE in ${PCRE_INCLUDE_DIR}: ${PCRE_LIBRARY}")
-    list(APPEND FTS_INCLUDES ${PCRE_INCLUDE_DIR})
-    list(APPEND FTS_LIBS ${PCRE_LIBRARIES})
 endif()
 
 set(FreeType_FIND_QUIETLY 1)
@@ -277,6 +289,10 @@ else()
         )
 endif()
 
+# Add PCRE, needs to be added after CEGUI because CEGUI depends on it.
+list(APPEND FTS_INCLUDES ${PCRE_INCLUDE_DIR})
+list(APPEND FTS_LIBS ${PCRE_LIBRARIES})
+
 # Add cal3d
 add_subdirectory(${fts_SOURCE_DIR}/3rdparty/cal3d)
 list(APPEND FTS_INCLUDES "3rdparty/cal3d/src")
@@ -315,18 +331,6 @@ set(SOURCES_TEST tests/mainNice.cpp
 add_definitions(-DGAME_MAIN=main)
 add_definitions(-DTEST_MAIN=main)
 
-# Debug or release ?
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    message(STATUS "Configuring for debug")
-    add_definitions(-DDEBUG=1)
-    # Only run the tests in debug mode, because the compiler fills up all my ram
-    # when trying to optimize them for release mode.
-    # TODO: Maybe set a flag to not optimize them in release mode?
-    add_subdirectory(${fts_SOURCE_DIR}/tests)
-else()
-    message(STATUS "Configuring for release")
-endif()
-
 # Add additional include search directories.
 include_directories(${fts_SOURCE_DIR})
 include_directories("${fts_SOURCE_DIR}/main")
@@ -339,14 +343,6 @@ add_definitions(-DD_USE_CEGUI)
 add_definitions(-DD_CAL3D_INTEGRATION)
 add_definitions(-DD_STRING_FTS_PATHS)
 
-# Compiler-dependent and build-dependend flags:
-if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
-# -Wextra -Wold-style-cast -Wfloat-equal -Wswitch-enum -Wundef -Wpointer-arith -Wcast-align
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -std=c++0x -Wno-non-virtual-dtor -Wall -O0 -pg -fstack-protector-all -Winvalid-pch")
-    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -std=c++0x -Wall -s -O2 -Winvalid-pch")
-elseif(MSVC)
-endif()
-
 # And show the flags.
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     message(STATUS "CXX Flags for FTS (Debug) are: ${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_DEBUG}")
@@ -357,11 +353,6 @@ else()
     # set the flags which are needed by the macro ADD_PCH_RULE
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_RELEASE}" )
 endif()
-
-# Collect all library files that are needed. #
-##############################################
-list(APPEND FTS_LIBS ${OPENGL_LIBRARIES})
-list(APPEND FTS_LIBS ${CMAKE_THREAD_LIBS_INIT})
 
 # The compiling process. #
 ##########################
