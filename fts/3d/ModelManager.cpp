@@ -85,7 +85,8 @@ std::shared_ptr<FTS::HardwareModel> FTS::ModelManager::getOrLoad(const FTS::Stri
 
 void FTS::ModelManager::removeModel(const String& in_sName)
 {
-    m_mHardwareModels.erase(in_sName);
+    if(in_sName != ErrorModelName)
+        m_mHardwareModels.erase(in_sName);
 }
 
 void FTS::ModelManager::removeAllModels()
