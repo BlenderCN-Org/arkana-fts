@@ -857,6 +857,7 @@ bool String::matchesPattern(const char *in_pszPat) const
                 if(String(str++).matchesPattern(pat))
                     return true;
             }
+            if(*str == 0 && *pat == 0) return true; // At the end of both.
             return this->matchesPattern(pat);
         case '?':
 #if D_QUEST_CAN_BE_NONE
