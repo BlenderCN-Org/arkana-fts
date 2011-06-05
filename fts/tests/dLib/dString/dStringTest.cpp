@@ -745,6 +745,23 @@ TEST_INSUITE(dString, Splitting)
     CHECK_EQUAL("", out[4]);
 }
 
+TEST_INSUITE(dString, PatternMatching)
+{
+    CHECK(FTS::String("Hello").matchesPattern("*"));
+    CHECK(FTS::String("Hello").matchesPattern("*o"));
+    CHECK(FTS::String("Hello").matchesPattern("*lo"));
+    CHECK(FTS::String("Hello").matchesPattern("H*"));
+    CHECK(FTS::String("Hello").matchesPattern("He*"));
+    CHECK(FTS::String("Hello").matchesPattern("He*lo"));
+
+    CHECK(FTS::String("Hello").matchesPattern("He?lo"));
+#if D_QUEST_CAN_BE_NONE
+    CHECK(FTS::String("Hello").matchesPattern("Hello?"));
+#else
+    CHECK(not FTS::String("Hello").matchesPattern("Hello?"));
+#endif
+}
+
 class StringOperatorsSetup : public TestSetup
 {
 public:
