@@ -215,9 +215,9 @@ int main(int argc, char *argv[])
 
             ArchiverBase *arc = NULL;
             if(bCompressSingleFile)
-                arc = new SingleFileCompressor(sOutName, pComp, bRec);
+                arc = new SingleFileCompressor(sOutName, std::move(pComp), bRec);
             else
-                arc = new Archiver(sOutName, pComp, bRec);
+                arc = new Archiver(sOutName, std::move(pComp), bRec);
 
             if(bYesToAll) {
                 arc->yesToAll();

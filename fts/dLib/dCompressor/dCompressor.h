@@ -67,7 +67,7 @@ public:
 class Compressor {
 public:
     /// Auto-pointer to a compressor.
-    typedef std::auto_ptr<Compressor> Ptr;
+    typedef std::unique_ptr<Compressor> Ptr;
 
 private:
     /// Protect against copying.

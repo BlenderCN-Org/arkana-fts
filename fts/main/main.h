@@ -13,6 +13,7 @@
 /* -------------------------- */
 #  include "main/support.h"
 #  include "main/defines.h"
+#  include "main/workarounds.h"
 
 #ifdef D_ARKANA_TESTING
 #  ifndef GAME_MAIN
@@ -56,45 +57,6 @@
 #  endif
 
 #  include "dLib/dMem/dMem.h"
-
-/* ------------------------------- */
-/* Workarounds for older compilers */
-/* ------------------------------- */
-#ifdef D_NEED_NULLPTR_WORKAROUND
-
-#ifndef D_GCC_IS_45
-const                        // this is a const object...
-class {
-#else
-class nullptr_t {
-#endif
-public:
-  template<class T>          // convertible to any type
-    operator T*() const      // of null non-member
-    { return 0; }            // pointer...
-  template<class C, class T> // or any type of null
-    operator T C::*() const  // member pointer...
-    { return 0; }
-private:
-  void operator&() const;    // whose address can't be taken
-#ifndef D_GCC_IS_45
-} nullptr = {};              // and whose name is nullptr
-#else
-};
-
-const nullptr_t nullptr = {};
-
-template<class T>
-bool operator == (T t, nullptr_t) { return !t; }
-template<class T>
-bool operator == (nullptr_t, T t) { return !t; }
-template<class T>
-bool operator != (T t, nullptr_t) { return !!t; }
-template<class T>
-bool operator != (nullptr_t, T t) { return !!t; }
-#endif
-
-#endif // D_NEED_NULLPTR_WORKAROUND
 
 #endif                          /* D_MAIN_H */
 
