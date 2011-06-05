@@ -2,6 +2,7 @@
 #define FTS_TOOLS_MAIN_H
 
 #include "main/defines.h"
+#include "main/workarounds.h"
 
 #include <time.h>
 #include <errno.h>
@@ -22,22 +23,6 @@
 #endif
 
 #include "dLib/dMem/dMem.h"
-
-#define FTS_DIR_SEPARATOR   "/"
-#define FTS_DIR_SEPARATORC  '/'
-#define FTS_IS_DIR_SEPARATOR(ch) ((ch) == FTS_DIR_SEPARATORC)
-
-#ifndef MAX
-#  define MAX( a, b ) ((a) > (b) ? (a) : (b))
-#endif
-#define MAX3( a, b, c ) (MAX( MAX( (a), (b) ), (c) ))
-#ifndef MIN
-#  define MIN( a, b ) ((a) < (b) ? (a) : (b))
-#endif
-#define MIN3( a, b, c ) (MIN( MIN( (a), (b) ), (c) ))
-#ifndef ABS
-#  define ABS( a ) (((a) <= 0) ? -(a) : (a))
-#endif
 
 #if WINDOOF
 #  if !defined(_MSC_VER)

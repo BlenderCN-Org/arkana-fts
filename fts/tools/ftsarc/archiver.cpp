@@ -12,7 +12,7 @@ using namespace FTS;
 
 ArchiverBase::ArchiverBase(const FTS::Path& in_sOutName, Compressor::Ptr in_pComp, bool in_bRecurse)
     : m_sOutName(in_sOutName)
-    , m_pComp(in_pComp)
+    , m_pComp(std::move(in_pComp))
     , m_bRecurse(in_bRecurse)
     , m_bYesToAll(false)
 {
@@ -55,7 +55,7 @@ bool ArchiverBase::addDirectoryRecursive(const FTS::Path& in_sDir)
 
 Archiver::Archiver(const FTS::Path& in_sOutName, Compressor::Ptr in_pComp, bool in_bRecurse)
     : ArchiverBase(in_sOutName.empty() ? Archiver::defaultOutName() : in_sOutName,
-                   in_pComp,
+                   std::move(in_pComp),
                    in_bRecurse)
 {
 }
@@ -142,7 +142,7 @@ int Archiver::execute()
             }
 
             // Not present in the archive yet, add it to the archive.
-            pArchive->give(new FileChunk(pFile));
+            pArchive->give(new FileChunk(std::move(pFile)));
             FTSMSG("Done\n");
         } catch(const ArkanaException& e) {
             e.show();

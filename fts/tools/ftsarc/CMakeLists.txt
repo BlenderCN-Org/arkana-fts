@@ -14,6 +14,8 @@ set(CMAKE_MODULE_PATH "${ftsarc_SOURCE_DIR}/../../cmake")
 
 set(CMAKE_ALLOW_LOOSE_LOOP_CONSTRUCTS true)
 
+set(CMAKE_VERBOSE_MAKEFILE true)
+
 # Disallow in-source builds. #
 ##############################
 EXECUTE_PROCESS(COMMAND pwd OUTPUT_VARIABLE CURR_DIR)
@@ -63,7 +65,6 @@ set(SOURCES main.cpp
             ../toolcompat.cpp
             ../../dLib/dArchive/dArchive.cpp
             ../../dLib/dBrowse/linux.cpp
-            ../../dLib/dBrowse/wildcard.cpp
             ../../dLib/dCompressor/dCompressor.cpp
             ../../dLib/dCompressor/minilzo_compressor.cpp
             ../../dLib/dCompressor/minilzo/minilzo.c
@@ -76,6 +77,7 @@ set(SOURCES main.cpp
             ../../utilities/StreamedDataContainer.cpp
             ../../utilities/Singleton.cpp
             ../../main/Exception.cpp
+            ../../main/Clock.cpp
    )
 
 # Debug or release ?
@@ -96,6 +98,7 @@ add_definitions(-DD_STRING_FTS_LIBS)
 add_definitions(-DD_NOCEGUI)
 add_definitions(-DD_NONET)
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
 # Compiler-dependent and build-dependend flags:
 if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -g -pg")
