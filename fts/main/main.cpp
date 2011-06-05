@@ -216,7 +216,6 @@ int GAME_MAIN(int argc, char *argv[])
         std::cout << "Uncaught exception: " << ex.what() << std::endl;
         std::ofstream fCritLog("CriticalError.txt");
         fCritLog << ex.what();
-        cleanFTS();
 #if WINDOOF
         std::cout << "Press any key to quit now..." << std::endl;
         system("pause");
