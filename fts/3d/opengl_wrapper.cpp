@@ -243,6 +243,14 @@ GLAPI void APIENTRY glUniform2fv(GLint location, GLsizei count, const GLfloat* v
     return proc(location, count, value);
 }
 
+GLAPI void APIENTRY glUniform1f(GLint location, GLfloat v0)
+{
+    static PFNGLUNIFORM1FPROC proc = (PFNGLUNIFORM1FPROC)FTS::glGetProcAddress("glUniform1f");
+    if(!proc) { throw FTS::NotExistException("Modern OpenGL Shaders", "Your way too old OpenGL drivers!"); }
+
+    return proc(location, v0);
+}
+
 GLAPI void APIENTRY glUniformMatrix4fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat* value)
 {
     static PFNGLUNIFORMMATRIX4FVPROC proc = (PFNGLUNIFORMMATRIX4FVPROC)FTS::glGetProcAddress("glUniformMatrix4fv");

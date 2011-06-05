@@ -14,145 +14,270 @@
 #include "3d/math/Quaternion.h"
 #include "3d/math/Matrix.h"
 #include "3d/Shader.h"
+#include "3d/camera.h"
 #include "graphic/graphic.h"
 #include "graphic/Color.h"
 #include "logging/logger.h"
+#include "main/runlevels.h"
 
 #include "dLib/dString/dString.h"
 #include "dLib/dArchive/dArchive.h"
 #include "dLib/dConf/configuration.h"
 
-#include "cal3d/cal3d.h"
+#include "bouge/bouge.hpp"
+#include "bouge/IOModules/XML/Loader.hpp"
+#include "bouge/IOModules/XMLParserCommon/XMLParserModules/TinyXMLParser.hpp"
 
 #include <algorithm>
 
-extern const char* sErrorModelSkeleton;
 extern const char* sErrorModelMesh;
 extern const char* sErrorModelMaterial;
+extern const char* sErrorModelMaterialSet;
 
 namespace FTS {
 
-struct MaterialUserData {
-    String sVertShaderName;
-    String sFragShaderName;
-    String sGeomShaderName;
-    VertexArrayObject vao;
-    float alphaAsPlayerCol;
-    Shader * pShader;
+// struct MaterialUserData {
+//     String sVertShaderName;
+//     String sFragShaderName;
+//     String sGeomShaderName;
+//     VertexArrayObject vao;
+//     float alphaAsPlayerCol;
+//     Program * pShader;
+//
+//     /// The mode to use when calling glDrawElements.
+//     unsigned int drawMode;
+//
+//     MaterialUserData(const String& in_sVertShaderName = String::EMPTY, const String& in_sFragShaderName = String::EMPTY, const String& in_sGeomShaderName = String::EMPTY)
+//         : sVertShaderName(in_sVertShaderName), sFragShaderName(in_sFragShaderName), sGeomShaderName(in_sGeomShaderName), alphaAsPlayerCol(1.0f), drawMode(GL_TRIANGLES)
+//     {
+//         pShader = ShaderManager::getSingleton().getOrLinkProgram(sVertShaderName, sFragShaderName, sGeomShaderName);
+//     };
+//
+//     MaterialUserData(const CalCoreMaterial& in_coreMat, const String& in_sModelName, bool in_bHasNonemptySkeleton)
+//         : sVertShaderName(in_bHasNonemptySkeleton ? "__FTS__RiggedModel.vert" : "__FTS__StaticModel.vert")
+//         , sFragShaderName("__FTS__TnL.frag")         /// \todo make dependend on whether there is a map or not for ex.
+//         , alphaAsPlayerCol(1.0f)
+//         , drawMode(GL_TRIANGLES)
+//     {
+//         String sAlphaAsPlayerColor = in_coreMat.getProprety("AlphaAsPlayerColor");
+//         if(!sAlphaAsPlayerColor.isEmpty()) {
+//             // Either, we set the player color, fully opaque or we don't use player
+//             // color thus make it fully transparent.
+//             // The shader makes the rest. standard c++ says true -> 1.0f, false -> 0.0f
+//             // and that's exactly what we need, cool :)
+//             this->alphaAsPlayerCol = static_cast<float>(sAlphaAsPlayerColor.to_Boolean());
+//         }
+//
+//         String sDrawMode = in_coreMat.getProprety("Mode");
+//         if(!sDrawMode.isEmpty()) {
+//             // They want us to draw something other than GL_TRIANGLES... Do so.
+//             if(sDrawMode.ieq("Lines"))
+//                 this->drawMode = GL_LINES;
+//         }
+//
+//         // Read what shaders to use. Prefer embedded ones over external references.
+//         if(!in_coreMat.getProprety("VertexShader").empty()) {
+//             // First, check if the shader was built into the model:
+//             String sBuiltinShaderName = in_sModelName + ":" + in_coreMat.getProprety("VertexShader");
+//             if(ShaderManager::getSingleton().hasShader(sBuiltinShaderName))
+//                 this->sVertShaderName = sBuiltinShaderName;
+//             else
+//                 this->sVertShaderName = in_coreMat.getProprety("VertexShader");
+//         }
+//
+//         // Caution: If the model contains no texture, we have to switch to a
+//         //          lighting-only fragment shader.
+//         if(in_coreMat.getMapCount() == 0) {
+//             this->sFragShaderName = "__FTS__OnlyLighting.frag";
+//         }
+//
+//         if(!in_coreMat.getProprety("FragmentShader").empty()) {
+//             // First, check if the shader was built into the model:
+//             String sBuiltinShaderName = in_sModelName + ":" + in_coreMat.getProprety("FragmentShader");
+//             if(ShaderManager::getSingleton().hasShader(sBuiltinShaderName))
+//                 this->sFragShaderName = sBuiltinShaderName;
+//             else
+//                 this->sFragShaderName = in_coreMat.getProprety("FragmentShader");
+//         }
+//
+//         if(!in_coreMat.getProprety("GeometryShader").empty()) {
+//             // First, check if the shader was built into the model:
+//             String sBuiltinShaderName = in_sModelName + ":" + in_coreMat.getProprety("GeometryShader");
+//             if(ShaderManager::getSingleton().hasShader(sBuiltinShaderName))
+//                 this->sGeomShaderName = sBuiltinShaderName;
+//             else
+//                 this->sGeomShaderName = in_coreMat.getProprety("GeometryShader");
+//         }
+//         pShader = ShaderManager::getSingleton().getOrLinkProgram(sVertShaderName, sFragShaderName, sGeomShaderName);
+//     }
+// };
 
-    /// The mode to use when calling glDrawElements.
-    unsigned int drawMode;
+struct MaterialUserData : public bouge::UserData {
+    const bouge::CoreMaterial& m_mat;
 
-    MaterialUserData(const String& in_sVertShaderName = String::EMPTY, const String& in_sFragShaderName = String::EMPTY, const String& in_sGeomShaderName = String::EMPTY)
-        : sVertShaderName(in_sVertShaderName), sFragShaderName(in_sFragShaderName), sGeomShaderName(in_sGeomShaderName), alphaAsPlayerCol(1.0f), drawMode(GL_TRIANGLES)
+    MaterialUserData(const bouge::CoreMaterial& mat)
+        : m_mat(mat)
     {
-        pShader = ShaderManager::getSingleton().getOrLinkShader(sVertShaderName, sFragShaderName, sGeomShaderName);
-    };
-    MaterialUserData(const CalCoreMaterial& in_coreMat, const String& in_sModelName, bool in_bHasNonemptySkeleton)
-        : sVertShaderName(in_bHasNonemptySkeleton ? "__FTS__RiggedModel.vert" : "__FTS__StaticModel.vert")
-        , sFragShaderName("__FTS__TnL.frag")         /// \todo make dependend on whether there is a map or not for ex.
-        , alphaAsPlayerCol(1.0f)
-        , drawMode(GL_TRIANGLES)
-    {
-        String sAlphaAsPlayerColor = in_coreMat.getProprety("AlphaAsPlayerColor");
-        if(!sAlphaAsPlayerColor.empty()) {
-            // Either, we set the player color, fully opaque or we don't use player
-            // color thus make it fully transparent.
-            // The shader makes the rest. standard c++ says true -> 1.0f, false -> 0.0f
-            // and that's exactly what we need, cool :)
-            this->alphaAsPlayerCol = static_cast<float>(sAlphaAsPlayerColor.to<bool>());
-        }
-
-        String sDrawMode = in_coreMat.getProprety("Mode");
-        if(!sDrawMode.empty()) {
-            // They want us to draw something other than GL_TRIANGLES... Do so.
-            if(sDrawMode.ieq("Lines"))
-                this->drawMode = GL_LINES;
-        }
-
-        // Read what shaders to use. Prefer embedded ones over external references.
-        if(!in_coreMat.getProprety("VertexShader").empty()) {
-            // First, check if the shader was built into the model:
-            String sBuiltinShaderName = in_sModelName + ":" + in_coreMat.getProprety("VertexShader");
-            if(ShaderManager::getSingleton().hasShader(sBuiltinShaderName))
-                this->sVertShaderName = sBuiltinShaderName;
-            else
-                this->sVertShaderName = in_coreMat.getProprety("VertexShader");
-        }
-
-        // Caution: If the model contains no texture, we have to switch to a
-        //          lighting-only fragment shader.
-        if(in_coreMat.getMapCount() == 0) {
-            this->sFragShaderName = "__FTS__OnlyLighting.frag";
-        }
-
-        if(!in_coreMat.getProprety("FragmentShader").empty()) {
-            // First, check if the shader was built into the model:
-            String sBuiltinShaderName = in_sModelName + ":" + in_coreMat.getProprety("FragmentShader");
-            if(ShaderManager::getSingleton().hasShader(sBuiltinShaderName))
-                this->sFragShaderName = sBuiltinShaderName;
-            else
-                this->sFragShaderName = in_coreMat.getProprety("FragmentShader");
-        }
-
-        if(!in_coreMat.getProprety("GeometryShader").empty()) {
-            // First, check if the shader was built into the model:
-            String sBuiltinShaderName = in_sModelName + ":" + in_coreMat.getProprety("GeometryShader");
-            if(ShaderManager::getSingleton().hasShader(sBuiltinShaderName))
-                this->sGeomShaderName = sBuiltinShaderName;
-            else
-                this->sGeomShaderName = in_coreMat.getProprety("GeometryShader");
-        }
-        pShader = ShaderManager::getSingleton().getOrLinkShader(sVertShaderName, sFragShaderName, sGeomShaderName);
+        // TODO
     }
 };
 
 } // namespace FTS
 
-FTS::HardwareModel::HardwareModel(const String& in_sName)
-    : m_pCoreModel(new CalCoreModel(in_sName.str()))
-    , m_pHardwareModel(new CalHardwareModel(m_pCoreModel.get()))
+FTS::HardwareModel::HardwareModel(const FTS::String& in_sName)
+    : m_pCoreModel(new bouge::CoreModel(in_sName.str()))
 {
-    CalLoader::setLoadingMode(0);
+    bouge::XMLLoader loader(new bouge::TinyXMLParser());
+    m_pCoreModel->mesh(loader.loadMesh(sErrorModelMesh));
+    m_pCoreModel->addMaterials(loader.loadMaterial(sErrorModelMaterial));
+    m_pCoreModel->addMaterialSets(loader.loadMaterialSet(sErrorModelMaterialSet));
 
-    // Load the error skeleton, mesh and material.
-    m_pCoreModel->loadCoreSkeleton(reinterpret_cast<const void*>(sErrorModelSkeleton));
-    m_pCoreModel->loadCoreMesh(reinterpret_cast<const void*>(sErrorModelMesh));
-    m_pCoreModel->loadCoreMaterial(reinterpret_cast<const void*>(sErrorModelMaterial));
+    m_pHardwareModel = bouge::CoreHardwareMeshPtr(new bouge::CoreHardwareMesh(m_pCoreModel->mesh(), 0, 0));
 
-    // I still need to create something with the skins and mat threads, no?
-    m_mSkins["Default"] = 0;
-    m_pCoreModel->createCoreMaterialThread(0);
-    m_pCoreModel->getCoreMesh(0)->getCoreSubmesh(0)->setCoreMaterialThreadId(0);
-    m_pCoreModel->setCoreMaterialId(0, 0, 0);
+    std::size_t coordsOffset = 0;
+    std::size_t normalsOffset = m_pHardwareModel->coordsPerVertex();
+    std::size_t floatsPerVertex = normalsOffset + m_pHardwareModel->attribCoordsPerVertex("normal");
+    std::size_t stride = floatsPerVertex * sizeof(float);
 
-    // Load the hardware data into the vertex buffers.
+    // Here, we compile all the vertex data into a single interleaved buffer.
+    std::vector<float> data(floatsPerVertex * m_pHardwareModel->vertexCount());
+    m_pHardwareModel->writeCoords(&data[coordsOffset], stride);
+    m_pHardwareModel->writeAttrib("normal", &data[normalsOffset], stride);
 
-    std::vector<float> vVerts;       // Vertices: x,y,z
-    std::vector<CalIndex> vVIndices; // Vertex indices of the faces: a,b,c
+    m_vao.bind();
 
-    // Give Cal3d all of our buffers:
-    m_pHardwareModel->setVertexBuffer(&vVerts, 3);
-    m_pHardwareModel->setIndexBuffer(&vVIndices);
-    m_pHardwareModel->setTextureCoordNum(0);
+    // Upload that data into the VBO
+    m_vbo.reset(new VertexBufferObject(data, floatsPerVertex));
+    m_vbo->bind();
 
-    m_pHardwareModel->loadDyn(0, 0, /*MAX_BONES_PER_MESH*/ 20);
+    ShaderManager::getSingleton().getOrLinkProgram()->setVertexAttribute("aVertexPosition", *m_vbo, m_pHardwareModel->coordsPerVertex(), coordsOffset);
+    ShaderManager::getSingleton().getOrLinkProgram()->setVertexAttribute("aVertexNormal", *m_vbo, m_pHardwareModel->attribCoordsPerVertex("normal"), normalsOffset);
 
-    // Now we can load up the data to the GPU.
-    m_pVertexVBO.reset(new VertexBufferObject(vVerts, 3));
-    m_pVtxIdxVBO.reset(new ElementsBufferObject(vVIndices, 3));
-
-    // And store the default material informations into memory:
-    MaterialUserData* pUD = new MaterialUserData();
-    m_pCoreModel->getCoreMaterial(0)->setUserData(pUD);
-
-    // And store them vertex attribute associations into memory.
-    pUD->vao.bind();
-    ShaderManager::getSingleton().getOrLinkShader()->setVertexAttribute("aVertexPosition", *m_pVertexVBO);
+    m_pVtxIdxVBO.reset(new ElementsBufferObject(m_pHardwareModel->faceIndices(), m_pHardwareModel->indicesPerFace()));
     m_pVtxIdxVBO->bind();
-    pUD->vao.unbind();
+
+    m_vao.unbind();
+    VertexBufferObject::unbind();
+    ElementsBufferObject::unbind();
 }
 
+// FTS::HardwareModel::HardwareModel(const String& in_sName)
+//     : m_pCoreModel(new CalCoreModel(in_sName.str()))
+//     , m_pHardwareModel(new CalHardwareModel(m_pCoreModel.get()))
+// {
+//     CalLoader::setLoadingMode(0);
+//
+//     // Load the error skeleton, mesh and material.
+//     m_pCoreModel->loadCoreSkeleton(reinterpret_cast<const void*>(sErrorModelSkeleton));
+//     m_pCoreModel->loadCoreMesh(reinterpret_cast<const void*>(sErrorModelMesh));
+//     m_pCoreModel->loadCoreMaterial(reinterpret_cast<const void*>(sErrorModelMaterial));
+//
+//     // I still need to create something with the skins and mat threads, no?
+//     m_mSkins["Default"] = 0;
+//     m_pCoreModel->createCoreMaterialThread(0);
+//     m_pCoreModel->getCoreMesh(0)->getCoreSubmesh(0)->setCoreMaterialThreadId(0);
+//     m_pCoreModel->setCoreMaterialId(0, 0, 0);
+//
+//     // Load the hardware data into the vertex buffers.
+//
+//     std::vector<float> vVerts;       // Vertices: x,y,z
+//     std::vector<CalIndex> vVIndices; // Vertex indices of the faces: a,b,c
+//
+//     // Give Cal3d all of our buffers:
+//     m_pHardwareModel->setVertexBuffer(&vVerts, 3);
+//     m_pHardwareModel->setIndexBuffer(&vVIndices);
+//     m_pHardwareModel->setTextureCoordNum(0);
+//
+//     m_pHardwareModel->loadDyn(0, 0, /*MAX_BONES_PER_MESH*/ 20);
+//
+//     // Now we can load up the data to the GPU.
+//     m_pVertexVBO.reset(new VertexBufferObject(vVerts, 3));
+//     m_pVtxIdxVBO.reset(new ElementsBufferObject(vVIndices, 3));
+//
+//     // And store the default material informations into memory:
+//     MaterialUserData* pUD = new MaterialUserData();
+//     m_pCoreModel->getCoreMaterial(0)->setUserData(pUD);
+//
+//     // And store them vertex attribute associations into memory.
+//     pUD->vao.bind();
+//     ShaderManager::getSingleton().getOrLinkShader()->setVertexAttribute("aVertexPosition", *m_pVertexVBO);
+//     m_pVtxIdxVBO->bind();
+//     pUD->vao.unbind();
+// }
+
+FTS::HardwareModel::HardwareModel(const FTS::String& in_sName, FTS::Archive& in_modelArch)
+    : m_pCoreModel(new bouge::CoreModel(in_sName.str()))
+{
+    bouge::XMLLoader loader(new bouge::TinyXMLParser());
+
+    // There is only one skeleton and one mesh per model file. Load them first.
+    m_pCoreModel->mesh(loader.loadMesh(in_modelArch.getFile("mesh.bxmesh").readstr().str()));
+    m_pCoreModel->skeleton(loader.loadSkeleton(in_modelArch.getFile("skeleton.bxskel").readstr().str()));
+
+    // Now we load all materials, material sets and animations we can find in the archive.
+    for(auto i = in_modelArch.begin() ; i != in_modelArch.end() ; ++i) {
+        FTS::FileChunk* pFchk = dynamic_cast<FTS::FileChunk*>(i->second);
+        if(pFchk == NULL)
+            continue;
+
+        Path fName = i->first;
+
+        // Just try out what kind of file it may be, depending on the extension
+        if(fName.ext().lower() == "bxmset") {
+            m_pCoreModel->addMaterialSets(loader.loadMaterialSet(pFchk->getFile().readstr().str()));
+        } else if(fName.ext().lower() == "bxmat") {
+            m_pCoreModel->addMaterials(loader.loadMaterial(pFchk->getFile().readstr().str()));
+        } else if(fName.ext().lower() == "bxanim") {
+            m_pCoreModel->addAnimations(loader.loadAnimation(pFchk->getFile().readstr().str()));
+/*        } else if(fName.ext().lower() == "png") {
+            // We prepend the model's name to the name of the graphic in order
+            // to get model-unique graphic names.
+            String sName = in_sName + ":" + fName;
+
+            /// \TODO Integrate the archive name into the path (instead of the hacky way above).
+            GraphicManager::getSingleton().getOrLoadGraphic(pFchk->getFile(), sName);
+            m_loadedTexs.push_back(sName);
+        } else if(fName.ext().lower() == "vert"
+               || fName.ext().lower() == "frag"
+               || fName.ext().lower() == "geom"
+               || fName.ext().lower() == "shadinc") {
+            // We prepend the model's name to the name of the shader in order
+            // to get model-unique shader names.
+            String sName = in_sName + ":" + fName;
+            String sShaderSrc = pFchk->getFile().readstr();
+
+            /// \TODO Integrate the archive name into the path (instead of the hacky way above).
+            if(ShaderManager::getSingleton().makeShader(sName, sShaderSrc))
+                m_loadedShads.push_back(sName);*/
+        }
+    }
+
+    // First consistency checkpoint //
+    //////////////////////////////////
+    std::set<std::string> missingBones = m_pCoreModel->missingBones();
+    if(!missingBones.empty()) {
+        throw CorruptDataException("Model: " + in_sName, "Missing the following bones in the skeleton: " + bouge::to_s(missingBones.begin(), missingBones.end()));
+    }
+
+    std::set<std::string> missingMaterials = m_pCoreModel->missingMaterials();
+    if(!missingMaterials.empty()) {
+        throw CorruptDataException("Model: " + in_sName, "Missing the following materials in the model: " + bouge::to_s(missingMaterials.begin(), missingMaterials.end()));
+    }
+
+    std::set<std::string> missingMatsetSpecs = m_pCoreModel->missingMatsetSpecs();
+    if(!missingMatsetSpecs.empty()) {
+        throw CorruptDataException("Model: " + in_sName, "Missing the material set specifications for the following submeshes: " + bouge::to_s(missingMatsetSpecs.begin(), missingMatsetSpecs.end()));
+    }
+
+    // Now we can load all the resources needed by all the materials.
+    // We offload this task to the MaterialUserData class.
+    for(bouge::CoreModel::material_iterator iMat = m_pCoreModel->begin_material() ; iMat != m_pCoreModel->end_material() ; ++iMat) {
+        iMat->userData = bouge::UserDataPtr(new MaterialUserData(**iMat));
+    }
+}
+
+
+/*
 FTS::HardwareModel::HardwareModel(const String& in_sName, Archive& in_modelArch)
     : m_pCoreModel(new CalCoreModel(in_sName.str()))
     , m_pHardwareModel(new CalHardwareModel(m_pCoreModel.get()))
@@ -296,7 +421,7 @@ FTS::HardwareModel::HardwareModel(const String& in_sName, Archive& in_modelArch)
 
                 // If the material doesn't exist, or such an entry for this
                 // submesh doesn't exist in the conf file, take the error mat.
-                if(iMatId == -1 || sMatName.empty()) {
+                if(iMatId == -1 || sMatName.isEmpty()) {
                     iMatId = this->getOrCreateErrorMatId(in_sName);
                 }
 
@@ -398,7 +523,7 @@ FTS::HardwareModel::HardwareModel(const String& in_sName, Archive& in_modelArch)
 
     /// \TODO: Model attach points
 }
-
+*/
 FTS::HardwareModel::~HardwareModel()
 {
     // Throw all the textures away..
@@ -412,7 +537,7 @@ FTS::HardwareModel::~HardwareModel()
     }
 
     // And throw all our "user-data" away too!
-    for(int iMat = 0 ; iMat < m_pCoreModel->getCoreMaterialCount() ; ++iMat) {
+/*    for(int iMat = 0 ; iMat < m_pCoreModel->getCoreMaterialCount() ; ++iMat) {
         CalCoreMaterial *pCoreMat = m_pCoreModel->getCoreMaterial(iMat);
 
         for(int iTex = 0 ; iTex < pCoreMat->getMapCount() ; ++iTex) {
@@ -426,9 +551,9 @@ FTS::HardwareModel::~HardwareModel()
         if(pUD) {
             delete pUD;
         }
-    }
+    }*/
 }
-
+/*
 int FTS::HardwareModel::getOrCreateErrorMatId(const String& in_sModelName)
 {
     // If it has no material yet, either make it use an existing default material...
@@ -548,10 +673,10 @@ void FTS::HardwareModel::precomputeAABB(const std::vector<float>& in_vVertices)
         m_restAABB.update(v);
     }
 }
-
+*/
 FTS::String FTS::HardwareModel::getName() const
 {
-    return m_pCoreModel->getName();
+    return m_pCoreModel->name();
 }
 
 std::vector<FTS::String> FTS::HardwareModel::getSkinList() const
@@ -578,21 +703,21 @@ std::vector<FTS::String> FTS::HardwareModel::getAnimList() const
 {
     std::vector<FTS::String> ret;
 
-    for(int i = 0 ; i < m_pCoreModel->getNumCoreAnimations() ; ++i) {
-        ret.push_back(m_pCoreModel->getCoreAnimation(i)->getName());
-    }
+//     for(int i = 0 ; i < m_pCoreModel->getNumCoreAnimations() ; ++i) {
+//         ret.push_back(m_pCoreModel->getCoreAnimation(i)->getName());
+//     }
 
     return ret;
 }
 
 uint32_t FTS::HardwareModel::getVertexCount() const
 {
-    return m_pHardwareModel->getTotalVertexCount();
+    return m_pHardwareModel->vertexCount();
 }
 
 uint32_t FTS::HardwareModel::getFaceCount() const
 {
-    return m_pHardwareModel->getTotalFaceCount();
+    return m_pHardwareModel->faceCount();
 }
 
 FTS::AxisAlignedBoundingBox FTS::HardwareModel::getRestAABB() const
@@ -600,18 +725,82 @@ FTS::AxisAlignedBoundingBox FTS::HardwareModel::getRestAABB() const
     return m_restAABB;
 }
 
-#include "main/runlevels.h"
-#include "3d/camera.h"
-void FTS::HardwareModel::render(const AffineMatrix& in_modelMatrix, const Color& in_playerCol, const CalModel& in_model)
+void FTS::HardwareModel::render(const AffineMatrix& in_modelMatrix, const Color& in_playerCol, bouge::ModelInstancePtrC in_modelInst)
 {
     // Preliminary gets to shorten the code.
     Camera& cam = RunlevelManager::getSingleton().getCurrRunlevel()->getActiveCamera();
+
+    static const std::string uModelViewProjectionMatrix = "uModelViewProjectionMatrix";
+    static const std::string uModelViewMatrix = "uModelViewMatrix";
+    static const std::string uProjectionMatrix = "uProjectionMatrix";
+    static const std::string uInvModelViewProjectionMatrix = "uInvModelViewProjectionMatrix";
+    static const std::string uInvModelViewMatrix = "uInvModelViewMatrix";
+    static const std::string uAmbient = "uAmbient";
+    static const std::string ambient = "ambient";
+    static const std::string uDiffuse = "uDiffuse";
+    static const std::string diffuse = "diffuse";
+    static const std::string uSpecular = "uSpecular";
+    static const std::string specular = "specular";
+    static const std::string uShininess = "uShininess";
+    static const std::string shininess = "shininess";
+    static const std::string uDiffTex = "uTexture";
 
     // Pre-calculate a few matrices:
     General4x4Matrix mvp = cam.getViewProjectionMatrix() * in_modelMatrix;
     AffineMatrix mv = cam.getViewMatrix() * in_modelMatrix;
     General4x4Matrix p = cam.getProjectionMatrix();
 
+    // Now, render each submesh of the mesh one after. It may need to get split
+    // for example if it has too many bones.
+    for(bouge::CoreHardwareMesh::const_iterator i = m_pHardwareModel->begin() ; i != m_pHardwareModel->end() ; ++i) {
+        const bouge::CoreHardwareSubMesh& submesh = *i;
+
+        // We set the per-submesh material options.
+
+        // Here, we can assume the material exists, as we did the
+        // "integrity checks" after the loading already.
+        bouge::CoreMaterialPtrC pMat = in_modelInst->materialForSubmesh(submesh.submeshName());
+
+        Program* pShad = ShaderManager::getSingleton().getOrLinkProgram();
+        pShad->bind();
+        m_vao.bind();
+
+        // Give the shader the matrices he needs, and their inverses.
+        pShad->setUniform(uModelViewProjectionMatrix, mvp);
+        pShad->setUniform(uModelViewMatrix, mv);
+        pShad->setUniform(uProjectionMatrix, p);
+        pShad->setUniformInverse(uInvModelViewProjectionMatrix, mvp);
+        pShad->setUniformInverse(uInvModelViewMatrix, mv);
+
+        // What about qNormalMatrix??
+
+        if(pMat->hasProprety(ambient)) {
+            pShad->setUniform(uAmbient, Vector(&pMat->propretyAsFvec(ambient)[0]));
+        }
+
+        if(pMat->hasProprety(diffuse)) {
+            pShad->setUniform(uDiffuse, Vector(&pMat->propretyAsFvec(diffuse)[0]));
+        }
+
+        if(pMat->hasProprety(specular)) {
+            pShad->setUniform(uSpecular, Vector(&pMat->propretyAsFvec(specular)[0]));
+        }
+
+        if(pMat->hasProprety(shininess)) {
+            pShad->setUniform(uShininess, pMat->propretyAsFvec(shininess)[0]);
+        }
+
+        if(pMat->userData) {
+//             static_cast<TextureUserData*>(pMat->userData.get())->tex->selectTexture(0);
+//             pShad->setUniformSampler(uDiffTex, 0);
+        }
+
+        glDrawElements(GL_TRIANGLES, submesh.faceCount() * m_pHardwareModel->indicesPerFace(), BOUGE_FACE_INDEX_TYPE_GL, (const GLvoid*)(submesh.startIndex()*sizeof(BOUGE_FACE_INDEX_TYPE)));
+
+        m_vao.unbind();
+        Program::unbind();
+    }
+/*
     for(int iHardwareMesh = 0 ; iHardwareMesh < m_pHardwareModel->getHardwareMeshCount() ; iHardwareMesh++)
     {
         m_pHardwareModel->selectHardwareMesh(iHardwareMesh);
@@ -670,7 +859,6 @@ void FTS::HardwareModel::render(const AffineMatrix& in_modelMatrix, const Color&
 #endif
         pUD->vao.unbind();
 //     Shader::unbind();
-    }
+    }*/
     verifGL("HardwareModel::render() end");
 }
-// TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST

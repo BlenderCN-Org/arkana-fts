@@ -31,7 +31,7 @@ FTS::Resolution::Resolution(const String& in_s)
     if(vWH.size() > 0)
         vWH[0].to(this->w);
     if(vWH.size() > 1)
-        vWH[1].to(this->h); // false := ignore trailing non-digits
+        vWH[1].to(this->h);
 
     // check if in fullscreen.
     String s = String::nr(w) + "x" + String::nr(h);

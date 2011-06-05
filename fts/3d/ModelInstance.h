@@ -21,9 +21,7 @@
 #include <set>
 #include <map>
 #include <list>
-
-class CalCoreModel;
-class CalModel;
+#include <bouge/bougefwd.hpp>
 
 namespace FTS {
     class String;
@@ -81,7 +79,7 @@ protected:
 
 private:
     /// The Cal3d model instance.
-    std::shared_ptr<CalModel> m_pModel;
+    bouge::ModelInstancePtr m_pModel;
 
     /// The HardwareModel that I am an instance of.
     std::shared_ptr<FTS::HardwareModel> m_pHwModel;

@@ -59,7 +59,7 @@ public:
     ///         call the usual OpenGL diagnostic stuff. If the string is not
     ///         empty, an error occured in the pre/post processing and the
     ///         error message is returned.
-    virtual String compileShader(const GLuint in_id, const String& in_sShaderName, String in_sSrc) = 0;
+    virtual String compileShader(const GLuint in_id, const String& in_sShaderName, String in_sSrc, const ShaderCompileFlags& in_flags) = 0;
 };
 
 std::size_t findVersionLineEnd(const String& code)
@@ -68,11 +68,23 @@ std::size_t findVersionLineEnd(const String& code)
     return code.find("\n");
 }
 
+String injectOptionDefines(const String& code, const ShaderCompileFlags& options)
+{
+    if(options.empty())
+        return code;
+
+    std::size_t endOfVersionLine = findVersionLineEnd(code);
+    String realCode = code.left(endOfVersionLine + 1);
+    realCode += join("#define ", options.flags().begin(), options.flags().end(), "\n");
+    realCode += String(code, endOfVersionLine);
+    return realCode;
+}
+
 String injectExtensionRequirement(const String& code, const String& name)
 {
     if(name.empty())
         return code;
-    
+
     std::size_t endOfVersionLine = findVersionLineEnd(code);
     String realCode = code.left(endOfVersionLine + 1);
     realCode += "#extension " + name + " : require\n";
@@ -90,9 +102,7 @@ public:
         glNamedStringARB = (t_glNamedStringARB)FTS::glGetProcAddress("glNamedStringARB");
         glDeleteNamedStringARB = (t_glDeleteNamedStringARB)FTS::glGetProcAddress("glDeleteNamedStringARB");
 
-        if(    !glNamedStringARB
-            || !glDeleteNamedStringARB
-            || !String((const char *)glGetString(GL_EXTENSIONS) ).contains("GL_ARB_shading_language_include"))
+        if(!glNamedStringARB || !glDeleteNamedStringARB || !String((const char *)glGetString(GL_EXTENSIONS)).contains("GL_ARB_shading_language_include"))
             throw NotExistException("GL_ARB_shading_language_include", "OpenGL extension");
     }
 
@@ -116,15 +126,15 @@ public:
         return true;
     }
 
-    virtual String compileShader(const GLuint in_id, const String&, String in_sSrc)
+    virtual String compileShader(const GLuint in_id, const String&, String in_sSrc, const ShaderCompileFlags& in_flags)
     {
         // We split up the source into:
         //  - the version line
         //  - the extension specifications
         //  - the option defines
         //  - all the rest of the sourcecode
-        String newSrc = injectExtensionRequirement(in_sSrc, "GL_ARB_shading_language_include");
-        const char *src = newSrc.c_str();
+        String sRealSource = injectExtensionRequirement(in_sSrc, "GL_ARB_shading_language_include");
+        const char *src = injectOptionDefines(sRealSource, in_flags).c_str();
         glShaderSource(in_id, 1, &src, NULL);
         glCompileShader(in_id);
         return String::EMPTY;
@@ -134,8 +144,8 @@ private:
 
     static const GLenum SHADER_INCLUDE_ARB = 0x8DAE;
 
-    typedef void (APIENTRYP t_glNamedStringARB)(GLenum type, GLint namelen, const GLchar* name, GLint stringlen, const GLchar* string);
-    typedef void (APIENTRYP t_glDeleteNamedStringARB)(GLint namelen, const GLchar* name);
+    typedef void (*t_glNamedStringARB)(GLenum type, GLint namelen, const GLchar* name, GLint stringlen, const GLchar* string);
+    typedef void (*t_glDeleteNamedStringARB)(GLint namelen, const GLchar* name);
     t_glNamedStringARB glNamedStringARB;
     t_glDeleteNamedStringARB glDeleteNamedStringARB;
 };
@@ -158,7 +168,7 @@ public:
         return true;
     }
 
-    virtual String compileShader(const GLuint in_id, const String& in_sShaderName, String in_sSrc)
+    virtual String compileShader(const GLuint in_id, const String& in_sShaderName, String in_sSrc, const ShaderCompileFlags& in_flags)
     {
         try {
             size_t start = 0, end = 0, line = 0;
@@ -195,7 +205,7 @@ public:
             return e.what();
         }
 
-        const char *src = in_sSrc.c_str();
+        const char *src = injectOptionDefines(in_sSrc, in_flags).c_str();
         glShaderSource(in_id, 1, &src, NULL);
         glCompileShader(in_id);
         return String::EMPTY;
@@ -300,14 +310,15 @@ public:
     /// \param in_type The type of the shader (GL_VERTEX_SHADER, GL_FRAGMENT_SHADER,
     ///                GL_GEOMETRY_SHADER, ...)
     /// \param in_pIncMgr The include manager to use to compile the shader.
+    /// \param in_flags The flags to use during shader compilation.
     ///
     /// \throws CorruptDataException When the shader cannot compile.
-    CompiledShader(const String& in_sShaderName, const String& in_sSourceCode, GLuint in_type, ShaderIncludeManager* in_pIncMgr)
+    CompiledShader(const String& in_sShaderName, const String& in_sSourceCode, GLuint in_type, ShaderIncludeManager* in_pIncMgr, const ShaderCompileFlags& in_flags)
     {
         verifGL("Shader::~CompiledShader pre " + in_sShaderName);
         FTSMSGDBG("Shader::CompiledShader: Preparing to compile " + in_sShaderName, 2);
         m_id = glCreateShader(in_type);
-        String sErr = in_pIncMgr->compileShader(m_id, in_sShaderName, in_sSourceCode);
+        String sErr = in_pIncMgr->compileShader(m_id, in_sShaderName, in_sSourceCode, in_flags);
 
         if(!sErr.empty()) {
             throw CorruptDataException(in_sShaderName, sErr);
@@ -353,7 +364,7 @@ private:
 
 } // namespace FTS
 
-FTS::Shader::Shader(CompiledShader* in_pVert, CompiledShader* in_pFrag, CompiledShader* in_pGeom, const String& in_sShaderName)
+FTS::Program::Program(CompiledShader* in_pVert, CompiledShader* in_pFrag, CompiledShader* in_pGeom, const String& in_sShaderName)
 {
     verifGL("Shader::ShaderLinker: start of " + in_sShaderName);
     FTSMSGDBG("Shader::ShaderLinker: Preparing to link " + in_sShaderName + " using: " + String::nr(in_pVert->id()) + ", " + String::nr(in_pFrag->id()) + (in_pGeom ? ", " + String::nr(in_pGeom->id()) : ""), 2);
@@ -438,14 +449,14 @@ FTS::Shader::Shader(CompiledShader* in_pVert, CompiledShader* in_pFrag, Compiled
     verifGL("Shader::ShaderLinker: end of " + in_sShaderName);
 }
 
-bool FTS::Shader::hasVertexAttribute(const String& in_sAttribName) const
+bool FTS::Program::hasVertexAttribute(const String& in_sAttribName) const
 {
     return m_attribs.find(in_sAttribName) != m_attribs.end();
 }
 
 /// This method binds a vertex buffer to a certain attribute of the shader.
 /// \return true if the bind succeeded, false else.
-bool FTS::Shader::setVertexAttribute(const String& in_sAttribName, const VertexBufferObject& in_buffer)
+bool FTS::Program::setVertexAttribute(const String& in_sAttribName, const VertexBufferObject& in_buffer)
 {
     auto i = m_attribs.find(in_sAttribName);
     if(i == m_attribs.end())
@@ -485,13 +496,71 @@ bool FTS::Shader::setVertexAttribute(const String& in_sAttribName, const VertexB
     return true;
 }
 
-bool FTS::Shader::hasUniform(const String& in_sUniformName) const
+bool FTS::Program::setVertexAttribute(const String& in_sAttribName, const VertexBufferObject& in_buffer, GLint in_nComponents, std::size_t in_offset)
+{
+    auto i = m_attribs.find(in_sAttribName);
+    if(i == m_attribs.end())
+        return false;
+
+    verifGL("Shader::setVertexAttribute(interleaved: "+in_sAttribName+") start");
+    // Do some verifications
+    if(in_buffer.type == GL_FLOAT) {
+        switch(in_nComponents) {
+        case 1:
+            if(i->second.type != GL_FLOAT)
+                return false;
+            break;
+        case 2:
+            if(i->second.type != GL_FLOAT_VEC2)
+                return false;
+            break;
+        case 3:
+            if(i->second.type != GL_FLOAT_VEC3)
+                return false;
+            break;
+        case 4:
+            if(i->second.type != GL_FLOAT_VEC4)
+                return false;
+            break;
+        default:
+            return false;
+        }
+    }
+
+    glEnableVertexAttribArray(i->second.id);
+    in_buffer.bind();
+    auto sizeof_ = in_buffer.stride/in_buffer.nComponents;
+    glVertexAttribPointer(i->second.id, in_nComponents, in_buffer.type, in_buffer.normalize, in_buffer.stride, (const GLvoid*)(in_offset * sizeof_));
+
+    /// \TODO: where to disable the vertex attribute?
+    verifGL("Shader::setVertexAttribute("+in_sAttribName+") end");
+    return true;
+}
+
+bool FTS::Program::hasUniform(const String& in_sUniformName) const
 {
     auto i = m_uniforms.find(in_sUniformName);
     return i != m_uniforms.end();
 }
 
-bool FTS::Shader::setUniform(const String& in_sUniformName, const Vector& in_v)
+bool FTS::Program::setUniform(const String& in_sUniformName, float in_v)
+{
+    auto i = m_uniforms.find(in_sUniformName);
+    if(i == m_uniforms.end())
+        return false;
+
+    verifGL("Shader::setUniform("+in_sUniformName+") start");
+    if(i->second.type == GL_FLOAT) {
+        glUniform1f(i->second.id, in_v);
+        verifGL("Shader::setUniform("+in_sUniformName+") end");
+        return true;
+    } else {
+        verifGL("Shader::setUniform("+in_sUniformName+") badend");
+        return false;
+    }
+}
+
+bool FTS::Program::setUniform(const String& in_sUniformName, const Vector& in_v)
 {
     auto i = m_uniforms.find(in_sUniformName);
     if(i == m_uniforms.end())
@@ -499,6 +568,9 @@ bool FTS::Shader::setUniform(const String& in_sUniformName, const Vector& in_v)
 
     verifGL("Shader::setUniform("+in_sUniformName+") start");
     switch(i->second.type) {
+    case GL_FLOAT:
+        glUniform1f(i->second.id, in_v.x());
+        break;
     case GL_FLOAT_VEC2:
         glUniform2fv(i->second.id, 1, in_v.array3f());
         break;
@@ -517,7 +589,7 @@ bool FTS::Shader::setUniform(const String& in_sUniformName, const Vector& in_v)
     return true;
 }
 
-bool FTS::Shader::setUniform(const String& in_sUniformName, const Color& in_c)
+bool FTS::Program::setUniform(const String& in_sUniformName, const Color& in_c)
 {
     auto i = m_uniforms.find(in_sUniformName);
     if(i == m_uniforms.end())
@@ -543,7 +615,7 @@ bool FTS::Shader::setUniform(const String& in_sUniformName, const Color& in_c)
     return true;
 }
 
-bool FTS::Shader::setUniform(const String& in_sUniformName, const Quaternion& in_q)
+bool FTS::Program::setUniform(const String& in_sUniformName, const Quaternion& in_q)
 {
     auto i = m_uniforms.find(in_sUniformName);
     if(i == m_uniforms.end())
@@ -569,7 +641,7 @@ bool FTS::Shader::setUniform(const String& in_sUniformName, const Quaternion& in
     return true;
 }
 
-bool FTS::Shader::setUniform(const String& in_sUniformName, const General4x4Matrix& in_mat, bool in_transpose)
+bool FTS::Program::setUniform(const String& in_sUniformName, const General4x4Matrix& in_mat, bool in_transpose)
 {
     auto i = m_uniforms.find(in_sUniformName);
     if(i == m_uniforms.end())
@@ -586,7 +658,7 @@ bool FTS::Shader::setUniform(const String& in_sUniformName, const General4x4Matr
     return true;
 }
 
-bool FTS::Shader::setUniform(const String& in_sUniformName, const AffineMatrix& in_mat, bool in_transpose)
+bool FTS::Program::setUniform(const String& in_sUniformName, const AffineMatrix& in_mat, bool in_transpose)
 {
     auto i = m_uniforms.find(in_sUniformName);
     if(i == m_uniforms.end())
@@ -606,7 +678,7 @@ bool FTS::Shader::setUniform(const String& in_sUniformName, const AffineMatrix& 
     return true;
 }
 
-bool FTS::Shader::setUniformInverse(const String& in_sUniformName, const AffineMatrix& in_mat, bool in_transpose)
+bool FTS::Program::setUniformInverse(const String& in_sUniformName, const AffineMatrix& in_mat, bool in_transpose)
 {
     auto i = m_uniforms.find(in_sUniformName);
     if(i == m_uniforms.end())
@@ -626,7 +698,7 @@ bool FTS::Shader::setUniformInverse(const String& in_sUniformName, const AffineM
     return true;
 }
 
-bool FTS::Shader::setUniformInverse(const String& in_sUniformName, const General4x4Matrix& in_mat, bool in_transpose)
+bool FTS::Program::setUniformInverse(const String& in_sUniformName, const General4x4Matrix& in_mat, bool in_transpose)
 {
     auto i = m_uniforms.find(in_sUniformName);
     if(i == m_uniforms.end())
@@ -643,7 +715,7 @@ bool FTS::Shader::setUniformInverse(const String& in_sUniformName, const General
     return true;
 }
 
-bool FTS::Shader::setUniformSampler(const String& in_sUniformName, uint8_t in_iTexUnit)
+bool FTS::Program::setUniformSampler(const String& in_sUniformName, uint8_t in_iTexUnit)
 {
     String sUniformName = in_sUniformName + String::chr(convertTextNr(in_iTexUnit));
     auto i = m_uniforms.find(sUniformName);
@@ -661,7 +733,7 @@ bool FTS::Shader::setUniformSampler(const String& in_sUniformName, uint8_t in_iT
     return true;
 }
 
-bool FTS::Shader::setUniformArrayElement(const String& in_sUniformName, uint16_t in_iArrayIdx, const Vector& in_v)
+bool FTS::Program::setUniformArrayElement(const String& in_sUniformName, uint16_t in_iArrayIdx, const Vector& in_v)
 {
     auto i = m_uniforms.find(in_sUniformName);
     if(i == m_uniforms.end())
@@ -692,7 +764,7 @@ bool FTS::Shader::setUniformArrayElement(const String& in_sUniformName, uint16_t
     return true;
 }
 
-bool FTS::Shader::setUniformArrayElement(const String& in_sUniformName, uint16_t in_iArrayIdx, const AffineMatrix& in_mat, bool in_transpose)
+bool FTS::Program::setUniformArrayElement(const String& in_sUniformName, uint16_t in_iArrayIdx, const AffineMatrix& in_mat, bool in_transpose)
 {
     auto i = m_uniforms.find(in_sUniformName);
     if(i == m_uniforms.end())
@@ -717,9 +789,9 @@ bool FTS::Shader::setUniformArrayElement(const String& in_sUniformName, uint16_t
     return true;
 }
 
-GLuint Shader::m_uiCurrentlyBoundShaderId = (GLuint)-1;
+GLuint Program::m_uiCurrentlyBoundShaderId = (GLuint)-1;
 
-void FTS::Shader::bind()
+void FTS::Program::bind()
 {
     // Do not re-bind the same shader again.
     if(this->id() == m_uiCurrentlyBoundShaderId)
@@ -731,13 +803,13 @@ void FTS::Shader::bind()
     verifGL("Shader::bind("+String::nr(this->id())+") end");
 }
 
-void Shader::unbind()
+void Program::unbind()
 {
     glUseProgram(0);
     m_uiCurrentlyBoundShaderId = (GLuint)-1;
 }
 
-FTS::Shader::~Shader()
+FTS::Program::~Program()
 {
     if(m_id != 0) {
         verifGL("Shader::~Shader("+String::nr(this->id())+") start");
@@ -746,8 +818,63 @@ FTS::Shader::~Shader()
     }
 }
 
+const FTS::ShaderCompileFlag FTS::ShaderCompileFlag::Lit("D_LIT_OPTION");
+const FTS::ShaderCompileFlag FTS::ShaderCompileFlag::Textured("D_TEXTURED_OPTION");
+
+FTS::ShaderCompileFlag::ShaderCompileFlag(const String& name)
+    : m_flag(name)
+{ }
+
+FTS::ShaderCompileFlags FTS::ShaderCompileFlag::operator|(const FTS::ShaderCompileFlag& f)
+{
+    return ShaderCompileFlags(m_flag, f.m_flag);
+}
+
+FTS::String FTS::ShaderCompileFlag::name() const
+{
+    return m_flag;
+}
+
+FTS::ShaderCompileFlags::ShaderCompileFlags()
+{ }
+
+FTS::ShaderCompileFlags::ShaderCompileFlags(const FTS::ShaderCompileFlag& flag)
+{
+    m_flags.push_back(flag.name());
+}
+
+FTS::ShaderCompileFlags::ShaderCompileFlags(const FTS::ShaderCompileFlag& flag, const FTS::ShaderCompileFlag& flag2)
+{
+    m_flags.push_back(flag.name());
+    m_flags.push_back(flag2.name());
+}
+
+FTS::ShaderCompileFlags FTS::ShaderCompileFlags::operator|(const FTS::ShaderCompileFlags& f)
+{
+    ShaderCompileFlags ret;
+    ret.m_flags = m_flags;
+    ret.m_flags.insert(ret.m_flags.end(), f.m_flags.begin(), f.m_flags.end());
+    return ret;
+}
+
+const std::list<FTS::ShaderCompileFlag>& FTS::ShaderCompileFlags::flags() const
+{
+    return m_flags;
+}
+
+FTS::String FTS::ShaderCompileFlags::toString() const
+{
+    return join(m_flags.begin(), m_flags.end(), ":");
+}
+
+bool ShaderCompileFlags::empty() const
+{
+    return m_flags.empty();
+}
+
 FTS::ShaderManager::ShaderManager()
     : m_sep("|")
+    , m_optSep(":")
 {
     String sInfo;
 
@@ -771,135 +898,96 @@ FTS::ShaderManager::ShaderManager()
         m_pInclManager = new ShaderIncludeManagerWorkaround();
     }
 
-    // First, load every possible shader include files.
-    Path sPath;
+    // We need to preload all the include files we can find.
+    Path path;
     PDBrowseInfo dbi = dBrowse_Open(Path::datadir(D_SHADERS_DIRNAME));
-    while(!(sPath = dBrowse_GetNextWithWildcard(dbi, "*.shadinc")).empty()) {
-        this->loadShader(sPath);
+    while(!(path = dBrowse_GetNextWithWildcard(dbi, "*.vertinc")).empty()) {
+        this->compileShader(path);
     }
     dBrowse_Close(dbi);
-
-    /// \TODO What to do if those default shaders fail?? They actually shouldn't
-    this->makeShader(ShaderManager::DefaultVertexShader, sErrorVert);
-    this->makeShader(ShaderManager::DefaultFragmentShader, sErrorFrag);
-
-    // Also link the default shaders already:
-    this->getOrLinkShader(); // Default arguments are "Default.*".
-
-    // And now we load every shader we can find in the folder and try to compile
-    // it, so later on we can get a list of "working shaders".
     dbi = dBrowse_Open(Path::datadir(D_SHADERS_DIRNAME));
-    while(!(sPath = dBrowse_GetNextWithWildcard(dbi, "*.vert")).empty()) {
-        this->loadShader(sPath);
+    while(!(path = dBrowse_GetNextWithWildcard(dbi, "*.fraginc")).empty()) {
+        this->compileShader(path);
+    }
+    dBrowse_Close(dbi);
+    dbi = dBrowse_Open(Path::datadir(D_SHADERS_DIRNAME));
+    while(!(path = dBrowse_GetNextWithWildcard(dbi, "*.geominc")).empty()) {
+        this->compileShader(path);
     }
     dBrowse_Close(dbi);
 
-    dbi = dBrowse_Open(Path::datadir(D_SHADERS_DIRNAME));
-    while(!(sPath = dBrowse_GetNextWithWildcard(dbi, "*.frag")).empty()) {
-        this->loadShader(sPath);
-    }
-    dBrowse_Close(dbi);
-
-    dbi = dBrowse_Open(Path::datadir(D_SHADERS_DIRNAME));
-    while(!(sPath = dBrowse_GetNextWithWildcard(dbi, "*.geom")).empty()) {
-        this->loadShader(sPath);
-    }
-    dBrowse_Close(dbi);
+    // Already load, compile and link the default shader.
+    CompiledShader* pVert = this->compileShaderCode(DefaultVertexShader, sErrorVert);
+    CompiledShader* pFrag = this->compileShaderCode(DefaultFragmentShader, sErrorFrag);
+    String sDefaultShaderName = this->buildProgramName(DefaultVertexShader, DefaultFragmentShader, DefaultGeometryShader, ShaderCompileFlags());
+    m_linkedShaders[sDefaultShaderName] = new Program(pVert, pFrag, 0, sDefaultShaderName);
 }
 
 FTS::ShaderManager::~ShaderManager()
 {
     FTSMSGDBG("Destroying shader manager", 2);
-
-    // Delete the builtin shaders.
-    SAFE_DELETE(m_compiledVertexShaders["Default.vert"]);
-    SAFE_DELETE(m_compiledFragmentShaders["Default.frag"]);
-    m_compiledVertexShaders.erase("Default.vert");
-    m_compiledFragmentShaders.erase("Default.frag");
-
-    // Everything should already be deleted by now.
-    // That's why we print a warning for everything that is left.
-    // Or not?
-
-    for(auto i = m_compiledVertexShaders.begin() ; i != m_compiledVertexShaders.end() ; ++i) {
-        //FTS18N("Shader_NotUnloaded_File", MsgType::Warning, i->first);
-
-        SAFE_DELETE(i->second);
-    }
-
-    for(auto i = m_compiledFragmentShaders.begin() ; i != m_compiledFragmentShaders.end() ; ++i) {
-        //FTS18N("Shader_NotUnloaded_File", MsgType::Warning, i->first);
-
-        SAFE_DELETE(i->second);
-    }
-
-    for(std::map<String, CompiledShader*>::iterator i = m_compiledGeometryShaders.begin() ; i != m_compiledGeometryShaders.end() ; ++i) {
-        //FTS18N("Shader_NotUnloaded_File", MsgType::Warning, i->first);
-
-        SAFE_DELETE(i->second);
-    }
-
-    m_compiledVertexShaders.clear();
-    m_compiledFragmentShaders.clear();
-    m_compiledGeometryShaders.clear();
-
+    this->clearCache();
     SAFE_DELETE(m_pInclManager);
 }
 
-bool FTS::ShaderManager::loadShader(const Path& in_sFile, const String& in_sShaderName)
+void FTS::ShaderManager::clearCache()
 {
-    String sShaderName = in_sShaderName.empty() ? in_sFile : in_sShaderName;
-
-    try {
-        // Already loaded?
-        try {
-            this->findShader(sShaderName);
-            return true;
-        } catch(...) { }
-
-        return this->makeShader(sShaderName, File::open(Path::datadir(D_SHADERS_DIRNAME) + in_sFile, File::Read)->readstr());
-    } catch(const ArkanaException& e) {
-        e.show();
-        return false;
+    for(auto i = m_compiledVertexShaders.begin() ; i != m_compiledVertexShaders.end() ; ++i) {
+        delete i->second;
     }
+    m_compiledVertexShaders.clear();
+
+    for(auto i = m_compiledFragmentShaders.begin() ; i != m_compiledFragmentShaders.end() ; ++i) {
+        delete i->second;
+    }
+    m_compiledFragmentShaders.clear();
+
+    for(auto i = m_compiledGeometryShaders.begin() ; i != m_compiledGeometryShaders.end() ; ++i) {
+        delete i->second;
+    }
+    m_compiledGeometryShaders.clear();
+
+    for(auto prog = m_linkedShaders.begin() ; prog != m_linkedShaders.end() ; ++prog) {
+        delete prog->second;
+    }
+    m_linkedShaders.clear();
 }
 
-bool FTS::ShaderManager::makeShader(const String& in_sShaderName, const String& in_sShaderContent)
+FTS::CompiledShader* FTS::ShaderManager::compileShader(const Path& in_sFile, const ShaderCompileFlags& flags, String in_sShaderName)
 {
-    // If the file is located within the shaders directory (or somewhere deeper)
-    // we take out the whole shaders directory prefix so we kindo got "relative"
-    // names to a kind of "include directory".
-    String prettyShaderName = in_sShaderName;
-    prettyShaderName.replaceStr(D_SHADERS_DIRNAME, "");
+    if(in_sShaderName.empty()) {
+        in_sShaderName = in_sFile;
+    }
+
+    return this->compileShaderCode(in_sShaderName, File::open(Path::datadir(D_SHADERS_DIRNAME) + in_sFile, File::Read)->readstr(), flags);
+}
+
+FTS::CompiledShader* FTS::ShaderManager::compileShaderCode(const String& in_sShaderName, const String& in_sShaderContent, const ShaderCompileFlags& flags)
+{
+    String ext = Path(in_sShaderName).ext();
+
+    if(ext == "vertinc" || ext == "fraginc" || ext == "geominc") {
+        String includeShaderName = in_sShaderName;
+        includeShaderName.replaceStr(D_SHADERS_DIRNAME, "");
+        m_pInclManager->addIncludeFile(includeShaderName, in_sShaderContent);
+        return nullptr;
+    }
 
     // Already loaded?
     try {
-        this->findShader(prettyShaderName);
-        return true;
-    } catch( NotExistException& e) {
-        // We expect this if the shader wasn't load.
-    } catch(...) { 
-        FTSMSG("Unknonwn exception makeShader {1}", FTS::MsgType::Warning, prettyShaderName);
+        return this->findShader(in_sShaderName, flags);
+    } catch(const NotExistException&) { }
+
+    String cacheShaderName = this->buildShaderName(in_sShaderName, flags);
+    if(ext == "vert") {
+        return m_compiledVertexShaders[cacheShaderName] = new CompiledShader(in_sShaderName, in_sShaderContent, GL_VERTEX_SHADER, m_pInclManager, flags);
+    } else if(ext == "frag") {
+        return m_compiledFragmentShaders[cacheShaderName] = new CompiledShader(in_sShaderName, in_sShaderContent, GL_FRAGMENT_SHADER, m_pInclManager, flags);
+    } else if(ext == "geom") {
+        return m_compiledGeometryShaders[cacheShaderName] = new CompiledShader(in_sShaderName, in_sShaderContent, GL_GEOMETRY_SHADER, m_pInclManager, flags);
     }
 
-    try {
-        if(Path(prettyShaderName).ext() == "vert") {
-            m_compiledVertexShaders[prettyShaderName] = new CompiledShader(in_sShaderName, in_sShaderContent, GL_VERTEX_SHADER, m_pInclManager);
-        } else if(Path(prettyShaderName).ext() == "frag") {
-            m_compiledFragmentShaders[prettyShaderName] = new CompiledShader(in_sShaderName, in_sShaderContent, GL_FRAGMENT_SHADER, m_pInclManager);
-        } else if(Path(prettyShaderName).ext() == "geom") {
-            m_compiledGeometryShaders[prettyShaderName] = new CompiledShader(in_sShaderName, in_sShaderContent, GL_GEOMETRY_SHADER, m_pInclManager);
-        } else if(Path(prettyShaderName).ext() == "shadinc") {
-            m_pInclManager->addIncludeFile(prettyShaderName, in_sShaderContent);
-        }
-
-        return true;
-    } catch(const ArkanaException& e) {
-        e.show();
-        // Just skip bogous shaders.
-
-        return false;
-    }
+    throw InvalidCallException("ShaderManager::compileShaderCode with a shader using an unknown extension");
 }
 
 /// Find a compiled shader in my collection, by name, whatever kind of shader it be.
@@ -907,8 +995,10 @@ bool FTS::ShaderManager::makeShader(const String& in_sShaderName, const String& 
 /// \return A pointer to the compiled shader.
 ///
 /// \exceptions NotFoundException if the shader doesn't exist.
-CompiledShader* FTS::ShaderManager::findShader(const String& in_sShaderName)
+CompiledShader* FTS::ShaderManager::findShader(String in_sShaderName, const ShaderCompileFlags& flags)
 {
+    in_sShaderName = this->buildShaderName(in_sShaderName, flags);
+
     auto i = m_compiledVertexShaders.find(in_sShaderName);
     if(i != m_compiledVertexShaders.end())
         return i->second;
@@ -922,96 +1012,80 @@ CompiledShader* FTS::ShaderManager::findShader(const String& in_sShaderName)
     throw NotExistException(in_sShaderName);
 }
 
-bool FTS::ShaderManager::hasShader(const String& in_sShaderName)
+bool FTS::ShaderManager::hasShader(const String& in_sShaderName, const ShaderCompileFlags& flags)
 {
     try {
-        this->findShader(in_sShaderName);
+        this->findShader(in_sShaderName, flags);
         return true;
-    } catch(...) {
+    } catch(const NotExistException&) {
         return false;
     }
 }
 
-String FTS::ShaderManager::getSource(const String& in_sShaderName)
+String FTS::ShaderManager::getShaderSource(const String& in_sShaderName, const ShaderCompileFlags& flags)
 {
-    // We always get the info log, it might contain some useful warnings!
+    GLuint id = this->findShader(in_sShaderName, flags)->id();
     GLint srclen = 0;
-    glGetShaderiv(this->findShader(in_sShaderName)->id(), GL_SHADER_SOURCE_LENGTH, &srclen);
+    glGetShaderiv(id, GL_SHADER_SOURCE_LENGTH, &srclen);
     GLint realsrclen = 0;
-    std::vector<GLchar> pszSrc(srclen);     // Deleted automatically.
-    glGetShaderSource(this->findShader(in_sShaderName)->id(), srclen, &realsrclen, &pszSrc[0]);
+    std::vector<GLchar> pszSrc(srclen);
+    glGetShaderSource(id, srclen, &realsrclen, &pszSrc[0]);
     return String(&pszSrc[0]);
 }
 
-void FTS::ShaderManager::destroyShader(const FTS::String& in_sShaderName)
+void FTS::ShaderManager::destroyShader(FTS::String in_sShaderName, const ShaderCompileFlags& flags)
 {
-    // If there is no such shader, we just ignore the request.
-    if(!this->hasShader(in_sShaderName)) {
+    try {
+        delete this->findShader(in_sShaderName, flags);
+
+        m_compiledVertexShaders.erase(in_sShaderName);
+        m_compiledFragmentShaders.erase(in_sShaderName);
+        m_compiledGeometryShaders.erase(in_sShaderName);
+    } catch(const NotExistException&) {
         FTS18N("Want to destroy the inexistent shader " + in_sShaderName, MsgType::Warning);
-        return ;
     }
 
-    // We definitely need to check if this shader has been used in linked shaders.
-    // If this is the case, we destroy the linked shader too.
-    // We do this because else it defeats the whole sense of destroying a shader.
-    for(auto i = m_linkedShaders.begin() ; i != m_linkedShaders.end() ; ++i) {
-        if(i->first.contains(in_sShaderName + m_sep) || i->first.contains(m_sep + in_sShaderName)) {
-            delete i->second;
-            m_linkedShaders.erase(i);
-            break;
-        }
-    }
-
-    // Finally, take out the shader itself. We already made sure above that this
-    // line returns something valid.
-    delete this->findShader(in_sShaderName);
-
-    m_compiledVertexShaders.erase(in_sShaderName);
-    m_compiledFragmentShaders.erase(in_sShaderName);
-    m_compiledGeometryShaders.erase(in_sShaderName);
     verifGL("post-destroy shader " + in_sShaderName);
 }
 
-FTS::Shader* FTS::ShaderManager::getOrLinkShader(const String& in_sVertexShader, const String& in_sFragmentShader, const String& in_sGeometryShader)
+FTS::Program* FTS::ShaderManager::getOrLinkProgram(const String& in_sVertexShader, const String& in_sFragmentShader, const String& in_sGeometryShader, const ShaderCompileFlags& flags)
 {
     // Check if we got that one cached (linked) already?
-    String sLinkedShaderName = (in_sVertexShader.empty() ? DefaultVertexShader : in_sVertexShader) + m_sep
-                             + (in_sFragmentShader.empty() ? DefaultFragmentShader : in_sFragmentShader) + m_sep
-                             + (in_sGeometryShader.empty() ? DefaultGeometryShader : in_sGeometryShader);
+    String sLinkedShaderName = this->buildProgramName(in_sVertexShader, in_sFragmentShader, in_sGeometryShader, flags);
     auto iCached = m_linkedShaders.find(sLinkedShaderName);
     if(iCached != m_linkedShaders.end())
         return iCached->second;
 
-    // If it's not been linked in this combination yet, do this now!
-    // Use the default ones as fallbacks.
-    CompiledShader* pVert = m_compiledVertexShaders[DefaultVertexShader];
-    CompiledShader* pFrag = m_compiledFragmentShaders[DefaultFragmentShader];
-    CompiledShader* pGeom = nullptr;
-
-    auto i = m_compiledVertexShaders.find(in_sVertexShader);
-    if(i != m_compiledVertexShaders.end()) {
-        pVert = i->second;
-    }
-    i = m_compiledFragmentShaders.find(in_sFragmentShader);
-    if(i != m_compiledFragmentShaders.end()) {
-        pFrag = i->second;
-    }
-    i = m_compiledGeometryShaders.find(in_sGeometryShader);
-    if(i != m_compiledGeometryShaders.end()) {
-        pGeom = i->second;
-    }
-
-    // Link them. If they don't fit, replace it by the default ones linked.
     try {
-        return m_linkedShaders[sLinkedShaderName] = new Shader(pVert, pFrag, pGeom, sLinkedShaderName);
+        // If it's not been linked in this combination yet, do this now!
+        CompiledShader* pVert = this->compileShader(in_sVertexShader);
+        CompiledShader* pFrag = this->compileShader(in_sFragmentShader);
+        CompiledShader* pGeom = this->compileShader(in_sGeometryShader);
+
+        // Link them. If they don't fit, replace it by the default ones linked.
+        return m_linkedShaders[sLinkedShaderName] = new Program(pVert, pFrag, pGeom, sLinkedShaderName);
     } catch(const CorruptDataException& e) {
         // Use the all-default shader in case of failure.
 
         // But if that one doesn't even exist, we're doomed!
-        if(sLinkedShaderName == DefaultVertexShader+m_sep+DefaultFragmentShader+m_sep+DefaultGeometryShader) {
+        String defaultName = this->buildProgramName(DefaultVertexShader, DefaultFragmentShader, DefaultGeometryShader, flags);
+        if(sLinkedShaderName == defaultName) {
             e.show();
         }
 
-        return m_linkedShaders[sLinkedShaderName] = m_linkedShaders[DefaultVertexShader+m_sep+DefaultFragmentShader+m_sep+DefaultGeometryShader];
+        return m_linkedShaders[sLinkedShaderName] = m_linkedShaders[defaultName];
     }
+}
+
+String ShaderManager::buildShaderName(FTS::String baseName, const FTS::ShaderCompileFlags& flags)
+{
+    // If the file is located within the shaders directory (or somewhere deeper)
+    // we take out the whole shaders directory prefix so we kindo got "relative"
+    // names to a kind of "include directory".
+    return baseName.replaceStr(D_SHADERS_DIRNAME, "") + join(m_optSep, flags.flags().begin(), flags.flags().end());
+}
+
+String ShaderManager::buildProgramName(const FTS::String& vtxBaseName, const FTS::String& fragBaseName, const FTS::String& geomBaseName, const FTS::ShaderCompileFlags& flags)
+{
+    return this->buildShaderName(vtxBaseName, flags) + m_sep + this->buildShaderName(fragBaseName, flags) + m_sep + this->buildShaderName(geomBaseName, flags);
 }

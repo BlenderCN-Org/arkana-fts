@@ -298,6 +298,19 @@ add_subdirectory(${fts_SOURCE_DIR}/3rdparty/cal3d)
 list(APPEND FTS_INCLUDES "3rdparty/cal3d/src")
 list(APPEND FTS_LIBS "cal3d")
 
+# Add bouge
+set(BOUGE_BUILD_EXAMPLES FALSE)
+set(BOUGE_BUILD_STATICCRT TRUE)
+set(BOUGE_BUILD_CAL3DXMLIO FALSE)
+set(BOUGE_COMPILE_FLAGS ${CMAKE_CXX_FLAGS})
+add_subdirectory(${fts_SOURCE_DIR}/3rdparty/bouge)
+list(APPEND FTS_INCLUDES "3rdparty/bouge/include")
+list(APPEND FTS_LIBS "bouge" "bouge-xmlio" "bouge-tinyxml" "bouge-math")
+unset(BOUGE_COMPILE_FLAGS)
+unset(BOUGE_BUILD_CAL3DXMLIO)
+unset(BOUGE_BUILD_STATICCRT)
+unset(BOUGE_BUILD_EXAMPLES)
+
 # Add OpenAL-soft and FreeALUT.
 add_subdirectory(${fts_SOURCE_DIR}/3rdparty/sound/openal-soft)
 add_subdirectory(${fts_SOURCE_DIR}/3rdparty/sound/freealut)

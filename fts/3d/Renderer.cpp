@@ -204,7 +204,7 @@ void FTS::Renderer::deinit()
  **/
 void FTS::Renderer::enter2DMode(const Camera& in_cam)
 {
-    Shader::unbind();
+    Program::unbind();
     VertexBufferObject::unbind();
     ElementsBufferObject::unbind();
 

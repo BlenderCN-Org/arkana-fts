@@ -25,10 +25,12 @@ struct ElementsBufferObject {
     GLuint id;
     GLint nComponents;
     GLenum type;
-    GLboolean normalize;
     GLsizei stride;
 
-    ElementsBufferObject(const std::vector<int>& in_buf, GLint in_nComponents, GLenum in_usage = GL_STATIC_DRAW, GLboolean in_normalize = GL_FALSE);
+    ElementsBufferObject(const std::vector<int>& in_buf, GLint in_nComponents, GLenum in_usage = GL_STATIC_DRAW);
+    ElementsBufferObject(const std::vector<short>& in_buf, GLint in_nComponents, GLenum in_usage = GL_STATIC_DRAW);
+    ElementsBufferObject(const std::vector<unsigned int>& in_buf, GLint in_nComponents, GLenum in_usage = GL_STATIC_DRAW);
+    ElementsBufferObject(const std::vector<unsigned short>& in_buf, GLint in_nComponents, GLenum in_usage = GL_STATIC_DRAW);
     virtual ~ElementsBufferObject();
 
     void bind() const;

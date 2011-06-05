@@ -36,7 +36,7 @@ FTS::Vector::Vector(float in_fVal)
     m_v[3] = 1.0f;
 }
 
-FTS::Vector::Vector(float in_v[3])
+FTS::Vector::Vector(const float in_v[3])
     : m_v(new float[4])
 {
     m_v[0] = in_v[0];
@@ -137,6 +137,11 @@ String FTS::Vector::toString(unsigned int in_iDecimalPlaces) const
 FTS::Vector::operator String() const
 {
     return this->toString();
+}
+
+std::ostream& operator<< (std::ostream& os, const FTS::Vector& me)
+{
+    return os << me.toString();
 }
 
 #ifdef D_CAL3D_INTEGRATION

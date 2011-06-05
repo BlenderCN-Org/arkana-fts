@@ -65,7 +65,7 @@ public:
     Vector(float in_fVal);
     /// Creates a vector based on the contents of a float array.
     /// \param in_v The three coordinates of the vector.
-    Vector(float in_v[3]);
+    Vector(const float in_v[3]);
     /// Creates a vector.
     /// \param in_fX The value of the first component of the vector.
     /// \param in_fY The value of the second component of the vector.
@@ -262,5 +262,7 @@ private:
     };
 
 } // namespace FTS
+
+std::ostream& operator<< (std::ostream& os, const FTS::Vector& me);
 
 #endif // D_VECTOR_H

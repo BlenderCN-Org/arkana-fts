@@ -28,16 +28,51 @@ FTS::VertexBufferObject::~VertexBufferObject()
     glDeleteBuffers(1, &this->id);
 }
 
-FTS::ElementsBufferObject::ElementsBufferObject(const std::vector<int>& in_buf, GLint in_nComponents, GLenum in_usage, GLboolean in_normalize)
+FTS::ElementsBufferObject::ElementsBufferObject(const std::vector<int>& in_buf, GLint in_nComponents, GLenum in_usage)
     : id(0)
     , nComponents(in_nComponents)
     , type(GL_INT)
-    , normalize(in_normalize)
     , stride(nComponents*sizeof(int))
 {
     glGenBuffers(1, &this->id);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->id);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, in_buf.size()*sizeof(int), &in_buf[0], in_usage);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+}
+
+FTS::ElementsBufferObject::ElementsBufferObject(const std::vector<short>& in_buf, GLint in_nComponents, GLenum in_usage)
+    : id(0)
+    , nComponents(in_nComponents)
+    , type(GL_SHORT)
+    , stride(nComponents*sizeof(short))
+{
+    glGenBuffers(1, &this->id);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->id);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, in_buf.size()*sizeof(short), &in_buf[0], in_usage);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+}
+
+FTS::ElementsBufferObject::ElementsBufferObject(const std::vector<unsigned int>& in_buf, GLint in_nComponents, GLenum in_usage)
+    : id(0)
+    , nComponents(in_nComponents)
+    , type(GL_UNSIGNED_INT)
+    , stride(nComponents*sizeof(unsigned int))
+{
+    glGenBuffers(1, &this->id);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->id);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, in_buf.size()*sizeof(unsigned int), &in_buf[0], in_usage);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+}
+
+FTS::ElementsBufferObject::ElementsBufferObject(const std::vector<unsigned short>& in_buf, GLint in_nComponents, GLenum in_usage)
+    : id(0)
+    , nComponents(in_nComponents)
+    , type(GL_UNSIGNED_SHORT)
+    , stride(nComponents*sizeof(unsigned short))
+{
+    glGenBuffers(1, &this->id);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->id);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, in_buf.size()*sizeof(unsigned short), &in_buf[0], in_usage);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 

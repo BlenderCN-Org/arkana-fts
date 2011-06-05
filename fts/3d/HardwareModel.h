@@ -15,13 +15,11 @@
 #include "utilities/NonCopyable.h"
 #include "dLib/dString/dString.h"
 
+#include "bouge/bougefwd.hpp"
+
 #include <memory>
 #include <vector>
 #include <map>
-
-class CalModel;
-class CalCoreModel;
-class CalHardwareModel;
 
 namespace FTS {
     class Color;
@@ -45,6 +43,8 @@ public:
     uint32_t getFaceCount() const;
     AxisAlignedBoundingBox getRestAABB() const;
 
+    bool isStatic() const;
+
     /// Default destructor.
     virtual ~HardwareModel();
 
@@ -67,27 +67,19 @@ protected:
     /// \param in_modelMatrix The model-matrix to use for render (pos, rot, scale)
     /// \param in_playerCol The player-color to use for this model.
     /// \param in_model The model holding information about, for example, the pose.
-    void render(const AffineMatrix& in_modelMatrix, const Color& in_playerCol, const CalModel& in_model);
+    void render(const AffineMatrix& in_modelMatrix, const Color& in_playerCol, bouge::ModelInstancePtrC in_model);
 
-    int getOrCreateErrorMatId(const String& in_sModelName);
+//     int getOrCreateErrorMatId(const String& in_sModelName);
 
-    void loadHardware(int in_nMaxTexturesPerMesh, int in_nMaxBonesPerMesh);
-    void precomputeAABB(const std::vector<float>& in_vVertices);
+//     void loadHardware(int in_nMaxTexturesPerMesh, int in_nMaxBonesPerMesh);
+//     void precomputeAABB(const std::vector<float>& in_vVertices);
 
 private:
-    /// The Cal3d core model.
-    std::unique_ptr<CalCoreModel> m_pCoreModel;
-    /// The Cal3d hardware representation of the model.
-    std::unique_ptr<CalHardwareModel> m_pHardwareModel;
+    bouge::CoreModelPtr m_pCoreModel;
+    bouge::CoreHardwareMeshPtr m_pHardwareModel;
 
-    /// VBO holding the vertex positions in the graphics card.
-    std::unique_ptr<VertexBufferObject> m_pVertexVBO;
-    /// VBO holding the vertex normals in the graphics card.
-    std::unique_ptr<VertexBufferObject> m_pNormalVBO;
-    /// VBO holding the texture coordinates in the graphics card.
-    std::vector< std::unique_ptr<VertexBufferObject> > m_pTexCoVBOs;
-    /// VBO holding the bone weights (fraction part) and indices (natural part) in the graphics card.
-    std::unique_ptr<VertexBufferObject> m_pMatIdxAndWeightVBO;
+    std::unique_ptr<VertexBufferObject> m_vbo;
+
     /// VBO holding the face's vertex indices in the graphics card.
     std::unique_ptr<ElementsBufferObject> m_pVtxIdxVBO;
 

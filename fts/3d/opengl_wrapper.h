@@ -137,6 +137,8 @@ typedef void (APIENTRYP PFNGLUNIFORM3FVPROC) (GLint location, GLsizei count, con
 GLAPI void APIENTRY glUniform3fv(GLint location, GLsizei count, const GLfloat* value);
 typedef void (APIENTRYP PFNGLUNIFORM2FVPROC) (GLint location, GLsizei count, const GLfloat *value);
 GLAPI void APIENTRY glUniform2fv(GLint location, GLsizei count, const GLfloat* value);
+typedef void (APIENTRYP PFNGLUNIFORM1FPROC) (GLint location, GLfloat v0);
+GLAPI void APIENTRY glUniform1f(GLint location, GLfloat v0);
 typedef void (APIENTRYP PFNGLUNIFORMMATRIX4FVPROC) (GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
 GLAPI void APIENTRY glUniformMatrix4fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat* value);
 typedef void (APIENTRYP PFNGLUNIFORMMATRIX3FVPROC) (GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);

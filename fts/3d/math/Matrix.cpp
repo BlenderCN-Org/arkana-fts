@@ -103,6 +103,35 @@ float FTS::Base4x4Matrix::operator()(unsigned int i, unsigned int j) const
     return m[4*(j-1)+(i-1)];
 }
 
+///////////////////////////
+// Comparison operators. //
+///////////////////////////
+
+bool FTS::Base4x4Matrix::operator==(const FTS::General4x4Matrix& other) const
+{
+    return nearZero(m[0] - other.m[0])
+        && nearZero(m[1] - other.m[1])
+        && nearZero(m[2] - other.m[2])
+        && nearZero(m[3] - other.m[3])
+        && nearZero(m[4] - other.m[4])
+        && nearZero(m[5] - other.m[5])
+        && nearZero(m[6] - other.m[6])
+        && nearZero(m[7] - other.m[7])
+        && nearZero(m[8] - other.m[8])
+        && nearZero(m[9] - other.m[9])
+        && nearZero(m[10] - other.m[10])
+        && nearZero(m[11] - other.m[11])
+        && nearZero(m[12] - other.m[12])
+        && nearZero(m[13] - other.m[13])
+        && nearZero(m[14] - other.m[14])
+        && nearZero(m[15] - other.m[15]);
+}
+
+bool FTS::Base4x4Matrix::operator!=(const FTS::General4x4Matrix& other) const
+{
+    return !this->operator==(other);
+}
+
 ////////////////////////////////
 ////////////////////////////////
 //// The Affine Matrix part ////
@@ -309,12 +338,18 @@ AffineMatrix FTS::AffineMatrix::rotationQuat(const Quaternion& in_quat)
     float zz = in_quat.z() * zs;
 
     AffineMatrix m;
-    m.m[0] = 1.0f - (yy + zz); m.m[4] = xy + wz;          m.m[8]  = xz - wy;
-    m.m[1] = xy - wz;          m.m[5] = 1.0f - (xx + zz); m.m[9]  = yz + wx;
-    m.m[2] = xz + wy;          m.m[6] = yz - wx;          m.m[10] = 1.0f - (xx + yy);
-    m.im[0] = 1.0f - (yy + zz); m.im[4] = xy - wz;          m.im[8]  = xz + wy;
-    m.im[1] = xy + wz;          m.im[5] = 1.0f - (xx + zz); m.im[9]  = yz - wx;
-    m.im[2] = xz - wy;          m.im[6] = yz + wx;          m.im[10] = 1.0f - (xx + yy);
+//     m.m[0] = 1.0f - (yy + zz); m.m[4] = xy + wz;          m.m[8]  = xz - wy;
+//     m.m[1] = xy - wz;          m.m[5] = 1.0f - (xx + zz); m.m[9]  = yz + wx;
+//     m.m[2] = xz + wy;          m.m[6] = yz - wx;          m.m[10] = 1.0f - (xx + yy);
+//     m.im[0] = 1.0f - (yy + zz); m.im[4] = xy - wz;          m.im[8]  = xz + wy;
+//     m.im[1] = xy + wz;          m.im[5] = 1.0f - (xx + zz); m.im[9]  = yz - wx;
+//     m.im[2] = xz - wy;          m.im[6] = yz + wx;          m.im[10] = 1.0f - (xx + yy);
+    m.m[0] = 1.0f - (yy + zz); m.m[1] = xy + wz;          m.m[2]  = xz - wy;
+    m.m[4] = xy - wz;          m.m[5] = 1.0f - (xx + zz); m.m[6]  = yz + wx;
+    m.m[8] = xz + wy;          m.m[9] = yz - wx;          m.m[10] = 1.0f - (xx + yy);
+    m.im[0] = 1.0f - (yy + zz); m.im[1] = xy - wz;          m.im[2]  = xz + wy;
+    m.im[4] = xy + wz;          m.im[5] = 1.0f - (xx + zz); m.im[6]  = yz - wx;
+    m.im[8] = xz - wy;          m.im[9] = yz + wx;          m.im[10] = 1.0f - (xx + yy);
 
     m.m3[0] = m.m[0]; m.m3[3] = m.m[4]; m.m3[6] = m.m[8];
     m.m3[1] = m.m[1]; m.m3[4] = m.m[5]; m.m3[7] = m.m[9];

@@ -9,7 +9,7 @@
 #include "3d/VertexArrayObject.h"
 
 #include <map>
-#include <vector>
+#include <list>
 
 namespace FTS {
 
@@ -22,15 +22,17 @@ class ShaderIncludeManager;
 
 /// This class represents a fully-linked shader composed of a vertex shader,
 /// a fragment shader and optionally a geometry shader.
-class Shader : public NonCopyable {
+class Program : public NonCopyable {
 public:
-    Shader(CompiledShader* in_pVert, CompiledShader* in_pFrag, CompiledShader* in_pGeom, const String& in_sShaderName);
-    virtual ~Shader();
+    Program(CompiledShader* in_pVert, CompiledShader* in_pFrag, CompiledShader* in_pGeom, const String& in_sShaderName);
+    virtual ~Program();
 
     bool hasVertexAttribute(const String& in_sAttribName) const;
     bool setVertexAttribute(const String& in_sAttribName, const VertexBufferObject& in_buffer);
+    bool setVertexAttribute(const String& in_sAttribName, const VertexBufferObject& in_buffer, GLint in_nComponents, std::size_t in_offset);
 
     bool hasUniform(const String& in_sUniformName) const;
+    bool setUniform(const String& in_sUniformName, float in_v);
     bool setUniform(const String& in_sUniformName, const Vector& in_v);
     bool setUniform(const String& in_sUniformName, const Color& in_c);
     bool setUniform(const String& in_sUniformName, const Quaternion& in_q);
@@ -78,6 +80,40 @@ private:
     static GLuint m_uiCurrentlyBoundShaderId;
 };
 
+class ShaderCompileFlags;
+
+class ShaderCompileFlag {
+public:
+    static const ShaderCompileFlag Lit;
+    static const ShaderCompileFlag Textured;
+
+    ShaderCompileFlag(const String& name);
+
+    ShaderCompileFlags operator|(const ShaderCompileFlag&);
+
+    inline operator std::string() const {return this->name().str();};
+    String name() const;
+
+private:
+    String m_flag;
+};
+
+class ShaderCompileFlags {
+public:
+    ShaderCompileFlags();
+    ShaderCompileFlags(const ShaderCompileFlag& flag);
+    ShaderCompileFlags(const ShaderCompileFlag& flag, const ShaderCompileFlag& flag2);
+
+    ShaderCompileFlags operator|(const ShaderCompileFlags&);
+
+    const std::list<ShaderCompileFlag>& flags() const;
+    String toString() const;
+    bool empty() const;
+
+private:
+    std::list<ShaderCompileFlag> m_flags;
+};
+
 /// This is the shader manager that keeps track of all existing shaders,
 /// creates new shaders, combines them and deletes them.\n
 /// \note Right now, it keeps all compiled shaders in memory until the end,
@@ -90,25 +126,29 @@ public:
 
     ShaderManager();
     virtual ~ShaderManager();
+    void clearCache();
 
-    bool loadShader(const Path& in_sFile, const String& in_sShaderName = String::EMPTY);
-    bool makeShader(const String& in_sShaderName, const String& in_sShaderContent);
-    bool hasShader(const String& in_sShaderName);
-    String getSource(const String& in_sShaderName);
-    void destroyShader(const String& in_sShaderName);
+    CompiledShader* compileShader(const Path& in_sFile, const ShaderCompileFlags& flags = ShaderCompileFlags(), String in_sShaderName = String::EMPTY);
+    CompiledShader* compileShaderCode(const String& in_sShaderName, const String& in_sShaderContent, const ShaderCompileFlags& flags = ShaderCompileFlags());
+    bool hasShader(const String& in_sShaderName, const ShaderCompileFlags& flags = ShaderCompileFlags());
+    String getShaderSource(const String& in_sShaderName, const ShaderCompileFlags& flags = ShaderCompileFlags());
+    void destroyShader(String in_sShaderName, const ShaderCompileFlags& flags = ShaderCompileFlags());
 
-    Shader* getOrLinkShader(const String& in_sVertexShader = DefaultVertexShader, const String& in_sFragmentShader = DefaultFragmentShader, const String& in_sGeometryShader = DefaultGeometryShader);
+    Program* getOrLinkProgram(const String& in_sVertexShader = DefaultVertexShader, const String& in_sFragmentShader = DefaultFragmentShader, const String& in_sGeometryShader = DefaultGeometryShader, const ShaderCompileFlags& flags = ShaderCompileFlags());
 
 private:
     std::map<String, CompiledShader*> m_compiledVertexShaders;
     std::map<String, CompiledShader*> m_compiledFragmentShaders;
     std::map<String, CompiledShader*> m_compiledGeometryShaders;
-    std::map<String, Shader*> m_linkedShaders;
+    std::map<String, Program*> m_linkedShaders;
     ShaderIncludeManager *m_pInclManager;
 
-    CompiledShader* findShader(const String& in_sShaderName);
+    CompiledShader* findShader(String in_sShaderName, const ShaderCompileFlags& flags);
+    String buildShaderName(String baseName, const ShaderCompileFlags& flags);
+    String buildProgramName(const String& vtxBaseName, const String& fragBaseName, const String& geomBaseName, const ShaderCompileFlags& flags);
 
     String m_sep;
+    String m_optSep;
 };
 
 }; // namespace FTS

@@ -20,7 +20,7 @@
 #include "main/Clock.h"
 #include "utilities/Math.h"
 
-#include "cal3d/cal3d.h"
+#include <bouge/bouge.hpp>
 
 #include <limits>
 
@@ -31,9 +31,13 @@
 std::map<FTS::String, std::set<unsigned int> > FTS::ModelInstance::m_mUsedNames;
 
 FTS::ModelInstance::ModelInstance(std::shared_ptr<FTS::HardwareModel> in_pHwModel)
-    : m_pModel(new CalModel(in_pHwModel->m_pCoreModel.get()))
+    : m_pModel(new bouge::ModelInstance(in_pHwModel->m_pCoreModel))
     , m_pHwModel(in_pHwModel)
 {
+    // And we need to select the default skin...
+    this->selectSkin("Default");
+
+/*
     // We need to give the model all the meshes...
     for(int iMesh = 0; iMesh < in_pHwModel->m_pCoreModel->getCoreMeshCount(); ++iMesh) {
         m_pModel->attachMesh(iMesh);
@@ -42,9 +46,6 @@ FTS::ModelInstance::ModelInstance(std::shared_ptr<FTS::HardwareModel> in_pHwMode
     // We calculate every vertex position, normal, etc. in the shader, thus
     // we don't want Cal3D to calculate it internally.
     m_pModel->disableInternalData();
-
-    // And we need to select the default skin...
-    this->selectSkin("Default");
 
     // If I have at least one animation, register me as an updateable.
     // Without animation, we don't need to get updated!
@@ -63,45 +64,49 @@ FTS::ModelInstance::ModelInstance(std::shared_ptr<FTS::HardwareModel> in_pHwMode
             }
         }
     }
+*/
 }
 
 FTS::ModelInstance::~ModelInstance()
 {
-    if(m_pHwModel->getAnimList().size() > 0) {
-        UpdateableManager::getSingleton().rem(m_pHwModel->getName() + String::nr(m_uiInstanceNumber));
-        m_mUsedNames[m_pHwModel->getName()].erase(m_uiInstanceNumber);
-    }
+//     if(m_pHwModel->getAnimList().size() > 0) {
+//         UpdateableManager::getSingleton().rem(m_pHwModel->getName() + String::nr(m_uiInstanceNumber));
+//         m_mUsedNames[m_pHwModel->getName()].erase(m_uiInstanceNumber);
+//     }
 }
 
 void FTS::ModelInstance::render(const FTS::Vector& in_pos, const Color& in_playerColor)
 {
-    m_pHwModel->render(AffineMatrix::translation(in_pos), in_playerColor, *m_pModel);
+    m_pHwModel->render(AffineMatrix::translation(in_pos), in_playerColor, m_pModel);
 }
 
 void FTS::ModelInstance::render(const FTS::AffineMatrix& in_modelMatrix, const Color& in_playerColor)
 {
-    m_pHwModel->render(in_modelMatrix, in_playerColor, *m_pModel);
+    m_pHwModel->render(in_modelMatrix, in_playerColor, m_pModel);
 }
 
 std::vector<FTS::String> FTS::ModelInstance::getAvailableSkins() const
 {
-    return m_pHwModel->getSkinList();
+//     return m_pHwModel->getSkinList();
+    return std::vector<String>();
 }
 
 void FTS::ModelInstance::selectSkin(const FTS::String& in_sSkinName)
 {
     // getSkinId defaults to 0 if there is no skin with such a name.
     // This is good as it will then select the "default" skin instead of crash.
-    m_pModel->setMaterialSet(m_pHwModel->getSkinId(in_sSkinName));
+//     m_pModel->setMaterialSet(m_pHwModel->getSkinId(in_sSkinName));
 }
 
 std::vector<FTS::String> FTS::ModelInstance::getAvailableMoves() const
 {
-    return m_pHwModel->getAnimList();
+//     return m_pHwModel->getAnimList();
+    return std::vector<String>();
 }
 
 void FTS::ModelInstance::playAsAction(const String& in_sAnimName, float in_fSpeed, float in_fFadeIn, float in_fFadeOut)
 {
+    /*
     int id = m_pModel->getCoreModel()->getCoreAnimationId(in_sAnimName.str());
     if(id < 0) {
         FTS18N("TODO: PlayAsAction with invalid action warn message", MsgType::WarningNoMB);
@@ -116,10 +121,12 @@ void FTS::ModelInstance::playAsAction(const String& in_sAnimName, float in_fSpee
         m_pModel->getMixer()->getAnimationActionList().front()->setTimeFactor(in_fSpeed);
     }
     m_pModel->update(0.0);
+    */
 }
 
 void FTS::ModelInstance::playAsCycle(const String& in_sAnimName, float in_fWeight, float in_fFadeIn)
 {
+    /*
     int id = m_pModel->getCoreModel()->getCoreAnimationId(in_sAnimName.str());
     if(id < 0) {
         FTS18N("TODO: PlayAsCycle with invalid action warn message", MsgType::WarningNoMB);
@@ -137,10 +144,12 @@ void FTS::ModelInstance::playAsCycle(const String& in_sAnimName, float in_fWeigh
     // Now, start fading in the cycle.
     m_pModel->getMixer()->blendCycle(id, in_fWeight, in_fFadeIn);
     m_pModel->update(0.0);
+    */
 }
 
 void FTS::ModelInstance::stopAction(const String& in_sAnimName, float in_fFadeOut)
 {
+    /*
     int id = m_pModel->getCoreModel()->getCoreAnimationId(in_sAnimName.str());
     if(id < 0) {
         FTS18N("TODO: stopAction with invalid action warn message", MsgType::WarningNoMB);
@@ -161,10 +170,12 @@ void FTS::ModelInstance::stopAction(const String& in_sAnimName, float in_fFadeOu
         pAction->setTimeFactor(fTimeLeft / in_fFadeOut);
         FTSMSG("Time left: {1}\nFade out: {2}\nNew time factor: {3}", MsgType::Raw, String::nr(fTimeLeft), String::nr(in_fFadeOut), String::nr(in_fFadeOut / fTimeLeft));
     }
+    */
 }
 
 void FTS::ModelInstance::stopCycle(const String& in_sAnimName, float in_fFadeOut)
 {
+    /*
     int id = m_pModel->getCoreModel()->getCoreAnimationId(in_sAnimName.str());
     if(id < 0) {
         FTS18N("TODO: stopCycle with invalid action warn message", MsgType::WarningNoMB);
@@ -172,10 +183,12 @@ void FTS::ModelInstance::stopCycle(const String& in_sAnimName, float in_fFadeOut
     }
 
     m_pModel->getMixer()->clearCycle(id, in_fFadeOut);
+    */
 }
 
 void FTS::ModelInstance::stopAll(float in_fFadeOut)
 {
+    /*
     // First, stop all the cycles.
     std::vector<CalAnimation *> &cycles = m_pModel->getMixer()->getAnimationVector();
     for(std::size_t i = 0 ; i < cycles.size() ; ++i) {
@@ -186,10 +199,12 @@ void FTS::ModelInstance::stopAll(float in_fFadeOut)
     for(int i = 0 ; i < m_pModel->getCoreModel()->getCoreAnimationCount() ; ++i) {
         this->stopAction(m_pModel->getCoreModel()->getCoreAnimation(i)->getName(), in_fFadeOut);
     }
+    */
 }
 
 void FTS::ModelInstance::pause()
 {
+    /*
     // Don't pause a paused model!
     if(this->isPaused())
         return;
@@ -205,10 +220,12 @@ void FTS::ModelInstance::pause()
         m_lPausedTimeFactors.push_back(pAction->getTimeFactor());
         pAction->setTimeFactor(0.0f);
     }
+    */
 }
 
 void FTS::ModelInstance::resume()
 {
+    /*
     if(!m_lPausedTimeFactors.empty()) {
         m_pModel->getMixer()->setTimeFactor(m_lPausedTimeFactors.front());
         m_lPausedTimeFactors.pop_front();
@@ -229,15 +246,18 @@ void FTS::ModelInstance::resume()
     }
 
     m_lPausedTimeFactors.clear();
+    */
 }
 
 bool FTS::ModelInstance::isPaused() const
 {
-    return !m_lPausedTimeFactors.empty();
+//     return !m_lPausedTimeFactors.empty();
+    return false;
 }
 
 void FTS::ModelInstance::pauseAction(const String& in_sAnimName)
 {
+    /*
     // Don't pause a paused action!
     if(this->isActionPaused(in_sAnimName))
         return;
@@ -254,10 +274,12 @@ void FTS::ModelInstance::pauseAction(const String& in_sAnimName)
         pAction->setTimeFactor(0.0f);
         break;
     }
+    */
 }
 
 void FTS::ModelInstance::resumeAction(const String& in_sAnimName)
 {
+    /*
     // Don't resume a running action!
     if(!this->isActionPaused(in_sAnimName))
         return;
@@ -274,23 +296,26 @@ void FTS::ModelInstance::resumeAction(const String& in_sAnimName)
         m_lPausedActionTimeFactors.erase(in_sAnimName);
         break;
     }
+    */
 }
 
 bool FTS::ModelInstance::isActionPaused(const String& in_sAnimName) const
 {
-    return m_lPausedActionTimeFactors.find(in_sAnimName) != m_lPausedActionTimeFactors.end();
+//     return m_lPausedActionTimeFactors.find(in_sAnimName) != m_lPausedActionTimeFactors.end();
+    return false;
 }
 
 void FTS::ModelInstance::setCycleSpeed(float in_fSpeed)
 {
     // As far as I can tell, the default cal3d mixer only supports one
     // animation speed (time factor) for all cyclic animations together!
-    m_pModel->getMixer()->setTimeFactor(in_fSpeed);
+//     m_pModel->getMixer()->setTimeFactor(in_fSpeed);
 }
 
 float FTS::ModelInstance::getCycleSpeed() const
 {
-    return m_pModel->getMixer()->getTimeFactor();
+//     return m_pModel->getMixer()->getTimeFactor();
+    return 1.0f;
 }
 
 uint32_t FTS::ModelInstance::getVertexCount() const
@@ -310,6 +335,6 @@ FTS::AxisAlignedBoundingBox FTS::ModelInstance::getRestAABB() const
 
 bool FTS::ModelInstance::update(const Clock& in_c)
 {
-    m_pModel->update(static_cast<float>(in_c.getDeltaT()));
+//     m_pModel->update(static_cast<float>(in_c.getDeltaT()));
     return true;
 }

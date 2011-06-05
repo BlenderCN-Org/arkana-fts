@@ -116,6 +116,18 @@ public:
     /// \note For example, the element [4, 1] is the element at the bottom left.
     float operator()(unsigned int i, unsigned int j) const;
 
+    ///////////////////////////
+    // Comparison operators. //
+    ///////////////////////////
+
+    /// \return true if \a other is \e nearly the same matrix as this, up to rounding errors.
+    /// \param other The other matrix to compare to.
+    bool operator==(const General4x4Matrix& other) const;
+
+    /// \return true if \a other is \e not \e nearly the same matrix as this, up to rounding errors.
+    /// \param other The other matrix to compare to.
+    bool operator!=(const General4x4Matrix& other) const;
+
 protected:
     /// The matrix-data, in row-wise order.
     float* m;
