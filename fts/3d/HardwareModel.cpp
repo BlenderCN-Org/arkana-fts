@@ -34,6 +34,8 @@ extern const char* sErrorModelMesh;
 extern const char* sErrorModelMaterial;
 extern const char* sErrorModelMaterialSet;
 
+static const unsigned int BONES_PER_MESH = 20;
+
 namespace FTS {
 
 // struct MaterialUserData {
@@ -113,14 +115,45 @@ namespace FTS {
 // };
 
 struct MaterialUserData : public bouge::UserData {
-    const bouge::CoreMaterial& m_mat;
+    /// We can (and should) take a reference instead of a shared pointer here
+    /// because the user data belongs to the material and with a shared pointer
+    /// we'd have a cyclic reference here.
+    const bouge::CoreMaterial& mat;
 
-    MaterialUserData(const bouge::CoreMaterial& mat)
-        : m_mat(mat)
+    /// The mode to use when calling glDrawElements.
+    unsigned int drawMode;
+
+    /// The shader to be used by this material.
+    Program* prog;
+
+    /// A VAO storing the shader, shader's vertex attrib setup and vbo setup
+    /// on the graphics card.
+    VertexArrayObject vao;
+
+    MaterialUserData(const bouge::CoreMaterial& in_mat)
+        : mat(in_mat)
+        , drawMode(GL_TRIANGLES)
     {
+        // Materials may specify to draw something other than triangles.
+        // This is actually more of a hack than a well designed feature, but
+        // it works for drawing lines and it might work for points too.
+        if(this->mat.proprety("DrawMode") == "Lines")
+            this->drawMode = GL_LINES;
+        else if(this->mat.proprety("DrawMode") == "Points")
+            this->drawMode = GL_POINTS;
+
+        // Load shader to be used.
         // TODO
+        this->prog = ShaderManager::getSingleton().getOrLinkProgram();
+
+        // Setup shader attributes in a VAO.
+        // This will actually be done by the hardware model later on.
+
+        // TODO MOAR
     }
 };
+
+void setupVAO(const FTS::HardwareModel& in_hwmodel, FTS::MaterialUserData& in_ud);
 
 } // namespace FTS
 
@@ -132,33 +165,12 @@ FTS::HardwareModel::HardwareModel(const FTS::String& in_sName)
     m_pCoreModel->addMaterials(loader.loadMaterial(sErrorModelMaterial));
     m_pCoreModel->addMaterialSets(loader.loadMaterialSet(sErrorModelMaterialSet));
 
-    m_pHardwareModel = bouge::CoreHardwareMeshPtr(new bouge::CoreHardwareMesh(m_pCoreModel->mesh(), 0, 0));
-
-    std::size_t coordsOffset = 0;
-    std::size_t normalsOffset = m_pHardwareModel->coordsPerVertex();
-    std::size_t floatsPerVertex = normalsOffset + m_pHardwareModel->attribCoordsPerVertex("normal");
-    std::size_t stride = floatsPerVertex * sizeof(float);
-
-    // Here, we compile all the vertex data into a single interleaved buffer.
-    std::vector<float> data(floatsPerVertex * m_pHardwareModel->vertexCount());
-    m_pHardwareModel->writeCoords(&data[coordsOffset], stride);
-    m_pHardwareModel->writeAttrib("normal", &data[normalsOffset], stride);
-
-    m_vao.bind();
-
-    // Upload that data into the VBO
-    m_vbo.reset(new VertexBufferObject(data, floatsPerVertex));
-    m_vbo->bind();
-
-    ShaderManager::getSingleton().getOrLinkProgram()->setVertexAttribute("aVertexPosition", *m_vbo, m_pHardwareModel->coordsPerVertex(), coordsOffset);
-    ShaderManager::getSingleton().getOrLinkProgram()->setVertexAttribute("aVertexNormal", *m_vbo, m_pHardwareModel->attribCoordsPerVertex("normal"), normalsOffset);
-
-    m_pVtxIdxVBO.reset(new ElementsBufferObject(m_pHardwareModel->faceIndices(), m_pHardwareModel->indicesPerFace()));
-    m_pVtxIdxVBO->bind();
-
-    m_vao.unbind();
-    VertexBufferObject::unbind();
-    ElementsBufferObject::unbind();
+    this->createHardwareMesh();
+    for(bouge::CoreModel::material_iterator iMat = m_pCoreModel->begin_material() ; iMat != m_pCoreModel->end_material() ; ++iMat) {
+        MaterialUserData* mud = new MaterialUserData(**iMat);
+        this->setupVAO(*mud);
+        iMat->userData = bouge::UserDataPtr(mud);
+    }
 }
 
 // FTS::HardwareModel::HardwareModel(const String& in_sName)
@@ -208,11 +220,18 @@ FTS::HardwareModel::HardwareModel(const FTS::String& in_sName)
 FTS::HardwareModel::HardwareModel(const FTS::String& in_sName, FTS::Archive& in_modelArch)
     : m_pCoreModel(new bouge::CoreModel(in_sName.str()))
 {
+    try {
     bouge::XMLLoader loader(new bouge::TinyXMLParser());
 
     // There is only one skeleton and one mesh per model file. Load them first.
-    m_pCoreModel->mesh(loader.loadMesh(in_modelArch.getFile("mesh.bxmesh").readstr().str()));
-    m_pCoreModel->skeleton(loader.loadSkeleton(in_modelArch.getFile("skeleton.bxskel").readstr().str()));
+    String sData = in_modelArch.getFile("mesh.bxmesh").readstr();
+    m_pCoreModel->mesh(loader.loadMesh(sData.c_str(), sData.byteCount()));
+
+    // But even the skeleton is optional in some cases.
+    if(in_modelArch.hasChunk("skeleton.bxskel")) {
+        String sData = in_modelArch.getFile("skeleton.bxskel").readstr();
+        m_pCoreModel->skeleton(loader.loadSkeleton(sData.c_str(), sData.byteCount()));
+    }
 
     // Now we load all materials, material sets and animations we can find in the archive.
     for(auto i = in_modelArch.begin() ; i != in_modelArch.end() ; ++i) {
@@ -224,11 +243,14 @@ FTS::HardwareModel::HardwareModel(const FTS::String& in_sName, FTS::Archive& in_
 
         // Just try out what kind of file it may be, depending on the extension
         if(fName.ext().lower() == "bxmset") {
-            m_pCoreModel->addMaterialSets(loader.loadMaterialSet(pFchk->getFile().readstr().str()));
+            String data = pFchk->getFile().readstr();
+            m_pCoreModel->addMaterialSets(loader.loadMaterialSet(data.c_str(), data.byteCount()));
         } else if(fName.ext().lower() == "bxmat") {
-            m_pCoreModel->addMaterials(loader.loadMaterial(pFchk->getFile().readstr().str()));
+            String data = pFchk->getFile().readstr();
+            m_pCoreModel->addMaterials(loader.loadMaterial(data.c_str(), data.byteCount()));
         } else if(fName.ext().lower() == "bxanim") {
-            m_pCoreModel->addAnimations(loader.loadAnimation(pFchk->getFile().readstr().str()));
+            String data = pFchk->getFile().readstr();
+            m_pCoreModel->addAnimations(loader.loadAnimation(data.c_str(), data.byteCount()));
 /*        } else if(fName.ext().lower() == "png") {
             // We prepend the model's name to the name of the graphic in order
             // to get model-unique graphic names.
@@ -251,12 +273,21 @@ FTS::HardwareModel::HardwareModel(const FTS::String& in_sName, FTS::Archive& in_
                 m_loadedShads.push_back(sName);*/
         }
     }
+    } catch(const ArkanaException&) {
+        throw;
+    } catch(const std::exception& ex) {
+        throw CorruptDataException("Model: " + in_sName, ex.what());
+    }
 
     // First consistency checkpoint //
     //////////////////////////////////
     std::set<std::string> missingBones = m_pCoreModel->missingBones();
     if(!missingBones.empty()) {
         throw CorruptDataException("Model: " + in_sName, "Missing the following bones in the skeleton: " + bouge::to_s(missingBones.begin(), missingBones.end()));
+    }
+
+    if(m_pCoreModel->materialSetCount() < 1) {
+        throw CorruptDataException("Model: " + in_sName, "Needs at least one materialset");
     }
 
     std::set<std::string> missingMaterials = m_pCoreModel->missingMaterials();
@@ -269,13 +300,75 @@ FTS::HardwareModel::HardwareModel(const FTS::String& in_sName, FTS::Archive& in_
         throw CorruptDataException("Model: " + in_sName, "Missing the material set specifications for the following submeshes: " + bouge::to_s(missingMatsetSpecs.begin(), missingMatsetSpecs.end()));
     }
 
+    // Converts the data for use on the GPU and uploads it into a VBO.
+    this->createHardwareMesh();
+
     // Now we can load all the resources needed by all the materials.
     // We offload this task to the MaterialUserData class.
     for(bouge::CoreModel::material_iterator iMat = m_pCoreModel->begin_material() ; iMat != m_pCoreModel->end_material() ; ++iMat) {
-        iMat->userData = bouge::UserDataPtr(new MaterialUserData(**iMat));
+        MaterialUserData* mud = new MaterialUserData(**iMat);
+        this->setupVAO(*mud);
+        iMat->userData = bouge::UserDataPtr(mud);
     }
 }
 
+void FTS::HardwareModel::createHardwareMesh()
+{
+    if(m_pCoreModel->skeleton()) {
+        m_pHardwareModel = bouge::CoreHardwareMeshPtr(new bouge::CoreHardwareMesh(m_pCoreModel->mesh(), BONES_PER_MESH));
+    } else {
+        m_pHardwareModel = bouge::CoreHardwareMeshPtr(new bouge::CoreHardwareMesh(m_pCoreModel->mesh(), 0, 0));
+    }
+
+    // Collect some numbers we need beforehand (because we want it interleaved, else we could just append the buffers).
+    std::size_t floatsPerVertex = m_pHardwareModel->coordsPerVertex();
+    for(auto attrib = m_pHardwareModel->attribs().begin() ; attrib != m_pHardwareModel->attribs().end() ; ++attrib) {
+        floatsPerVertex += attrib->second;
+    }
+    std::size_t stride = floatsPerVertex * sizeof(float);
+
+    // Here, we will compile all the vertex data into a single interleaved buffer.
+    std::vector<float> data(floatsPerVertex * m_pHardwareModel->vertexCount());
+
+    // The vertex coordinates are a special case, unfortunately.
+    std::size_t offset = 0;
+    m_pHardwareModel->writeCoords(&data[0], stride);
+    offset += m_pHardwareModel->coordsPerVertex();
+
+    // But all other attributes can be handled homogenely
+    for(auto attrib = m_pHardwareModel->attribs().begin() ; attrib != m_pHardwareModel->attribs().end() ; ++attrib) {
+        m_pHardwareModel->writeAttrib(attrib->first, &data[offset], stride);
+        offset += attrib->second;
+    }
+
+    // Upload that data to the graphics card
+    m_vbo.reset(new VertexBufferObject(data, floatsPerVertex));
+    m_pVtxIdxVBO.reset(new ElementsBufferObject(m_pHardwareModel->faceIndices(), m_pHardwareModel->indicesPerFace()));
+}
+
+void FTS::HardwareModel::setupVAO(FTS::MaterialUserData& in_ud) const
+{
+    // And upload everything into an OpenGL VAO for later use.
+    in_ud.vao.bind();
+    m_vbo->bind();
+
+    // Setup all of the vertex attributes, again vertex coords are special.
+    std::size_t offset = 0;
+    in_ud.prog->setVertexAttribute("aVertexPosition", *m_vbo, m_pHardwareModel->coordsPerVertex(), 0);
+    offset += m_pHardwareModel->coordsPerVertex();
+
+    for(auto attrib = m_pHardwareModel->attribs().begin() ; attrib != m_pHardwareModel->attribs().end() ; ++attrib) {
+        in_ud.prog->setVertexAttribute(attrib->first, *m_vbo, m_pHardwareModel->attribCoordsPerVertex(attrib->first), offset);
+        offset += attrib->second;
+    }
+
+    // Finally, setup the face indices "element" buffer.
+    m_pVtxIdxVBO->bind();
+
+    in_ud.vao.unbind();
+    VertexBufferObject::unbind();
+    ElementsBufferObject::unbind();
+}
 
 /*
 FTS::HardwareModel::HardwareModel(const String& in_sName, Archive& in_modelArch)
@@ -760,34 +853,35 @@ void FTS::HardwareModel::render(const AffineMatrix& in_modelMatrix, const Color&
         // Here, we can assume the material exists, as we did the
         // "integrity checks" after the loading already.
         bouge::CoreMaterialPtrC pMat = in_modelInst->materialForSubmesh(submesh.submeshName());
+        MaterialUserData* pUD = static_cast<MaterialUserData*>(pMat->userData.get());
 
-        Program* pShad = ShaderManager::getSingleton().getOrLinkProgram();
-        pShad->bind();
-        m_vao.bind();
+        Program* prog = pUD->prog;
+        prog->bind();
+        pUD->vao.bind();
 
         // Give the shader the matrices he needs, and their inverses.
-        pShad->setUniform(uModelViewProjectionMatrix, mvp);
-        pShad->setUniform(uModelViewMatrix, mv);
-        pShad->setUniform(uProjectionMatrix, p);
-        pShad->setUniformInverse(uInvModelViewProjectionMatrix, mvp);
-        pShad->setUniformInverse(uInvModelViewMatrix, mv);
+        prog->setUniform(uModelViewProjectionMatrix, mvp);
+        prog->setUniform(uModelViewMatrix, mv);
+        prog->setUniform(uProjectionMatrix, p);
+        prog->setUniformInverse(uInvModelViewProjectionMatrix, mvp);
+        prog->setUniformInverse(uInvModelViewMatrix, mv);
 
         // What about qNormalMatrix??
 
         if(pMat->hasProprety(ambient)) {
-            pShad->setUniform(uAmbient, Vector(&pMat->propretyAsFvec(ambient)[0]));
+            prog->setUniform(uAmbient, Vector(&pMat->propretyAsFvec(ambient)[0]));
         }
 
         if(pMat->hasProprety(diffuse)) {
-            pShad->setUniform(uDiffuse, Vector(&pMat->propretyAsFvec(diffuse)[0]));
+            prog->setUniform(uDiffuse, Vector(&pMat->propretyAsFvec(diffuse)[0]));
         }
 
         if(pMat->hasProprety(specular)) {
-            pShad->setUniform(uSpecular, Vector(&pMat->propretyAsFvec(specular)[0]));
+            prog->setUniform(uSpecular, Vector(&pMat->propretyAsFvec(specular)[0]));
         }
 
         if(pMat->hasProprety(shininess)) {
-            pShad->setUniform(uShininess, pMat->propretyAsFvec(shininess)[0]);
+            prog->setUniform(uShininess, pMat->propretyAsFvec(shininess)[0]);
         }
 
         if(pMat->userData) {
@@ -795,9 +889,9 @@ void FTS::HardwareModel::render(const AffineMatrix& in_modelMatrix, const Color&
 //             pShad->setUniformSampler(uDiffTex, 0);
         }
 
-        glDrawElements(GL_TRIANGLES, submesh.faceCount() * m_pHardwareModel->indicesPerFace(), BOUGE_FACE_INDEX_TYPE_GL, (const GLvoid*)(submesh.startIndex()*sizeof(BOUGE_FACE_INDEX_TYPE)));
+        glDrawElements(pUD->drawMode, submesh.faceCount() * m_pHardwareModel->indicesPerFace(), BOUGE_FACE_INDEX_TYPE_GL, (const GLvoid*)(submesh.startIndex()*sizeof(BOUGE_FACE_INDEX_TYPE)));
 
-        m_vao.unbind();
+        pUD->vao.unbind();
         Program::unbind();
     }
 /*

@@ -69,6 +69,8 @@ protected:
     /// \param in_model The model holding information about, for example, the pose.
     void render(const AffineMatrix& in_modelMatrix, const Color& in_playerCol, bouge::ModelInstancePtrC in_model);
 
+    void createHardwareMesh();
+    void setupVAO(struct MaterialUserData& in_ud) const;
 //     int getOrCreateErrorMatId(const String& in_sModelName);
 
 //     void loadHardware(int in_nMaxTexturesPerMesh, int in_nMaxBonesPerMesh);
@@ -78,13 +80,11 @@ private:
     bouge::CoreModelPtr m_pCoreModel;
     bouge::CoreHardwareMeshPtr m_pHardwareModel;
 
+    /// VBO holding all the vertex data in the graphics card.
     std::unique_ptr<VertexBufferObject> m_vbo;
 
     /// VBO holding the face's vertex indices in the graphics card.
     std::unique_ptr<ElementsBufferObject> m_pVtxIdxVBO;
-
-    /// Vertex Array Object, storing which VBO belongs to which vertex attribute.
-    VertexArrayObject m_vao;
 
     /// Names of all the textures <i>loaded</i> by this model.
     std::vector<String> m_loadedTexs;

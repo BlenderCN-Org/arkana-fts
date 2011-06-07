@@ -401,7 +401,7 @@ int FTS::ModelViewerRlv::setupMovesCombobox()
 
         if(!vMoves.empty()) {
             (new SimpleListItem(vMoves.front()))->addAsDefault(cb);
-            for(auto i = vMoves.begin() + 1 ; i != vMoves.end() && !vMoves.empty() ; ++i) {
+            for(auto i = vMoves.begin() + 1 ; i != vMoves.end() ; ++i) {
                 cb->addItem(new SimpleListItem(*i));
             }
         }
@@ -424,9 +424,13 @@ int FTS::ModelViewerRlv::setupSkinsCombobox()
         const std::vector<String>& vSkins = m_modelInsts.front()->getModelInst()->getAvailableSkins();
 
         // We can assume that there is always at least one skin. Still, never trust.
-        (new SimpleListItem(vSkins.empty() ? "Default" : vSkins.front()))->addAsDefault(cb);
-        for(auto i = vSkins.begin() + 1 ; i != vSkins.end() && !vSkins.empty() ; ++i) {
-            cb->addItem(new SimpleListItem(*i));
+        if(!vSkins.empty()) {
+            (new SimpleListItem(vSkins.front()))->addAsDefault(cb);
+            for(auto i = vSkins.begin() + 1 ; i != vSkins.end() ; ++i) {
+                cb->addItem(new SimpleListItem(*i));
+            }
+        } else {
+            (new SimpleListItem("Default"))->addAsDefault(cb);
         }
     } catch(CEGUI::Exception &e) {
         FTS18N("CEGUI", MsgType::Error, e.getMessage());
@@ -538,7 +542,7 @@ bool FTS::ModelViewerRlv::cbLoad(const CEGUI::EventArgs & in_ea)
 {
     // Create the object.
     (new FileDlg())->registerHandler(FTS_SUBS(FTS::ModelViewerRlv::cbLoadDone))
-                   ->loadOpenDlg("*.ftsmdl", Path::datadir("Models"), InterpretDirWithEntryAsFile::Ptr(new InterpretDirWithEntryAsFile("skeleton")));
+                   ->loadOpenDlg("*.ftsmdl", Path::datadir("Models"), InterpretDirWithEntryAsFile::Ptr(new InterpretDirWithEntryAsFile("*.bx*")));
 
     return true;
 }
