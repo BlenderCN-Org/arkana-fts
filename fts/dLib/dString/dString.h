@@ -641,6 +641,9 @@ public:
     template<typename T> void toExactly(T& t) const { t = this->toExactly<T>(); };
 };
 
+template<> bool String::to<bool>() const;
+template<> bool String::toExactly<bool>() const;
+
 }; // namespace FTS;
 
 bool operator ==(const char *in_pszString, const FTS::String& in_sString);
