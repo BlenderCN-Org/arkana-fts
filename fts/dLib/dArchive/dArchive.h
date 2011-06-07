@@ -121,7 +121,7 @@ public:
 
 class Archive {
 public:
-    typedef std::map<String, Chunk *> ChunkMap;
+    typedef std::map<String, Chunk*> ChunkMap;
     typedef std::unique_ptr<Archive> Ptr;
 
 private:
@@ -137,22 +137,22 @@ private:
     /// The original file I was loaded from.
     Path m_sFileName;
 
-    Archive(File& out_file, const String &in_sFileChunkPrefix = String::EMPTY);
-    Archive(const Path& in_sFileName, Compressor *in_pComp = NULL);
-    Archive(PDBrowseInfo out_dbi, const String &in_sChunkPrefix);
+    Archive(File& out_file, const String& in_sFileChunkPrefix = String::EMPTY);
+    Archive(const Path& in_sFileName, Compressor* in_pComp = NULL);
+    Archive(PDBrowseInfo out_dbi, const String& in_sChunkPrefix);
 
-    void makeChunksFromDir(PDBrowseInfo out_dbi, const Path& in_sSubdir, const String &in_sChunkPrefix);
+    void makeChunksFromDir(PDBrowseInfo out_dbi, const Path& in_sSubdir, const String& in_sChunkPrefix);
 
 public:
-    static Archive *createEmptyArchive(const Path& in_sFileName, Compressor *in_pComp = NULL);
-    static Archive *loadArchive(const Path& in_sFileName, const String& in_sFileChunkPrefix = String::EMPTY);
-    static Archive *loadArchive(File& out_file, const String& in_sFileChunkPrefix = String::EMPTY);
+    static Archive* createEmptyArchive(const Path& in_sFileName, Compressor* in_pComp = NULL);
+    static Archive* loadArchive(const Path& in_sFileName, const String& in_sFileChunkPrefix = String::EMPTY);
+    static Archive* loadArchive(File& out_file, const String& in_sFileChunkPrefix = String::EMPTY);
     static bool isValidArchive(const String& in_sFileName);
     static bool isValidArchive(File& out_file);
 
     virtual ~Archive();
 
-    const Archive& save(File &out_file) const;
+    const Archive& save(File& out_file) const;
     const Archive& save() const;
     inline Compressor& getOriginalCompressor() const {return *m_pOrigComp;};
     inline Path getName() const {return m_sFileName;};
@@ -164,8 +164,9 @@ public:
     inline bool isEmpty() {return this->getChunkCount() == 0;};
 
     uint64_t getChunkCount() const;
-    const Chunk *getChunk(const String &in_sName) const;
-    Chunk *getChunk(const String &in_sName);
+    const Chunk* getChunk(const String& in_sName) const;
+    Chunk* getChunk(const String& in_sName);
+    bool hasChunk(const String& in_sName) const;
 
     uint64_t getFileCount() const;
     std::list<String> getFileList() const;
@@ -173,11 +174,11 @@ public:
     ChunkMap::const_iterator begin() const;
     ChunkMap::const_iterator end() const;
 
-    Chunk *take(const String &in_sChunkName);
+    Chunk* take(const String& in_sChunkName);
     int give(Chunk *in_pChunk, bool in_bReplace = false);
 
-    File& getFile(const String &in_sName);
-    ConstRawDataContainer getFileContent(const String &in_sName) const;
+    File& getFile(const String& in_sName);
+    ConstRawDataContainer getFileContent(const String& in_sName) const;
 };
 };
 

@@ -158,6 +158,11 @@ int FileChunk::read(File &out_f)
     if(Chunk::read(out_f) != ERR_OK)
         return -1;
 
+    // Ignore leading "./" or ".\" in filenames
+    while(m_sName.left(2) == "./" || m_sName.left(2) == ".\\") {
+        m_sName = String(m_sName, 2);
+    }
+
     // Read the file's data into a new data container.
     m_pRawContent = new RawDataContainer(this->getPayloadLength());
     if(out_f.readNoEndian(*m_pRawContent) < this->getPayloadLength()) {
@@ -665,6 +670,11 @@ Chunk *Archive::getChunk(const String &in_sName)
 {
     ChunkMap::iterator i = m_mChunks.find(in_sName);
     return (i == m_mChunks.end()) ? NULL : i->second;
+}
+
+bool Archive::hasChunk(const String& in_sName) const
+{
+    return m_mChunks.find(in_sName) != m_mChunks.end();
 }
 
 /// \return the total number of file chunks stored in the archive.
