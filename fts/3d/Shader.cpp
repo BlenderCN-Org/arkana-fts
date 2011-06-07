@@ -134,7 +134,10 @@ public:
         //  - the option defines
         //  - all the rest of the sourcecode
         String sRealSource = injectExtensionRequirement(in_sSrc, "GL_ARB_shading_language_include");
-        const char *src = injectOptionDefines(sRealSource, in_flags).c_str();
+        String sRealSourceWithOptions = injectOptionDefines(sRealSource, in_flags);
+        // Note that we *need* those two String objects above, if we'd make it
+        // a one-liner, the memory src points at would've gone here.
+        const char *src = sRealSourceWithOptions.c_str();
         glShaderSource(in_id, 1, &src, NULL);
         glCompileShader(in_id);
         return String::EMPTY;
@@ -205,7 +208,10 @@ public:
             return e.what();
         }
 
-        const char *src = injectOptionDefines(in_sSrc, in_flags).c_str();
+        // Note that we *need* this String object, if we'd make it
+        // a one-liner, the memory src points at would disappear too fast.
+        String source = injectOptionDefines(in_sSrc, in_flags);
+        const char *src = source.c_str();
         glShaderSource(in_id, 1, &src, NULL);
         glCompileShader(in_id);
         return String::EMPTY;
