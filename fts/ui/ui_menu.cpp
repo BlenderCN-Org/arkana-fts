@@ -55,7 +55,7 @@ void FTS::setVersionInfo()
 /// Default constructor
 FTS::MainMenuRlv::MainMenuRlv()
     : m_pRoot(NULL)
-    , m_pModelManager(0)
+    , m_pModelManager(new ModelManager())
     , m_pgMenuBG(NULL)
     , m_pMenuBGInst(0)
 {
@@ -103,7 +103,6 @@ bool FTS::MainMenuRlv::load()
     m_pgMenuBG = GraphicManager::getSingleton().getOrLoadGraphic(Path::datadir("Graphics/ui/menubg") + Path(sClosestMatch + ".png"));
 
     // And the menu background model.
-    m_pModelManager = new ModelManager();
     m_pMenuBGInst = m_pModelManager->createInstance("Gaia/Fauna/Chicken");
 
     // Reset the camera.
