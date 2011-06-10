@@ -217,8 +217,11 @@ int GAME_MAIN(int argc, char *argv[])
         std::ofstream fCritLog("CriticalError.txt");
         fCritLog << ex.what();
 #if WINDOOF
-        std::cout << "Press any key to quit now..." << std::endl;
-        system("pause");
+        ForegroundConsole(true);
+        // Removed because it will lockup the computer if Arkana runs in
+        // fullscreen mode, making a bad situation worse...
+        //std::cout << "Press any key to quit now..." << std::endl;
+        //system("pause");
 #endif
         return 1;
     }
