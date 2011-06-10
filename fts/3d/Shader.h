@@ -86,10 +86,11 @@ class ShaderCompileFlag {
 public:
     static const ShaderCompileFlag Lit;
     static const ShaderCompileFlag Textured;
+    static const ShaderCompileFlag SkeletalAnimated;
 
     ShaderCompileFlag(const String& name);
 
-    ShaderCompileFlags operator|(const ShaderCompileFlag&);
+    ShaderCompileFlags operator|(const ShaderCompileFlag&) const;
 
     inline operator std::string() const {return this->name().str();};
     String name() const;
@@ -104,7 +105,10 @@ public:
     ShaderCompileFlags(const ShaderCompileFlag& flag);
     ShaderCompileFlags(const ShaderCompileFlag& flag, const ShaderCompileFlag& flag2);
 
-    ShaderCompileFlags operator|(const ShaderCompileFlags&);
+    ShaderCompileFlags operator|(const ShaderCompileFlag&) const;
+    ShaderCompileFlags operator|(const ShaderCompileFlags&) const;
+    void operator|=(const ShaderCompileFlag&);
+    void operator|=(const ShaderCompileFlags&);
 
     const std::list<ShaderCompileFlag>& flags() const;
     String toString() const;

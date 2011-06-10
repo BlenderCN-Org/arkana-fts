@@ -826,12 +826,13 @@ FTS::Program::~Program()
 
 const FTS::ShaderCompileFlag FTS::ShaderCompileFlag::Lit("D_LIT_OPTION");
 const FTS::ShaderCompileFlag FTS::ShaderCompileFlag::Textured("D_TEXTURED_OPTION");
+const FTS::ShaderCompileFlag FTS::ShaderCompileFlag::SkeletalAnimated("D_SKELETAL_ANIMATION_OPTION");
 
 FTS::ShaderCompileFlag::ShaderCompileFlag(const String& name)
     : m_flag(name)
 { }
 
-FTS::ShaderCompileFlags FTS::ShaderCompileFlag::operator|(const FTS::ShaderCompileFlag& f)
+FTS::ShaderCompileFlags FTS::ShaderCompileFlag::operator|(const FTS::ShaderCompileFlag& f) const
 {
     return ShaderCompileFlags(m_flag, f.m_flag);
 }
@@ -855,12 +856,28 @@ FTS::ShaderCompileFlags::ShaderCompileFlags(const FTS::ShaderCompileFlag& flag, 
     m_flags.push_back(flag2.name());
 }
 
-FTS::ShaderCompileFlags FTS::ShaderCompileFlags::operator|(const FTS::ShaderCompileFlags& f)
+FTS::ShaderCompileFlags FTS::ShaderCompileFlags::operator|(const FTS::ShaderCompileFlag& f) const
 {
-    ShaderCompileFlags ret;
-    ret.m_flags = m_flags;
+    ShaderCompileFlags ret(*this);
+    ret.m_flags.push_back(f);
+    return ret;
+}
+
+FTS::ShaderCompileFlags FTS::ShaderCompileFlags::operator|(const FTS::ShaderCompileFlags& f) const
+{
+    ShaderCompileFlags ret(*this);
     ret.m_flags.insert(ret.m_flags.end(), f.m_flags.begin(), f.m_flags.end());
     return ret;
+}
+
+void FTS::ShaderCompileFlags::operator|=(const FTS::ShaderCompileFlag& f)
+{
+    m_flags.push_back(f);
+}
+
+void FTS::ShaderCompileFlags::operator|=(const FTS::ShaderCompileFlags& f)
+{
+    m_flags.insert(m_flags.end(), f.m_flags.begin(), f.m_flags.end());
 }
 
 const std::list<FTS::ShaderCompileFlag>& FTS::ShaderCompileFlags::flags() const
