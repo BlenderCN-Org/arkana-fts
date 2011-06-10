@@ -18,13 +18,15 @@ class Path;
 
 // Implementation detail.
 class CompiledShader;
+typedef std::unique_ptr<CompiledShader> CompiledShaderPtr;
 class ShaderIncludeManager;
 
 /// This class represents a fully-linked shader composed of a vertex shader,
 /// a fragment shader and optionally a geometry shader.
 class Program : public NonCopyable {
 public:
-    Program(CompiledShader* in_pVert, CompiledShader* in_pFrag, CompiledShader* in_pGeom, const String& in_sShaderName);
+    Program(const CompiledShader& in_pVert, const CompiledShader& in_pFrag, const String& in_sShaderName);
+    Program(const CompiledShader& in_pVert, const CompiledShader& in_pFrag, const CompiledShader& in_pGeom, const String& in_sShaderName);
     virtual ~Program();
 
     bool hasVertexAttribute(const String& in_sAttribName) const;
@@ -50,6 +52,8 @@ public:
     GLuint id() const {return m_id;};
 private:
     char convertTextNr(uint8_t nr) {assert(nr>=0 && nr<10); return char(nr)+'0';}
+    void init(const String& in_sShaderName);
+
     GLuint m_id;   ///< Contains the OpenGL ID of the compiled shader.
     String m_sLog; ///< Might contain infos/warnings/errors about the shader.
 
@@ -130,26 +134,24 @@ public:
 
     ShaderManager();
     virtual ~ShaderManager();
-    void clearCache();
+    //void clearCache();
 
-    CompiledShader* compileShader(const Path& in_sFile, const ShaderCompileFlags& flags = ShaderCompileFlags(), String in_sShaderName = String::EMPTY);
-    CompiledShader* compileShaderCode(const String& in_sShaderName, const String& in_sShaderContent, const ShaderCompileFlags& flags = ShaderCompileFlags());
-    bool hasShader(const String& in_sShaderName, const ShaderCompileFlags& flags = ShaderCompileFlags());
-    String getShaderSource(const String& in_sShaderName, const ShaderCompileFlags& flags = ShaderCompileFlags());
-    void destroyShader(String in_sShaderName, const ShaderCompileFlags& flags = ShaderCompileFlags());
+    void loadShader(const Path& in_sFile, String in_sShaderName = String::EMPTY);
+    void loadShaderCode(String in_sShaderName, String in_sShaderContent);
+    String getCompiledShaderSource(const String& in_sShaderName, const ShaderCompileFlags& flags = ShaderCompileFlags());
 
     Program* getOrLinkProgram(const String& in_sVertexShader = DefaultVertexShader, const String& in_sFragmentShader = DefaultFragmentShader, const String& in_sGeometryShader = DefaultGeometryShader, const ShaderCompileFlags& flags = ShaderCompileFlags());
 
-private:
-    std::map<String, CompiledShader*> m_compiledVertexShaders;
-    std::map<String, CompiledShader*> m_compiledFragmentShaders;
-    std::map<String, CompiledShader*> m_compiledGeometryShaders;
-    std::map<String, Program*> m_linkedShaders;
-    ShaderIncludeManager *m_pInclManager;
-
-    CompiledShader* findShader(String in_sShaderName, const ShaderCompileFlags& flags);
+protected:
+    CompiledShaderPtr compileLoadedShader(const String& in_sShaderName, const ShaderCompileFlags& flags = ShaderCompileFlags());
+    Program* getDefaultProgram();
     String buildShaderName(String baseName, const ShaderCompileFlags& flags);
     String buildProgramName(const String& vtxBaseName, const String& fragBaseName, const String& geomBaseName, const ShaderCompileFlags& flags);
+
+private:
+    std::map<String, String> m_ShaderSources;
+    std::map<String, Program*> m_linkedShaders;
+    ShaderIncludeManager *m_pInclManager;
 
     String m_sep;
     String m_optSep;

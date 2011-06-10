@@ -53,7 +53,7 @@ TEST_INSUITE(Shaders, SimpleInclude)
 "// This is a comment in the included file\n"
 "\n"
 "// This is yet another comment in the included file\n";
-    mgr->compileShaderCode("Bla.shadinc", sIncludedFile);
+    mgr->loadShaderCode("Bla.shadinc", sIncludedFile);
 
     String sMainFile =
 "#version 130\n"
@@ -63,7 +63,7 @@ TEST_INSUITE(Shaders, SimpleInclude)
 "{\n"
 "    gl_Position = vec4 (0.0, 0.0, 0.0, 1.0);\n"
 "}\n";
-    mgr->compileShaderCode("Bla.vert", sMainFile);
+    mgr->loadShaderCode("Bla.vert", sMainFile);
 
     String sExpected =
 "#version 130\n" + 
@@ -76,7 +76,7 @@ sIncludedFile + "\n" +
 "    gl_Position = vec4 (0.0, 0.0, 0.0, 1.0);\n"
 "}\n";
 
-    CHECK_EQUAL(sExpected, mgr->getShaderSource("Bla.vert"));
+    CHECK_EQUAL(sExpected, mgr->getCompiledShaderSource("Bla.vert"));
 
     delete ShaderManager::getSingletonPtr();
 }
@@ -87,9 +87,9 @@ TEST_INSUITE(Shaders, CyclicInclude)
     
     String sIncludedFile1 = "// This is a comment in the first included file\n"
         "#include \"Bla2.shadinc\"\n";
-    mgr->compileShaderCode("Bla1.shadinc", sIncludedFile1);
+    mgr->loadShaderCode("Bla1.shadinc", sIncludedFile1);
     String sIncludedFile2 = "// This is a comment in the second included file\n";
-    mgr->compileShaderCode("Bla2.shadinc", sIncludedFile2);
+    mgr->loadShaderCode("Bla2.shadinc", sIncludedFile2);
 
     String sMainFile =
 "#version 130\n"
@@ -99,7 +99,7 @@ TEST_INSUITE(Shaders, CyclicInclude)
 "{\n"
 "    gl_Position = vec4 (0.0, 0.0, 0.0, 1.0);\n"
 "}\n";
-    mgr->compileShaderCode("Bla.vert", sMainFile);
+    mgr->loadShaderCode("Bla.vert", sMainFile);
 
     String sExpected =
 "#version 130\n" + 
@@ -115,7 +115,7 @@ TEST_INSUITE(Shaders, CyclicInclude)
 "    gl_Position = vec4 (0.0, 0.0, 0.0, 1.0);\n"
 "}\n";
 
-    CHECK_EQUAL(sExpected, mgr->getShaderSource("Bla.vert"));
+    CHECK_EQUAL(sExpected, mgr->getCompiledShaderSource("Bla.vert"));
 
     delete ShaderManager::getSingletonPtr();
 }

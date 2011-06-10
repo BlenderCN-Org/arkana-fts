@@ -370,19 +370,33 @@ private:
 
 } // namespace FTS
 
-FTS::Program::Program(CompiledShader* in_pVert, CompiledShader* in_pFrag, CompiledShader* in_pGeom, const String& in_sShaderName)
+FTS::Program::Program(const CompiledShader& in_vert, const CompiledShader& in_frag, const String& in_sShaderName)
 {
     verifGL("Shader::ShaderLinker: start of " + in_sShaderName);
-    FTSMSGDBG("Shader::ShaderLinker: Preparing to link " + in_sShaderName + " using: " + String::nr(in_pVert->id()) + ", " + String::nr(in_pFrag->id()) + (in_pGeom ? ", " + String::nr(in_pGeom->id()) : ""), 2);
+    FTSMSGDBG("Shader::ShaderLinker: Preparing to link " + in_sShaderName + " using: " + String::nr(in_vert.id()) + ", " + String::nr(in_frag.id()), 2);
 
     m_id = glCreateProgram();
-    glAttachShader(this->id(), in_pVert->id());
-    glAttachShader(this->id(), in_pFrag->id());
-    if(in_pGeom)
-        glAttachShader(this->id(), in_pGeom->id());
-
+    glAttachShader(this->id(), in_vert.id());
+    glAttachShader(this->id(), in_frag.id());
     glLinkProgram(this->id());
+    this->init(in_sShaderName);
+}
 
+FTS::Program::Program(const CompiledShader& in_vert, const CompiledShader& in_frag, const CompiledShader& in_geom, const String& in_sShaderName)
+{
+    verifGL("Shader::ShaderLinker: start of " + in_sShaderName);
+    FTSMSGDBG("Shader::ShaderLinker: Preparing to link " + in_sShaderName + " using: " + String::nr(in_vert.id()) + ", " + String::nr(in_frag.id()) + ", " + String::nr(in_geom.id()), 2);
+
+    m_id = glCreateProgram();
+    glAttachShader(this->id(), in_vert.id());
+    glAttachShader(this->id(), in_frag.id());
+    glAttachShader(this->id(), in_geom.id());
+    glLinkProgram(this->id());
+    this->init(in_sShaderName);
+}
+
+void FTS::Program::init(const String& in_sShaderName)
+{
     // We always get the info log, it might contain some useful warnings!
     GLint loglen = 0;
     glGetProgramiv(this->id(), GL_INFO_LOG_LENGTH, &loglen);
@@ -925,150 +939,99 @@ FTS::ShaderManager::ShaderManager()
     Path path;
     PDBrowseInfo dbi = dBrowse_Open(Path::datadir(D_SHADERS_DIRNAME));
     while(!(path = dBrowse_GetNextWithWildcard(dbi, "*.vertinc")).empty()) {
-        this->compileShader(path);
+        this->loadShader(path);
     }
     dBrowse_Close(dbi);
     dbi = dBrowse_Open(Path::datadir(D_SHADERS_DIRNAME));
     while(!(path = dBrowse_GetNextWithWildcard(dbi, "*.fraginc")).empty()) {
-        this->compileShader(path);
+        this->loadShader(path);
     }
     dBrowse_Close(dbi);
     dbi = dBrowse_Open(Path::datadir(D_SHADERS_DIRNAME));
     while(!(path = dBrowse_GetNextWithWildcard(dbi, "*.geominc")).empty()) {
-        this->compileShader(path);
+        this->loadShader(path);
     }
     dBrowse_Close(dbi);
 
     // Already load, compile and link the default shader.
-    CompiledShader* pVert = this->compileShaderCode(DefaultVertexShader, sErrorVert);
-    CompiledShader* pFrag = this->compileShaderCode(DefaultFragmentShader, sErrorFrag);
+    this->loadShaderCode(DefaultVertexShader, sErrorVert);
+    this->loadShaderCode(DefaultFragmentShader, sErrorFrag);
+    CompiledShaderPtr pVert = this->compileLoadedShader(DefaultVertexShader);
+    CompiledShaderPtr pFrag = this->compileLoadedShader(DefaultFragmentShader);
     String sDefaultShaderName = this->buildProgramName(DefaultVertexShader, DefaultFragmentShader, DefaultGeometryShader, ShaderCompileFlags());
-    m_linkedShaders[sDefaultShaderName] = new Program(pVert, pFrag, 0, sDefaultShaderName);
+    m_linkedShaders[sDefaultShaderName] = new Program(*pVert, *pFrag, sDefaultShaderName);
 }
 
 FTS::ShaderManager::~ShaderManager()
 {
     FTSMSGDBG("Destroying shader manager", 2);
-    this->clearCache();
     SAFE_DELETE(m_pInclManager);
+
+    for(auto i = m_linkedShaders.begin() ; i != m_linkedShaders.end() ; ++i) {
+        // Do not delete anyone referencing the default program, as it may
+        // be referenced by several entries, resulting in multi-deletes.
+        if(i->second != this->getDefaultProgram())
+            delete i->second;
+    }
+    // But don't forget to delete it anyways.
+    delete getDefaultProgram();
 }
 
-void FTS::ShaderManager::clearCache()
+GLuint guessShaderType(const Path& name)
 {
-    for(auto i = m_compiledVertexShaders.begin() ; i != m_compiledVertexShaders.end() ; ++i) {
-        delete i->second;
+    String ext = name.ext();
+    if(ext == "vert") {
+        return GL_VERTEX_SHADER;
+    } else if(ext == "frag") {
+        return GL_FRAGMENT_SHADER;
+    } else if(ext == "geom") {
+        return GL_GEOMETRY_SHADER;
     }
-    m_compiledVertexShaders.clear();
 
-    for(auto i = m_compiledFragmentShaders.begin() ; i != m_compiledFragmentShaders.end() ; ++i) {
-        delete i->second;
-    }
-    m_compiledFragmentShaders.clear();
-
-    for(auto i = m_compiledGeometryShaders.begin() ; i != m_compiledGeometryShaders.end() ; ++i) {
-        delete i->second;
-    }
-    m_compiledGeometryShaders.clear();
-
-    for(auto prog = m_linkedShaders.begin() ; prog != m_linkedShaders.end() ; ++prog) {
-        delete prog->second;
-    }
-    m_linkedShaders.clear();
+    throw InvalidCallException("guessShaderType with unknown type. Shader name is: " + name);
 }
 
-FTS::CompiledShader* FTS::ShaderManager::compileShader(const Path& in_sFile, const ShaderCompileFlags& flags, String in_sShaderName)
+void FTS::ShaderManager::loadShader(const Path& in_sFile, String in_sShaderName)
 {
     if(in_sShaderName.empty()) {
         in_sShaderName = in_sFile;
     }
 
-    return this->compileShaderCode(in_sShaderName, File::open(Path::datadir(D_SHADERS_DIRNAME) + in_sFile, File::Read)->readstr(), flags);
+    this->loadShaderCode(in_sShaderName, File::open(Path::datadir(D_SHADERS_DIRNAME) + in_sFile, File::Read)->readstr());
 }
 
-FTS::CompiledShader* FTS::ShaderManager::compileShaderCode(const String& in_sShaderName, const String& in_sShaderContent, const ShaderCompileFlags& flags)
+void FTS::ShaderManager::loadShaderCode(String in_sShaderName, String in_sShaderContent)
 {
-    String ext = Path(in_sShaderName).ext();
-
-    if(ext == "vertinc" || ext == "fraginc" || ext == "geominc") {
+    // Treat any unknown shader type as shader include file.
+    try {
+        guessShaderType(in_sShaderName);
+        m_ShaderSources[in_sShaderName] = in_sShaderContent;
+    } catch(const InvalidCallException&) {
         String includeShaderName = in_sShaderName;
         includeShaderName.replaceStr(D_SHADERS_DIRNAME, "");
         m_pInclManager->addIncludeFile(includeShaderName, in_sShaderContent);
-        return nullptr;
-    }
-
-    // Already loaded?
-    try {
-        return this->findShader(in_sShaderName, flags);
-    } catch(const NotExistException&) { }
-
-    String cacheShaderName = this->buildShaderName(in_sShaderName, flags);
-    if(ext == "vert") {
-        return m_compiledVertexShaders[cacheShaderName] = new CompiledShader(in_sShaderName, in_sShaderContent, GL_VERTEX_SHADER, m_pInclManager, flags);
-    } else if(ext == "frag") {
-        return m_compiledFragmentShaders[cacheShaderName] = new CompiledShader(in_sShaderName, in_sShaderContent, GL_FRAGMENT_SHADER, m_pInclManager, flags);
-    } else if(ext == "geom") {
-        return m_compiledGeometryShaders[cacheShaderName] = new CompiledShader(in_sShaderName, in_sShaderContent, GL_GEOMETRY_SHADER, m_pInclManager, flags);
-    }
-
-    throw InvalidCallException("ShaderManager::compileShaderCode with a shader using an unknown extension");
-}
-
-/// Find a compiled shader in my collection, by name, whatever kind of shader it be.
-///
-/// \return A pointer to the compiled shader.
-///
-/// \exceptions NotFoundException if the shader doesn't exist.
-CompiledShader* FTS::ShaderManager::findShader(String in_sShaderName, const ShaderCompileFlags& flags)
-{
-    in_sShaderName = this->buildShaderName(in_sShaderName, flags);
-
-    auto i = m_compiledVertexShaders.find(in_sShaderName);
-    if(i != m_compiledVertexShaders.end())
-        return i->second;
-    i = m_compiledFragmentShaders.find(in_sShaderName);
-    if(i != m_compiledFragmentShaders.end())
-        return i->second;
-    i = m_compiledGeometryShaders.find(in_sShaderName);
-    if(i != m_compiledGeometryShaders.end())
-        return i->second;
-
-    throw NotExistException(in_sShaderName);
-}
-
-bool FTS::ShaderManager::hasShader(const String& in_sShaderName, const ShaderCompileFlags& flags)
-{
-    try {
-        this->findShader(in_sShaderName, flags);
-        return true;
-    } catch(const NotExistException&) {
-        return false;
     }
 }
 
-String FTS::ShaderManager::getShaderSource(const String& in_sShaderName, const ShaderCompileFlags& flags)
+CompiledShaderPtr FTS::ShaderManager::compileLoadedShader(const String& in_sShaderName, const ShaderCompileFlags& flags)
 {
-    GLuint id = this->findShader(in_sShaderName, flags)->id();
+    auto src = m_ShaderSources.find(in_sShaderName);
+    if(src == m_ShaderSources.end())
+        throw InvalidCallException("ShaderManager::compileLoadedShader with inexistent shader " + in_sShaderName);
+
+    return CompiledShaderPtr(new CompiledShader(in_sShaderName, src->second, guessShaderType(in_sShaderName), m_pInclManager, flags));
+}
+
+String FTS::ShaderManager::getCompiledShaderSource(const String& in_sShaderName, const ShaderCompileFlags& flags)
+{
+    CompiledShaderPtr shader = this->compileLoadedShader(in_sShaderName, flags);
+    GLuint id = shader->id();
     GLint srclen = 0;
     glGetShaderiv(id, GL_SHADER_SOURCE_LENGTH, &srclen);
     GLint realsrclen = 0;
     std::vector<GLchar> pszSrc(srclen);
     glGetShaderSource(id, srclen, &realsrclen, &pszSrc[0]);
     return String(&pszSrc[0]);
-}
-
-void FTS::ShaderManager::destroyShader(FTS::String in_sShaderName, const ShaderCompileFlags& flags)
-{
-    try {
-        delete this->findShader(in_sShaderName, flags);
-
-        m_compiledVertexShaders.erase(in_sShaderName);
-        m_compiledFragmentShaders.erase(in_sShaderName);
-        m_compiledGeometryShaders.erase(in_sShaderName);
-    } catch(const NotExistException&) {
-        FTS18N("Want to destroy the inexistent shader " + in_sShaderName, MsgType::Warning);
-    }
-
-    verifGL("post-destroy shader " + in_sShaderName);
 }
 
 FTS::Program* FTS::ShaderManager::getOrLinkProgram(const String& in_sVertexShader, const String& in_sFragmentShader, const String& in_sGeometryShader, const ShaderCompileFlags& flags)
@@ -1081,23 +1044,33 @@ FTS::Program* FTS::ShaderManager::getOrLinkProgram(const String& in_sVertexShade
 
     try {
         // If it's not been linked in this combination yet, do this now!
-        CompiledShader* pVert = this->compileShader(in_sVertexShader);
-        CompiledShader* pFrag = this->compileShader(in_sFragmentShader);
-        CompiledShader* pGeom = this->compileShader(in_sGeometryShader);
+        CompiledShaderPtr pVert = this->compileLoadedShader(in_sVertexShader, flags);
+        CompiledShaderPtr pFrag = this->compileLoadedShader(in_sFragmentShader, flags);
+        CompiledShaderPtr pGeom = this->compileLoadedShader(in_sGeometryShader, flags);
 
         // Link them. If they don't fit, replace it by the default ones linked.
-        return m_linkedShaders[sLinkedShaderName] = new Program(pVert, pFrag, pGeom, sLinkedShaderName);
-    } catch(const CorruptDataException& e) {
+        if(pGeom) {
+            return m_linkedShaders[sLinkedShaderName] = new Program(*pVert, *pFrag, *pGeom, sLinkedShaderName);
+        } else {
+            return m_linkedShaders[sLinkedShaderName] = new Program(*pVert, *pFrag, sLinkedShaderName);
+        }
+    } catch(const ArkanaException& e) {
         // Use the all-default shader in case of failure.
 
         // But if that one doesn't even exist, we're doomed!
-        String defaultName = this->buildProgramName(DefaultVertexShader, DefaultFragmentShader, DefaultGeometryShader, flags);
+        String defaultName = this->buildProgramName(DefaultVertexShader, DefaultFragmentShader, DefaultGeometryShader, ShaderCompileFlags());
         if(sLinkedShaderName == defaultName) {
             e.show();
         }
 
         return m_linkedShaders[sLinkedShaderName] = m_linkedShaders[defaultName];
     }
+}
+
+Program* ShaderManager::getDefaultProgram()
+{
+    String defaultName = this->buildProgramName(DefaultVertexShader, DefaultFragmentShader, DefaultGeometryShader, ShaderCompileFlags());
+    return m_linkedShaders[defaultName];
 }
 
 String ShaderManager::buildShaderName(FTS::String baseName, const FTS::ShaderCompileFlags& flags)
