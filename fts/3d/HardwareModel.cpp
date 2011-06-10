@@ -130,7 +130,7 @@ struct MaterialUserData : public bouge::UserData {
     /// on the graphics card.
     VertexArrayObject vao;
 
-    MaterialUserData(const bouge::CoreMaterial& in_mat)
+    MaterialUserData(const bouge::CoreMaterial& in_mat, const bouge::CoreHardwareMesh& in_mesh)
         : mat(in_mat)
         , drawMode(GL_TRIANGLES)
     {
@@ -142,9 +142,48 @@ struct MaterialUserData : public bouge::UserData {
         else if(this->mat.proprety("DrawMode") == "Points")
             this->drawMode = GL_POINTS;
 
-        // Load shader to be used.
-        // TODO
-        this->prog = ShaderManager::getSingleton().getOrLinkProgram();
+        // Load shader to be used. This is a long story :) because we want to
+        // allow a material to use default shaders, specify some shader
+        // distributed with arkana-fts or specify a shader distributed as a
+        // file inside the model archive.
+
+        // But note that as soon as a non-default shader is specified, the
+        // material has to specify all shader compile flags "by hand".
+        static const String sDefVert = "Model.vert";
+        static const String sDefFrag = "Model.frag";
+        static const String sDefGeom = ShaderManager::DefaultGeometryShader;
+        String sVertShader = in_mat.propretyOrDefault("VertexShader", sDefVert.str());
+        String sFragShader = in_mat.propretyOrDefault("FragmentShader", sDefFrag.str());
+        String sGeomShader = in_mat.propretyOrDefault("GeometryShader", sDefGeom.str());
+        bool hasCustomShader = (sVertShader != sDefVert) || (sFragShader != sDefFrag) || (sGeomShader != sDefGeom);
+        ShaderCompileFlags flags;
+
+        // When using default shaders (this should be the norm), we have to
+        // determine the shader compile flags automatically:
+        if(!hasCustomShader) {
+            if(in_mesh.boneIndicesPerVertex() == 0) {
+                flags |= ShaderCompileFlag::SkeletalAnimated;
+            }
+
+            if(in_mat.hasProprety("uAmbient") && in_mat.hasProprety("uDiffuse") && in_mat.hasProprety("uSpecular") && in_mat.hasProprety("uShininess")) {
+                flags |= ShaderCompileFlag::Lit;
+            }
+
+            if(in_mat.hasProprety("DiffuseMap")) {
+                flags |= ShaderCompileFlag::Textured;
+            }
+        } else {
+            // But if some custom shader is used, it has to specify ALL compile flags it needs.
+            std::vector<String> sFlags;
+            String(in_mat.proprety("ShaderCompileFlags")).split(std::back_inserter(sFlags));
+            for(auto flag = sFlags.begin() ; flag != sFlags.end() ; ++flag) {
+                flags |= *flag;
+            }
+
+            // Additionally, we want to use an embedded shader file over a default one.
+        }
+
+        this->prog = ShaderManager::getSingleton().getOrLinkProgram(sVertShader, sFragShader, sGeomShader, flags);
 
         // Setup shader attributes in a VAO.
         // This will actually be done by the hardware model later on.
@@ -167,7 +206,7 @@ FTS::HardwareModel::HardwareModel(const FTS::String& in_sName)
 
     this->createHardwareMesh();
     for(bouge::CoreModel::material_iterator iMat = m_pCoreModel->begin_material() ; iMat != m_pCoreModel->end_material() ; ++iMat) {
-        MaterialUserData* mud = new MaterialUserData(**iMat);
+        MaterialUserData* mud = new MaterialUserData(**iMat, *m_pHardwareModel);
         this->setupVAO(*mud);
         iMat->userData = bouge::UserDataPtr(mud);
     }
@@ -306,7 +345,7 @@ FTS::HardwareModel::HardwareModel(const FTS::String& in_sName, FTS::Archive& in_
     // Now we can load all the resources needed by all the materials.
     // We offload this task to the MaterialUserData class.
     for(bouge::CoreModel::material_iterator iMat = m_pCoreModel->begin_material() ; iMat != m_pCoreModel->end_material() ; ++iMat) {
-        MaterialUserData* mud = new MaterialUserData(**iMat);
+        MaterialUserData* mud = new MaterialUserData(**iMat, *m_pHardwareModel);
         this->setupVAO(*mud);
         iMat->userData = bouge::UserDataPtr(mud);
     }
@@ -621,12 +660,12 @@ FTS::HardwareModel::~HardwareModel()
 {
     // Throw all the textures away..
     for(auto s = m_loadedTexs.begin() ; s != m_loadedTexs.end() ; ++s) {
-        GraphicManager::getSingleton().destroyGraphic(*s);
+        //GraphicManager::getSingleton().destroyGraphic(*s);
     }
 
     // And the shaders away..
     for(auto s = m_loadedShads.begin() ; s != m_loadedShads.end() ; ++s) {
-        ShaderManager::getSingleton().destroyShader(*s);
+        //ShaderManager::getSingleton().destroyShader(*s);
     }
 
     // And throw all our "user-data" away too!
