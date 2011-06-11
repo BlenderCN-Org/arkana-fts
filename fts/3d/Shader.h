@@ -25,14 +25,37 @@ class ShaderIncludeManager;
 /// a fragment shader and optionally a geometry shader.
 class Program : public NonCopyable {
 public:
+    struct Attribute {
+        String name;
+        GLuint id;
+        GLenum type;
+        GLint size;
+
+        Attribute() : id(0), type(GL_FLOAT), size(0) {};
+    };
+
+    struct Uniform {
+        String name;
+        GLuint id;
+        GLenum type;
+        GLint size;
+
+        // Contains the ids of array elements.
+        std::vector<GLuint> arrayIds;
+
+        Uniform() : id(0), type(GL_FLOAT), size(0) {};
+    };
+
     Program(const CompiledShader& in_pVert, const CompiledShader& in_pFrag, const String& in_sShaderName);
     Program(const CompiledShader& in_pVert, const CompiledShader& in_pFrag, const CompiledShader& in_pGeom, const String& in_sShaderName);
     virtual ~Program();
 
+    const Attribute& vertexAttribute(const String& in_sAttribName) const;
     bool hasVertexAttribute(const String& in_sAttribName) const;
     bool setVertexAttribute(const String& in_sAttribName, const VertexBufferObject& in_buffer);
     bool setVertexAttribute(const String& in_sAttribName, const VertexBufferObject& in_buffer, GLint in_nComponents, std::size_t in_offset);
 
+    const Uniform& uniform(const String& in_sUniformName) const;
     bool hasUniform(const String& in_sUniformName) const;
     bool setUniform(const String& in_sUniformName, float in_v);
     bool setUniform(const String& in_sUniformName, const Vector& in_v);
@@ -57,27 +80,7 @@ private:
     GLuint m_id;   ///< Contains the OpenGL ID of the compiled shader.
     String m_sLog; ///< Might contain infos/warnings/errors about the shader.
 
-    struct Attribute {
-        String name;
-        GLuint id;
-        GLenum type;
-        GLint size;
-
-        Attribute() : id(0), type(GL_FLOAT), size(0) {};
-    };
     std::map<String, Attribute> m_attribs;
-
-    struct Uniform {
-        String name;
-        GLuint id;
-        GLenum type;
-        GLint size;
-
-        // Contains the ids of array elements.
-        std::vector<GLuint> arrayIds;
-
-        Uniform() : id(0), type(GL_FLOAT), size(0) {};
-    };
     std::map<String, Uniform> m_uniforms;
 
     // For optimization: do not re-bind the same shader:
@@ -93,14 +96,17 @@ public:
     static const ShaderCompileFlag SkeletalAnimated;
 
     ShaderCompileFlag(const String& name);
+    ShaderCompileFlag(const String& name, const String& value);
 
     ShaderCompileFlags operator|(const ShaderCompileFlag&) const;
 
-    inline operator std::string() const {return this->name().str();};
+    operator std::string() const;
     String name() const;
+    String value() const;
 
 private:
     String m_flag;
+    String m_value;
 };
 
 class ShaderCompileFlags {
@@ -138,12 +144,14 @@ public:
 
     void loadShader(const Path& in_sFile, String in_sShaderName = String::EMPTY);
     void loadShaderCode(String in_sShaderName, String in_sShaderContent);
+    bool hasShader(const String& in_sShaderName);
+    void unloadShader(const String& in_sShaderName);
     String getCompiledShaderSource(const String& in_sShaderName, const ShaderCompileFlags& flags = ShaderCompileFlags());
 
     Program* getOrLinkProgram(const String& in_sVertexShader = DefaultVertexShader, const String& in_sFragmentShader = DefaultFragmentShader, const String& in_sGeometryShader = DefaultGeometryShader, const ShaderCompileFlags& flags = ShaderCompileFlags());
 
 protected:
-    CompiledShaderPtr compileLoadedShader(const String& in_sShaderName, const ShaderCompileFlags& flags = ShaderCompileFlags());
+    CompiledShaderPtr compileShader(const String& in_sShaderName, const ShaderCompileFlags& flags = ShaderCompileFlags());
     Program* getDefaultProgram();
     String buildShaderName(String baseName, const ShaderCompileFlags& flags);
     String buildProgramName(const String& vtxBaseName, const String& fragBaseName, const String& geomBaseName, const ShaderCompileFlags& flags);

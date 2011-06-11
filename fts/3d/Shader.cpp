@@ -181,6 +181,9 @@ public:
 
             // We replace all #include lines until there is no more left.
             while(!(sName = this->findIncludeLine(in_sShaderName, in_sSrc, start, end, line)).empty()) {
+                // Remove any leading slashes for this workaround.
+                sName = sName.trimLeft("/\\");
+
                 // Check if it is registered.
                 if(m_names.find(sName) == m_names.end()) {
                     throw CorruptDataException(in_sShaderName, "Shader preprocessor"
@@ -263,19 +266,25 @@ private:
             // From now on, anything else is an error, because we detected #include already.
 
             // get the name string.
-            if(in_sSrc.getCharAt(pos) != '"') {
+            char quote = in_sSrc.getCharAt(pos);
+            if(quote != '"' && quote != '<') {
                 throw CorruptDataException(in_sShaderName, "Shader preprocessor"
                     " : line "+String::nr(line)+": Syntax error in #include "
-                    "preprocessor: you must use the \" sign");
+                    "preprocessor: you must use the \" or < sign to quote");
             }
 
             // Find the end of the string.
             pos++;
-            size_t eos = in_sSrc.find("\"", pos);
+            size_t eos = std::string::npos;
+            if(quote == '\"') {
+                eos = in_sSrc.find("\"", pos);
+            } else {
+                eos = in_sSrc.find(">", pos);
+            }
             if(eos == std::string::npos) {
                 throw CorruptDataException(in_sShaderName, "Shader preprocessor"
                     ": line "+String::nr(line)+": Syntax error in #include "
-                    "preprocessor: missing an ending \" sign");
+                    "preprocessor: missing an ending \" or > sign");
             }
 
             // Extract the include string.
@@ -469,6 +478,15 @@ void FTS::Program::init(const String& in_sShaderName)
     verifGL("Shader::ShaderLinker: end of " + in_sShaderName);
 }
 
+const FTS::Program::Attribute& FTS::Program::vertexAttribute(const String& in_sAttribName) const
+{
+    auto attrib = m_attribs.find(in_sAttribName);
+    if(attrib == m_attribs.end())
+        throw NotExistException("Attribute " + in_sAttribName, "Program no " + String::nr(m_id));
+
+    return attrib->second;
+}
+
 bool FTS::Program::hasVertexAttribute(const String& in_sAttribName) const
 {
     return m_attribs.find(in_sAttribName) != m_attribs.end();
@@ -555,6 +573,15 @@ bool FTS::Program::setVertexAttribute(const String& in_sAttribName, const Vertex
     /// \TODO: where to disable the vertex attribute?
     verifGL("Shader::setVertexAttribute("+in_sAttribName+") end");
     return true;
+}
+
+const FTS::Program::Uniform& FTS::Program::uniform(const String& in_sUniformName) const
+{
+    auto uniform = m_uniforms.find(in_sUniformName);
+    if(uniform == m_uniforms.end())
+        throw NotExistException("Uniform " + in_sUniformName, "Program no " + String::nr(m_id));
+
+    return uniform->second;
 }
 
 bool FTS::Program::hasUniform(const String& in_sUniformName) const
@@ -846,6 +873,11 @@ FTS::ShaderCompileFlag::ShaderCompileFlag(const String& name)
     : m_flag(name)
 { }
 
+FTS::ShaderCompileFlag::ShaderCompileFlag(const String& name, const String& value)
+    : m_flag(name)
+    , m_value(value)
+{ }
+
 FTS::ShaderCompileFlags FTS::ShaderCompileFlag::operator|(const FTS::ShaderCompileFlag& f) const
 {
     return ShaderCompileFlags(m_flag, f.m_flag);
@@ -854,6 +886,16 @@ FTS::ShaderCompileFlags FTS::ShaderCompileFlag::operator|(const FTS::ShaderCompi
 FTS::String FTS::ShaderCompileFlag::name() const
 {
     return m_flag;
+}
+
+FTS::String FTS::ShaderCompileFlag::value() const
+{
+    return m_value;
+}
+
+FTS::ShaderCompileFlag::operator std::string() const
+{
+    return this->name().str() + " " + this->value().str();
 }
 
 FTS::ShaderCompileFlags::ShaderCompileFlags()
@@ -956,8 +998,8 @@ FTS::ShaderManager::ShaderManager()
     // Already load, compile and link the default shader.
     this->loadShaderCode(DefaultVertexShader, sErrorVert);
     this->loadShaderCode(DefaultFragmentShader, sErrorFrag);
-    CompiledShaderPtr pVert = this->compileLoadedShader(DefaultVertexShader);
-    CompiledShaderPtr pFrag = this->compileLoadedShader(DefaultFragmentShader);
+    CompiledShaderPtr pVert = this->compileShader(DefaultVertexShader);
+    CompiledShaderPtr pFrag = this->compileShader(DefaultFragmentShader);
     String sDefaultShaderName = this->buildProgramName(DefaultVertexShader, DefaultFragmentShader, DefaultGeometryShader, ShaderCompileFlags());
     m_linkedShaders[sDefaultShaderName] = new Program(*pVert, *pFrag, sDefaultShaderName);
 }
@@ -1013,18 +1055,35 @@ void FTS::ShaderManager::loadShaderCode(String in_sShaderName, String in_sShader
     }
 }
 
-CompiledShaderPtr FTS::ShaderManager::compileLoadedShader(const String& in_sShaderName, const ShaderCompileFlags& flags)
+bool FTS::ShaderManager::hasShader(const String& in_sShaderName)
 {
+    return m_ShaderSources.find(in_sShaderName) != m_ShaderSources.end();
+}
+
+void FTS::ShaderManager::unloadShader(const String& in_sShaderName)
+{
+    m_ShaderSources.erase(in_sShaderName);
+}
+
+CompiledShaderPtr FTS::ShaderManager::compileShader(const String& in_sShaderName, const ShaderCompileFlags& flags)
+{
+    if(in_sShaderName.empty())
+        return CompiledShaderPtr();
+
     auto src = m_ShaderSources.find(in_sShaderName);
-    if(src == m_ShaderSources.end())
-        throw InvalidCallException("ShaderManager::compileLoadedShader with inexistent shader " + in_sShaderName);
+
+    // If it hasn't been loaded, try to load it from disk.
+    if(src == m_ShaderSources.end()) {
+        this->loadShader(in_sShaderName);
+        src = m_ShaderSources.find(in_sShaderName);
+    }
 
     return CompiledShaderPtr(new CompiledShader(in_sShaderName, src->second, guessShaderType(in_sShaderName), m_pInclManager, flags));
 }
 
 String FTS::ShaderManager::getCompiledShaderSource(const String& in_sShaderName, const ShaderCompileFlags& flags)
 {
-    CompiledShaderPtr shader = this->compileLoadedShader(in_sShaderName, flags);
+    CompiledShaderPtr shader = this->compileShader(in_sShaderName, flags);
     GLuint id = shader->id();
     GLint srclen = 0;
     glGetShaderiv(id, GL_SHADER_SOURCE_LENGTH, &srclen);
@@ -1044,9 +1103,9 @@ FTS::Program* FTS::ShaderManager::getOrLinkProgram(const String& in_sVertexShade
 
     try {
         // If it's not been linked in this combination yet, do this now!
-        CompiledShaderPtr pVert = this->compileLoadedShader(in_sVertexShader, flags);
-        CompiledShaderPtr pFrag = this->compileLoadedShader(in_sFragmentShader, flags);
-        CompiledShaderPtr pGeom = this->compileLoadedShader(in_sGeometryShader, flags);
+        CompiledShaderPtr pVert = this->compileShader(in_sVertexShader, flags);
+        CompiledShaderPtr pFrag = this->compileShader(in_sFragmentShader, flags);
+        CompiledShaderPtr pGeom = this->compileShader(in_sGeometryShader, flags);
 
         // Link them. If they don't fit, replace it by the default ones linked.
         if(pGeom) {
@@ -1056,14 +1115,9 @@ FTS::Program* FTS::ShaderManager::getOrLinkProgram(const String& in_sVertexShade
         }
     } catch(const ArkanaException& e) {
         // Use the all-default shader in case of failure.
+        e.show();
 
-        // But if that one doesn't even exist, we're doomed!
-        String defaultName = this->buildProgramName(DefaultVertexShader, DefaultFragmentShader, DefaultGeometryShader, ShaderCompileFlags());
-        if(sLinkedShaderName == defaultName) {
-            e.show();
-        }
-
-        return m_linkedShaders[sLinkedShaderName] = m_linkedShaders[defaultName];
+        return m_linkedShaders[sLinkedShaderName] = this->getDefaultProgram();
     }
 }
 
