@@ -34,9 +34,10 @@ extern const char* sErrorModelMesh;
 extern const char* sErrorModelMaterial;
 extern const char* sErrorModelMaterialSet;
 
-static const unsigned int BONES_PER_MESH = 20;
-
 namespace FTS {
+
+static const unsigned int BONES_PER_MESH = 20;
+static const String MODEL_FILENAME_SEP = "__";
 
 // struct MaterialUserData {
 //     String sVertShaderName;
@@ -126,11 +127,14 @@ struct MaterialUserData : public bouge::UserData {
     /// The shader to be used by this material.
     Program* prog;
 
+    std::vector< std::pair<String, Vector> > uniforms_f;
+    std::vector< std::pair<String, Graphic*> > uniforms_tex;
+
     /// A VAO storing the shader, shader's vertex attrib setup and vbo setup
     /// on the graphics card.
     VertexArrayObject vao;
 
-    MaterialUserData(const bouge::CoreMaterial& in_mat, const bouge::CoreHardwareMesh& in_mesh)
+    MaterialUserData(const bouge::CoreMaterial& in_mat, const bouge::CoreHardwareMesh& in_mesh, const String& in_sModelName)
         : mat(in_mat)
         , drawMode(GL_TRIANGLES)
     {
@@ -161,15 +165,16 @@ struct MaterialUserData : public bouge::UserData {
         // When using default shaders (this should be the norm), we have to
         // determine the shader compile flags automatically:
         if(!hasCustomShader) {
-            if(in_mesh.boneIndicesPerVertex() == 0) {
+            if(in_mesh.boneIndicesPerVertex() > 0) {
                 flags |= ShaderCompileFlag::SkeletalAnimated;
+                flags |= ShaderCompileFlag("D_MAX_BONES_PER_MESH", String::nr(BONES_PER_MESH));
             }
 
-            if(in_mat.hasProprety("uAmbient") && in_mat.hasProprety("uDiffuse") && in_mat.hasProprety("uSpecular") && in_mat.hasProprety("uShininess")) {
+            if(in_mat.hasProprety("uMaterialAmbient") && in_mat.hasProprety("uMaterialDiffuse") && in_mat.hasProprety("uMaterialSpecular")) {
                 flags |= ShaderCompileFlag::Lit;
             }
 
-            if(in_mat.hasProprety("DiffuseMap")) {
+            if(in_mat.hasProprety("uTexture")) {
                 flags |= ShaderCompileFlag::Textured;
             }
         } else {
@@ -181,9 +186,48 @@ struct MaterialUserData : public bouge::UserData {
             }
 
             // Additionally, we want to use an embedded shader file over a default one.
+            if(ShaderManager::getSingleton().hasShader(in_sModelName + MODEL_FILENAME_SEP + sVertShader)) {
+                sVertShader = in_sModelName + MODEL_FILENAME_SEP + sVertShader;
+            }
+            if(ShaderManager::getSingleton().hasShader(in_sModelName + MODEL_FILENAME_SEP + sFragShader)) {
+                sFragShader = in_sModelName + MODEL_FILENAME_SEP + sFragShader;
+            }
+            if(ShaderManager::getSingleton().hasShader(in_sModelName + MODEL_FILENAME_SEP + sGeomShader)) {
+                sGeomShader = in_sModelName + MODEL_FILENAME_SEP + sGeomShader;
+            }
         }
 
         this->prog = ShaderManager::getSingleton().getOrLinkProgram(sVertShader, sFragShader, sGeomShader, flags);
+
+        // Now, we can preprocess all the uniforms that the shader needs.
+        for(auto prop = in_mat.begin() ; prop != in_mat.end() ; ++prop) {
+            try {
+                GLenum type = this->prog->uniform(prop.name()).type;
+                switch(type) {
+                case GL_FLOAT:
+                case GL_FLOAT_VEC2:
+                case GL_FLOAT_VEC3:
+                case GL_FLOAT_VEC4:
+                    uniforms_f.push_back(std::make_pair(prop.name(), Vector(&prop.valueAsFvec()[0])));
+                    break;
+                case GL_SAMPLER_2D:
+                    Graphic* pGraphic = nullptr;
+                    // Check if we got the texture loaded from inside the model.
+                    String sInModelName = in_sModelName + MODEL_FILENAME_SEP + prop.value();
+                    if(GraphicManager::getSingleton().isGraphicPresent(sInModelName)) {
+                        pGraphic = GraphicManager::getSingleton().getOrLoadGraphic(sInModelName);
+                    } else {
+                        // If not, try to load it from Arkana-FTS.
+                        pGraphic = GraphicManager::getSingleton().getOrLoadGraphic(prop.value());
+                    }
+                    uniforms_tex.push_back(std::make_pair(prop.name(), pGraphic));
+                    break;
+                //TODO: more types, for example matrices, ints, ...
+                }
+            } catch(const NotExistException&) {
+                // Nevermind if this property is not an uniform.
+            }
+        }
 
         // Setup shader attributes in a VAO.
         // This will actually be done by the hardware model later on.
@@ -206,7 +250,7 @@ FTS::HardwareModel::HardwareModel(const FTS::String& in_sName)
 
     this->createHardwareMesh();
     for(bouge::CoreModel::material_iterator iMat = m_pCoreModel->begin_material() ; iMat != m_pCoreModel->end_material() ; ++iMat) {
-        MaterialUserData* mud = new MaterialUserData(**iMat, *m_pHardwareModel);
+        MaterialUserData* mud = new MaterialUserData(**iMat, *m_pHardwareModel, in_sName);
         this->setupVAO(*mud);
         iMat->userData = bouge::UserDataPtr(mud);
     }
@@ -259,6 +303,8 @@ FTS::HardwareModel::HardwareModel(const FTS::String& in_sName)
 FTS::HardwareModel::HardwareModel(const FTS::String& in_sName, FTS::Archive& in_modelArch)
     : m_pCoreModel(new bouge::CoreModel(in_sName.str()))
 {
+    std::vector<String> loadedShads;
+
     try {
     bouge::XMLLoader loader(new bouge::TinyXMLParser());
 
@@ -290,26 +336,26 @@ FTS::HardwareModel::HardwareModel(const FTS::String& in_sName, FTS::Archive& in_
         } else if(fName.ext().lower() == "bxanim") {
             String data = pFchk->getFile().readstr();
             m_pCoreModel->addAnimations(loader.loadAnimation(data.c_str(), data.byteCount()));
-/*        } else if(fName.ext().lower() == "png") {
+        } else if(fName.ext().lower() == "png") {
             // We prepend the model's name to the name of the graphic in order
             // to get model-unique graphic names.
-            String sName = in_sName + ":" + fName;
+            String sName = in_sName + MODEL_FILENAME_SEP + fName;
 
             /// \TODO Integrate the archive name into the path (instead of the hacky way above).
             GraphicManager::getSingleton().getOrLoadGraphic(pFchk->getFile(), sName);
-            m_loadedTexs.push_back(sName);
+            m_loadedTexs.push_back(sName);            
         } else if(fName.ext().lower() == "vert"
                || fName.ext().lower() == "frag"
                || fName.ext().lower() == "geom"
-               || fName.ext().lower() == "shadinc") {
+               || fName.ext().lower().right(3) == "inc") {
             // We prepend the model's name to the name of the shader in order
             // to get model-unique shader names.
-            String sName = in_sName + ":" + fName;
+            String sName = in_sName + MODEL_FILENAME_SEP + fName;
             String sShaderSrc = pFchk->getFile().readstr();
 
             /// \TODO Integrate the archive name into the path (instead of the hacky way above).
-            if(ShaderManager::getSingleton().makeShader(sName, sShaderSrc))
-                m_loadedShads.push_back(sName);*/
+            ShaderManager::getSingleton().loadShaderCode(sName, sShaderSrc);
+            loadedShads.push_back(sName);
         }
     }
     } catch(const ArkanaException&) {
@@ -345,9 +391,16 @@ FTS::HardwareModel::HardwareModel(const FTS::String& in_sName, FTS::Archive& in_
     // Now we can load all the resources needed by all the materials.
     // We offload this task to the MaterialUserData class.
     for(bouge::CoreModel::material_iterator iMat = m_pCoreModel->begin_material() ; iMat != m_pCoreModel->end_material() ; ++iMat) {
-        MaterialUserData* mud = new MaterialUserData(**iMat, *m_pHardwareModel);
+        MaterialUserData* mud = new MaterialUserData(**iMat, *m_pHardwareModel, in_sName);
         this->setupVAO(*mud);
         iMat->userData = bouge::UserDataPtr(mud);
+    }
+
+    // We no more need the source code of the shaders loaded by this model.
+    // Unlike the textures, the compiled shaders are no more needed once the
+    // program linked successfully.
+    for(auto shader = loadedShads.begin() ; shader != loadedShads.end() ; ++shader) {
+        ShaderManager::getSingleton().unloadShader(*shader);
     }
 }
 
@@ -361,6 +414,8 @@ void FTS::HardwareModel::createHardwareMesh()
 
     // Collect some numbers we need beforehand (because we want it interleaved, else we could just append the buffers).
     std::size_t floatsPerVertex = m_pHardwareModel->coordsPerVertex();
+    floatsPerVertex += m_pHardwareModel->weightsPerVertex();
+    floatsPerVertex += m_pHardwareModel->boneIndicesPerVertex();
     for(auto attrib = m_pHardwareModel->attribs().begin() ; attrib != m_pHardwareModel->attribs().end() ; ++attrib) {
         floatsPerVertex += attrib->second;
     }
@@ -369,10 +424,14 @@ void FTS::HardwareModel::createHardwareMesh()
     // Here, we will compile all the vertex data into a single interleaved buffer.
     std::vector<float> data(floatsPerVertex * m_pHardwareModel->vertexCount());
 
-    // The vertex coordinates are a special case, unfortunately.
+    // The vertex coordinates, weights and indices are a special case, unfortunately.
     std::size_t offset = 0;
-    m_pHardwareModel->writeCoords(&data[0], stride);
+    m_pHardwareModel->writeCoords(&data[offset], stride);
     offset += m_pHardwareModel->coordsPerVertex();
+    m_pHardwareModel->writeWeights(&data[offset], stride);
+    offset += m_pHardwareModel->weightsPerVertex();
+    m_pHardwareModel->writeBoneIndices(&data[offset], stride);
+    offset += m_pHardwareModel->boneIndicesPerVertex();
 
     // But all other attributes can be handled homogenely
     for(auto attrib = m_pHardwareModel->attribs().begin() ; attrib != m_pHardwareModel->attribs().end() ; ++attrib) {
@@ -391,11 +450,16 @@ void FTS::HardwareModel::setupVAO(FTS::MaterialUserData& in_ud) const
     in_ud.vao.bind();
     m_vbo->bind();
 
-    // Setup all of the vertex attributes, again vertex coords are special.
+    // Setup all of the vertex attributes, again vertex coords, weights and indices are special.
     std::size_t offset = 0;
-    in_ud.prog->setVertexAttribute("aVertexPosition", *m_vbo, m_pHardwareModel->coordsPerVertex(), 0);
+    in_ud.prog->setVertexAttribute("aVertexPosition", *m_vbo, m_pHardwareModel->coordsPerVertex(), offset);
     offset += m_pHardwareModel->coordsPerVertex();
+    in_ud.prog->setVertexAttribute("aWeights", *m_vbo, m_pHardwareModel->weightsPerVertex(), offset);
+    offset += m_pHardwareModel->weightsPerVertex();
+    in_ud.prog->setVertexAttribute("aIndices", *m_vbo, m_pHardwareModel->boneIndicesPerVertex(), offset);
+    offset += m_pHardwareModel->boneIndicesPerVertex();
 
+    // For the rest just use attributes of the same name.
     for(auto attrib = m_pHardwareModel->attribs().begin() ; attrib != m_pHardwareModel->attribs().end() ; ++attrib) {
         in_ud.prog->setVertexAttribute(attrib->first, *m_vbo, m_pHardwareModel->attribCoordsPerVertex(attrib->first), offset);
         offset += attrib->second;
@@ -658,14 +722,9 @@ FTS::HardwareModel::HardwareModel(const String& in_sName, Archive& in_modelArch)
 */
 FTS::HardwareModel::~HardwareModel()
 {
-    // Throw all the textures away..
+    // Throw all the textures away, we no more need them.
     for(auto s = m_loadedTexs.begin() ; s != m_loadedTexs.end() ; ++s) {
-        //GraphicManager::getSingleton().destroyGraphic(*s);
-    }
-
-    // And the shaders away..
-    for(auto s = m_loadedShads.begin() ; s != m_loadedShads.end() ; ++s) {
-        //ShaderManager::getSingleton().destroyShader(*s);
+        GraphicManager::getSingleton().destroyGraphic(*s);
     }
 
     // And throw all our "user-data" away too!
@@ -867,15 +926,6 @@ void FTS::HardwareModel::render(const AffineMatrix& in_modelMatrix, const Color&
     static const std::string uProjectionMatrix = "uProjectionMatrix";
     static const std::string uInvModelViewProjectionMatrix = "uInvModelViewProjectionMatrix";
     static const std::string uInvModelViewMatrix = "uInvModelViewMatrix";
-    static const std::string uAmbient = "uAmbient";
-    static const std::string ambient = "ambient";
-    static const std::string uDiffuse = "uDiffuse";
-    static const std::string diffuse = "diffuse";
-    static const std::string uSpecular = "uSpecular";
-    static const std::string specular = "specular";
-    static const std::string uShininess = "uShininess";
-    static const std::string shininess = "shininess";
-    static const std::string uDiffTex = "uTexture";
 
     // Pre-calculate a few matrices:
     General4x4Matrix mvp = cam.getViewProjectionMatrix() * in_modelMatrix;
@@ -905,27 +955,28 @@ void FTS::HardwareModel::render(const AffineMatrix& in_modelMatrix, const Color&
         prog->setUniformInverse(uInvModelViewProjectionMatrix, mvp);
         prog->setUniformInverse(uInvModelViewMatrix, mv);
 
-        // What about qNormalMatrix??
+        // We can now also give it the bone matrices.
+        for(std::size_t i = 0 ; i < submesh.boneCount() ; ++i) {
+            //bouge::BoneInstancePtrC bone = m_modelInst->skeleton()->bone(submesh.boneName(i));
+            //prog->uniformMatrix4fv(uBonesPalette(i), 1, false, bone->transformMatrix().array16f());
+            //prog->uniformMatrix3fv(uBonesPaletteInvTrans(i), 1, true, bone->transformMatrix().array9fInverse());
 
-        if(pMat->hasProprety(ambient)) {
-            prog->setUniform(uAmbient, Vector(&pMat->propretyAsFvec(ambient)[0]));
+            // TODO: replace by real bone matrices of model instance
+            prog->setUniformArrayElement("uBonesPalette", i, AffineMatrix());
+            prog->setUniformArrayElement("uBonesPaletteInvTrans", i, AffineMatrix());
         }
 
-        if(pMat->hasProprety(diffuse)) {
-            prog->setUniform(uDiffuse, Vector(&pMat->propretyAsFvec(diffuse)[0]));
+        // Set all the material-registered uniforms.
+        for(auto uniform = pUD->uniforms_f.begin() ; uniform != pUD->uniforms_f.end() ; ++uniform) {
+            prog->setUniform(uniform->first, uniform->second);
         }
 
-        if(pMat->hasProprety(specular)) {
-            prog->setUniform(uSpecular, Vector(&pMat->propretyAsFvec(specular)[0]));
-        }
-
-        if(pMat->hasProprety(shininess)) {
-            prog->setUniform(uShininess, pMat->propretyAsFvec(shininess)[0]);
-        }
-
-        if(pMat->userData) {
-//             static_cast<TextureUserData*>(pMat->userData.get())->tex->selectTexture(0);
-//             pShad->setUniformSampler(uDiffTex, 0);
+        // And select all of the textures.
+        uint8_t texUnit = 0;
+        for(auto uniform = pUD->uniforms_tex.begin() ; uniform != pUD->uniforms_tex.end() ; ++uniform) {
+            uniform->second->select(texUnit);
+            prog->setUniformSampler(uniform->first, texUnit);
+            texUnit++;
         }
 
         glDrawElements(pUD->drawMode, submesh.faceCount() * m_pHardwareModel->indicesPerFace(), BOUGE_FACE_INDEX_TYPE_GL, (const GLvoid*)(submesh.startIndex()*sizeof(BOUGE_FACE_INDEX_TYPE)));

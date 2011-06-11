@@ -89,9 +89,6 @@ private:
     /// Names of all the textures <i>loaded</i> by this model.
     std::vector<String> m_loadedTexs;
 
-    /// Names of all the shaders <i>loaded</i> by this model.
-    std::vector<String> m_loadedShads;
-
     /// Maps the skin name to the Cal3d material set number.
     std::map<String, int> m_mSkins;
 
