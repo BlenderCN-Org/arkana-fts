@@ -97,7 +97,7 @@ class UnaryOperator : public Expression {
     int op;
     Expression* rhs;
 public:
-    UnaryOperator(int op, Expression* rhs) : rhs(rhs), op(op) {}
+    UnaryOperator(int op, Expression* rhs) : op(op), rhs(rhs) {}
     virtual ~UnaryOperator()
     {
         delete rhs;
@@ -111,7 +111,7 @@ class BinaryOp : public Expression {
     Expression* lhs;
     Expression* rhs;
 public:
-    BinaryOp(Expression* lhs, int op, Expression* rhs) : lhs(lhs), rhs(rhs), op(op) {}
+    BinaryOp(Expression* lhs, int op, Expression* rhs) : op(op), lhs(lhs), rhs(rhs) {}
     virtual ~BinaryOp()
     {
         delete lhs;
@@ -126,7 +126,7 @@ class CompOperator : public Expression {
     Expression* lhs;
     Expression* rhs;
 public:
-    CompOperator(Expression* lhs, int op, Expression* rhs) : lhs(lhs), rhs(rhs), op(op) {}
+    CompOperator(Expression* lhs, int op, Expression* rhs) : op(op), lhs(lhs), rhs(rhs) {}
     virtual ~CompOperator()
     {
         delete lhs;

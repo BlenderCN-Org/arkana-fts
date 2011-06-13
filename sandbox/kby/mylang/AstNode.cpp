@@ -21,6 +21,8 @@ static const Type *typeOf(const Identifier& type)
         return Type::getInt8PtrTy(getGlobalContext());
     } else if (type.getName().compare("boolean") == 0) {
         return Type::getInt1Ty(getGlobalContext());
+    } else if (type.getName().compare("void") == 0) {
+        return Type::getInt8PtrTy(getGlobalContext());
     }
     return Type::getVoidTy(getGlobalContext());
 }
@@ -136,12 +138,12 @@ Value* BinaryOp::codeGen(CodeGenContext& context)
         std::cout << "Binary operation of incompatible types. Is a cast missing? \n";
         return nullptr;
     }
-    
     return BinaryOperator::Create(instr, lhsValue, rhsValue, "mathtmp", context.currentBlock());
 }
 
 Value* CompOperator::codeGen(CodeGenContext& context)
 {
+    
     std::cout << "  Creating compare operation " << op << std::endl;
     Instruction::OtherOps oinstr;
     unsigned short predicate;
@@ -187,17 +189,20 @@ Value* Assignment::codeGen(CodeGenContext& context)
         std::cout << "  Assignment expression results in nothing\n";
         return nullptr;
     }
-    if( value->getType() != varType ) {
-        std::cout << "  Assignment of incompatible types " 
-        << varType->getTypeID() << "(" << varType->getScalarSizeInBits() << ") "
-        << " = " 
-        << value->getType()->getTypeID()  << "(" << value->getType()->getScalarSizeInBits() << ") "
-        << ". Is a cast missing? \n";
+    
+    if(value->getType()->getTypeID() == varType->getTypeID()) {
+        // same type but different bit size.
+        value = CastInst::CreateTruncOrBitCast(value, varType, "cast", context.currentBlock());
+    } else if ( value->getType() != varType ) {
+        std::cout << "  Assignment of incompatible types "
+                  << varType->getTypeID() << "(" << varType->getScalarSizeInBits() << ") "
+                  << " = "
+                  << value->getType()->getTypeID()  << "(" << value->getType()->getScalarSizeInBits() << ") "
+                  << ". Is a cast missing? \n";
         return nullptr;
     }
     
-    new StoreInst(value, context.locals()[lhs->getName()], false, context.currentBlock());
-    return value;
+    return new StoreInst(value, context.locals()[lhs->getName()], false, context.currentBlock());
 }
 
 Value* Block::codeGen(CodeGenContext& context)
@@ -214,13 +219,12 @@ Value* Block::codeGen(CodeGenContext& context)
 
 Value* ExpressionStatement::codeGen(CodeGenContext& context)
 {
-//    std::cout << "NExpressionStatement: Generating code for " << typeid(expression).name() << std::endl;
     return expression->codeGen(context);
 }
 
 Value* VariableDeclaration::codeGen(CodeGenContext& context)
 {
-    std::cout << "  Creating variable declaration " << type->getName() << " " << id->getName() << std::endl;
+    std::cout << "  Creating variable declaration " << " " << id->getName() << std::endl;
     AllocaInst *alloc = new AllocaInst(typeOf(*type), id->getName().c_str(), context.currentBlock());
     context.locals()[id->getName()] = alloc;
     if (assignmentExpr != nullptr) {
@@ -254,7 +258,6 @@ Value* FunctionDeclaration::codeGen(CodeGenContext& context)
         new StoreInst(args, val, context.currentBlock());
     }
     block->codeGen(context);
-    
     context.endScope();;
     return function;
 }
@@ -270,19 +273,19 @@ Value* Conditional::codeGen(CodeGenContext& context)
     BasicBlock* thenBlock = BasicBlock::Create(getGlobalContext(), "then",function);
     BasicBlock* elseBlock = BasicBlock::Create(getGlobalContext(), "else");
     BasicBlock* mergeBlock = BasicBlock::Create(getGlobalContext(), "merge");
-    BranchInst* br = BranchInst::Create(thenBlock,elseBlock,comp,context.currentBlock());
+    BranchInst::Create(thenBlock,elseBlock,comp,context.currentBlock());
     
     context.setInsertPoint(thenBlock);
     Value* thenValue = thenExpr->codeGen(context);
     if( thenValue == nullptr ) return nullptr;
-    br = BranchInst::Create(mergeBlock,context.currentBlock());
+    BranchInst::Create(mergeBlock,context.currentBlock());
 
     function->getBasicBlockList().push_back(elseBlock);
     context.setInsertPoint(elseBlock);
     if( elseExpr != nullptr ) {
-        Value * elseValue = elseExpr->codeGen(context);
+        elseExpr->codeGen(context);
     }
-    br = BranchInst::Create(mergeBlock,context.currentBlock());
+    BranchInst::Create(mergeBlock,context.currentBlock());
 
     function->getBasicBlockList().push_back(mergeBlock);
     context.setInsertPoint(mergeBlock);
@@ -301,24 +304,24 @@ Value* WhileLoop::codeGen(CodeGenContext& context)
     BasicBlock* loopBlock = BasicBlock::Create(getGlobalContext(), "loop");
     BasicBlock* elseBlock = BasicBlock::Create(getGlobalContext(), "else");
     BasicBlock* mergeBlock = BasicBlock::Create(getGlobalContext(), "merge");
-    BranchInst* br = BranchInst::Create(firstCondBlock,context.currentBlock());
+    BranchInst::Create(firstCondBlock,context.currentBlock());
 
     context.setInsertPoint(firstCondBlock);
     Value* firstCondValue = this->condition->codeGen(context);
     if( firstCondValue == nullptr ) return nullptr;
-    br = BranchInst::Create(loopBlock,elseBlock,firstCondValue,context.currentBlock());
+    BranchInst::Create(loopBlock,elseBlock,firstCondValue,context.currentBlock());
     
     function->getBasicBlockList().push_back(condBlock);
     context.setInsertPoint(condBlock);
     Value* condValue = this->condition->codeGen(context);
     if( condValue == nullptr ) return nullptr;
-    br = BranchInst::Create(loopBlock,mergeBlock,condValue,context.currentBlock());
+    BranchInst::Create(loopBlock,mergeBlock,condValue,context.currentBlock());
     
     function->getBasicBlockList().push_back(loopBlock);
     context.setInsertPoint(loopBlock);
     Value* loopValue = this->loopBlock->codeGen(context);
     if( loopValue == nullptr ) return nullptr;
-    br = BranchInst::Create(condBlock,context.currentBlock());
+    BranchInst::Create(condBlock,context.currentBlock());
     
     function->getBasicBlockList().push_back(elseBlock);
     context.setInsertPoint(elseBlock);
@@ -326,7 +329,7 @@ Value* WhileLoop::codeGen(CodeGenContext& context)
         Value* elseValue = this->elseBlock->codeGen(context);
         if( elseValue == nullptr ) return nullptr;
     }
-    br = BranchInst::Create(mergeBlock,context.currentBlock());
+    BranchInst::Create(mergeBlock,context.currentBlock());
     function->getBasicBlockList().push_back(mergeBlock);
     context.setInsertPoint(mergeBlock);
     
