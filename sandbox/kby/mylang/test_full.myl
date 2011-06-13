@@ -19,7 +19,7 @@ else
 @}
 
 display("Hi")
-return  ;a ret in between causes a seg fault in jit.
+;return  ;a ret in between causes a seg fault in jit.
 
 boolean b = #t 
 if b 
