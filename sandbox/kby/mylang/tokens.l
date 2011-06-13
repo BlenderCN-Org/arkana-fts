@@ -99,6 +99,7 @@ int first_time = 1 ;
 "and"                   return TOKEN(TAND);
 "or"                    return TOKEN(TOR);
 "def"                   return TOKEN(TDEF);
+"var"                   return TOKEN(TVAR);
 "while"                 return TOKEN(TWHILE);
 \#[tf]/[ \t\n]          SAVE_TOKEN; return TBOOL;
 [ \t\n]                 ;
