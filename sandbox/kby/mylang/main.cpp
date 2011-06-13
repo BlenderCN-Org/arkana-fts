@@ -15,14 +15,14 @@ extern AST::Block* programBlock;
 
 int main(int argc, char **argv)
 {
-    char * fileName = nullptr;
+    std::string fileName;
     
     if( argc == 2 ) {
         fileName = argv[1] ;
     } else {
         fileName = "test.myl";
     }
-    yyin = fopen(fileName, "r+") ;
+    yyin = fopen(fileName.c_str(), "r+") ;
     yyparse();
     assert(programBlock);
     AST::CodeGenContext context;
