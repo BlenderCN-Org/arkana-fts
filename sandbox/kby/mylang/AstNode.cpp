@@ -258,6 +258,12 @@ Value* FunctionDeclaration::codeGen(CodeGenContext& context)
         new StoreInst(args, val, context.currentBlock());
     }
     block->codeGen(context);
+    // If the function doesn't have a return type and doesn't have a return statement, make a ret void.
+    if( type->getName() == "void" ) {
+        if( context.currentBlock()->getTerminator() == nullptr ) {
+            ReturnInst::Create(getGlobalContext(),0, context.currentBlock());
+        }
+    }
     context.endScope();;
     return function;
 }
