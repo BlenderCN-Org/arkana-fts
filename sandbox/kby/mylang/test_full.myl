@@ -27,7 +27,7 @@ if b
 else
   display("found false\n")
 
-def int makeX(int x, int y)
+def makeX(int x, int y) : int 
   display("makeX(%d, %d)\n", x,y);
   return x + y
 

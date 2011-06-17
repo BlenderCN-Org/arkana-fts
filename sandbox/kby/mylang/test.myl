@@ -1,24 +1,57 @@
+def itsucks(boolean b) : int
+    int i = 5
+    if b
+        i = i + 2
+    else
+        i = i - 2
+    return i
 
-display("Hi")
-boolean b = #t 
-if b 
+int rc = itsucks(#f)
+
+@{@}
+boolean bool = #t
+display("Hi : ")
+if bool 
   display("found true\n")
 else
   display("found false\n")
+@{@}
+@{@}
+int i
+i = 5 + 2
 
-def int ret(int i)
+def ret(int i) : int
     return 7 * i
 
 def retvoid()
     return
 
-def int doAdd(int x, int y)
+def doAdd(int x , int y ) : int
     return x+y
 
-int sum = doAdd(3,2)
-display("sum is %d\n",sum)
+display("sum is %d\n",doAdd(3,2))
 
-; int i = 5
-@{ 
-bla
+int retVar = ret(5)
+display("ret is %d\n",retVar)
+
+@{
+def counter is
+    string _name 
+    int _count
+    def init
+        _name = "container of elements"
+        _count = 0 
+    def add(int element)
+        _count = _count + element
+    def sub(int element)
+        _count = _count - element
+    def get
+        return _count
+
+counter c
+c.add(1)
+c.sub(1)
+c.get()
+
 @}
+return rc
