@@ -101,7 +101,7 @@ int first_time = 1 ;
 "def"                   return TOKEN(TDEF);
 "var"                   return TOKEN(TVAR);
 "while"                 return TOKEN(TWHILE);
-\#[tf]/[ \t\n]          SAVE_TOKEN; return TBOOL;
+#[tf]/[ \t\n),]          SAVE_TOKEN; return TBOOL;
 [ \t\n]                 ;
 [a-zA-Z_][a-zA-Z0-9_&%\$\?\-]*  SAVE_TOKEN; return TIDENTIFIER;
 -?[0-9]+\.[0-9]*        SAVE_TOKEN; return TDOUBLE;
