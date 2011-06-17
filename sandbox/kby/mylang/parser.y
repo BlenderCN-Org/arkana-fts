@@ -28,7 +28,7 @@
  */
 %token <string> TIDENTIFIER TINTEGER TDOUBLE TSTR TBOOL
 %token <token> TCEQ TCNE TCLT TCLE TCGT TCGE TEQUAL
-%token <token> TLPAREN TRPAREN TCOMMA TDOT
+%token <token> TLPAREN TRPAREN TCOMMA TDOT TCOLON
 %token <token> TPLUS TMINUS TMUL TDIV
 %token <token> TNOT TAND TOR
 %token <token> TIF TELSE TWHILE
@@ -90,7 +90,7 @@ var_decl : ident ident { $$ = new AST::VariableDeclaration($1, $2);}
          | ident ident TEQUAL expr { $$ = new AST::VariableDeclaration($1, $2, $4); }
          ;
 
-func_decl : TDEF ident ident TLPAREN func_decl_args TRPAREN block { $$ = new AST::FunctionDeclaration($2, $3, $5, $7); }
+func_decl : TDEF ident TLPAREN func_decl_args TRPAREN TCOLON ident block { $$ = new AST::FunctionDeclaration($7, $2, $4, $8); }
           | TDEF ident TLPAREN func_decl_args TRPAREN block { $$ = new AST::FunctionDeclaration($2, $4, $6); }
           ;
 

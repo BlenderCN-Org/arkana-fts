@@ -121,6 +121,7 @@ int first_time = 1 ;
 "-"                     return TOKEN(TMINUS);
 "*"                     return TOKEN(TMUL);
 "/"                     return TOKEN(TDIV);
+":"                     return TOKEN(TCOLON);
 .                       printf("line %d, len %d Unknown token %s !\n", yylineno, yyleng, yytext); yyterminate();
 
 %%
