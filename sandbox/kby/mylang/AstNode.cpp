@@ -225,6 +225,10 @@ Value* ExpressionStatement::codeGen(CodeGenContext& context)
 Value* VariableDeclaration::codeGen(CodeGenContext& context)
 {
     std::cout << "  Creating variable declaration " << " " << id->getName() << std::endl;
+    if( context.locals().find(id->getName()) != context.locals().end() ) {
+        std::cout << "      variable already exist\n";
+        return nullptr;
+    }
     AllocaInst *alloc = new AllocaInst(typeOf(*type, context), id->getName().c_str(), context.currentBlock());
     context.locals()[id->getName()] = alloc;
     if (assignmentExpr != nullptr) {
@@ -303,7 +307,6 @@ Value* WhileLoop::codeGen(CodeGenContext& context)
     std::cout << "  Creating while  " << std::endl;
 
     Function* function = context.currentBlock()->getParent();
-    std::cout << function->getNameStr() << std::endl;
     BasicBlock* firstCondBlock = BasicBlock::Create(context.getGlobalContext(), "firstcond",function);
     BasicBlock* condBlock = BasicBlock::Create(context.getGlobalContext(), "cond");
     BasicBlock* loopBlock = BasicBlock::Create(context.getGlobalContext(), "loop");
