@@ -7,6 +7,7 @@ LLVM-FLAGS = `$(LLVM-CONF) --libfiles --cxxflags` -lpthread -ldl
 CC = g++ -ggdb -pg -fno-inline -O0 -std=c++0x
 SOURCE= main.cpp parser.cpp tokens.cpp AstNode.cpp CodeGenContext.cpp
 INCS = CodeGenContext.h AstNode.h
+DEFS = -D_DEBUG
 
 all: myl
 
@@ -22,4 +23,4 @@ tokens.cpp: tokens.l parser.hpp
 	lex -o $@ $^
 
 myl: $(SOURCE) $(INCS) Makefile
-	$(CC) -o $@ *.cpp  $(LLVM-FLAGS) -rdynamic
+	$(CC) $(DEFS) -o $@ *.cpp  $(LLVM-FLAGS) -rdynamic
