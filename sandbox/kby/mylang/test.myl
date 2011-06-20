@@ -1,3 +1,6 @@
+int nvar = 5
+int nvar = 7
+
 def itsucks(boolean b) : int
     int i = 5
     if b
@@ -5,20 +8,6 @@ def itsucks(boolean b) : int
     else
         i = i - 2
     return i
-
-int rc = itsucks(#f)
-
-@{@}
-boolean bool = #t
-display("Hi : ")
-if bool 
-  display("found true\n")
-else
-  display("found false\n")
-@{@}
-@{@}
-int i
-i = 5 + 2
 
 def ret(int i) : int
     return 7 * i
@@ -54,4 +43,4 @@ c.sub(1)
 c.get()
 
 @}
-return rc
+return itsucks(#f)
