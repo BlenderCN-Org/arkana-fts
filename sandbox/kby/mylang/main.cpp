@@ -32,6 +32,5 @@ int main(int argc, char **argv)
     fclose(yyin);
     delete programBlock;
     yylex_destroy();
-    llvm::llvm_shutdown();
     return 0;
 }

@@ -1,5 +1,6 @@
 #include <stack>
 #include <map>
+#include <set>
 #include "llvm/Module.h"
 #include "llvm/Function.h"
 #include "llvm/Type.h"
@@ -16,6 +17,7 @@
 #include "llvm/ExecutionEngine/GenericValue.h"
 #include "llvm/ExecutionEngine/JIT.h"
 #include "llvm/Support/raw_ostream.h"
+#include <llvm/Support/ManagedStatic.h>
 
 namespace AST {
     
@@ -50,6 +52,7 @@ class CodeGenContext {
     std::stack<CodeGenBlock *> codeBlocks;
     llvm::Function *mainFunction;
     llvm::Module *module;
+    llvm::LLVMContext llvmContext;
     void setCurrentBlock(llvm::BasicBlock *block) {
         codeBlocks.top()->setCodeBlock(block); 
     }
@@ -57,13 +60,16 @@ class CodeGenContext {
 public:
     CodeGenContext() { 
         llvm::InitializeNativeTarget();
-        module = new llvm::Module("main", llvm::getGlobalContext()); 
+        module = new llvm::Module("main", llvmContext);
     }
-    ~CodeGenContext() { }
+    ~CodeGenContext() {
+        llvm::llvm_shutdown();
+    }
         
     llvm::Module * getModule() {return module;}
+    llvm::LLVMContext& getGlobalContext() {return llvmContext;}
     void newScope() { 
-        llvm::BasicBlock* bblock = llvm::BasicBlock::Create(llvm::getGlobalContext(),"scope");
+        llvm::BasicBlock* bblock = llvm::BasicBlock::Create(getGlobalContext(),"scope");
         codeBlocks.push(new CodeGenBlock(bblock)); 
     }
     void newScope(llvm::BasicBlock* bb) {codeBlocks.push(new CodeGenBlock(bb));}

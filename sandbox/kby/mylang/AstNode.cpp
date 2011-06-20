@@ -11,33 +11,33 @@ namespace AST {
     
 
 /* Returns an LLVM type based on the identifier */
-static const Type *typeOf(const Identifier& type)
+static const Type *typeOf(const Identifier& type, CodeGenContext& context )
 {
     if (type.getName().compare("int") == 0) {
-        return Type::getInt64Ty(getGlobalContext());
+        return Type::getInt64Ty(context.getGlobalContext());
     } else if (type.getName().compare("double") == 0) {
-        return Type::getDoubleTy(getGlobalContext());
+        return Type::getDoubleTy(context.getGlobalContext());
     } else if (type.getName().compare("string") == 0) {
-        return Type::getInt8PtrTy(getGlobalContext());
+        return Type::getInt8PtrTy(context.getGlobalContext());
     } else if (type.getName().compare("boolean") == 0) {
-        return Type::getInt1Ty(getGlobalContext());
+        return Type::getInt1Ty(context.getGlobalContext());
     } else if (type.getName().compare("void") == 0) {
-        return Type::getInt8PtrTy(getGlobalContext());
+        return Type::getInt8PtrTy(context.getGlobalContext());
     }
-    return Type::getVoidTy(getGlobalContext());
+    return Type::getVoidTy(context.getGlobalContext());
 }
 
 
 Value* Integer::codeGen(CodeGenContext& context)
 {
     std::cout << "Creating integer: " << value << std::endl;
-    return ConstantInt::get(Type::getInt64Ty(getGlobalContext()), value, true);
+    return ConstantInt::get(Type::getInt64Ty(context.getGlobalContext()), value, true);
 }
 
 Value* Double::codeGen(CodeGenContext& context)
 {
     std::cout << "  Creating double: " << value << std::endl;
-    return ConstantFP::get(Type::getDoubleTy(getGlobalContext()), value);
+    return ConstantFP::get(Type::getDoubleTy(context.getGlobalContext()), value);
 }
 
 Value* String::codeGen(CodeGenContext& context)
@@ -54,7 +54,7 @@ Value* String::codeGen(CodeGenContext& context)
                                                          /*Name=*/".str");
     gvar_array__str->setAlignment(1);
     // create the contents for the string global.
-    Constant* const_array_5 =  ConstantArray::get(getGlobalContext(), value);
+    Constant* const_array_5 =  ConstantArray::get(context.getGlobalContext(), value);
     // Initialize the global with the string
     gvar_array__str->setInitializer(const_array_5);
     
@@ -71,7 +71,7 @@ Value* String::codeGen(CodeGenContext& context)
 Value* Boolean::codeGen(CodeGenContext& context)
 {
     std::cout << "  Creating boolean " << value << std::endl;
-    return ConstantInt::get(Type::getInt1Ty(getGlobalContext()),boolVal);
+    return ConstantInt::get(Type::getInt1Ty(context.getGlobalContext()),boolVal);
 }
 
 Value* Identifier::codeGen(CodeGenContext& context)
@@ -114,7 +114,7 @@ Value* UnaryOperator::codeGen(CodeGenContext& context)
     Value* rhsValue = rhs->codeGen(context);
     if( !rhsValue->getType()->isIntegerTy() ) 
         return nullptr;
-    Value* lhsValue = ConstantInt::get(IntegerType::get(getGlobalContext(),64), StringRef("-1"),10); 
+    Value* lhsValue = ConstantInt::get(IntegerType::get(context.getGlobalContext(),64), StringRef("-1"),10);
     return BinaryOperator::Create(instr, lhsValue, rhsValue, "unarytmp", context.currentBlock());
 }
 
@@ -152,12 +152,12 @@ Value* CompOperator::codeGen(CodeGenContext& context)
     Value * lhsVal = lhs->codeGen(context);
     if( rhsVal->getType() != lhsVal->getType() ) {
         // since we only support double and int, always cast to double in case of differnt types.
-        cinstr = CastInst::getCastOpcode(rhsVal,true, Type::getDoubleTy(getGlobalContext()), true);
-        rhsVal = CastInst::Create(cinstr, rhsVal , Type::getDoubleTy(getGlobalContext()), "castdb" , context.currentBlock());
-        cinstr = CastInst::getCastOpcode(lhsVal,true, Type::getDoubleTy(getGlobalContext()), true);
-        lhsVal = CastInst::Create(cinstr,lhsVal, Type::getDoubleTy(getGlobalContext()), "castdb" , context.currentBlock());
+        cinstr = CastInst::getCastOpcode(rhsVal,true, Type::getDoubleTy(context.getGlobalContext()), true);
+        rhsVal = CastInst::Create(cinstr, rhsVal , Type::getDoubleTy(context.getGlobalContext()), "castdb" , context.currentBlock());
+        cinstr = CastInst::getCastOpcode(lhsVal,true, Type::getDoubleTy(context.getGlobalContext()), true);
+        lhsVal = CastInst::Create(cinstr,lhsVal, Type::getDoubleTy(context.getGlobalContext()), "castdb" , context.currentBlock());
     }
-    bool isDouble = rhsVal->getType() == Type::getDoubleTy(getGlobalContext());
+    bool isDouble = rhsVal->getType() == Type::getDoubleTy(context.getGlobalContext());
     if( isDouble ) {
         oinstr = Instruction::FCmp;
     } else {
@@ -225,7 +225,7 @@ Value* ExpressionStatement::codeGen(CodeGenContext& context)
 Value* VariableDeclaration::codeGen(CodeGenContext& context)
 {
     std::cout << "  Creating variable declaration " << " " << id->getName() << std::endl;
-    AllocaInst *alloc = new AllocaInst(typeOf(*type), id->getName().c_str(), context.currentBlock());
+    AllocaInst *alloc = new AllocaInst(typeOf(*type, context), id->getName().c_str(), context.currentBlock());
     context.locals()[id->getName()] = alloc;
     if (assignmentExpr != nullptr) {
         Assignment assn(id, assignmentExpr);
@@ -243,11 +243,11 @@ Value* FunctionDeclaration::codeGen(CodeGenContext& context)
     vector<const Type*> argTypes;
     VariableList::const_iterator it;
     for (it = arguments->begin(); it != arguments->end(); it++) {
-        argTypes.push_back(typeOf((**it).getIdentifierOfVariablenType()));
+        argTypes.push_back(typeOf((**it).getIdentifierOfVariablenType(), context));
     }
-    FunctionType *ftype = FunctionType::get(typeOf(*type), argTypes, false);
+    FunctionType *ftype = FunctionType::get(typeOf(*type,context), argTypes, false);
     Function *function = Function::Create(ftype, GlobalValue::InternalLinkage, id->getName().c_str(), context.getModule());
-    BasicBlock *bblock = BasicBlock::Create(getGlobalContext(), "entry", function, 0);
+    BasicBlock *bblock = BasicBlock::Create(context.getGlobalContext(), "entry", function, 0);
     
     context.newScope(bblock);
 
@@ -261,7 +261,7 @@ Value* FunctionDeclaration::codeGen(CodeGenContext& context)
     // If the function doesn't have a return type and doesn't have a return statement, make a ret void.
     if( type->getName() == "void" ) {
         if( context.currentBlock()->getTerminator() == nullptr ) {
-            ReturnInst::Create(getGlobalContext(),0, context.currentBlock());
+            ReturnInst::Create(context.getGlobalContext(),0, context.currentBlock());
         }
     }
     context.endScope();;
@@ -276,9 +276,9 @@ Value* Conditional::codeGen(CodeGenContext& context)
                                             
     Function* function = context.currentBlock()->getParent();
     std::cout << function->getNameStr() << std::endl;
-    BasicBlock* thenBlock = BasicBlock::Create(getGlobalContext(), "then",function);
-    BasicBlock* elseBlock = BasicBlock::Create(getGlobalContext(), "else");
-    BasicBlock* mergeBlock = BasicBlock::Create(getGlobalContext(), "merge");
+    BasicBlock* thenBlock = BasicBlock::Create(context.getGlobalContext(), "then",function);
+    BasicBlock* elseBlock = BasicBlock::Create(context.getGlobalContext(), "else");
+    BasicBlock* mergeBlock = BasicBlock::Create(context.getGlobalContext(), "merge");
     BranchInst::Create(thenBlock,elseBlock,comp,context.currentBlock());
     
     context.setInsertPoint(thenBlock);
@@ -305,11 +305,11 @@ Value* WhileLoop::codeGen(CodeGenContext& context)
 
     Function* function = context.currentBlock()->getParent();
     std::cout << function->getNameStr() << std::endl;
-    BasicBlock* firstCondBlock = BasicBlock::Create(getGlobalContext(), "firstcond",function);
-    BasicBlock* condBlock = BasicBlock::Create(getGlobalContext(), "cond");
-    BasicBlock* loopBlock = BasicBlock::Create(getGlobalContext(), "loop");
-    BasicBlock* elseBlock = BasicBlock::Create(getGlobalContext(), "else");
-    BasicBlock* mergeBlock = BasicBlock::Create(getGlobalContext(), "merge");
+    BasicBlock* firstCondBlock = BasicBlock::Create(context.getGlobalContext(), "firstcond",function);
+    BasicBlock* condBlock = BasicBlock::Create(context.getGlobalContext(), "cond");
+    BasicBlock* loopBlock = BasicBlock::Create(context.getGlobalContext(), "loop");
+    BasicBlock* elseBlock = BasicBlock::Create(context.getGlobalContext(), "else");
+    BasicBlock* mergeBlock = BasicBlock::Create(context.getGlobalContext(), "merge");
     BranchInst::Create(firstCondBlock,context.currentBlock());
 
     context.setInsertPoint(firstCondBlock);
@@ -346,11 +346,11 @@ Value* Return::codeGen(CodeGenContext& context)
 {
     std::cout << "  Creating return statement " << std::endl;
     if( retExpr ) {
-    Value* ret = retExpr->codeGen(context);
-    if( ret == nullptr ) return nullptr;
-        return ReturnInst::Create(getGlobalContext(), ret, context.currentBlock());
+        Value* ret = retExpr->codeGen(context);
+        if( ret == nullptr ) return nullptr;
+        return ReturnInst::Create(context.getGlobalContext(), ret, context.currentBlock());
     } else {
-        return ReturnInst::Create(getGlobalContext(), 0, context.currentBlock());
+        return ReturnInst::Create(context.getGlobalContext(), 0, context.currentBlock());
     }
 }
 

@@ -113,6 +113,7 @@ GenericValue CodeGenContext::runCode() {
     GenericValue v = ee->runFunction(mainFunction, noargs);
     std::cout << "Code was run.\n";
     std::cout << v.IntVal.toString(10,true) << std::endl;
+    ee->freeMachineCodeForFunction(mainFunction);
     delete ee;
     return v;
 }
