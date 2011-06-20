@@ -30,7 +30,7 @@ static const Type *typeOf(const Identifier& type, CodeGenContext& context )
 
 Value* Integer::codeGen(CodeGenContext& context)
 {
-    std::cout << "Creating integer: " << value << std::endl;
+    std::cout << "  Creating integer: " << value << std::endl;
     return ConstantInt::get(Type::getInt64Ty(context.getGlobalContext()), value, true);
 }
 
@@ -275,7 +275,6 @@ Value* Conditional::codeGen(CodeGenContext& context)
     if( comp == nullptr ) return nullptr;
                                             
     Function* function = context.currentBlock()->getParent();
-    std::cout << function->getNameStr() << std::endl;
     BasicBlock* thenBlock = BasicBlock::Create(context.getGlobalContext(), "then",function);
     BasicBlock* elseBlock = BasicBlock::Create(context.getGlobalContext(), "else");
     BasicBlock* mergeBlock = BasicBlock::Create(context.getGlobalContext(), "merge");
