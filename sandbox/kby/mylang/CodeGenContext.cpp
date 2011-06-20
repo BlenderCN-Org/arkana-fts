@@ -3,8 +3,12 @@
 #include "CodeGenContext.h"
 #include "parser.hpp"
 #include "llvm/Support/DynamicLibrary.h"
+#include "llvm/Analysis/Passes.h"
+#include "llvm/Transforms/Scalar.h"
+
 #include <stdarg.h>
 #include <stdio.h>
+#include <algorithm>
 
 using namespace std;
 using namespace llvm;
@@ -116,6 +120,25 @@ GenericValue CodeGenContext::runCode() {
     ee->freeMachineCodeForFunction(mainFunction);
     delete ee;
     return v;
+}
+
+void CodeGenContext::optimize()
+{
+    FunctionPassManager fpm(getModule());
+    fpm.add(createBasicAliasAnalysisPass());
+    fpm.add(createPromoteMemoryToRegisterPass());
+    fpm.add(createCFGSimplificationPass());
+    fpm.add(createInstructionCombiningPass());
+    fpm.add(createGVNPass());
+    fpm.add(createReassociatePass());
+    fpm.doInitialization();
+    std::for_each(getModule()->getFunctionList().begin(), getModule()->getFunctionList().end(),
+                  [&fpm] (Function& i) {
+                      fpm.run(i);
+                  }
+    );
+    
+    fpm.run(*mainFunction);
 }
 
 }

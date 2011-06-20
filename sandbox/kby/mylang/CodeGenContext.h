@@ -80,6 +80,7 @@ public:
     llvm::GenericValue runCode();
     ValueNames& locals() { return codeBlocks.top()->getValueNames(); }
     llvm::BasicBlock *currentBlock() { return codeBlocks.top()->currentBlock(); }
+    void optimize();
 };
 
 }
