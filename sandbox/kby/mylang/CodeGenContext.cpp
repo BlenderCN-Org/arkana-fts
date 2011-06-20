@@ -99,6 +99,9 @@ void CodeGenContext::generateCode(Block& root)
     }
     endScope();
 
+#if !defined(_DEBUG)
+    optimize();
+#endif
     /* Print the bytecode in a human-readable format
      *     to see if our program compiled properly
      */
