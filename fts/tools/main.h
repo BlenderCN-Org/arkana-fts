@@ -23,9 +23,7 @@
 
 #include "dLib/dMem/dMem.h"
 
-#define FTS_DIR_SEPARATOR   "/"
 #define FTS_DIR_SEPARATORC  '/'
-#define FTS_IS_DIR_SEPARATOR(ch) ((ch) == FTS_DIR_SEPARATORC)
 
 #ifndef MAX
 #  define MAX( a, b ) ((a) > (b) ? (a) : (b))
