@@ -55,7 +55,7 @@ void FTS::setVersionInfo()
 /// Default constructor
 FTS::MainMenuRlv::MainMenuRlv()
     : m_pRoot(NULL)
-    , m_pModelManager(0)
+    , m_pModelManager(new ModelManager())
     , m_pgMenuBG(NULL)
     , m_pMenuBGInst(0)
 {
@@ -92,7 +92,7 @@ bool FTS::MainMenuRlv::load()
     // Find the correct menu background image.
     std::list<Resolution> lAvail;
     PDBrowseInfo dbi = dBrowse_Open(Path::datadir("Graphics/ui/menubg"));
-    for(String file = dBrowse_GetNextWithWildcard(dbi, "*.png") ; !file.isEmpty() ; file = dBrowse_GetNextWithWildcard(dbi, "*.png")) {
+    for(String file = dBrowse_GetNextWithWildcard(dbi, "*.png") ; !file.empty() ; file = dBrowse_GetNextWithWildcard(dbi, "*.png")) {
         lAvail.push_back(Resolution(Path(file).withoutExt()));
     }
     dBrowse_Close(dbi);
@@ -103,7 +103,6 @@ bool FTS::MainMenuRlv::load()
     m_pgMenuBG = GraphicManager::getSingleton().getOrLoadGraphic(Path::datadir("Graphics/ui/menubg") + Path(sClosestMatch + ".png"));
 
     // And the menu background model.
-    m_pModelManager = new ModelManager();
     m_pMenuBGInst = m_pModelManager->createInstance("Gaia/Fauna/Chicken");
 
     // Reset the camera.
@@ -299,7 +298,7 @@ bool FTS::MainMenuRlv::cbNewGameOpened(const CEGUI::EventArgs &in_ea)
     Path sFile = static_cast<const FileDlgEventArgs &>(in_ea).getFile();
 
     // If he clicked on cancel, do nothing.
-    if(sFile.isEmpty()) {
+    if(sFile.empty()) {
         return true;
     }
 

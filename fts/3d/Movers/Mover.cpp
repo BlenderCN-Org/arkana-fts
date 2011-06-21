@@ -13,7 +13,7 @@ FTS::Mover::Mover(const std::weak_ptr<MapObject>& in_pWhom, float in_fDuration, 
     , m_bSelfdestroy(false)
 {
     // If a name was given, use this for the updateable.
-    if(!m_sName.isEmpty())
+    if(!m_sName.empty())
         UpdateableManager::getSingleton().add(m_sName, this);
     else
         UpdateableManager::getSingleton().add(this);
@@ -21,7 +21,7 @@ FTS::Mover::Mover(const std::weak_ptr<MapObject>& in_pWhom, float in_fDuration, 
 
 FTS::Mover::~Mover()
 {
-    if(!m_sName.isEmpty())
+    if(!m_sName.empty())
         UpdateableManager::getSingleton().rem(m_sName);
     else
         UpdateableManager::getSingleton().rem(this);

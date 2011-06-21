@@ -174,7 +174,7 @@ void LoadGameRlv::setupLoadscreenPlayers()
 
     for(int i = 0 ; i < m_nPlayers ; i++) {
         String sPlayer = getTranslatedString("General_Player", "ui");
-        String sPlayerName = String::sfmt("{1} {2}", sPlayer, String::nr(i));
+        String sPlayerName = String("{1} {2}").fmt(sPlayer, String::nr(i));
         String sProgressName = "loadscreen/progs/pg" + sPlayerName;
         String sLabelName = "loadscreen/progs/lbl" + sPlayerName;
 
@@ -297,7 +297,7 @@ void LoadGameRlv::addToProgress(float in_fPercentForStage, const String &in_sDet
         pPB->setProgress(fNow);
     } catch(...) { }
 
-    if(!in_sDetail.isEmpty()) {
+    if(!in_sDetail.empty()) {
         try {
             CEGUI::WindowManager::getSingleton()
                 .getWindow("loadscreen/lblState")->setText(in_sDetail);
@@ -375,12 +375,12 @@ void LoadGameRlv::finishStage(const String &in_sProgress, const String &in_sStat
 #endif
     this->addToProgress(1.0f, in_sProgress);
 
-    if(!in_sStat.isEmpty()) {
+    if(!in_sStat.empty()) {
         try {
             CEGUI::String sWin = ("loadscreen/" + in_sStat);
             CEGUI::Window *pWin=CEGUI::WindowManager::getSingleton().getWindow(sWin);
             String sTxt = getTranslatedString(in_sStat, "ui");
-            pWin->setText(String::sfmt("{1} {2} s", sTxt, String::nr(dSecElapsed, 2)));
+            pWin->setText(String("{1} {2} s").fmt(sTxt, String::nr(dSecElapsed, 2)));
             pWin->show();
         } catch(...) {}
     }

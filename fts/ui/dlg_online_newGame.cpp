@@ -138,7 +138,7 @@ bool FTS::DlgOnlineNewGame::cbOk(const CEGUI::EventArgs & in_ea)
         return true;
     }
 
-    if(sGameName.isEmpty() || !m_pMapInfo->isLoaded()) {
+    if(sGameName.empty() || !m_pMapInfo->isLoaded()) {
         FTS18N("Ogm_game_missdata", MsgType::Error);
         return true;
     }
@@ -229,7 +229,7 @@ bool FTS::DlgOnlineNewGame::cbLoadFileChosen(const CEGUI::EventArgs & in_ea)
     String sFile = static_cast<const FileDlgEventArgs &>(in_ea).getFile();
 
     // If he clicked on cancel, do nothing.
-    if(sFile.isEmpty()) {
+    if(sFile.empty()) {
         return true;
     }
 
@@ -268,7 +268,7 @@ bool FTS::DlgOnlineNewGame::cbResumeFileChosen(const CEGUI::EventArgs & in_ea)
     String sFile = static_cast<const FileDlgEventArgs &>(in_ea).getFile();
 
     // If he clicked on cancel, do nothing.
-    if(sFile.isEmpty()) {
+    if(sFile.empty()) {
         return true;
     }
 

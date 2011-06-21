@@ -287,7 +287,7 @@ int FTS::MenuOptions::loadGeneral()
         while(true) {
             sLang = dBrowse_GetNext(dbi);
 
-            if(sLang.isEmpty())
+            if(sLang.empty())
                 break;
 
             if((dBrowse_GetType(dbi) != DB_DIR) ||
@@ -1089,7 +1089,7 @@ void FTS::MenuOptions::fillMasterServerList(bool in_bSelectDefault)
             if(sServerNoHTTP.left(7) == "http://")
                 sServerNoHTTP = sServerNoHTTP.right(sServerNoHTTP.len()-7);
 
-            if(sServerNoHTTP.isEmpty())
+            if(sServerNoHTTP.empty())
                 continue;
 
             // Add that one, either as the selected one or as an alternative.

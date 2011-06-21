@@ -177,7 +177,7 @@ String DefaultLogger::formatI18nMessage(const String &in_sMsgID,
 
     // Get the translated string.
     sErrMsg = getTranslatedString(in_sMsgID, "messages");
-    if( sErrMsg.isEmpty() ) {
+    if( sErrMsg.empty() ) {
         sErrMsg = "Missing translation for the error message " + in_sMsgID;
     }
     // Return, inserting the pieces at their place.
@@ -369,7 +369,7 @@ int DefaultLogger::doMessage(const String &in_sMsg, const MsgType::Enum& in_Grav
 {
     String sMessage;
 
-    if(in_sMsg.isEmpty()) {
+    if(in_sMsg.empty()) {
         FTS18N("InvParam", MsgType::Error, "Logger::vaMessage");
         return -1;
     }

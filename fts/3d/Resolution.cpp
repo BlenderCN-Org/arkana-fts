@@ -29,9 +29,9 @@ FTS::Resolution::Resolution(const String& in_s)
 
     // read out the width and height.
     if(vWH.size() > 0)
-        vWH[0].convert(this->w);
+        vWH[0].to(this->w);
     if(vWH.size() > 1)
-        vWH[1].convert(this->h, false); // false := ignore trailing non-digits
+        vWH[1].to(this->h); // false := ignore trailing non-digits
 
     // check if in fullscreen.
     String s = String::nr(w) + "x" + String::nr(h);

@@ -273,7 +273,7 @@ bool FTS::OnlineMenuRlv::InterpretCurrMsgCmd::exec()
         return false;
     }
 
-    if(sMessage.isEmpty())
+    if(sMessage.empty())
         return true;
 
     // Get the current runlevel to call appropriate methods.
@@ -290,7 +290,7 @@ bool FTS::OnlineMenuRlv::InterpretCurrMsgCmd::exec()
     }
     pRlv->m_ilSentMessagesPos = pRlv->m_lSentMessages.end();
 
-    if(sMessage.nicmp("/help",5) && sMessage.len() >= 5) {
+    if(sMessage.nieq("/help",5) && sMessage.len() >= 5) {
         // Maybe the user asked help about a certain topic.
         CParser p;
         char *pszCmd = NULL;
@@ -304,39 +304,39 @@ bool FTS::OnlineMenuRlv::InterpretCurrMsgCmd::exec()
             SAFE_FREE(pszCmd);
         }
 
-        if(sMessage.isEmpty())
+        if(sMessage.empty())
             sMessage = getTranslatedString("Chat_Unknown_cmd", "ui");
 
         if(pRlv)
             pRlv->gotSystemMessage(sMessage);
 
-    } else if(sMessage.nicmp("/join ",6) && sMessage.len() >= 5) {
+    } else if(sMessage.nieq("/join ",6) && sMessage.len() >= 5) {
         // The user wants to join a channel, get the channel name.
         String sChan = sMessage.mid(6, 0).trim();
         if(pRlv)
             pRlv->join(sChan);
 
-    } else if(sMessage.nicmp("/motto ",7) && sMessage.len() >= 6) {
+    } else if(sMessage.nieq("/motto ",7) && sMessage.len() >= 6) {
         // The user wants to set the channel motto, get the new motto.
         String sMotto = sMessage.mid(7, 0).trim();
         g_pMeHacky->og_chatSetMotto(sMotto);
 
-    } else if(sMessage.nicmp("/kick ",6) && sMessage.len() >= 5) {
+    } else if(sMessage.nieq("/kick ",6) && sMessage.len() >= 5) {
         // The user wants to kick someone, get the name of the player to kick.
         String sPlayer = sMessage.mid(6, 0).trim();
         g_pMeHacky->og_chatKick(sPlayer);
 
-    } else if(sMessage.nicmp("/op ",4) && sMessage.len() >= 3) {
+    } else if(sMessage.nieq("/op ",4) && sMessage.len() >= 3) {
         // The user wants to op someone, get the name of the player to op.
         String sPlayer = sMessage.mid(4, 0).trim();
         g_pMeHacky->og_chatOp(sPlayer);
 
-    } else if(sMessage.nicmp("/deop ",6) && sMessage.len() >= 5) {
+    } else if(sMessage.nieq("/deop ",6) && sMessage.len() >= 5) {
         // The user wants to deop someone, get the name of the player to deop.
         String sPlayer = sMessage.mid(6, 0).trim();
         g_pMeHacky->og_chatDeop(sPlayer);
 
-    } else if(sMessage.nicmp("/w ",3) && sMessage.len() >= 2) {
+    } else if(sMessage.nieq("/w ",3) && sMessage.len() >= 2) {
         // The user wants to whisp someone, get the name of the player to whisp to.
         CParser p;
         char *pszPlayer = NULL;
@@ -347,13 +347,13 @@ bool FTS::OnlineMenuRlv::InterpretCurrMsgCmd::exec()
 
         // If there is still something left, we read the rest (it is the message)
         String sText = sMessage.mid(2 + nRead,0);
-        if(!sText.isEmpty()) {
+        if(!sText.empty()) {
             // And send him.
             g_pMeHacky->og_chatWhisp(pszPlayer, sText);
         }
 
         SAFE_FREE(pszPlayer);
-    } else if(sMessage.nicmp("/listchans ",11) && sMessage.len() >= 10) {
+    } else if(sMessage.nieq("/listchans ",11) && sMessage.len() >= 10) {
         // The user wants to get a list of his channels.
         std::list<String> sChans = g_pMeHacky->og_chatMyChans();
 
@@ -373,7 +373,7 @@ bool FTS::OnlineMenuRlv::InterpretCurrMsgCmd::exec()
 
         pRlv->gotSystemMessage(sFormattedMessage);
 
-    } else if(sMessage.nicmp("/delchan ",9) && sMessage.len() >= 10) {
+    } else if(sMessage.nieq("/delchan ",9) && sMessage.len() >= 10) {
         // The user wants to destroy a channel, get the name of that channel.
         String sChan = sMessage.mid(9, 0).trim();
         if(ERR_OK == g_pMeHacky->og_chatRemChan(sChan)) {
@@ -381,7 +381,7 @@ bool FTS::OnlineMenuRlv::InterpretCurrMsgCmd::exec()
             String sFmt = getTranslatedString("Chat_ChannelRemGood", "ui");
             pRlv->gotSystemMessage(sFmt.fmt(sChan));
         }
-    } else if(sMessage.nicmp("/", 1) && sMessage.len() >= 1) {
+    } else if(sMessage.nieq("/", 1) && sMessage.len() >= 1) {
         // Say that the command doesn't exist, don't show the command-try to the others.
         pRlv->gotSystemMessage(getTranslatedString("Chat_Unknown_cmd", "ui"));
     } else {
@@ -979,7 +979,7 @@ int FTS::OnlineMenuRlv::enteringNewChannel(const String &in_sNewChanName)
 
     // Get the motto.
     String sMotto = g_pMeHacky->og_chatGetMotto();
-    if(!sMotto.isEmpty()) {
+    if(!sMotto.empty()) {
         this->mottoChange(String::EMPTY, sMotto);
     }
 
@@ -988,7 +988,7 @@ int FTS::OnlineMenuRlv::enteringNewChannel(const String &in_sNewChanName)
 
     // Say hello.
     String sFmt = getTranslatedString("Chat_Join","ui");
-    String sMessage = sFmt.fmt(in_sNewChanName, sMotto.isEmpty() ? "Error" : sMotto);
+    String sMessage = sFmt.fmt(in_sNewChanName, sMotto.empty() ? "Error" : sMotto);
     this->gotSystemMessage(sMessage);
     return ERR_OK;
 }
@@ -1245,7 +1245,7 @@ int FTS::OnlineMenuRlv::gotOrSentWhispMessage(const String &in_sUser,const Strin
 int FTS::OnlineMenuRlv::mottoChange(const String & in_sFrom, const String & in_sMotto)
 {
     // If this has been dynamically changed, say something about it in the chat messages.
-    if( !in_sFrom.isEmpty() ) {
+    if( !in_sFrom.empty() ) {
         String sFmt = getTranslatedString("Chat_MottoSet", "ui");
         this->gotSystemMessage(sFmt.fmt(in_sFrom, in_sMotto));
     }

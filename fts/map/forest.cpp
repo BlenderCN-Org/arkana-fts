@@ -49,7 +49,7 @@ int Forest::load(const String &in_sConfFile)
     if(m_bLoaded)
         return ERR_OK;
 
-    if(in_sConfFile.isEmpty()) {
+    if(in_sConfFile.empty()) {
         FTS18N("InvParam", MsgType::Horror, "CFTSForest::load");
         return -1;
     }

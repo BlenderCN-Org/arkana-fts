@@ -12,7 +12,7 @@ using namespace FTS;
 
 ArchiverBase::ArchiverBase(const FTS::Path& in_sOutName, Compressor::Ptr in_pComp, bool in_bRecurse)
     : m_sOutName(in_sOutName)
-    , m_pComp(in_pComp)
+    , m_pComp(std::move(in_pComp))
     , m_bRecurse(in_bRecurse)
     , m_bYesToAll(false)
 {
@@ -30,7 +30,7 @@ bool ArchiverBase::addDirectoryRecursive(const FTS::Path& in_sDir)
         return false;
 
     // It is a directory and we want to recurse into it.
-    for(FTS::Path sElem = dBrowse_GetNext(pdbi) ; !sElem.isEmpty() ; sElem = dBrowse_GetNext(pdbi)) {
+    for(FTS::Path sElem = dBrowse_GetNext(pdbi) ; !sElem.empty() ; sElem = dBrowse_GetNext(pdbi)) {
 #if !WINDOOF
         // If it is hidden, do not add it.
         if(sElem.getCharAt(0) == '.')
@@ -54,8 +54,8 @@ bool ArchiverBase::addDirectoryRecursive(const FTS::Path& in_sDir)
 }
 
 Archiver::Archiver(const FTS::Path& in_sOutName, Compressor::Ptr in_pComp, bool in_bRecurse)
-    : ArchiverBase(in_sOutName.isEmpty() ? Archiver::defaultOutName() : in_sOutName,
-                   in_pComp,
+    : ArchiverBase(in_sOutName.empty() ? Archiver::defaultOutName() : in_sOutName,
+                   std::move(in_pComp),
                    in_bRecurse)
 {
 }
@@ -142,7 +142,7 @@ int Archiver::execute()
             }
 
             // Not present in the archive yet, add it to the archive.
-            pArchive->give(new FileChunk(pFile));
+            pArchive->give(new FileChunk(std::move(pFile)));
             FTSMSG("Done\n");
         } catch(const ArkanaException& e) {
             e.show();

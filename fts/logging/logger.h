@@ -293,14 +293,19 @@ public:
     };
 
     const char *getLogString() const {
-        if(m_iDbgLv) {
-            m_sFormattedBuffer = Logger::getSingleton().formatI18nMessageDbg(m_sMessage,
-                                  m_iDbgLv, m_sArg1, m_sArg2, m_sArg3, m_sArg4,
-                                  m_sArg5, m_sArg6, m_sArg7, m_sArg8, m_sArg9);
+        // Avoid infinite recursion when printing an exception on shutdown.
+        if(Logger::getSingletonPtr()) {
+            m_sFormattedBuffer = m_sMessage + " with " + m_sArg1 +m_sArg2 + m_sArg3 + m_sArg4 + m_sArg5 + m_sArg6 + m_sArg7 + m_sArg8 + m_sArg9;
         } else {
-            m_sFormattedBuffer = Logger::getSingleton().formatI18nMessage(m_sMessage, m_gravity,
-                                  m_sArg1, m_sArg2, m_sArg3, m_sArg4,
-                                  m_sArg5, m_sArg6, m_sArg7, m_sArg8, m_sArg9);
+            if(m_iDbgLv) {
+                m_sFormattedBuffer = Logger::getSingleton().formatI18nMessageDbg(m_sMessage,
+                                      m_iDbgLv, m_sArg1, m_sArg2, m_sArg3, m_sArg4,
+                                      m_sArg5, m_sArg6, m_sArg7, m_sArg8, m_sArg9);
+            } else {
+                m_sFormattedBuffer = Logger::getSingleton().formatI18nMessage(m_sMessage, m_gravity,
+                                      m_sArg1, m_sArg2, m_sArg3, m_sArg4,
+                                      m_sArg5, m_sArg6, m_sArg7, m_sArg8, m_sArg9);
+            }
         }
         return m_sFormattedBuffer.c_str();
     };

@@ -37,7 +37,7 @@ bool FTS::InterpretDirWithEntryAsFile::operator()(const Path& in_dir)
     String sEntry = dBrowse_GetNextWithWildcard(pdbi, m_sPattern);
     dBrowse_Close(pdbi);
 
-    return !sEntry.isEmpty();
+    return !sEntry.empty();
 }
 
 /** Constructor for the file dialog item. */
@@ -385,7 +385,7 @@ void FTS::FileDlg::fillLB(void)
     while(true) {
         Path sPath(dBrowse_GetNext(pDBI));
 
-        if(sPath.isEmpty())
+        if(sPath.empty())
             break;
 
         // Ignore the current directory (".")
@@ -445,7 +445,7 @@ void FTS::FileDlg::fillLB(void)
  */
 void FTS::FileDlg::chdir(const String & in_sAdd)
 {
-    if(in_sAdd.isEmpty())
+    if(in_sAdd.empty())
         return;
 
     // Maybe we just need to go back one directory.

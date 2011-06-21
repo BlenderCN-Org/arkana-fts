@@ -399,18 +399,11 @@ TEST_INSUITE(dString, HexData)
     } else {
         FAIL("testData2 = NULL");
     }
-    CHECK_EQUAL(NULL, testData3);
+    CHECK_EQUAL(0, testData3);
 }
 
 TEST_INSUITE(dString, Fmt)
 {
-    CHECK_EQUAL("", FTS::String::sfmt(""));
-    CHECK_EQUAL("abcdefghi{10}", FTS::String::sfmt("{1}{2}{3}{4}{5}{6}{7}{8}{9}{10}", "a", "b", "c", "d", "e", "f", "g", "h", "i"));
-    CHECK_EQUAL("abcdefghijklmnopqrs{10}u", FTS::String::sfmt("a{1}c{2}e{3}g{4}i{5}k{6}m{7}o{8}q{9}s{10}u", "b", "d", "f", "h", "j", "l", "n", "p", "r"));
-    CHECK_EQUAL("", FTS::String::sfmtRemoveEmpty(""));
-    CHECK_EQUAL("abcdefg{10}", FTS::String::sfmtRemoveEmpty("{1}{2}{3}{4}{5}{6}{7}{8}{9}{10}", "a", "b", "c", "d", "e", "f", "g"));
-    CHECK_EQUAL("abcdefghijklmnoqs{10}u", FTS::String::sfmtRemoveEmpty("a{1}c{2}e{3}g{4}i{5}k{6}m{7}o{8}q{9}s{10}u", "b", "d", "f", "h", "j", "l", "n"));
-
     CHECK_EQUAL("", FTS::String("").fmt(""));
     CHECK_EQUAL("abcdefghi{10}", FTS::String("{1}{2}{3}{4}{5}{6}{7}{8}{9}{10}").fmt("a", "b", "c", "d", "e", "f", "g", "h", "i"));
     CHECK_EQUAL("abcdefghijklmnopqrs{10}u", FTS::String("a{1}c{2}e{3}g{4}i{5}k{6}m{7}o{8}q{9}s{10}u").fmt("b", "d", "f", "h", "j", "l", "n", "p", "r"));
@@ -421,8 +414,8 @@ TEST_INSUITE(dString, Fmt)
 
 TEST_INSUITE(dString, Trivial)
 {
-    CHECK(FTS::String("").isEmpty());
-    CHECK(FTS::String::EMPTY.isEmpty());
+    CHECK(FTS::String("").empty());
+    CHECK(FTS::String::EMPTY.empty());
 
     CHECK_EQUAL(0, FTS::String("").len());
     CHECK_EQUAL(0, FTS::String("").lenInt());
@@ -510,61 +503,34 @@ TEST_INSUITE(dString, RemRepl)
 
 TEST_INSUITE(dString, Trimming)
 {
-    CHECK_EQUAL("", FTS::String("").trimThisLeft());
     CHECK_EQUAL("", FTS::String("").trimLeft());
-    CHECK_EQUAL("", FTS::String(" \n \r \t ").trimThisLeft());
     CHECK_EQUAL("", FTS::String(" \n \r \t ").trimLeft());
-    CHECK_EQUAL("Hello, World!", FTS::String("Hello, World!").trimThisLeft());
     CHECK_EQUAL("Hello, World!", FTS::String("Hello, World!").trimLeft());
-    CHECK_EQUAL("Hello, World!", FTS::String("  Hello, World!").trimThisLeft());
     CHECK_EQUAL("Hello, World!", FTS::String("  Hello, World!").trimLeft());
-    CHECK_EQUAL("Hello, World!", FTS::String("\n\r\t Hello, World!").trimThisLeft());
     CHECK_EQUAL("Hello, World!", FTS::String("\n\r\t Hello, World!").trimLeft());
-    CHECK_EQUAL("Hello, World!", FTS::String(" \n \r \t Hello, World!").trimThisLeft());
     CHECK_EQUAL("Hello, World!", FTS::String(" \n \r \t Hello, World!").trimLeft());
-    CHECK_EQUAL("Hello, World!  ", FTS::String("Hello, World!  ").trimThisLeft());
     CHECK_EQUAL("Hello, World!  ", FTS::String("Hello, World!  ").trimLeft());
-    CHECK_EQUAL("Hello, World!", FTS::String("!!!?!?!?!11Hello, World!").trimThisLeft("!?1"));
     CHECK_EQUAL("Hello, World!", FTS::String("!!!?!?!?!11Hello, World!").trimLeft("!?1"));
-    CHECK_EQUAL("Hello, World!", FTS::String("!!!Hello, World!").trimThisLeft("!!!!"));
     CHECK_EQUAL("Hello, World!", FTS::String("!!!Hello, World!").trimLeft("!!!!"));
 
-    CHECK_EQUAL("", FTS::String("").trimThisRight());
     CHECK_EQUAL("", FTS::String("").trimRight());
-    CHECK_EQUAL("", FTS::String(" \n \r \t ").trimThisRight());
     CHECK_EQUAL("", FTS::String(" \n \r \t ").trimRight());
-    CHECK_EQUAL("Hello, World!", FTS::String("Hello, World!").trimThisRight());
     CHECK_EQUAL("Hello, World!", FTS::String("Hello, World!").trimRight());
-    CHECK_EQUAL("Hello, World!", FTS::String("Hello, World!  ").trimThisRight());
     CHECK_EQUAL("Hello, World!", FTS::String("Hello, World!  ").trimRight());
-    CHECK_EQUAL("Hello, World!", FTS::String("Hello, World!\n\r\t ").trimThisRight());
     CHECK_EQUAL("Hello, World!", FTS::String("Hello, World!\n\r\t ").trimRight());
-    CHECK_EQUAL("Hello, World!", FTS::String("Hello, World! \n \r \t ").trimThisRight());
     CHECK_EQUAL("Hello, World!", FTS::String("Hello, World! \n \r \t ").trimRight());
-    CHECK_EQUAL("  Hello, World!", FTS::String("  Hello, World!").trimThisRight());
     CHECK_EQUAL("  Hello, World!", FTS::String("  Hello, World!").trimRight());
-    CHECK_EQUAL("Hello, World", FTS::String("Hello, World?1!!!!?!?!?!11").trimThisRight("!?1"));
     CHECK_EQUAL("Hello, World", FTS::String("Hello, World?1!!!!?!?!?!11").trimRight("!?1"));
-    CHECK_EQUAL("Hello, World", FTS::String("Hello, World!!!").trimThisRight("!!!!"));
     CHECK_EQUAL("Hello, World", FTS::String("Hello, World!!!").trimRight("!!!!"));
 
-    CHECK_EQUAL("", FTS::String("").trimThis());
     CHECK_EQUAL("", FTS::String("").trim());
-    CHECK_EQUAL("", FTS::String(" \n \r \t ").trimThis());
     CHECK_EQUAL("", FTS::String(" \n \r \t ").trim());
-    CHECK_EQUAL("Hello, World!", FTS::String("Hello, World!").trimThis());
     CHECK_EQUAL("Hello, World!", FTS::String("Hello, World!").trim());
-    CHECK_EQUAL("Hello, World!", FTS::String("  Hello, World!  ").trimThis());
     CHECK_EQUAL("Hello, World!", FTS::String("  Hello, World!  ").trim());
-    CHECK_EQUAL("Hello, World!", FTS::String("\n\r\t Hello, World!\n\r\t ").trimThis());
     CHECK_EQUAL("Hello, World!", FTS::String("\n\r\t Hello, World!\n\r\t ").trim());
-    CHECK_EQUAL("Hello, World!", FTS::String(" \n \r \t Hello, World! \n \r \t ").trimThis());
     CHECK_EQUAL("Hello, World!", FTS::String(" \n \r \t Hello, World! \n \r \t ").trim());
-    CHECK_EQUAL("Hello, World", FTS::String("Hello, World").trimThis(" ,"));
     CHECK_EQUAL("Hello, World", FTS::String("Hello, World").trim(" ,"));
-    CHECK_EQUAL("Hello, World", FTS::String("!?!?!?!11Hello, World?1!!!!?!?!?!11").trimThis("!?1"));
     CHECK_EQUAL("Hello, World", FTS::String("!?!?!?!11Hello, World?1!!!!?!?!?!11").trim("!?1"));
-    CHECK_EQUAL("Hello, World", FTS::String("!!!Hello, World!!!").trimThis("!!!!"));
     CHECK_EQUAL("Hello, World", FTS::String("!!!Hello, World!!!").trim("!!!!"));
 
     FTS::String hello("  Hello  ");
@@ -578,30 +544,18 @@ TEST_INSUITE(dString, Trimming)
 
 TEST_INSUITE(dString, UpperLower)
 {
-    CHECK_EQUAL("", FTS::String("").lowerThis());
     CHECK_EQUAL("", FTS::String("").lower());
-    CHECK_EQUAL("0123456789", FTS::String("0123456789").lowerThis());
     CHECK_EQUAL("0123456789", FTS::String("0123456789").lower());
-    CHECK_EQUAL("abcdefghijklmnopqrstuvwxyz", FTS::String("abcdefghijklmnopqrstuvwxyz").lowerThis());
     CHECK_EQUAL("abcdefghijklmnopqrstuvwxyz", FTS::String("abcdefghijklmnopqrstuvwxyz").lower());
-    CHECK_EQUAL("abcdefghijklmnopqrstuvwxyz", FTS::String("ABCDEFGHIJKLMNOPQRSTUVWXYZ").lowerThis());
     CHECK_EQUAL("abcdefghijklmnopqrstuvwxyz", FTS::String("ABCDEFGHIJKLMNOPQRSTUVWXYZ").lower());
-    CHECK_EQUAL("abcdefghijklmnopqrstuvwxyz", FTS::String("AbCdEfGhIjKlMnOpQrStUvWxYz").lowerThis());
     CHECK_EQUAL("abcdefghijklmnopqrstuvwxyz", FTS::String("AbCdEfGhIjKlMnOpQrStUvWxYz").lower());
-    CHECK_EQUAL("abcdefghijklmnopqrstuvwxyz", FTS::String("aBcDeFgHiJkLmNoPqRsTuVwXyZ").lowerThis());
     CHECK_EQUAL("abcdefghijklmnopqrstuvwxyz", FTS::String("aBcDeFgHiJkLmNoPqRsTuVwXyZ").lower());
 
-    CHECK_EQUAL("", FTS::String("").upperThis());
     CHECK_EQUAL("", FTS::String("").upper());
-    CHECK_EQUAL("0123456789", FTS::String("0123456789").upperThis());
     CHECK_EQUAL("0123456789", FTS::String("0123456789").upper());
-    CHECK_EQUAL("ABCDEFGHIJKLMNOPQRSTUVWXYZ", FTS::String("ABCDEFGHIJKLMNOPQRSTUVWXYZ").upperThis());
     CHECK_EQUAL("ABCDEFGHIJKLMNOPQRSTUVWXYZ", FTS::String("ABCDEFGHIJKLMNOPQRSTUVWXYZ").upper());
-    CHECK_EQUAL("ABCDEFGHIJKLMNOPQRSTUVWXYZ", FTS::String("abcdefghijklmnopqrstuvwxyz").upperThis());
     CHECK_EQUAL("ABCDEFGHIJKLMNOPQRSTUVWXYZ", FTS::String("abcdefghijklmnopqrstuvwxyz").upper());
-    CHECK_EQUAL("ABCDEFGHIJKLMNOPQRSTUVWXYZ", FTS::String("AbCdEfGhIjKlMnOpQrStUvWxYz").upperThis());
     CHECK_EQUAL("ABCDEFGHIJKLMNOPQRSTUVWXYZ", FTS::String("AbCdEfGhIjKlMnOpQrStUvWxYz").upper());
-    CHECK_EQUAL("ABCDEFGHIJKLMNOPQRSTUVWXYZ", FTS::String("aBcDeFgHiJkLmNoPqRsTuVwXyZ").upperThis());
     CHECK_EQUAL("ABCDEFGHIJKLMNOPQRSTUVWXYZ", FTS::String("aBcDeFgHiJkLmNoPqRsTuVwXyZ").upper());
 
     FTS::String a("AbCd");
@@ -648,71 +602,71 @@ TEST_INSUITE(dString, Searching)
     CHECK(not FTS::String("0123456789").ieq(FTS::String("1123456789")));
     CHECK(not FTS::String("!abcdefghijklmnopqrstuvwxyz?").ieq("!ABCDEFGHIJKLMNOPQRSTUVWXYZ"));
 
-    CHECK(FTS::String("").ncmp(""));
-    CHECK(FTS::String("").ncmp(FTS::String("")));
-    CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").ncmp("!abc"));
-    CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").ncmp(FTS::String("!abc")));
-    CHECK(not FTS::String("!abc").ncmp("!abcdefghijklmnopqrstuvwxyz?"));
-    CHECK(not FTS::String("!abc").ncmp(FTS::String("!abcdefghijklmnopqrstuvwxyz?")));
-    CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").ncmp("!abcdefghijklmnopqrstuvwxyz?"));
-    CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").ncmp(FTS::String("!abcdefghijklmnopqrstuvwxyz?")));
-    CHECK(not FTS::String("!abcdefghijklmnopqrstuvwxyz?").ncmp("!abcxyz", 0));
-    CHECK(not FTS::String("!abcdefghijklmnopqrstuvwxyz?").ncmp(FTS::String("!abcxyz"), 0));
-    CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").ncmp("!abcxyz", 1));
-    CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").ncmp(FTS::String("!abcxyz"), 1));
-    CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").ncmp("!abcxyz", 2));
-    CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").ncmp(FTS::String("!abcxyz"), 2));
-    CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").ncmp("!abcxyz", 3));
-    CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").ncmp(FTS::String("!abcxyz"), 3));
-    CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").ncmp("!abcxyz", 4));
-    CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").ncmp(FTS::String("!abcxyz"), 4));
-    CHECK(not FTS::String("!abcdefghijklmnopqrstuvwxyz?").ncmp("!abcxyz", 5));
-    CHECK(not FTS::String("!abcdefghijklmnopqrstuvwxyz?").ncmp(FTS::String("!abcxyz"), 5));
+    CHECK(FTS::String("").neq(""));
+    CHECK(FTS::String("").neq(FTS::String("")));
+    CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").neq("!abc"));
+    CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").neq(FTS::String("!abc")));
+    CHECK(not FTS::String("!abc").neq("!abcdefghijklmnopqrstuvwxyz?"));
+    CHECK(not FTS::String("!abc").neq(FTS::String("!abcdefghijklmnopqrstuvwxyz?")));
+    CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").neq("!abcdefghijklmnopqrstuvwxyz?"));
+    CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").neq(FTS::String("!abcdefghijklmnopqrstuvwxyz?")));
+    CHECK(not FTS::String("!abcdefghijklmnopqrstuvwxyz?").neq("!abcxyz", 0));
+    CHECK(not FTS::String("!abcdefghijklmnopqrstuvwxyz?").neq(FTS::String("!abcxyz"), 0));
+    CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").neq("!abcxyz", 1));
+    CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").neq(FTS::String("!abcxyz"), 1));
+    CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").neq("!abcxyz", 2));
+    CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").neq(FTS::String("!abcxyz"), 2));
+    CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").neq("!abcxyz", 3));
+    CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").neq(FTS::String("!abcxyz"), 3));
+    CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").neq("!abcxyz", 4));
+    CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").neq(FTS::String("!abcxyz"), 4));
+    CHECK(not FTS::String("!abcdefghijklmnopqrstuvwxyz?").neq("!abcxyz", 5));
+    CHECK(not FTS::String("!abcdefghijklmnopqrstuvwxyz?").neq(FTS::String("!abcxyz"), 5));
 
-    CHECK(FTS::String("").nicmp(""));
-    CHECK(FTS::String("").nicmp(FTS::String("")));
-    CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").nicmp("!abc"));
-    CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").nicmp("!ABC"));
-    CHECK(FTS::String("!aBcdefghijklmnopqrstuvwxyz?").nicmp("!abC"));
-    CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").nicmp(FTS::String("!abc")));
-    CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").nicmp(FTS::String("!ABC")));
-    CHECK(FTS::String("!aBcdefghijklmnopqrstuvwxyz?").nicmp(FTS::String("!abC")));
-    CHECK(not FTS::String("!abc").nicmp("!abcdefghijklmnopqrstuvwxyz?"));
-    CHECK(not FTS::String("!aBc").nicmp("!abCdefghijklmnopqrstuvwxyz?"));
-    CHECK(not FTS::String("!abc").nicmp(FTS::String("!abcdefghijklmnopqrstuvwxyz?")));
-    CHECK(not FTS::String("!aBc").nicmp(FTS::String("!abCdefghijklmnopqrstuvwxyz?")));
-    CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").nicmp("!abcdefghijklmnopqrstuvwxyz?"));
-    CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").nicmp("!ABCDEFGHIJKLMNOPQRSTUVWXYZ?"));
-    CHECK(FTS::String("!aBcDeFgHiJkLmNoPqRsTuVwXyZ?").nicmp("!AbCdEfGhIjKlMnOpQrStUvWxYz?"));
-    CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").nicmp(FTS::String("!abcdefghijklmnopqrstuvwxyz?")));
-    CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").nicmp(FTS::String("!ABCDEFGHIJKLMNOPQRSTUVWXYZ?")));
-    CHECK(FTS::String("!aBcDeFgHiJkLmNoPqRsTuVwXyZ?").nicmp(FTS::String("!AbCdEfGhIjKlMnOpQrStUvWxYz?")));
-    CHECK(not FTS::String("!abcdefghijklmnopqrstuvwxyz?").nicmp("!abcxyz", 0));
-    CHECK(not FTS::String("!abcdefghijklmnopqrstuvwxyz?").nicmp("!ABCXYZ", 0));
-    CHECK(not FTS::String("!AbCdefghijklmnopqrstuvwxyz?").nicmp("!aBcXyZ", 0));
-    CHECK(not FTS::String("!abcdefghijklmnopqrstuvwxyz?").nicmp(FTS::String("!abcxyz"), 0));
-    CHECK(not FTS::String("!abcdefghijklmnopqrstuvwxyz?").nicmp(FTS::String("!ABCXYZ"), 0));
-    CHECK(not FTS::String("!AbCdefghijklmnopqrstuvwxyz?").nicmp(FTS::String("!aBcXyZ"), 0));
-    CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").nicmp("!abcxyz", 1));
-    CHECK(FTS::String("!abCdefghijklmnopqrstuvwxyz?").nicmp("!aBcxyz", 1));
-    CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").nicmp(FTS::String("!abcxyz"), 1));
-    CHECK(FTS::String("!abCdefghijklmnopqrstuvwxyz?").nicmp(FTS::String("!aBcxyz"), 1));
-    CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").nicmp("!abcxyz", 2));
-    CHECK(FTS::String("!abCdefghijklmnopqrstuvwxyz?").nicmp("!aBcxyz", 2));
-    CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").nicmp(FTS::String("!abcxyz"), 2));
-    CHECK(FTS::String("!abCdefghijklmnopqrstuvwxyz?").nicmp(FTS::String("!aBcxyz"), 2));
-    CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").nicmp("!abcxyz", 3));
-    CHECK(FTS::String("!abCdefghijklmnopqrstuvwxyz?").nicmp("!aBcxyz", 3));
-    CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").nicmp(FTS::String("!abcxyz"), 3));
-    CHECK(FTS::String("!abCdefghijklmnopqrstuvwxyz?").nicmp(FTS::String("!aBcxyz"), 3));
-    CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").nicmp("!abcxyz", 4));
-    CHECK(FTS::String("!abCdefghijklmnopqrstuvwxyz?").nicmp("!aBcxyz", 4));
-    CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").nicmp(FTS::String("!abcxyz"), 4));
-    CHECK(FTS::String("!abCdefghijklmnopqrstuvwxyz?").nicmp(FTS::String("!aBcxyz"), 4));
-    CHECK(not FTS::String("!abcdefghijklmnopqrstuvwxyz?").nicmp("!abcxyz", 5));
-    CHECK(not FTS::String("!abCdefghijklmnopqrstuvwxyz?").nicmp("!aBcxyz", 5));
-    CHECK(not FTS::String("!abcdefghijklmnopqrstuvwxyz?").nicmp(FTS::String("!abcxyz"), 5));
-    CHECK(not FTS::String("!abCdefghijklmnopqrstuvwxyz?").nicmp(FTS::String("!aBcxyz"), 5));
+    CHECK(FTS::String("").nieq(""));
+    CHECK(FTS::String("").nieq(FTS::String("")));
+    CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").nieq("!abc"));
+    CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").nieq("!ABC"));
+    CHECK(FTS::String("!aBcdefghijklmnopqrstuvwxyz?").nieq("!abC"));
+    CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").nieq(FTS::String("!abc")));
+    CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").nieq(FTS::String("!ABC")));
+    CHECK(FTS::String("!aBcdefghijklmnopqrstuvwxyz?").nieq(FTS::String("!abC")));
+    CHECK(not FTS::String("!abc").nieq("!abcdefghijklmnopqrstuvwxyz?"));
+    CHECK(not FTS::String("!aBc").nieq("!abCdefghijklmnopqrstuvwxyz?"));
+    CHECK(not FTS::String("!abc").nieq(FTS::String("!abcdefghijklmnopqrstuvwxyz?")));
+    CHECK(not FTS::String("!aBc").nieq(FTS::String("!abCdefghijklmnopqrstuvwxyz?")));
+    CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").nieq("!abcdefghijklmnopqrstuvwxyz?"));
+    CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").nieq("!ABCDEFGHIJKLMNOPQRSTUVWXYZ?"));
+    CHECK(FTS::String("!aBcDeFgHiJkLmNoPqRsTuVwXyZ?").nieq("!AbCdEfGhIjKlMnOpQrStUvWxYz?"));
+    CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").nieq(FTS::String("!abcdefghijklmnopqrstuvwxyz?")));
+    CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").nieq(FTS::String("!ABCDEFGHIJKLMNOPQRSTUVWXYZ?")));
+    CHECK(FTS::String("!aBcDeFgHiJkLmNoPqRsTuVwXyZ?").nieq(FTS::String("!AbCdEfGhIjKlMnOpQrStUvWxYz?")));
+    CHECK(not FTS::String("!abcdefghijklmnopqrstuvwxyz?").nieq("!abcxyz", 0));
+    CHECK(not FTS::String("!abcdefghijklmnopqrstuvwxyz?").nieq("!ABCXYZ", 0));
+    CHECK(not FTS::String("!AbCdefghijklmnopqrstuvwxyz?").nieq("!aBcXyZ", 0));
+    CHECK(not FTS::String("!abcdefghijklmnopqrstuvwxyz?").nieq(FTS::String("!abcxyz"), 0));
+    CHECK(not FTS::String("!abcdefghijklmnopqrstuvwxyz?").nieq(FTS::String("!ABCXYZ"), 0));
+    CHECK(not FTS::String("!AbCdefghijklmnopqrstuvwxyz?").nieq(FTS::String("!aBcXyZ"), 0));
+    CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").nieq("!abcxyz", 1));
+    CHECK(FTS::String("!abCdefghijklmnopqrstuvwxyz?").nieq("!aBcxyz", 1));
+    CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").nieq(FTS::String("!abcxyz"), 1));
+    CHECK(FTS::String("!abCdefghijklmnopqrstuvwxyz?").nieq(FTS::String("!aBcxyz"), 1));
+    CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").nieq("!abcxyz", 2));
+    CHECK(FTS::String("!abCdefghijklmnopqrstuvwxyz?").nieq("!aBcxyz", 2));
+    CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").nieq(FTS::String("!abcxyz"), 2));
+    CHECK(FTS::String("!abCdefghijklmnopqrstuvwxyz?").nieq(FTS::String("!aBcxyz"), 2));
+    CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").nieq("!abcxyz", 3));
+    CHECK(FTS::String("!abCdefghijklmnopqrstuvwxyz?").nieq("!aBcxyz", 3));
+    CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").nieq(FTS::String("!abcxyz"), 3));
+    CHECK(FTS::String("!abCdefghijklmnopqrstuvwxyz?").nieq(FTS::String("!aBcxyz"), 3));
+    CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").nieq("!abcxyz", 4));
+    CHECK(FTS::String("!abCdefghijklmnopqrstuvwxyz?").nieq("!aBcxyz", 4));
+    CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").nieq(FTS::String("!abcxyz"), 4));
+    CHECK(FTS::String("!abCdefghijklmnopqrstuvwxyz?").nieq(FTS::String("!aBcxyz"), 4));
+    CHECK(not FTS::String("!abcdefghijklmnopqrstuvwxyz?").nieq("!abcxyz", 5));
+    CHECK(not FTS::String("!abCdefghijklmnopqrstuvwxyz?").nieq("!aBcxyz", 5));
+    CHECK(not FTS::String("!abcdefghijklmnopqrstuvwxyz?").nieq(FTS::String("!abcxyz"), 5));
+    CHECK(not FTS::String("!abCdefghijklmnopqrstuvwxyz?").nieq(FTS::String("!aBcxyz"), 5));
 
     CHECK(FTS::String("Hello, World!").contains("Hello"));
     CHECK(FTS::String("Hello, World!").contains("World"));
@@ -816,14 +770,14 @@ TEST_INSUITE_WITHSETUP(dString, StringOperators, OperatorSet)
     CHECK_EQUAL("Nanana", s3.str());
 
     s1 = s2 = s3 = "";
-    CHECK(s1.isEmpty());
-    CHECK(s2.isEmpty());
-    CHECK(s3.isEmpty());
+    CHECK(s1.empty());
+    CHECK(s2.empty());
+    CHECK(s3.empty());
 
     s1 = s2 = s3 = NULL;
-    CHECK(s1.isEmpty());
-    CHECK(s2.isEmpty());
-    CHECK(s3.isEmpty());
+    CHECK(s1.empty());
+    CHECK(s2.empty());
+    CHECK(s3.empty());
 
     s1 = "Hello";
     s1 = s1 = s1;
@@ -847,15 +801,15 @@ TEST_INSUITE_WITHSETUP(dString, StringOperators, OperatorAddSet)
 
     s3 = FTS::String::EMPTY;
     s3 += FTS::String::EMPTY;
-    CHECK(s3.isEmpty());
+    CHECK(s3.empty());
 
     s3 = FTS::String::EMPTY;
     s3 += "";
-    CHECK(s3.isEmpty());
+    CHECK(s3.empty());
 
     s3 = FTS::String::EMPTY;
     s3 += NULL;
-    CHECK(s3.isEmpty());
+    CHECK(s3.empty());
 
     s1 += s2;
     CHECK_EQUAL("Hello, Beautiful ", s1.str());
@@ -868,11 +822,11 @@ TEST_INSUITE_WITHSETUP(dString, StringOperators, OperatorAdd)
     CHECK_EQUAL("Hello, ", s1 + NULL);
     CHECK_EQUAL("Hello, ", s1 + FTS::String::EMPTY);
 
-    CHECK((FTS::String::EMPTY + FTS::String::EMPTY).isEmpty());
-    CHECK(("" + FTS::String::EMPTY).isEmpty());
-    CHECK((FTS::String::EMPTY + "").isEmpty());
-    CHECK((NULL + FTS::String::EMPTY).isEmpty());
-    CHECK((FTS::String::EMPTY + NULL).isEmpty());
+    CHECK((FTS::String::EMPTY + FTS::String::EMPTY).empty());
+    CHECK(("" + FTS::String::EMPTY).empty());
+    CHECK((FTS::String::EMPTY + "").empty());
+    CHECK((NULL + FTS::String::EMPTY).empty());
+    CHECK((FTS::String::EMPTY + NULL).empty());
 }
 
 TEST_INSUITE_WITHSETUP(dString, StringOperators, OperatorEq)
@@ -951,7 +905,7 @@ TEST_INSUITE_WITHSETUP(dString, StringOperators, OperatorAccessors)
 
 TEST_INSUITE(dString, Empty)
 {
-    CHECK(FTS::String::EMPTY.isEmpty());
+    CHECK(FTS::String::EMPTY.empty());
 }
 
 

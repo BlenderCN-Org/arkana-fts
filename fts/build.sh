@@ -1,10 +1,7 @@
 #!/bin/bash
 
 if [ $1 ] ; then
-    if [ $1 = "-c" ] ; then
-        rm -Rf linux/*
-        exit 0
-    elif [ $1 = "-h" -o $1 = "--help" ] ; then
+    if [ $1 = "-h" -o $1 = "--help" ] ; then
         echo "-d: Enable debug mode"
         echo "-n: do not configure"
         echo "-c: clean"
@@ -14,6 +11,7 @@ fi
 
 DEBUG=0
 CONFIG=1
+CLEAN=0
 
 while [ $1 ] ; do
     if [ $1 = "-d" ] ; then
@@ -21,6 +19,9 @@ while [ $1 ] ; do
         shift
     elif [ $1 = "-n" ] ; then
         CONFIG=0
+        shift
+    elif [ $1 = "-c" ] ; then
+        CLEAN=1
         shift
     else
         echo "WARNING: Unrecognized option $1"
@@ -30,6 +31,7 @@ done
 
 echo "CONFIG=$CONFIG"
 echo "DEBUG=$DEBUG"
+echo "CLEAN=$CLEAN"
 
 #####################################################
 # BUILD PROCESS
@@ -41,13 +43,20 @@ echo "DEBUG=$DEBUG"
 mkdir -p linux/release
 mkdir -p linux/debug
 
-EXECUTABLE=""
+BUILDDIR=""
 if [ $DEBUG = 0 ] ; then
-    cd linux/release
-    EXECUTABLE="linux/release/fts"
+    BUILDDIR="linux/release"
 else
-    cd linux/debug
-    EXECUTABLE="linux/debug/fts"
+    BUILDDIR="linux/debug"
+fi
+
+cd $BUILDDIR
+EXECUTABLE="$BUILDDIR/fts"
+
+if [ $CLEAN = 1 ] ; then
+    rm -Rf *
+    cd -
+    exit 0
 fi
 
 RES=0

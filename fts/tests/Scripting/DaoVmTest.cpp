@@ -127,9 +127,9 @@ TEST_INSUITE_WITHSETUP(tDaoVm, DaoVmClean, Function)
         auto tt = daoTypeError();
 
     } catch (int i) {
-        FAIL(String::sfmt( "caught {1}\n" , String::nr(i)).c_str());
+        FAIL(String("caught {1}\n").fmt(String::nr(i)).c_str());
     } catch (char * s) {
-        FAIL(String::sfmt( "caught {1}\n" , s).c_str());
+        FAIL(String("caught {1}\n").fmt(s).c_str());
     } catch (DaoVmFunctionNotFound& ex) {
         FAIL("caught FunctionNotFound\n");
     } catch (const std::exception& ex) {
@@ -147,28 +147,28 @@ TEST_INSUITE_WITHSETUP(tDaoVm, DaoVmClean, Hotkeys)
 
         DaoVm::getSingleton().clearOutput();
         InputManager::getSingleton().simulateKeyPress(Key::F1);
-        CHECK_EQUAL("exec Daokey", DaoVm::getSingleton().getOutput().trimRight()); 
+        CHECK_EQUAL("exec Daokey", DaoVm::getSingleton().getOutput().trimRight());
 
         DaoVm::getSingleton().clearOutput();
         InputManager::getSingleton().simulateKeyDown(Key::ArrowDown);
         InputManager::getSingleton().simulateKeyPress(Key::F1);
         InputManager::getSingleton().simulateKeyUp(Key::ArrowDown);
-        CHECK_EQUAL("doAction Daokey", DaoVm::getSingleton().getOutput().trimRight()); 
+        CHECK_EQUAL("doAction Daokey", DaoVm::getSingleton().getOutput().trimRight());
 
         DaoVm::getSingleton().clearOutput();
         InputManager::getSingleton().simulateKeyPress(Key::F4);
-        CHECK_EQUAL("running", DaoVm::getSingleton().getOutput().trimRight()); 
+        CHECK_EQUAL("running", DaoVm::getSingleton().getOutput().trimRight());
 
         DaoVm::getSingleton().clearOutput();
         InputManager::getSingleton().simulateKeyDown(Key::LeftShift);
         InputManager::getSingleton().simulateKeyPress(Key::F4);
         InputManager::getSingleton().simulateKeyUp(Key::LeftShift);
-        CHECK_EQUAL("running even faster", DaoVm::getSingleton().getOutput().trimRight()); 
+        CHECK_EQUAL("running even faster", DaoVm::getSingleton().getOutput().trimRight());
 
         DaoVm::getSingleton().clearOutput();
         InputManager::getSingleton().simulateKeyPress(Key::F3);
-        CHECK(DaoVm::getSingleton().getOutput().contains("X = ")); 
-        CHECK(DaoVm::getSingleton().getOutput().contains("Y = ")); 
+        CHECK(DaoVm::getSingleton().getOutput().contains("X = "));
+        CHECK(DaoVm::getSingleton().getOutput().contains("Y = "));
 
 
     } catch (DaoVmFunctionNotFound& ex) {
@@ -203,7 +203,7 @@ TEST_INSUITE_WITHSETUP(tDaoVm, DaoVmClean, Context)
         DaoVm::getSingleton().execute(Path("process2.dao"));
         DaoVm::getSingleton().clearOutput();
         DaoFunctionCall<>("P2Routine")(5);
-        CHECK(DaoVm::getSingleton().getOutput().contains("Dao P2: in P2Rountine() in=5")); 
+        CHECK(DaoVm::getSingleton().getOutput().contains("Dao P2: in P2Rountine() in=5"));
         namesToCheck.clear();
         namesToCheck.push_back("klaus");
         namesToCheck.push_back("tt");
@@ -217,7 +217,7 @@ TEST_INSUITE_WITHSETUP(tDaoVm, DaoVmClean, Context)
 
         for( auto name = namesToCheck.begin(); name != namesToCheck.end(); ++name ) {
             if( !DaoVm::getSingleton().containsName((*name).c_str()) ) {
-                FAIL( String::sfmt("ERROR: Don't find {1} in new namespace", *name).c_str() );
+                FAIL( String("ERROR: Don't find {1} in new namespace").fmt(*name).c_str() );
             }
         }
         DaoVm::getSingleton().execute(String("p2test = SndDaoOtto()\np2test.name()"));
@@ -236,7 +236,7 @@ TEST_INSUITE_WITHSETUP(tDaoVm, DaoVmClean, Context)
 
         for( auto name = namesToCheck.begin(); name != namesToCheck.end(); ++name ) {
             if( !DaoVm::getSingleton().containsName((*name).c_str()) ) {
-                FAIL( String::sfmt("ERROR: Don't find {1} in restored namespace", *name).c_str() );
+                FAIL( String("ERROR: Don't find {1} in restored namespace").fmt(*name).c_str() );
             }
         }
         namesToCheck.clear();
@@ -246,12 +246,12 @@ TEST_INSUITE_WITHSETUP(tDaoVm, DaoVmClean, Context)
         namesToCheck.push_back("P2Routine");
         for( auto name = namesToCheck.begin(); name != namesToCheck.end(); ++name ) {
             if( DaoVm::getSingleton().containsName((*name).c_str()) ) {
-                FAIL(String::sfmt("ERROR! found {1} of destroyed namespace", (*name).c_str()).c_str());
+                FAIL(String("ERROR! found {1} of destroyed namespace").fmt((*name).c_str()).c_str());
             }
         }
         DaoVm::getSingleton().clearOutput();
         DaoFunctionCall<>("printgl")(77);
-        CHECK(DaoVm::getSingleton().getOutput().contains("global_a= 77")); 
+        CHECK(DaoVm::getSingleton().getOutput().contains("global_a= 77"));
 
 
     } catch (DaoVmFunctionNotFound& ex) {

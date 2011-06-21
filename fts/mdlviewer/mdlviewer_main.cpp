@@ -558,7 +558,7 @@ bool FTS::ModelViewerRlv::cbLoadDone(const CEGUI::EventArgs & in_ea)
     String sFile = static_cast<const FileDlgEventArgs &>(in_ea).getFile();
 
     // If he clicked on cancel, do nothing.
-    if(sFile.isEmpty()) {
+    if(sFile.empty()) {
         return true;
     }
 

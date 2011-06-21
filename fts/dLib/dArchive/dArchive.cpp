@@ -158,6 +158,11 @@ int FileChunk::read(File &out_f)
     if(Chunk::read(out_f) != ERR_OK)
         return -1;
 
+    // Ignore leading "./" or ".\" in filenames
+    while(m_sName.left(2) == "./" || m_sName.left(2) == ".\\") {
+        m_sName = String(m_sName, 2);
+    }
+
     // Read the file's data into a new data container.
     m_pRawContent = new RawDataContainer(this->getPayloadLength());
     if(out_f.readNoEndian(*m_pRawContent) < this->getPayloadLength()) {
@@ -192,7 +197,7 @@ int FileChunk::give(File::Ptr in_pFile, const String& in_sChunkName)
     m_pFileCache.reset();
     m_pFileCache = std::move(in_pFile);
     if(m_pFileCache.get() != NULL) {
-        if(!in_sChunkName.isEmpty())
+        if(!in_sChunkName.empty())
             m_sName = in_sChunkName;
         else
             m_sName = m_pFileCache->getName();
@@ -225,7 +230,7 @@ int FileChunk::give(File::Ptr in_pFile, const String& in_sChunkName)
  */
 int FileChunk::execute(const String &in_sNewChunkname)
 {
-    Path sFileName = in_sNewChunkname.isEmpty() ? this->getName() : in_sNewChunkname;
+    Path sFileName = in_sNewChunkname.empty() ? this->getName() : in_sNewChunkname;
     try {
         File::Ptr f = File::overwrite(sFileName, File::Insert);
         f->writeNoEndian(*m_pRawContent); // RawContent may already be comressed.
@@ -404,7 +409,7 @@ Archive::Archive(PDBrowseInfo out_dbi, const String &in_sChunkPrefix)
 
 void FTS::Archive::makeChunksFromDir(PDBrowseInfo out_dbi, const Path& in_sSubdir, const String &in_sChunkPrefix)
 {
-    for(Path sEntry = dBrowse_GetNext(out_dbi) ; !sEntry.isEmpty() ; sEntry = dBrowse_GetNext(out_dbi)) {
+    for(Path sEntry = dBrowse_GetNext(out_dbi) ; !sEntry.empty() ; sEntry = dBrowse_GetNext(out_dbi)) {
         // Skip the stupid ones..
         if(sEntry == "." || sEntry == "..")
             continue ;
@@ -665,6 +670,11 @@ Chunk *Archive::getChunk(const String &in_sName)
 {
     ChunkMap::iterator i = m_mChunks.find(in_sName);
     return (i == m_mChunks.end()) ? NULL : i->second;
+}
+
+bool Archive::hasChunk(const String& in_sName) const
+{
+    return m_mChunks.find(in_sName) != m_mChunks.end();
 }
 
 /// \return the total number of file chunks stored in the archive.

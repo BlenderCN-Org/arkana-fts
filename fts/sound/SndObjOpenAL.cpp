@@ -77,10 +77,10 @@ ISndObj* SndObjOpenAL::Load(const Path& in_sName)
     m_pos = Vector(0.,0.,0.);
     m_mode = SndPlayMode::Single ;
     this->Unload();
-    if(!in_sName.isEmpty()) {
+    if(!in_sName.empty()) {
         m_sName = in_sName;
     }
-    if(m_sName.isEmpty()) {
+    if(m_sName.empty()) {
         throw InvalidCallException("SndObjOpenAL::Load(NULL)");
     }
     SndSysOpenAL* pSndSys = dynamic_cast<SndSysOpenAL*> (ISndSys::getSingletonPtr());

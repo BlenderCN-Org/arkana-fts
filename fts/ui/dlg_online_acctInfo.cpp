@@ -315,7 +315,7 @@ int FTS::DlgOnlineAcctInfo::saveDetails()
         return -1;
     }
 
-    if(sMail.isEmpty()) {
+    if(sMail.empty()) {
         FTS18N("Ogm_create_missdata", MsgType::Error);
         return -2;
     }
@@ -333,25 +333,25 @@ int FTS::DlgOnlineAcctInfo::saveDetails()
     if(ERR_OK != g_pMeHacky->og_accountSetFlag(DSRV_PLAYER_FLAG_HIDEMAIL, bHideMail))
         return -5;
 
-    if((bEmptyCheck && !sJabber.isEmpty()) || !bEmptyCheck) {
+    if((bEmptyCheck && !sJabber.empty()) || !bEmptyCheck) {
         g_pMeHacky->og_getConnection()->waitAntiFlood();
         if(ERR_OK != g_pMeHacky->og_accountSet(DSRV_TBL_USR_JABBER, String(sJabber, 0, 64)))
             return -6;
     }
 
-    if((bEmptyCheck && !sContact.isEmpty() && sContact != "\n") || !bEmptyCheck) {
+    if((bEmptyCheck && !sContact.empty() && sContact != "\n") || !bEmptyCheck) {
         g_pMeHacky->og_getConnection()->waitAntiFlood();
         if(ERR_OK != g_pMeHacky->og_accountSet(DSRV_TBL_USR_CONTACT, String(sContact, 0, 255)))
             return -7;
     }
 
-    if((bEmptyCheck && !sFName.isEmpty()) || !bEmptyCheck) {
+    if((bEmptyCheck && !sFName.empty()) || !bEmptyCheck) {
         g_pMeHacky->og_getConnection()->waitAntiFlood();
         if(ERR_OK != g_pMeHacky->og_accountSet(DSRV_TBL_USR_FNAME, String(sFName, 0, 32)))
             return -8;
     }
 
-    if((bEmptyCheck && !sName.isEmpty()) || !bEmptyCheck) {
+    if((bEmptyCheck && !sName.empty()) || !bEmptyCheck) {
         g_pMeHacky->og_getConnection()->waitAntiFlood();
         if(ERR_OK != g_pMeHacky->og_accountSet(DSRV_TBL_USR_NAME, String(sName, 0, 32)))
             return -9;
@@ -359,13 +359,13 @@ int FTS::DlgOnlineAcctInfo::saveDetails()
 
     String sBDay = sBDYear + "-" + sBDMonth + "-" + sBDDay;
 
-    if((bEmptyCheck && !sBDay.isEmpty()) || !bEmptyCheck) {
+    if((bEmptyCheck && !sBDay.empty()) || !bEmptyCheck) {
         g_pMeHacky->og_getConnection()->waitAntiFlood();
         if(ERR_OK != g_pMeHacky->og_accountSet(DSRV_TBL_USR_BDAY, String(sBDay, 0, 10)))
             return -10;
     }
 
-    if((bEmptyCheck && !sCmt.isEmpty() && sCmt != "\n")
+    if((bEmptyCheck && !sCmt.empty() && sCmt != "\n")
        || !bEmptyCheck) {
         g_pMeHacky->og_getConnection()->waitAntiFlood();
         if(ERR_OK != g_pMeHacky->og_accountSet(DSRV_TBL_USR_CMT, String(sCmt, 0, 255)))
@@ -407,7 +407,7 @@ int FTS::DlgOnlineAcctInfo::loadDetails(const String &in_sName)
         FTSGetConvertWinMacro(CEGUI::Checkbox, pCb, "dlg_createOnlineAcc/frmNecess/chkMail");
         pCb->setSelected(uiFlags & DSRV_PLAYER_FLAG_HIDEMAIL);
 
-        if(!sMail.isEmpty()) {
+        if(!sMail.empty()) {
             // We also don't want to show the email of ourselves if we "view"
             // our own account, even though we have the rights ; we want to see
             // it just the way others would see it.
@@ -417,19 +417,19 @@ int FTS::DlgOnlineAcctInfo::loadDetails(const String &in_sName)
                        ->getChild("dlg_createOnlineAcc/frmNecess/Mail")->setText(sMail);
             }
         }
-        if(!sJabber.isEmpty())
+        if(!sJabber.empty())
             m_pRoot->getChild("dlg_createOnlineAcc/frmContact")
                    ->getChild("dlg_createOnlineAcc/frmContact/Jabber")->setText(sJabber);
-        if(!sContact.isEmpty())
+        if(!sContact.empty())
             m_pRoot->getChild("dlg_createOnlineAcc/frmContact")
                    ->getChild("dlg_createOnlineAcc/frmContact/Contact")->setText(sContact);
-        if(!sFName.isEmpty())
+        if(!sFName.empty())
             m_pRoot->getChild("dlg_createOnlineAcc/frmPersonal")
                    ->getChild("dlg_createOnlineAcc/frmPersonal/FName")->setText(sFName);
-        if(!sName.isEmpty())
+        if(!sName.empty())
             m_pRoot->getChild("dlg_createOnlineAcc/frmPersonal")
                    ->getChild("dlg_createOnlineAcc/frmPersonal/Name")->setText(sName);
-        if(!sCmt.isEmpty())
+        if(!sCmt.empty())
             m_pRoot->getChild("dlg_createOnlineAcc/frmPersonal")
                    ->getChild("dlg_createOnlineAcc/frmPersonal/Comment")->setText(sCmt);
 

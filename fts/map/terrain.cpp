@@ -77,7 +77,7 @@ int Terrain::loadInfo(const String &in_sTerrainFile, SLoadingInfo &out_info)
     m_bMultiTex = conf.getBool("MultiTexturing");
     m_bComplex  = conf.getBool("ComplexQuads");
 
-    if(in_sTerrainFile.isEmpty() || out_info.sMapName.isEmpty()) {
+    if(in_sTerrainFile.empty() || out_info.sMapName.empty()) {
         FTS18N("InvParam", MsgType::Horror, "Terrain::load");
         return -1;
     }

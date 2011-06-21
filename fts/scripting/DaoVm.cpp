@@ -106,7 +106,7 @@ void DaoVm::loadInternalScripts()
 }
 void DaoVm::loadScript(const FTS::Path& file)
 {
-    assert(file != NULL && !file.isEmpty());
+    assert(file != NULL && !file.empty());
     String fullFileName = Path::getScriptPath() + file;
     File::Ptr fraw = File::open(fullFileName, File::Read);
     size_t size = static_cast<size_t>(fraw->getSize());

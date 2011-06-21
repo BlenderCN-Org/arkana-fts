@@ -202,7 +202,7 @@ bool FTS::DlgOnlineFindGame::cbGameClicked(const CEGUI::EventArgs &)
             return true;
 
         sGameName = li->getText();
-        if(sGameName.isEmpty())
+        if(sGameName.empty())
             return true;
 
         p.append(sGameName);

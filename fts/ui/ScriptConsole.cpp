@@ -107,7 +107,7 @@ namespace FTS {
             DaoVm::getSingleton().execute(statement);
             m_cmdLines.clear();
             String output = DaoVm::getSingleton().getOutput();
-            if( !output.isEmpty() ) {
+            if( !output.empty() ) {
                 (new SimpleListItem(output))->addAsLast(pLB);
                 DaoVm::getSingleton().clearOutput();
             }
@@ -119,7 +119,7 @@ namespace FTS {
             FTSGetConvertWinMacro(CEGUI::Listbox, pLB, "script_console/lbOutput");
             (new SimpleListItem(String("> ") + String(e.what())))->addAsLast(pLB);
             String output = DaoVm::getSingleton().getOutput();
-            if( !output.isEmpty() ) {
+            if( !output.empty() ) {
                 (new SimpleListItem(output))->addAsLast(pLB);
                 DaoVm::getSingleton().clearOutput();
             }
@@ -161,7 +161,7 @@ namespace FTS {
     void ScriptConsoleHistory::add( const String& in_cmdLine )
     {
         String toStore = in_cmdLine.trimRight(String("\n"));
-        if( toStore.isEmpty() ) {
+        if( toStore.empty() ) {
             return;
         }
         m_history.push_back(toStore);

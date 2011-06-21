@@ -99,7 +99,7 @@ FTS::String FTSSrv2::ServerLogger::timeString() const
 
 int FTSSrv2::ServerLogger::logToFile(const FTS::String &in_sMessage, const FTS::String & in_sFile) const
 {
-    if(in_sFile.isEmpty())
+    if(in_sFile.empty())
         return ERR_OK;
 
     FILE *pF = fopen(in_sFile.c_str(), "a+");
@@ -170,15 +170,15 @@ FTS::String FTSSrv2::ServerLogger::formatI18nMessage(const FTS::String &in_pszMs
                 const FTS::String &in_sArg9) const
 {
     FTS::String sMsg = "Untranslated message \"" + in_pszMsgID + "\" with arguments: ";
-    if(!in_sArg1.isEmpty()) sMsg += in_sArg1;
-    if(!in_sArg2.isEmpty()) sMsg += in_sArg2;
-    if(!in_sArg3.isEmpty()) sMsg += in_sArg3;
-    if(!in_sArg4.isEmpty()) sMsg += in_sArg4;
-    if(!in_sArg5.isEmpty()) sMsg += in_sArg5;
-    if(!in_sArg6.isEmpty()) sMsg += in_sArg6;
-    if(!in_sArg7.isEmpty()) sMsg += in_sArg7;
-    if(!in_sArg8.isEmpty()) sMsg += in_sArg8;
-    if(!in_sArg9.isEmpty()) sMsg += in_sArg9;
+    if(!in_sArg1.empty()) sMsg += in_sArg1;
+    if(!in_sArg2.empty()) sMsg += in_sArg2;
+    if(!in_sArg3.empty()) sMsg += in_sArg3;
+    if(!in_sArg4.empty()) sMsg += in_sArg4;
+    if(!in_sArg5.empty()) sMsg += in_sArg5;
+    if(!in_sArg6.empty()) sMsg += in_sArg6;
+    if(!in_sArg7.empty()) sMsg += in_sArg7;
+    if(!in_sArg8.empty()) sMsg += in_sArg8;
+    if(!in_sArg9.empty()) sMsg += in_sArg9;
     return sMsg;
 }
 

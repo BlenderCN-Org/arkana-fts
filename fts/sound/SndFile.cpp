@@ -87,7 +87,7 @@ FTS::SndFile::SndFile(const Path& in_sName)
         throw CorruptDataException(sCompleteFilename, "Unexpected end of file");
     fraw->setCursorPos(0);
 
-    if(String(ident).nicmp("ogg")) {
+    if(String(ident).nieq("ogg")) {
         OggVorbis_File vf;
         int eof=0;
         int current_section;

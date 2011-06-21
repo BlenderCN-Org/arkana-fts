@@ -9,8 +9,8 @@ using namespace FTSArc;
 using namespace FTS;
 
 SingleFileCompressor::SingleFileCompressor(const Path& in_sOutPat, Compressor::Ptr in_pComp, bool in_bRecurse)
-    : ArchiverBase(in_sOutPat.isEmpty() ? SingleFileCompressor::defaultOutName() : in_sOutPat,
-                   in_pComp,
+    : ArchiverBase(in_sOutPat.empty() ? SingleFileCompressor::defaultOutName() : in_sOutPat,
+                   std::move(in_pComp),
                    in_bRecurse)
 {
 }
@@ -32,9 +32,9 @@ int SingleFileCompressor::execute()
         FTSMSG(*i + " -> ");
 
         // Determine the output file name.
-        Path sOutFile = String::sfmtRemoveEmpty(m_sOutName, i->directory() + FTS_DIR_SEPARATOR,
-                                                             i->basename().withoutExt(),
-                                                             i->ext());
+        Path sOutFile = String(m_sOutName).fmtRemoveEmpty(i->directory() + FTS_DIR_SEPARATOR,
+                                                          i->basename().withoutExt(),
+                                                          i->ext());
 
         FTSMSG(sOutFile + " ... ");
 

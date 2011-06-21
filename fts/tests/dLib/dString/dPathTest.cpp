@@ -10,7 +10,7 @@ SUITE(dPath)
 
 TEST_INSUITE(dPath, Construction)
 {
-    CHECK(Path().isEmpty());
+    CHECK(Path().empty());
 
     CHECK_EQUAL("/", Path("/"));
     CHECK_EQUAL("/", Path("////"));
