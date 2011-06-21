@@ -44,14 +44,14 @@ Value* String::codeGen(CodeGenContext& context)
 {
     std::cout << "  Creating string: " << value << std::endl;
     // generate the type for the globale var
-    ArrayType* ArrayTy_0 = ArrayType::get(IntegerType::get(context.getModule()->getContext(), 8), value.size() +1 );
+    ArrayType* ArrayTy_0 = ArrayType::get(IntegerType::get(context.getGlobalContext(), 8), value.size() +1 );
     // create global var which holds the constant string.
-    GlobalVariable* gvar_array__str = new GlobalVariable(/*Module=*/*context.getModule(), 
+    GlobalVariable* gvar_array__str = new GlobalVariable(*context.getModule(),
                                                          /*Type=*/ArrayTy_0,
                                                          /*isConstant=*/true,
-                                                         /*Linkage=*/GlobalValue::PrivateLinkage,
+                                                         GlobalValue::PrivateLinkage,
                                                          /*Initializer=*/0, // has initializer, specified below
-                                                         /*Name=*/".str");
+                                                         ".str");
     gvar_array__str->setAlignment(1);
     // create the contents for the string global.
     Constant* const_array_5 =  ConstantArray::get(context.getGlobalContext(), value);
@@ -60,7 +60,7 @@ Value* String::codeGen(CodeGenContext& context)
     
     // generate access pointer to the string 
     std::vector<Constant*> const_ptr_8_indices;
-    ConstantInt* const_int64_9 = ConstantInt::get(context.getModule()->getContext(), APInt(64, StringRef("0"), 10));
+    ConstantInt* const_int64_9 = ConstantInt::get(context.getGlobalContext(), APInt(64, StringRef("0"), 10));
     const_ptr_8_indices.push_back(const_int64_9);
     const_ptr_8_indices.push_back(const_int64_9);
     Constant* const_ptr_8 = ConstantExpr::getGetElementPtr(gvar_array__str, &const_ptr_8_indices[0], const_ptr_8_indices.size());
@@ -179,14 +179,14 @@ Value* Assignment::codeGen(CodeGenContext& context)
 {
     std::cout << "  Creating assignment for " << lhs->getName() << std::endl;
     if( context.locals().find(lhs->getName()) == context.locals().end() ) {
-        std::cerr << "undeclared variable " << lhs->getName() << std::endl;
+        std::cerr << "      undeclared variable " << lhs->getName() << std::endl;
         return nullptr;
     }
     AllocaInst * var = context.locals()[lhs->getName()] ;
     const Type* varType = var->getType()->getElementType();
     Value* value = rhs->codeGen(context);
     if( value == nullptr ) {
-        std::cout << "  Assignment expression results in nothing\n";
+        std::cout << "      Assignment expression results in nothing\n";
         return nullptr;
     }
     
@@ -194,7 +194,7 @@ Value* Assignment::codeGen(CodeGenContext& context)
         // same type but different bit size.
         value = CastInst::CreateTruncOrBitCast(value, varType, "cast", context.currentBlock());
     } else if ( value->getType() != varType ) {
-        std::cout << "  Assignment of incompatible types "
+        std::cout << "      Assignment of incompatible types "
                   << varType->getTypeID() << "(" << varType->getScalarSizeInBits() << ") "
                   << " = "
                   << value->getType()->getTypeID()  << "(" << value->getType()->getScalarSizeInBits() << ") "
@@ -268,7 +268,7 @@ Value* FunctionDeclaration::codeGen(CodeGenContext& context)
             ReturnInst::Create(context.getGlobalContext(),0, context.currentBlock());
         }
     }
-    context.endScope();;
+    context.endScope();
     return function;
 }
 
