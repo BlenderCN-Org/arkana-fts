@@ -14,6 +14,7 @@
 #include "fts_Snd.h"
 #include "sound/SndObjNone.h"
 #include "sound/SndObjOpenAL.h"
+#include <assert.h>
 
 namespace FTS {
 
@@ -100,7 +101,7 @@ SndSysOpenAL::~SndSysOpenAL()
 
     // Shutdown
     ALCcontext *Context = alcGetCurrentContext();
-     assert(Context);
+    assert(Context);
     ALCdevice *Device = Context ? alcGetContextsDevice(Context) : NULL;
      assert(Device);
 
@@ -141,7 +142,7 @@ ISndObj* SndSysOpenAL::CreateSndObj(SndGroup::Enum in_enumGroup, const Path& in_
           ->setVolume(m_groups[in_enumGroup]->getVolume());
     } catch(const LoggableException &e) {
         e.show();
-	    SAFE_DELETE(so);
+        SAFE_DELETE(so);
         so = new SndObjNone();
     }
     assert( so != NULL );
