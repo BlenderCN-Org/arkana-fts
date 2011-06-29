@@ -149,6 +149,7 @@ public:
     String getCompiledShaderSource(const String& in_sShaderName, const ShaderCompileFlags& flags = ShaderCompileFlags());
 
     Program* getOrLinkProgram(const String& in_sVertexShader = DefaultVertexShader, const String& in_sFragmentShader = DefaultFragmentShader, const String& in_sGeometryShader = DefaultGeometryShader, const ShaderCompileFlags& flags = ShaderCompileFlags());
+    void destroyProgramsUsing(const String& in_sShaderName);
 
 protected:
     CompiledShaderPtr compileShader(const String& in_sShaderName, const ShaderCompileFlags& flags = ShaderCompileFlags());

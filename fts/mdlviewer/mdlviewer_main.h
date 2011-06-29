@@ -83,7 +83,7 @@ private:
     String m_sModelName;
 
     /// The instances of this model and their position (For massive rendering).
-    std::list<std::shared_ptr<DecorativeMO>> m_modelInsts;
+    std::list< std::shared_ptr<DecorativeMO> > m_modelInsts;
 
     ModelInstance* m_pCoordSys;
     ModelInstance* m_pAABB;

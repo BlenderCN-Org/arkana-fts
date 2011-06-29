@@ -39,82 +39,6 @@ namespace FTS {
 static const unsigned int BONES_PER_MESH = 20;
 static const String MODEL_FILENAME_SEP = "__";
 
-// struct MaterialUserData {
-//     String sVertShaderName;
-//     String sFragShaderName;
-//     String sGeomShaderName;
-//     VertexArrayObject vao;
-//     float alphaAsPlayerCol;
-//     Program * pShader;
-//
-//     /// The mode to use when calling glDrawElements.
-//     unsigned int drawMode;
-//
-//     MaterialUserData(const String& in_sVertShaderName = String::EMPTY, const String& in_sFragShaderName = String::EMPTY, const String& in_sGeomShaderName = String::EMPTY)
-//         : sVertShaderName(in_sVertShaderName), sFragShaderName(in_sFragShaderName), sGeomShaderName(in_sGeomShaderName), alphaAsPlayerCol(1.0f), drawMode(GL_TRIANGLES)
-//     {
-//         pShader = ShaderManager::getSingleton().getOrLinkProgram(sVertShaderName, sFragShaderName, sGeomShaderName);
-//     };
-//
-//     MaterialUserData(const CalCoreMaterial& in_coreMat, const String& in_sModelName, bool in_bHasNonemptySkeleton)
-//         : sVertShaderName(in_bHasNonemptySkeleton ? "__FTS__RiggedModel.vert" : "__FTS__StaticModel.vert")
-//         , sFragShaderName("__FTS__TnL.frag")         /// \todo make dependend on whether there is a map or not for ex.
-//         , alphaAsPlayerCol(1.0f)
-//         , drawMode(GL_TRIANGLES)
-//     {
-//         String sAlphaAsPlayerColor = in_coreMat.getProprety("AlphaAsPlayerColor");
-//         if(!sAlphaAsPlayerColor.isEmpty()) {
-//             // Either, we set the player color, fully opaque or we don't use player
-//             // color thus make it fully transparent.
-//             // The shader makes the rest. standard c++ says true -> 1.0f, false -> 0.0f
-//             // and that's exactly what we need, cool :)
-//             this->alphaAsPlayerCol = static_cast<float>(sAlphaAsPlayerColor.to_Boolean());
-//         }
-//
-//         String sDrawMode = in_coreMat.getProprety("Mode");
-//         if(!sDrawMode.isEmpty()) {
-//             // They want us to draw something other than GL_TRIANGLES... Do so.
-//             if(sDrawMode.ieq("Lines"))
-//                 this->drawMode = GL_LINES;
-//         }
-//
-//         // Read what shaders to use. Prefer embedded ones over external references.
-//         if(!in_coreMat.getProprety("VertexShader").empty()) {
-//             // First, check if the shader was built into the model:
-//             String sBuiltinShaderName = in_sModelName + ":" + in_coreMat.getProprety("VertexShader");
-//             if(ShaderManager::getSingleton().hasShader(sBuiltinShaderName))
-//                 this->sVertShaderName = sBuiltinShaderName;
-//             else
-//                 this->sVertShaderName = in_coreMat.getProprety("VertexShader");
-//         }
-//
-//         // Caution: If the model contains no texture, we have to switch to a
-//         //          lighting-only fragment shader.
-//         if(in_coreMat.getMapCount() == 0) {
-//             this->sFragShaderName = "__FTS__OnlyLighting.frag";
-//         }
-//
-//         if(!in_coreMat.getProprety("FragmentShader").empty()) {
-//             // First, check if the shader was built into the model:
-//             String sBuiltinShaderName = in_sModelName + ":" + in_coreMat.getProprety("FragmentShader");
-//             if(ShaderManager::getSingleton().hasShader(sBuiltinShaderName))
-//                 this->sFragShaderName = sBuiltinShaderName;
-//             else
-//                 this->sFragShaderName = in_coreMat.getProprety("FragmentShader");
-//         }
-//
-//         if(!in_coreMat.getProprety("GeometryShader").empty()) {
-//             // First, check if the shader was built into the model:
-//             String sBuiltinShaderName = in_sModelName + ":" + in_coreMat.getProprety("GeometryShader");
-//             if(ShaderManager::getSingleton().hasShader(sBuiltinShaderName))
-//                 this->sGeomShaderName = sBuiltinShaderName;
-//             else
-//                 this->sGeomShaderName = in_coreMat.getProprety("GeometryShader");
-//         }
-//         pShader = ShaderManager::getSingleton().getOrLinkProgram(sVertShaderName, sFragShaderName, sGeomShaderName);
-//     }
-// };
-
 struct MaterialUserData : public bouge::UserData {
     /// We can (and should) take a reference instead of a shared pointer here
     /// because the user data belongs to the material and with a shared pointer
@@ -134,7 +58,7 @@ struct MaterialUserData : public bouge::UserData {
     /// on the graphics card.
     VertexArrayObject vao;
 
-    MaterialUserData(const bouge::CoreMaterial& in_mat, const bouge::CoreHardwareMesh& in_mesh, const String& in_sModelName)
+    MaterialUserData(const bouge::CoreMaterial& in_mat, const bouge::CoreHardwareMesh& in_mesh, const String& in_sModelName, String& out_ShadernameToDestroy)
         : mat(in_mat)
         , drawMode(GL_TRIANGLES)
     {
@@ -153,13 +77,19 @@ struct MaterialUserData : public bouge::UserData {
 
         // But note that as soon as a non-default shader is specified, the
         // material has to specify all shader compile flags "by hand".
+
         static const String sDefVert = "Model.vert";
         static const String sDefFrag = "Model.frag";
         static const String sDefGeom = ShaderManager::DefaultGeometryShader;
         String sVertShader = in_mat.propretyOrDefault("VertexShader", sDefVert.str());
         String sFragShader = in_mat.propretyOrDefault("FragmentShader", sDefFrag.str());
         String sGeomShader = in_mat.propretyOrDefault("GeometryShader", sDefGeom.str());
-        bool hasCustomShader = (sVertShader != sDefVert) || (sFragShader != sDefFrag) || (sGeomShader != sDefGeom);
+
+        // Also note that if some custom/embedded shader is used, we want to
+        // remember it such that the corresponding program can be destroyed
+        // when the model is destroyed.
+        out_ShadernameToDestroy = sVertShader != sDefVert ? sVertShader : (sFragShader != sDefFrag ? sFragShader : (sGeomShader != sDefGeom ? sGeomShader : String::EMPTY));
+        bool hasCustomShader = !out_ShadernameToDestroy.empty();
         ShaderCompileFlags flags;
 
         // When using default shaders (this should be the norm), we have to
@@ -250,55 +180,12 @@ FTS::HardwareModel::HardwareModel(const FTS::String& in_sName)
 
     this->createHardwareMesh();
     for(bouge::CoreModel::material_iterator iMat = m_pCoreModel->begin_material() ; iMat != m_pCoreModel->end_material() ; ++iMat) {
-        MaterialUserData* mud = new MaterialUserData(**iMat, *m_pHardwareModel, in_sName);
+        String dummy;
+        MaterialUserData* mud = new MaterialUserData(**iMat, *m_pHardwareModel, in_sName, dummy);
         this->setupVAO(*mud);
         iMat->userData = bouge::UserDataPtr(mud);
     }
 }
-
-// FTS::HardwareModel::HardwareModel(const String& in_sName)
-//     : m_pCoreModel(new CalCoreModel(in_sName.str()))
-//     , m_pHardwareModel(new CalHardwareModel(m_pCoreModel.get()))
-// {
-//     CalLoader::setLoadingMode(0);
-//
-//     // Load the error skeleton, mesh and material.
-//     m_pCoreModel->loadCoreSkeleton(reinterpret_cast<const void*>(sErrorModelSkeleton));
-//     m_pCoreModel->loadCoreMesh(reinterpret_cast<const void*>(sErrorModelMesh));
-//     m_pCoreModel->loadCoreMaterial(reinterpret_cast<const void*>(sErrorModelMaterial));
-//
-//     // I still need to create something with the skins and mat threads, no?
-//     m_mSkins["Default"] = 0;
-//     m_pCoreModel->createCoreMaterialThread(0);
-//     m_pCoreModel->getCoreMesh(0)->getCoreSubmesh(0)->setCoreMaterialThreadId(0);
-//     m_pCoreModel->setCoreMaterialId(0, 0, 0);
-//
-//     // Load the hardware data into the vertex buffers.
-//
-//     std::vector<float> vVerts;       // Vertices: x,y,z
-//     std::vector<CalIndex> vVIndices; // Vertex indices of the faces: a,b,c
-//
-//     // Give Cal3d all of our buffers:
-//     m_pHardwareModel->setVertexBuffer(&vVerts, 3);
-//     m_pHardwareModel->setIndexBuffer(&vVIndices);
-//     m_pHardwareModel->setTextureCoordNum(0);
-//
-//     m_pHardwareModel->loadDyn(0, 0, /*MAX_BONES_PER_MESH*/ 20);
-//
-//     // Now we can load up the data to the GPU.
-//     m_pVertexVBO.reset(new VertexBufferObject(vVerts, 3));
-//     m_pVtxIdxVBO.reset(new ElementsBufferObject(vVIndices, 3));
-//
-//     // And store the default material informations into memory:
-//     MaterialUserData* pUD = new MaterialUserData();
-//     m_pCoreModel->getCoreMaterial(0)->setUserData(pUD);
-//
-//     // And store them vertex attribute associations into memory.
-//     pUD->vao.bind();
-//     ShaderManager::getSingleton().getOrLinkShader()->setVertexAttribute("aVertexPosition", *m_pVertexVBO);
-//     m_pVtxIdxVBO->bind();
-//     pUD->vao.unbind();
-// }
 
 FTS::HardwareModel::HardwareModel(const FTS::String& in_sName, FTS::Archive& in_modelArch)
     : m_pCoreModel(new bouge::CoreModel(in_sName.str()))
@@ -343,7 +230,7 @@ FTS::HardwareModel::HardwareModel(const FTS::String& in_sName, FTS::Archive& in_
 
             /// \TODO Integrate the archive name into the path (instead of the hacky way above).
             GraphicManager::getSingleton().getOrLoadGraphic(pFchk->getFile(), sName);
-            m_loadedTexs.push_back(sName);            
+            m_loadedTexs.push_back(sName);
         } else if(fName.ext().lower() == "vert"
                || fName.ext().lower() == "frag"
                || fName.ext().lower() == "geom"
@@ -359,10 +246,14 @@ FTS::HardwareModel::HardwareModel(const FTS::String& in_sName, FTS::Archive& in_
         }
     }
     } catch(const ArkanaException&) {
+        this->unloadResources();
         throw;
     } catch(const std::exception& ex) {
+        this->unloadResources();
         throw CorruptDataException("Model: " + in_sName, ex.what());
     }
+
+    try {
 
     // First consistency checkpoint //
     //////////////////////////////////
@@ -391,9 +282,13 @@ FTS::HardwareModel::HardwareModel(const FTS::String& in_sName, FTS::Archive& in_
     // Now we can load all the resources needed by all the materials.
     // We offload this task to the MaterialUserData class.
     for(bouge::CoreModel::material_iterator iMat = m_pCoreModel->begin_material() ; iMat != m_pCoreModel->end_material() ; ++iMat) {
-        MaterialUserData* mud = new MaterialUserData(**iMat, *m_pHardwareModel, in_sName);
+        String sEmbeddedShaderName;
+        MaterialUserData* mud = new MaterialUserData(**iMat, *m_pHardwareModel, in_sName, sEmbeddedShaderName);
         this->setupVAO(*mud);
         iMat->userData = bouge::UserDataPtr(mud);
+
+        if(!sEmbeddedShaderName.empty())
+            m_loadedProgs.push_back(sEmbeddedShaderName);
     }
 
     // We no more need the source code of the shaders loaded by this model.
@@ -401,6 +296,11 @@ FTS::HardwareModel::HardwareModel(const FTS::String& in_sName, FTS::Archive& in_
     // program linked successfully.
     for(auto shader = loadedShads.begin() ; shader != loadedShads.end() ; ++shader) {
         ShaderManager::getSingleton().unloadShader(*shader);
+    }
+
+    } catch(...) {
+        this->unloadResources();
+        throw;
     }
 }
 
@@ -473,258 +373,21 @@ void FTS::HardwareModel::setupVAO(FTS::MaterialUserData& in_ud) const
     ElementsBufferObject::unbind();
 }
 
-/*
-FTS::HardwareModel::HardwareModel(const String& in_sName, Archive& in_modelArch)
-    : m_pCoreModel(new CalCoreModel(in_sName.str()))
-    , m_pHardwareModel(new CalHardwareModel(m_pCoreModel.get()))
-{
-    CalLoader::setLoadingMode(0);
-
-    // We have to load the skeleton first. It is _really_ needed.
-    if(!m_pCoreModel->loadCoreSkeleton(in_modelArch.getFile("skeleton").getDataContainer().getData())) {
-        throw CorruptDataException("Skeleton of model " + in_sName, CalError::getLastErrorDescription());
-    }
-
-    // Then, we load all the meshes, materials, textures and shaders there are.
-    for(auto i = in_modelArch.begin() ; i != in_modelArch.end() ; ++i) {
-        // Currently, we only handle files:
-        FTS::FileChunk* pFchk = dynamic_cast<FTS::FileChunk*>(i->second);
-        if(pFchk == NULL)
-            continue;
-
-        Path fName = i->first;
-
-        // Just try out what kind of file it may be, depending on the extension
-        if(fName.ext().lower() == "cmf" || fName.ext().lower() == "xmf") {
-            int iMesh = m_pCoreModel->loadCoreMesh(pFchk->getContents().getData());
-            if(iMesh == -1) {
-                throw CorruptDataException("Model: " + in_sName + ",\nmesh: " + fName, CalError::getLastErrorDescription());
-            }
-            m_pCoreModel->getCoreMesh(iMesh)->setFilename(fName.str());
-            m_pCoreModel->getCoreMesh(iMesh)->setName(fName.basename().withoutExt().str());
-        } else if(fName.ext().lower() == "crf" || fName.ext().lower() == "xrf") {
-            int iMat = m_pCoreModel->loadCoreMaterial(pFchk->getContents().getData());
-            if(iMat == -1) {
-                throw CorruptDataException("Model: " + in_sName + ",\nmaterial: " + fName, CalError::getLastErrorDescription());
-            }
-            m_pCoreModel->getCoreMaterial(iMat)->setFilename(fName.str());
-            m_pCoreModel->getCoreMaterial(iMat)->setName(fName.basename().withoutExt().str());
-            m_pCoreModel->addMaterialName(fName.basename().withoutExt().str(), iMat);
-        } else if(fName.ext().lower() == "caf" || fName.ext().lower() == "xaf") {
-            int iAnim = m_pCoreModel->loadCoreAnimation(pFchk->getContents().getData());
-            if(iAnim == -1) {
-                throw CorruptDataException("Model: " + in_sName + ",\nanimation: " + fName, CalError::getLastErrorDescription());
-            }
-            m_pCoreModel->getCoreAnimation(iAnim)->setFilename(fName.str());
-            m_pCoreModel->getCoreAnimation(iAnim)->setName(fName.basename().withoutExt().str());
-            m_pCoreModel->addAnimationName(fName.basename().withoutExt().str(), iAnim);
-        } else if(fName.ext().lower() == "png") {
-            // We prepend the model's name to the name of the graphic in order
-            // to get model-unique graphic names.
-            String sName = in_sName + ":" + fName;
-
-            /// \TODO Integrate the archive name into the path (instead of the hacky way above).
-            GraphicManager::getSingleton().getOrLoadGraphic(pFchk->getFile(), sName);
-            m_loadedTexs.push_back(sName);
-        } else if(fName.ext().lower() == "vert"
-               || fName.ext().lower() == "frag"
-               || fName.ext().lower() == "geom"
-               || fName.ext().lower() == "shadinc") {
-            // We prepend the model's name to the name of the shader in order
-            // to get model-unique shader names.
-            String sName = in_sName + ":" + fName;
-            String sShaderSrc = pFchk->getFile().readstr();
-
-            /// \TODO Integrate the archive name into the path (instead of the hacky way above).
-            if(ShaderManager::getSingleton().makeShader(sName, sShaderSrc))
-                m_loadedShads.push_back(sName);
-        }
-    }
-
-    // We need to find out the maximum number of textures a mesh has at the same time.
-    int nMaxTexturesPerMesh = 0;
-    for(int iMat = 0 ; iMat < m_pCoreModel->getCoreMaterialCount() ; ++iMat) {
-        CalCoreMaterial *pCoreMat = m_pCoreModel->getCoreMaterial(iMat);
-        nMaxTexturesPerMesh = std::max(pCoreMat->getMapCount(), nMaxTexturesPerMesh);
-    }
-
-    // We have only one material-set: 0. The material-set is like "chainmail", leather, ...
-    // We call them "skins".
-
-    // Then there come the material threads. One or several submeshes form a
-    // material thread. For example: upperarm left, upperarm right, lowerarm
-    // left, lowerarm right and torso might form the material thread
-    // "upper body".
-
-    std::map<std::pair<int, int>, int> mOrigMatIds;
-
-    // We make things a little easier by just assuming (forcing) a one-to-one
-    // association between a submesh and a material thread, that means that we
-    // assign a material thread to every submesh.
-    for(int iCoreMesh = 0, nMaterialThreads = 0 ; iCoreMesh < m_pCoreModel->getCoreMeshCount() ; ++iCoreMesh) {
-        CalCoreMesh* pCoreMesh = m_pCoreModel->getCoreMesh(iCoreMesh);
-        for(int iCoreSubmesh = 0 ; iCoreSubmesh < pCoreMesh->getCoreSubmeshCount() ; ++iCoreSubmesh) {
-            CalCoreSubmesh* pCoreSubMesh = pCoreMesh->getCoreSubmesh(iCoreSubmesh);
-
-            // Though we need to keep in mind the index we loaded from the mesh file.
-            // We will use that one as material id in case there is no skin file avail.
-            int iMatFromFile = pCoreSubMesh->getCoreMaterialThreadId();
-            mOrigMatIds[std::make_pair(iCoreMesh, iCoreSubmesh)] = iMatFromFile;
-
-            // And now we give it a unique thread id.
-            m_pCoreModel->createCoreMaterialThread(nMaterialThreads);
-            pCoreMesh->getCoreSubmesh(iCoreSubmesh)->setCoreMaterialThreadId(nMaterialThreads);
-            nMaterialThreads++;
-        }
-    }
-
-    // This class states what entries to get from the conf file.
-    // Each conf-file describes one skin, thus one material per submesh.
-    // The entries are of the form: MeshName[0-x] where x is the number of
-    // submeshes in the mesh called MeshName.
-    class DefaultMaterialSetOpts : public DefaultOptions {
-    public:
-        DefaultMaterialSetOpts(CalCoreModel* in_pCoreModel) {
-            for(int iCoreMesh = 0 ; iCoreMesh < in_pCoreModel->getCoreMeshCount() ; ++iCoreMesh) {
-                CalCoreMesh* pCoreMesh = in_pCoreModel->getCoreMesh(iCoreMesh);
-                for(int iCoreSubmesh = 0 ; iCoreSubmesh < pCoreMesh->getCoreSubmeshCount() ; ++iCoreSubmesh) {
-                    add(String(pCoreMesh->getName()) + String::nr(iCoreSubmesh), 0);
-                }
-            }
-        }
-    };
-
-    // Then, we read out all skins that are available in the archive.
-    int iSkinId = -1;
-    for(auto i = in_modelArch.begin() ; i != in_modelArch.end() ; ++i) {
-        FTS::FileChunk* pFchk = dynamic_cast<FTS::FileChunk*>(i->second);
-        if(pFchk == NULL || i->first.right(10).lower() != ".ftsmatset")
-            continue;
-
-        // Let's make a map holding the Skin name -> Skin Id associations.
-        m_mSkins[i->first.mid(0, 10)] = ++iSkinId;
-
-        // The skin states what material to use for every single
-        // material-thread (that is for every single submesh).
-        Configuration matset(pFchk->getFile(), DefaultMaterialSetOpts(m_pCoreModel.get()));
-
-        // Now we assign those settings to the model.
-        for(int iCoreMesh = 0, iMatThread = 0 ; iCoreMesh < m_pCoreModel->getCoreMeshCount() ; ++iCoreMesh) {
-            CalCoreMesh* pCoreMesh = m_pCoreModel->getCoreMesh(iCoreMesh);
-            for(int iCoreSubmesh = 0 ; iCoreSubmesh < pCoreMesh->getCoreSubmeshCount() ; ++iCoreSubmesh) {
-                String sMatName = matset.get(String(pCoreMesh->getName()) + String::nr(iCoreSubmesh));
-                int iMatId = m_pCoreModel->getCoreMaterialId(sMatName.str());
-
-                // If the material doesn't exist, or such an entry for this
-                // submesh doesn't exist in the conf file, take the error mat.
-                if(iMatId == -1 || sMatName.isEmpty()) {
-                    iMatId = this->getOrCreateErrorMatId(in_sName);
-                }
-
-                m_pCoreModel->setCoreMaterialId(iMatThread, iSkinId, iMatId);
-                iMatThread++;
-            }
-        }
-    }
-
-    // If there are no skins, we need to create a default one!
-    if(m_mSkins.empty()) {
-        m_mSkins["Default"] = 0;
-
-        for(int iCoreMesh = 0, iMatThread = 0 ; iCoreMesh < m_pCoreModel->getCoreMeshCount() ; ++iCoreMesh) {
-            CalCoreMesh* pCoreMesh = m_pCoreModel->getCoreMesh(iCoreMesh);
-            for(int iCoreSubmesh = 0 ; iCoreSubmesh < pCoreMesh->getCoreSubmeshCount() ; ++iCoreSubmesh) {
-                // We take this from the number defined in the submesh in the mesh file.
-                int iMatId = mOrigMatIds[std::make_pair(iCoreMesh, iCoreSubmesh)];
-
-                // But check if it exists or not.
-                if(m_pCoreModel->getCoreMaterial(iMatId)) {
-                    m_pCoreModel->setCoreMaterialId(iMatThread, 0, iMatId);
-                } else {
-                    m_pCoreModel->setCoreMaterialId(iMatThread, 0, this->getOrCreateErrorMatId(in_sName));
-                }
-                iMatThread++;
-            }
-        }
-    }
-
-    this->loadHardware(nMaxTexturesPerMesh, 20);
-
-    // And now load all the textures and shaders used in the materials.
-
-    for(int iMat = 0 ; iMat < m_pCoreModel->getCoreMaterialCount() ; ++iMat) {
-        CalCoreMaterial *pCoreMat = m_pCoreModel->getCoreMaterial(iMat);
-
-        for(int iTex = 0 ; iTex < pCoreMat->getMapCount() ; ++iTex) {
-            // We prepend the model's name to the name of the graphic in order
-            // to get model-unique graphic names.
-            String sTexName = pCoreMat->getMapFilename(iTex);
-            String sFullName = in_sName + ":" + sTexName;
-
-            // Check if the file has already been loaded from within the archive?
-            if(std::find(m_loadedTexs.begin(), m_loadedTexs.end(), sFullName) != m_loadedTexs.end()) {
-                pCoreMat->setMapUserData(iTex, new String(sFullName));
-            } else {
-                // The file isn't located in the archive? Look if a file with
-                // the same name exists within our data folder:
-                Graphic* pGraph = GraphicManager::getSingleton().getOrLoadGraphic(sTexName);
-                if(pGraph != GraphicManager::getSingleton().getErrorTexture()) {
-                    pCoreMat->setMapUserData(iTex, new String(sTexName));
-                } else {
-                    // Or else use the error file.
-                    pCoreMat->setMapUserData(iTex, new String(GraphicManager::ErrorTextureName));
-                }
-            }
-        }
-
-        bool bIsModelNonStatic = m_pCoreModel->getCoreSkeleton()->getNumCoreBones() > 0;
-        MaterialUserData* pUD = new MaterialUserData(*pCoreMat, in_sName, bIsModelNonStatic);
-        pCoreMat->setUserData(pUD);
-
-        // The shaders must already have been loaded: either it is a
-        // builtin FTS shader or it is embedded in the model archive,
-        // thus has been loaded already.
-
-        /// \TODO: What is when there was an error in one of the above shaders? Is the message shown? Is the default shader used?
-        Shader* pShad = ShaderManager::getSingleton().getOrLinkShader(pUD->sVertShaderName, pUD->sFragShaderName, pUD->sGeomShaderName);
-
-        // And store the vertex attribute associations into memory.
-        pUD->vao.bind();
-        pShad->setVertexAttribute("aVertexPosition", *m_pVertexVBO);
-        pShad->setVertexAttribute("aVertexNormal", *m_pNormalVBO);
-        pShad->setVertexAttribute("aBoneIndicesAndWeights", *m_pMatIdxAndWeightVBO);
-
-        // Just send out all the texture coordinates, even if this material uses
-        // less textures, the shader might want the coordinates.
-        for(int i = 0 ; i < nMaxTexturesPerMesh ; ++i) {
-            pShad->setVertexAttribute("aVertexTexCo" + String::nr(i), *m_pTexCoVBOs[i]);
-        }
-
-        // Here, we check if the shader expects more texture coordinate attributes
-        // then we send him. If so, print out a warning:
-        if(pShad->hasVertexAttribute("aVertexTexCo" + String::nr(nMaxTexturesPerMesh))) {
-            FTS18N("Model_Shader_TooManyTexCo", MsgType::Warning, in_sName, pCoreMat->getName(), pUD->sVertShaderName, String::nr(nMaxTexturesPerMesh));
-        }
-
-        // The same goes for the uniforms:
-        if(pShad->hasUniform("uTexture" + String::nr(pCoreMat->getMapCount()))) {
-            FTS18N("Model_Shader_TooManyTexUniforms", MsgType::Warning, in_sName, pCoreMat->getName(), pUD->sFragShaderName, String::nr(pCoreMat->getMapCount()));
-        }
-
-        m_pVtxIdxVBO->bind();
-        pUD->vao.unbind();
-    }
-
-    /// \TODO: Model animations
-
-    /// \TODO: Model attach points
-}
-*/
 FTS::HardwareModel::~HardwareModel()
+{
+    this->unloadResources();
+}
+
+void FTS::HardwareModel::unloadResources() const
 {
     // Throw all the textures away, we no more need them.
     for(auto s = m_loadedTexs.begin() ; s != m_loadedTexs.end() ; ++s) {
         GraphicManager::getSingleton().destroyGraphic(*s);
+    }
+
+    // Same for the model-embedded shaders.
+    for(auto s = m_loadedProgs.begin() ; s != m_loadedProgs.end() ; ++s) {
+        ShaderManager::getSingleton().destroyProgramsUsing(*s);
     }
 
     // And throw all our "user-data" away too!
@@ -744,6 +407,7 @@ FTS::HardwareModel::~HardwareModel()
         }
     }*/
 }
+
 /*
 int FTS::HardwareModel::getOrCreateErrorMatId(const String& in_sModelName)
 {

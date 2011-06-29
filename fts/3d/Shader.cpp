@@ -104,6 +104,8 @@ public:
 
         if(!glNamedStringARB || !glDeleteNamedStringARB || !String((const char *)glGetString(GL_EXTENSIONS)).contains("GL_ARB_shading_language_include"))
             throw NotExistException("GL_ARB_shading_language_include", "OpenGL extension");
+
+        FTSMSGDBG("Using native GL include manager", 2);
     }
 
     /// default destructor
@@ -126,7 +128,7 @@ public:
         return true;
     }
 
-    virtual String compileShader(const GLuint in_id, const String&, String in_sSrc, const ShaderCompileFlags& in_flags)
+    virtual String compileShader(const GLuint in_id, const String& in_sShaderName, String in_sSrc, const ShaderCompileFlags& in_flags)
     {
         // We split up the source into:
         //  - the version line
@@ -138,6 +140,7 @@ public:
         // Note that we *need* those two String objects above, if we'd make it
         // a one-liner, the memory src points at would've gone here.
         const char *src = sRealSourceWithOptions.c_str();
+        FTSMSGDBG("Compiling shader " + in_sShaderName + " sourcecode:\n" + sRealSourceWithOptions.left(500) + " ...", 3);
         glShaderSource(in_id, 1, &src, NULL);
         glCompileShader(in_id);
         return String::EMPTY;
@@ -161,7 +164,7 @@ private:
 class ShaderIncludeManagerWorkaround : public ShaderIncludeManager {
 public:
     /// default constructor
-    ShaderIncludeManagerWorkaround() {};
+    ShaderIncludeManagerWorkaround() { FTSMSGDBG("Using workaround GL include manager", 2); };
     /// default destructor
     virtual ~ShaderIncludeManagerWorkaround() {};
 
@@ -215,6 +218,7 @@ public:
         // a one-liner, the memory src points at would disappear too fast.
         String source = injectOptionDefines(in_sSrc, in_flags);
         const char *src = source.c_str();
+        FTSMSGDBG("Compiling shader " + in_sShaderName + " sourcecode:\n" + source.left(500) + " ...", 3);
         glShaderSource(in_id, 1, &src, NULL);
         glCompileShader(in_id);
         return String::EMPTY;
@@ -1017,6 +1021,28 @@ FTS::ShaderManager::~ShaderManager()
     }
     // But don't forget to delete it anyways.
     delete getDefaultProgram();
+}
+
+void ShaderManager::destroyProgramsUsing(const FTS::String& in_sShaderName)
+{
+    std::set<String> todestroy;
+
+    // Collect the keys of all the programs to be destroyed.
+    for(auto program = m_linkedShaders.begin() ; program != m_linkedShaders.end() ; ++program) {
+        std::vector<String> names;
+        program->first.split(std::inserter(names, names.begin()), m_sep);
+        for(auto name = names.begin() ; name != names.end() ; ++name) {
+            if(*name == in_sShaderName) {
+                todestroy.insert(program->first);
+            }
+        }
+    }
+
+    // And then destroy them all.
+    for(auto progName = todestroy.begin() ; progName != todestroy.end() ; ++progName) {
+        delete m_linkedShaders[*progName];
+        m_linkedShaders.erase(*progName);
+    }
 }
 
 GLuint guessShaderType(const Path& name)

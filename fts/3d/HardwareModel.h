@@ -71,6 +71,8 @@ protected:
 
     void createHardwareMesh();
     void setupVAO(struct MaterialUserData& in_ud) const;
+
+    void unloadResources() const;
 //     int getOrCreateErrorMatId(const String& in_sModelName);
 
 //     void loadHardware(int in_nMaxTexturesPerMesh, int in_nMaxBonesPerMesh);
@@ -88,6 +90,9 @@ private:
 
     /// Names of all the textures <i>loaded</i> by this model.
     std::vector<String> m_loadedTexs;
+
+    /// Names of all the custom shader names used in a custom program <i>loaded</i> by this model.
+    std::vector<String> m_loadedProgs;
 
     /// Maps the skin name to the Cal3d material set number.
     std::map<String, int> m_mSkins;
