@@ -40,10 +40,12 @@ private:
     template <typename T>
     static String fromSpecialNumber(T number);
     void fromStringWithLength(const char* in_pszString, std::string::size_type in_iStart, std::string::size_type in_iLength);
-    int getByteCount(const char* in_pszString, std::string::size_type in_utf8Len);
-    const char* advance(const char* in_pszString, std::string::size_type in_utf8Len);
+
+    static const char* advance(const char* in_pszString, std::string::size_type in_utf8Len);
+
     typedef std::tuple<std::string::size_type, int> StringSize;
     StringSize strlen() const;
+    int getByteCount(const char* in_pszString, std::string::size_type in_utf8Len);
 public:
     static const String sWhiteSpace;
 
@@ -422,7 +424,7 @@ public:
     /// \param in_pszNeedle The string you want to search for.
     /// \param in_nIdx      The index where to begin the search (0 = search the whole string).
     ///
-    /// \return If the string was found, the index (0-based) of the first occurence of it.
+    /// \return If the string was found, the character index (0-based) of the first occurence of it.
     /// \return If the string wasn't found, std::string::npos.
     ///
     /// \note searching for the empty string will always return std::string::npos.
@@ -435,7 +437,7 @@ public:
     /// \param in_sNeedle The string you want to search for.
     /// \param in_nIdx    The index where to begin the search (0 = search the whole string).
     ///
-    /// \return If the string was found, the index (0-based) of the first occurence of it.
+    /// \return If the string was found, the character index (0-based) of the first occurence of it.
     /// \return If the string wasn't found, -1.
     std::string::size_type find(const String & in_sNeedle, std::string::size_type in_nIdx = 0) const;
 
@@ -469,7 +471,7 @@ public:
     ///
     /// \return If the string beginning matches, true.
     /// \return If the string beginning doesn't match, false.
-    bool neq(const char *in_pszNeedle, std::string::size_type in_nChars = 0) const;
+    bool neq(const char *in_pszNeedle, std::string::size_type in_nChars = (std::string::size_type)-1) const;
 
     /// Acts like strncmp == 0
     /// Compare the first in_nChars charachters of in_pszNeedle with the first
@@ -482,7 +484,7 @@ public:
     ///
     /// \return If the string beginning matches, true.
     /// \return If the string beginning doesn't match, false.
-    bool neq(const String & in_sNeedle, std::string::size_type in_nChars = 0) const;
+    bool neq(const String & in_sNeedle, std::string::size_type in_nChars = (std::string::size_type)-1) const;
 
     /// Acts like strncmp == 0, but ignoring the case.
     /// Compare the first in_nChars charachters of in_pszNeedle with the first
@@ -495,7 +497,7 @@ public:
     ///
     /// \return If the string beginning matches, true.
     /// \return If the string beginning doesn't match, false.
-    bool nieq(const char *in_pszNeedle, std::string::size_type in_nChars = 0) const;
+    bool nieq(const char *in_pszNeedle, std::string::size_type in_nChars = (std::string::size_type)-1) const;
 
     /// Acts like strncmp == 0, but ignoring the case.
     /// Compare the first in_nChars charachters of in_pszNeedle with the first
@@ -508,7 +510,7 @@ public:
     ///
     /// \return If the string beginning matches, true.
     /// \return If the string beginning doesn't match, false.
-    bool nieq(const String & in_sNeedle, std::string::size_type in_nChars = 0) const;
+    bool nieq(const String & in_sNeedle, std::string::size_type in_nChars = (std::string::size_type)-1) const;
 
     /// Looks wether a sub-string is present in this string.
     ///

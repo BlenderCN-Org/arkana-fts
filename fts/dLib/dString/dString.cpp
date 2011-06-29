@@ -628,8 +628,8 @@ String& String::removeChar(std::string::size_type in_ulIndex)
         return *this;
     }
 
-    String tmpA(this->c_str(), 0, in_ulIndex);
-    String tmpB(&(this->c_str()[in_ulIndex+1]));
+    String tmpA(*this, 0, in_ulIndex);
+    String tmpB(*this, in_ulIndex+1);
 
     m_s = (tmpA + tmpB).str();
     return *this;
@@ -647,8 +647,8 @@ String& String::addChar(std::string::size_type in_ulIndex, unsigned char in_cCha
         return *this;
     }
 
-    String strA(this->c_str(), 0, in_ulIndex);
-    String strB(&(this->c_str()[in_ulIndex]));
+    String strA(*this, 0, in_ulIndex);
+    String strB(*this, in_ulIndex);
 
     m_s = (strA + String::chr(in_cChar) + strB).str();
     return *this;
@@ -746,12 +746,14 @@ std::string::size_type String::find(const char *in_pszNeedle, std::string::size_
     if(in_nIdx > this->len() || this->empty())
         return std::string::npos;
 
-    const char *p = strstr(&this->c_str()[in_nIdx], in_pszNeedle);
+    // Can't be a oneliner because p points into the temporary.
+    String substr(*this, in_nIdx);
+    const char *p = strstr(substr.c_str(), in_pszNeedle);
 
     if(p == nullptr)
         return std::string::npos;
 
-    return this->len() - ::strlen(p);
+    return this->len() - String(p).len();
 }
 
 std::string::size_type String::find(const String& in_sNeedle, std::string::size_type in_nIdx) const
@@ -761,57 +763,18 @@ std::string::size_type String::find(const String& in_sNeedle, std::string::size_
 
 bool String::ieq(const char *in_pszOther) const
 {
-    // First, compare lengths.
-    if(this->len() != ::strlen(in_pszOther))
-        return false;
-
-    // If they have the same length, compare the strings, ignoring case.
-    for(std::string::size_type i = 0 ; i < this->len() ; ++i) {
-        if(::tolower(this->getCharAt(i)) != ::tolower(in_pszOther[i]))
-            return false;
-    }
-
-    return true;
+    return this->ieq(String(in_pszOther));
 }
 
 bool String::ieq(const String& in_sOther) const
 {
-    // First, compare lengths.
-    if(this->len() != in_sOther.len())
-        return false;
-
-    // If they have the same length, compare the strings, ignoring case.
-    for(std::string::size_type i = 0 ; i < this->len() ; ++i) {
-        if(::tolower(this->getCharAt(i)) != ::tolower(in_sOther.getCharAt(i)))
-            return false;
-    }
-
-    return true;
+    return in_sOther.lower() == this->lower();
 }
 
 bool String::neq(const char *in_pszNeedle, std::string::size_type in_nChars) const
 {
-    std::string::size_type nChars = in_nChars;
-
-    if((in_pszNeedle == NULL || in_pszNeedle[0] == '\0') && this->empty())
-        return true;
-
-    if(in_pszNeedle == NULL || in_pszNeedle[0] == '\0' || this->empty())
-        return false;
-
-    if(nChars == 0 || nChars > ::strlen(in_pszNeedle))
-        nChars = ::strlen(in_pszNeedle);
-
-    // We look for something that is longer as the haystack - impossible.
-    if(nChars > this->len())
-        return false;
-
-    for(std::string::size_type i = 0; i < nChars; i++) {
-        if(this->getCharAt(i) != in_pszNeedle[i])
-            return false;
-    }
-
-    return true;
+    String needle(in_pszNeedle, 0, in_nChars);
+    return String(*this, 0, needle.len()) == needle;
 }
 
 bool String::neq(const String& in_sNeedle, std::string::size_type in_nChars) const
@@ -1050,7 +1013,7 @@ unsigned char String::getCharAt(std::string::size_type in_iIndex) const
     if(this->empty() || in_iIndex >= this->len())
         return 0;
 
-    return m_s[in_iIndex];
+    return *(advance(this->c_str(), in_iIndex));
 }
 
 bool operator ==(const char *in_pszString, const String& in_sString)

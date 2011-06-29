@@ -47,6 +47,8 @@ TEST_INSUITE_WITHSETUP(dString, StringUtf8, Utf8)
     CHECK_EQUAL(s1, sresult);
     sresult = s.right(s3.len() + 1);
     CHECK_EQUAL(s5,sresult);
+
+    /// TODO: find, replace and more.
 }
 
 
@@ -62,131 +64,132 @@ TEST_INSUITE(dString, ConstructionSimple)
 #ifdef D_STRING_CEGUI
     CHECK_EQUAL(std::string("hello"), FTS::String(CEGUI::String("hello")).str());
 #endif
+    CHECK_EQUAL(std::string("héllô ที่รัก"), FTS::String(std::string("héllô ที่รัก")).str());
 }
 
 TEST_INSUITE(dString, ConstructionLen)
 {
 #ifdef D_STRING_CEGUI
-    CHECK_EQUAL(std::string(""), FTS::String(CEGUI::String("hello"), 0, 0).str());
-    CHECK_EQUAL(std::string(""), FTS::String(CEGUI::String("hello"), 0, -1).str());
-    CHECK_EQUAL(std::string("h"), FTS::String(CEGUI::String("hello"), 0, 1).str());
-    CHECK_EQUAL(std::string("hello"), FTS::String(CEGUI::String("hello"), 0, 5).str());
-    CHECK_EQUAL(std::string("hello"), FTS::String(CEGUI::String("hello"), 0, 9).str());
+    CHECK_EQUAL(std::string(""), FTS::String(CEGUI::String("héllô"), 0, 0).str());
+    CHECK_EQUAL(std::string(""), FTS::String(CEGUI::String("héllô"), 0, -1).str());
+    CHECK_EQUAL(std::string("h"), FTS::String(CEGUI::String("héllô"), 0, 1).str());
+    CHECK_EQUAL(std::string("héllô"), FTS::String(CEGUI::String("héllô"), 0, 5).str());
+    CHECK_EQUAL(std::string("héllô"), FTS::String(CEGUI::String("héllô"), 0, 9).str());
 
-    CHECK_EQUAL(std::string(""), FTS::String(CEGUI::String("hello"), -1).str());
-    CHECK_EQUAL(std::string(""), FTS::String(CEGUI::String("hello"), 5).str());
-    CHECK_EQUAL(std::string("o"), FTS::String(CEGUI::String("hello"), 4).str());
-    CHECK_EQUAL(std::string("lo"), FTS::String(CEGUI::String("hello"), 3).str());
-    CHECK_EQUAL(std::string("ello"), FTS::String(CEGUI::String("hello"), 1).str());
+    CHECK_EQUAL(std::string(""), FTS::String(CEGUI::String("héllô"), -1).str());
+    CHECK_EQUAL(std::string(""), FTS::String(CEGUI::String("héllô"), 5).str());
+    CHECK_EQUAL(std::string("ô"), FTS::String(CEGUI::String("héllô"), 4).str());
+    CHECK_EQUAL(std::string("lô"), FTS::String(CEGUI::String("héllô"), 3).str());
+    CHECK_EQUAL(std::string("éllô"), FTS::String(CEGUI::String("héllô"), 1).str());
 
-    CHECK_EQUAL(std::string(""), FTS::String(CEGUI::String("hello"), -1, 0).str());
-    CHECK_EQUAL(std::string(""), FTS::String(CEGUI::String("hello"), 5, 0).str());
-    CHECK_EQUAL(std::string(""), FTS::String(CEGUI::String("hello"), 3, 0).str());
-    CHECK_EQUAL(std::string("l"), FTS::String(CEGUI::String("hello"), 3, 1).str());
-    CHECK_EQUAL(std::string("lo"), FTS::String(CEGUI::String("hello"), 3, 2).str());
-    CHECK_EQUAL(std::string("lo"), FTS::String(CEGUI::String("hello"), 3, 3).str());
-    CHECK_EQUAL(std::string("lo"), FTS::String(CEGUI::String("hello"), 3, -1).str());
+    CHECK_EQUAL(std::string(""), FTS::String(CEGUI::String("héllô"), -1, 0).str());
+    CHECK_EQUAL(std::string(""), FTS::String(CEGUI::String("héllô"), 5, 0).str());
+    CHECK_EQUAL(std::string(""), FTS::String(CEGUI::String("héllô"), 3, 0).str());
+    CHECK_EQUAL(std::string("l"), FTS::String(CEGUI::String("héllô"), 3, 1).str());
+    CHECK_EQUAL(std::string("lô"), FTS::String(CEGUI::String("héllô"), 3, 2).str());
+    CHECK_EQUAL(std::string("lô"), FTS::String(CEGUI::String("héllô"), 3, 3).str());
+    CHECK_EQUAL(std::string("lô"), FTS::String(CEGUI::String("héllô"), 3, -1).str());
 #endif
 
-    CHECK_EQUAL(std::string(""), FTS::String("hello", 0, 0).str());
-    CHECK_EQUAL(std::string("hello"), FTS::String("hello", 0, -1).str());
-    CHECK_EQUAL(std::string("h"), FTS::String("hello", 0, 1).str());
-    CHECK_EQUAL(std::string("hello"), FTS::String("hello", 0, 5).str());
-    CHECK_EQUAL(std::string("hello"), FTS::String("hello", 0, 9).str());
+    CHECK_EQUAL(std::string(""), FTS::String("héllô", 0, 0).str());
+    CHECK_EQUAL(std::string("héllô"), FTS::String("héllô", 0, -1).str());
+    CHECK_EQUAL(std::string("h"), FTS::String("héllô", 0, 1).str());
+    CHECK_EQUAL(std::string("héllô"), FTS::String("héllô", 0, 5).str());
+    CHECK_EQUAL(std::string("héllô"), FTS::String("héllô", 0, 9).str());
 
-    CHECK_EQUAL(std::string(""), FTS::String("hello", -1).str());
-    CHECK_EQUAL(std::string(""), FTS::String("hello", 5).str());
-    CHECK_EQUAL(std::string("o"), FTS::String("hello", 4).str());
-    CHECK_EQUAL(std::string("lo"), FTS::String("hello", 3).str());
-    CHECK_EQUAL(std::string("ello"), FTS::String("hello", 1).str());
+    CHECK_EQUAL(std::string(""), FTS::String("héllô", -1).str());
+    CHECK_EQUAL(std::string(""), FTS::String("héllô", 5).str());
+    CHECK_EQUAL(std::string("ô"), FTS::String("héllô", 4).str());
+    CHECK_EQUAL(std::string("lô"), FTS::String("héllô", 3).str());
+    CHECK_EQUAL(std::string("éllô"), FTS::String("héllô", 1).str());
 
-    CHECK_EQUAL(std::string(""), FTS::String("hello", -1, 0).str());
-    CHECK_EQUAL(std::string(""), FTS::String("hello", 5, 0).str());
-    CHECK_EQUAL(std::string(""), FTS::String("hello", 3, 0).str());
-    CHECK_EQUAL(std::string("l"), FTS::String("hello", 3, 1).str());
-    CHECK_EQUAL(std::string("lo"), FTS::String("hello", 3, 2).str());
-    CHECK_EQUAL(std::string("lo"), FTS::String("hello", 3, 3).str());
-    CHECK_EQUAL(std::string("lo"), FTS::String("hello", 3, -1).str());
+    CHECK_EQUAL(std::string(""), FTS::String("héllô", -1, 0).str());
+    CHECK_EQUAL(std::string(""), FTS::String("héllô", 5, 0).str());
+    CHECK_EQUAL(std::string(""), FTS::String("héllô", 3, 0).str());
+    CHECK_EQUAL(std::string("l"), FTS::String("héllô", 3, 1).str());
+    CHECK_EQUAL(std::string("lô"), FTS::String("héllô", 3, 2).str());
+    CHECK_EQUAL(std::string("lô"), FTS::String("héllô", 3, 3).str());
+    CHECK_EQUAL(std::string("lô"), FTS::String("héllô", 3, -1).str());
 
-    CHECK_EQUAL(std::string(""), FTS::String(reinterpret_cast<const int8_t*>("hello"), 0, 0).str());
-    CHECK_EQUAL(std::string("hello"), FTS::String(reinterpret_cast<const int8_t*>("hello"), 0, -1).str());
-    CHECK_EQUAL(std::string("h"), FTS::String(reinterpret_cast<const int8_t*>("hello"), 0, 1).str());
-    CHECK_EQUAL(std::string("hello"), FTS::String(reinterpret_cast<const int8_t*>("hello"), 0, 5).str());
-    CHECK_EQUAL(std::string("hello"), FTS::String(reinterpret_cast<const int8_t*>("hello"), 0, 9).str());
+    CHECK_EQUAL(std::string(""), FTS::String(reinterpret_cast<const int8_t*>("héllô"), 0, 0).str());
+    CHECK_EQUAL(std::string("héllô"), FTS::String(reinterpret_cast<const int8_t*>("héllô"), 0, -1).str());
+    CHECK_EQUAL(std::string("h"), FTS::String(reinterpret_cast<const int8_t*>("héllô"), 0, 1).str());
+    CHECK_EQUAL(std::string("héllô"), FTS::String(reinterpret_cast<const int8_t*>("héllô"), 0, 5).str());
+    CHECK_EQUAL(std::string("héllô"), FTS::String(reinterpret_cast<const int8_t*>("héllô"), 0, 9).str());
 
-    CHECK_EQUAL(std::string(""), FTS::String(reinterpret_cast<const int8_t*>("hello"), -1).str());
-    CHECK_EQUAL(std::string(""), FTS::String(reinterpret_cast<const int8_t*>("hello"), 5).str());
-    CHECK_EQUAL(std::string("o"), FTS::String(reinterpret_cast<const int8_t*>("hello"), 4).str());
-    CHECK_EQUAL(std::string("lo"), FTS::String(reinterpret_cast<const int8_t*>("hello"), 3).str());
-    CHECK_EQUAL(std::string("ello"), FTS::String(reinterpret_cast<const int8_t*>("hello"), 1).str());
+    CHECK_EQUAL(std::string(""), FTS::String(reinterpret_cast<const int8_t*>("héllô"), -1).str());
+    CHECK_EQUAL(std::string(""), FTS::String(reinterpret_cast<const int8_t*>("héllô"), 5).str());
+    CHECK_EQUAL(std::string("ô"), FTS::String(reinterpret_cast<const int8_t*>("héllô"), 4).str());
+    CHECK_EQUAL(std::string("lô"), FTS::String(reinterpret_cast<const int8_t*>("héllô"), 3).str());
+    CHECK_EQUAL(std::string("éllô"), FTS::String(reinterpret_cast<const int8_t*>("héllô"), 1).str());
 
-    CHECK_EQUAL(std::string(""), FTS::String(reinterpret_cast<const int8_t*>("hello"), -1, 0).str());
-    CHECK_EQUAL(std::string(""), FTS::String(reinterpret_cast<const int8_t*>("hello"), 5, 0).str());
-    CHECK_EQUAL(std::string(""), FTS::String(reinterpret_cast<const int8_t*>("hello"), 3, 0).str());
-    CHECK_EQUAL(std::string("l"), FTS::String(reinterpret_cast<const int8_t*>("hello"), 3, 1).str());
-    CHECK_EQUAL(std::string("lo"), FTS::String(reinterpret_cast<const int8_t*>("hello"), 3, 2).str());
-    CHECK_EQUAL(std::string("lo"), FTS::String(reinterpret_cast<const int8_t*>("hello"), 3, 3).str());
-    CHECK_EQUAL(std::string("lo"), FTS::String(reinterpret_cast<const int8_t*>("hello"), 3, -1).str());
+    CHECK_EQUAL(std::string(""), FTS::String(reinterpret_cast<const int8_t*>("héllô"), -1, 0).str());
+    CHECK_EQUAL(std::string(""), FTS::String(reinterpret_cast<const int8_t*>("héllô"), 5, 0).str());
+    CHECK_EQUAL(std::string(""), FTS::String(reinterpret_cast<const int8_t*>("héllô"), 3, 0).str());
+    CHECK_EQUAL(std::string("l"), FTS::String(reinterpret_cast<const int8_t*>("héllô"), 3, 1).str());
+    CHECK_EQUAL(std::string("lô"), FTS::String(reinterpret_cast<const int8_t*>("héllô"), 3, 2).str());
+    CHECK_EQUAL(std::string("lô"), FTS::String(reinterpret_cast<const int8_t*>("héllô"), 3, 3).str());
+    CHECK_EQUAL(std::string("lô"), FTS::String(reinterpret_cast<const int8_t*>("héllô"), 3, -1).str());
 
-    CHECK_EQUAL(std::string(""), FTS::String(reinterpret_cast<const uint8_t*>("hello"), 0, 0).str());
-    CHECK_EQUAL(std::string("hello"), FTS::String(reinterpret_cast<const uint8_t*>("hello"), 0, -1).str());
-    CHECK_EQUAL(std::string("h"), FTS::String(reinterpret_cast<const uint8_t*>("hello"), 0, 1).str());
-    CHECK_EQUAL(std::string("hello"), FTS::String(reinterpret_cast<const uint8_t*>("hello"), 0, 5).str());
-    CHECK_EQUAL(std::string("hello"), FTS::String(reinterpret_cast<const uint8_t*>("hello"), 0, 9).str());
+    CHECK_EQUAL(std::string(""), FTS::String(reinterpret_cast<const uint8_t*>("héllô"), 0, 0).str());
+    CHECK_EQUAL(std::string("héllô"), FTS::String(reinterpret_cast<const uint8_t*>("héllô"), 0, -1).str());
+    CHECK_EQUAL(std::string("h"), FTS::String(reinterpret_cast<const uint8_t*>("héllô"), 0, 1).str());
+    CHECK_EQUAL(std::string("héllô"), FTS::String(reinterpret_cast<const uint8_t*>("héllô"), 0, 5).str());
+    CHECK_EQUAL(std::string("héllô"), FTS::String(reinterpret_cast<const uint8_t*>("héllô"), 0, 9).str());
 
-    CHECK_EQUAL(std::string(""), FTS::String(reinterpret_cast<const uint8_t*>("hello"), -1).str());
-    CHECK_EQUAL(std::string(""), FTS::String(reinterpret_cast<const uint8_t*>("hello"), 5).str());
-    CHECK_EQUAL(std::string("o"), FTS::String(reinterpret_cast<const uint8_t*>("hello"), 4).str());
-    CHECK_EQUAL(std::string("lo"), FTS::String(reinterpret_cast<const uint8_t*>("hello"), 3).str());
-    CHECK_EQUAL(std::string("ello"), FTS::String(reinterpret_cast<const uint8_t*>("hello"), 1).str());
+    CHECK_EQUAL(std::string(""), FTS::String(reinterpret_cast<const uint8_t*>("héllô"), -1).str());
+    CHECK_EQUAL(std::string(""), FTS::String(reinterpret_cast<const uint8_t*>("héllô"), 5).str());
+    CHECK_EQUAL(std::string("ô"), FTS::String(reinterpret_cast<const uint8_t*>("héllô"), 4).str());
+    CHECK_EQUAL(std::string("lô"), FTS::String(reinterpret_cast<const uint8_t*>("héllô"), 3).str());
+    CHECK_EQUAL(std::string("éllô"), FTS::String(reinterpret_cast<const uint8_t*>("héllô"), 1).str());
 
-    CHECK_EQUAL(std::string(""), FTS::String(reinterpret_cast<const uint8_t*>("hello"), -1, 0).str());
-    CHECK_EQUAL(std::string(""), FTS::String(reinterpret_cast<const uint8_t*>("hello"), 5, 0).str());
-    CHECK_EQUAL(std::string(""), FTS::String(reinterpret_cast<const uint8_t*>("hello"), 3, 0).str());
-    CHECK_EQUAL(std::string("l"), FTS::String(reinterpret_cast<const uint8_t*>("hello"), 3, 1).str());
-    CHECK_EQUAL(std::string("lo"), FTS::String(reinterpret_cast<const uint8_t*>("hello"), 3, 2).str());
-    CHECK_EQUAL(std::string("lo"), FTS::String(reinterpret_cast<const uint8_t*>("hello"), 3, 3).str());
-    CHECK_EQUAL(std::string("lo"), FTS::String(reinterpret_cast<const uint8_t*>("hello"), 3, -1).str());
+    CHECK_EQUAL(std::string(""), FTS::String(reinterpret_cast<const uint8_t*>("héllô"), -1, 0).str());
+    CHECK_EQUAL(std::string(""), FTS::String(reinterpret_cast<const uint8_t*>("héllô"), 5, 0).str());
+    CHECK_EQUAL(std::string(""), FTS::String(reinterpret_cast<const uint8_t*>("héllô"), 3, 0).str());
+    CHECK_EQUAL(std::string("l"), FTS::String(reinterpret_cast<const uint8_t*>("héllô"), 3, 1).str());
+    CHECK_EQUAL(std::string("lô"), FTS::String(reinterpret_cast<const uint8_t*>("héllô"), 3, 2).str());
+    CHECK_EQUAL(std::string("lô"), FTS::String(reinterpret_cast<const uint8_t*>("héllô"), 3, 3).str());
+    CHECK_EQUAL(std::string("lô"), FTS::String(reinterpret_cast<const uint8_t*>("héllô"), 3, -1).str());
 
-    CHECK_EQUAL(std::string(""), FTS::String(FTS::String("hello"), 0, 0).str());
-    CHECK_EQUAL(std::string("hello"), FTS::String(FTS::String("hello"), 0, -1).str());
-    CHECK_EQUAL(std::string("h"), FTS::String(FTS::String("hello"), 0, 1).str());
-    CHECK_EQUAL(std::string("hello"), FTS::String(FTS::String("hello"), 0, 5).str());
-    CHECK_EQUAL(std::string("hello"), FTS::String(FTS::String("hello"), 0, 9).str());
+    CHECK_EQUAL(std::string(""), FTS::String(FTS::String("héllô"), 0, 0).str());
+    CHECK_EQUAL(std::string("héllô"), FTS::String(FTS::String("héllô"), 0, -1).str());
+    CHECK_EQUAL(std::string("h"), FTS::String(FTS::String("héllô"), 0, 1).str());
+    CHECK_EQUAL(std::string("héllô"), FTS::String(FTS::String("héllô"), 0, 5).str());
+    CHECK_EQUAL(std::string("héllô"), FTS::String(FTS::String("héllô"), 0, 9).str());
 
-    CHECK_EQUAL(std::string(""), FTS::String(FTS::String("hello"), -1).str());
-    CHECK_EQUAL(std::string(""), FTS::String(FTS::String("hello"), 5).str());
-    CHECK_EQUAL(std::string("o"), FTS::String(FTS::String("hello"), 4).str());
-    CHECK_EQUAL(std::string("lo"), FTS::String(FTS::String("hello"), 3).str());
-    CHECK_EQUAL(std::string("ello"), FTS::String(FTS::String("hello"), 1).str());
+    CHECK_EQUAL(std::string(""), FTS::String(FTS::String("héllô"), -1).str());
+    CHECK_EQUAL(std::string(""), FTS::String(FTS::String("héllô"), 5).str());
+    CHECK_EQUAL(std::string("ô"), FTS::String(FTS::String("héllô"), 4).str());
+    CHECK_EQUAL(std::string("lô"), FTS::String(FTS::String("héllô"), 3).str());
+    CHECK_EQUAL(std::string("éllô"), FTS::String(FTS::String("héllô"), 1).str());
 
-    CHECK_EQUAL(std::string(""), FTS::String(FTS::String("hello"), -1, 0).str());
-    CHECK_EQUAL(std::string(""), FTS::String(FTS::String("hello"), 5, 0).str());
-    CHECK_EQUAL(std::string(""), FTS::String(FTS::String("hello"), 3, 0).str());
-    CHECK_EQUAL(std::string("l"), FTS::String(FTS::String("hello"), 3, 1).str());
-    CHECK_EQUAL(std::string("lo"), FTS::String(FTS::String("hello"), 3, 2).str());
-    CHECK_EQUAL(std::string("lo"), FTS::String(FTS::String("hello"), 3, 3).str());
-    CHECK_EQUAL(std::string("lo"), FTS::String(FTS::String("hello"), 3, -1).str());
+    CHECK_EQUAL(std::string(""), FTS::String(FTS::String("héllô"), -1, 0).str());
+    CHECK_EQUAL(std::string(""), FTS::String(FTS::String("héllô"), 5, 0).str());
+    CHECK_EQUAL(std::string(""), FTS::String(FTS::String("héllô"), 3, 0).str());
+    CHECK_EQUAL(std::string("l"), FTS::String(FTS::String("héllô"), 3, 1).str());
+    CHECK_EQUAL(std::string("lô"), FTS::String(FTS::String("héllô"), 3, 2).str());
+    CHECK_EQUAL(std::string("lô"), FTS::String(FTS::String("héllô"), 3, 3).str());
+    CHECK_EQUAL(std::string("lô"), FTS::String(FTS::String("héllô"), 3, -1).str());
 
-    CHECK_EQUAL(std::string(""), FTS::String(std::string("hello"), 0, 0).str());
-    CHECK_EQUAL(std::string("hello"), FTS::String(std::string("hello"), 0, -1).str());
-    CHECK_EQUAL(std::string("h"), FTS::String(std::string("hello"), 0, 1).str());
-    CHECK_EQUAL(std::string("hello"), FTS::String(std::string("hello"), 0, 5).str());
-    CHECK_EQUAL(std::string("hello"), FTS::String(std::string("hello"), 0, 9).str());
+    CHECK_EQUAL(std::string(""), FTS::String(std::string("héllô"), 0, 0).str());
+    CHECK_EQUAL(std::string("héllô"), FTS::String(std::string("héllô"), 0, -1).str());
+    CHECK_EQUAL(std::string("h"), FTS::String(std::string("héllô"), 0, 1).str());
+    CHECK_EQUAL(std::string("héllô"), FTS::String(std::string("héllô"), 0, 5).str());
+    CHECK_EQUAL(std::string("héllô"), FTS::String(std::string("héllô"), 0, 9).str());
 
-    CHECK_EQUAL(std::string(""), FTS::String(std::string("hello"), -1).str());
-    CHECK_EQUAL(std::string(""), FTS::String(std::string("hello"), 5).str());
-    CHECK_EQUAL(std::string("o"), FTS::String(std::string("hello"), 4).str());
-    CHECK_EQUAL(std::string("lo"), FTS::String(std::string("hello"), 3).str());
-    CHECK_EQUAL(std::string("ello"), FTS::String(std::string("hello"), 1).str());
+    CHECK_EQUAL(std::string(""), FTS::String(std::string("héllô"), -1).str());
+    CHECK_EQUAL(std::string(""), FTS::String(std::string("héllô"), 5).str());
+    CHECK_EQUAL(std::string("ô"), FTS::String(std::string("héllô"), 4).str());
+    CHECK_EQUAL(std::string("lô"), FTS::String(std::string("héllô"), 3).str());
+    CHECK_EQUAL(std::string("éllô"), FTS::String(std::string("héllô"), 1).str());
 
-    CHECK_EQUAL(std::string(""), FTS::String(std::string("hello"), -1, 0).str());
-    CHECK_EQUAL(std::string(""), FTS::String(std::string("hello"), 5, 0).str());
-    CHECK_EQUAL(std::string(""), FTS::String(std::string("hello"), 3, 0).str());
-    CHECK_EQUAL(std::string("l"), FTS::String(std::string("hello"), 3, 1).str());
-    CHECK_EQUAL(std::string("lo"), FTS::String(std::string("hello"), 3, 2).str());
-    CHECK_EQUAL(std::string("lo"), FTS::String(std::string("hello"), 3, 3).str());
-    CHECK_EQUAL(std::string("lo"), FTS::String(std::string("hello"), 3, -1).str());
+    CHECK_EQUAL(std::string(""), FTS::String(std::string("héllô"), -1, 0).str());
+    CHECK_EQUAL(std::string(""), FTS::String(std::string("héllô"), 5, 0).str());
+    CHECK_EQUAL(std::string(""), FTS::String(std::string("héllô"), 3, 0).str());
+    CHECK_EQUAL(std::string("l"), FTS::String(std::string("héllô"), 3, 1).str());
+    CHECK_EQUAL(std::string("lô"), FTS::String(std::string("héllô"), 3, 2).str());
+    CHECK_EQUAL(std::string("lô"), FTS::String(std::string("héllô"), 3, 3).str());
+    CHECK_EQUAL(std::string("lô"), FTS::String(std::string("héllô"), 3, -1).str());
 }
 
 TEST_INSUITE(dString, ConstructionFancy)
@@ -271,35 +274,35 @@ TEST_INSUITE(dString, ConstructionFancy)
 
 TEST_INSUITE(dString, LeftRightMid)
 {
-    CHECK_EQUAL("Hello", FTS::String("Hello, nice world!").left(5).str());
-    CHECK_EQUAL("world!", FTS::String("Hello, nice world!").right(6).str());
-    CHECK_EQUAL("nice", FTS::String("Hello, nice world!").mid(7,7).str());
-    CHECK_EQUAL("world", FTS::String("Hello, nice world!").mid(12,1).str());
+    CHECK_EQUAL("Héllô", FTS::String("Héllô, nice ที่รัก!").left(5).str());
+    CHECK_EQUAL("ที่รัก!", FTS::String("Héllô, nice ที่รัก!").right(7).str());
+    CHECK_EQUAL("nice", FTS::String("Héllô, nice ที่รัก!").mid(7,8).str());
+    CHECK_EQUAL("ที่รัก", FTS::String("Héllô, nice ที่รัก!").mid(12,1).str());
 
-    CHECK_EQUAL("", FTS::String("Hello, nice world!").left(0).str());
-    CHECK_EQUAL("H", FTS::String("Hello, nice world!").left(1).str());
-    CHECK_EQUAL("Hello, nice world!", FTS::String("Hello, nice world!").left(18).str());
-    CHECK_EQUAL("Hello, nice world!", FTS::String("Hello, nice world!").left(19).str());
-    CHECK_EQUAL("Hello, nice world!", FTS::String("Hello, nice world!").left(100).str());
+    CHECK_EQUAL("", FTS::String("Héllô, nice ที่รัก!").left(0).str());
+    CHECK_EQUAL("H", FTS::String("Héllô, nice ที่รัก!").left(1).str());
+    CHECK_EQUAL("Héllô, nice ที่รัก!", FTS::String("Héllô, nice ที่รัก!").left(19).str());
+    CHECK_EQUAL("Héllô, nice ที่รัก!", FTS::String("Héllô, nice ที่รัก!").left(20).str());
+    CHECK_EQUAL("Héllô, nice ที่รัก!", FTS::String("Héllô, nice ที่รัก!").left(100).str());
 
-    CHECK_EQUAL("", FTS::String("Hello, nice world!").right(0).str());
-    CHECK_EQUAL("!", FTS::String("Hello, nice world!").right(1).str());
-    CHECK_EQUAL("Hello, nice world!", FTS::String("Hello, nice world!").right(18).str());
-    CHECK_EQUAL("Hello, nice world!", FTS::String("Hello, nice world!").right(19).str());
-    CHECK_EQUAL("Hello, nice world!", FTS::String("Hello, nice world!").right(100).str());
+    CHECK_EQUAL("", FTS::String("Héllô, nice ที่รัก!").right(0).str());
+    CHECK_EQUAL("!", FTS::String("Héllô, nice ที่รัก!").right(1).str());
+    CHECK_EQUAL("Héllô, nice ที่รัก!", FTS::String("Héllô, nice ที่รัก!").right(19).str());
+    CHECK_EQUAL("Héllô, nice ที่รัก!", FTS::String("Héllô, nice ที่รัก!").right(20).str());
+    CHECK_EQUAL("Héllô, nice ที่รัก!", FTS::String("Héllô, nice ที่รัก!").right(100).str());
 
-    CHECK_EQUAL("Hello, nice world!", FTS::String("Hello, nice world!").mid(0,0).str());
-    CHECK_EQUAL("Hello, nice world", FTS::String("Hello, nice world!").mid(0,1).str());
-    CHECK_EQUAL("ello, nice world!", FTS::String("Hello, nice world!").mid(1,0).str());
-    CHECK_EQUAL("ello, nice world", FTS::String("Hello, nice world!").mid(1,1).str());
-    CHECK_EQUAL("", FTS::String("Hello, nice world!").mid(18,0).str());
-    CHECK_EQUAL("", FTS::String("Hello, nice world!").mid(18,1).str());
-    CHECK_EQUAL("", FTS::String("Hello, nice world!").mid(19,0).str());
-    CHECK_EQUAL("", FTS::String("Hello, nice world!").mid(19,1).str());
-    CHECK_EQUAL("", FTS::String("Hello, nice world!").mid(0,18).str());
-    CHECK_EQUAL("", FTS::String("Hello, nice world!").mid(1,18).str());
-    CHECK_EQUAL("", FTS::String("Hello, nice world!").mid(0,19).str());
-    CHECK_EQUAL("", FTS::String("Hello, nice world!").mid(1,19).str());
+    CHECK_EQUAL("Héllô, nice ที่รัก!", FTS::String("Héllô, nice ที่รัก!").mid(0,0).str());
+    CHECK_EQUAL("Héllô, nice ที่รัก", FTS::String("Héllô, nice ที่รัก!").mid(0,1).str());
+    CHECK_EQUAL("éllô, nice ที่รัก!", FTS::String("Héllô, nice ที่รัก!").mid(1,0).str());
+    CHECK_EQUAL("éllô, nice ที่รัก", FTS::String("Héllô, nice ที่รัก!").mid(1,1).str());
+    CHECK_EQUAL("", FTS::String("Héllô, nice ที่รัก!").mid(19,0).str());
+    CHECK_EQUAL("", FTS::String("Héllô, nice ที่รัก!").mid(19,1).str());
+    CHECK_EQUAL("", FTS::String("Héllô, nice ที่รัก!").mid(20,0).str());
+    CHECK_EQUAL("", FTS::String("Héllô, nice ที่รัก!").mid(20,1).str());
+    CHECK_EQUAL("", FTS::String("Héllô, nice ที่รัก!").mid(0,19).str());
+    CHECK_EQUAL("", FTS::String("Héllô, nice ที่รัก!").mid(1,19).str());
+    CHECK_EQUAL("", FTS::String("Héllô, nice ที่รัก!").mid(0,20).str());
+    CHECK_EQUAL("", FTS::String("Héllô, nice ที่รัก!").mid(1,20).str());
 }
 
 TEST_INSUITE(dString, HexData)
@@ -405,11 +408,11 @@ TEST_INSUITE(dString, HexData)
 TEST_INSUITE(dString, Fmt)
 {
     CHECK_EQUAL("", FTS::String("").fmt(""));
-    CHECK_EQUAL("abcdefghi{10}", FTS::String("{1}{2}{3}{4}{5}{6}{7}{8}{9}{10}").fmt("a", "b", "c", "d", "e", "f", "g", "h", "i"));
-    CHECK_EQUAL("abcdefghijklmnopqrs{10}u", FTS::String("a{1}c{2}e{3}g{4}i{5}k{6}m{7}o{8}q{9}s{10}u").fmt("b", "d", "f", "h", "j", "l", "n", "p", "r"));
+    CHECK_EQUAL("abที่รักdefghi{10}", FTS::String("{1}{2}{3}{4}{5}{6}{7}{8}{9}{10}").fmt("a", "b", "ที่รัก", "d", "e", "f", "g", "h", "i"));
+    CHECK_EQUAL("abcที่รักefghijklmnopqrs{10}u", FTS::String("a{1}c{2}e{3}g{4}i{5}k{6}m{7}o{8}q{9}s{10}u").fmt("b", "ที่รัก", "f", "h", "j", "l", "n", "p", "r"));
     CHECK_EQUAL("", FTS::String("").fmtRemoveEmpty(""));
-    CHECK_EQUAL("abcdefg{10}", FTS::String("{1}{2}{3}{4}{5}{6}{7}{8}{9}{10}").fmtRemoveEmpty("a", "b", "c", "d", "e", "f", "g"));
-    CHECK_EQUAL("abcdefghijklmnoqs{10}u", FTS::String("a{1}c{2}e{3}g{4}i{5}k{6}m{7}o{8}q{9}s{10}u").fmtRemoveEmpty("b", "d", "f", "h", "j", "l", "n"));
+    CHECK_EQUAL("abที่รักdefg{10}", FTS::String("{1}{2}{3}{4}{5}{6}{7}{8}{9}{10}").fmtRemoveEmpty("a", "b", "ที่รัก", "d", "e", "f", "g"));
+    CHECK_EQUAL("abcที่รักefghijklmnoqs{10}u", FTS::String("a{1}c{2}e{3}g{4}i{5}k{6}m{7}o{8}q{9}s{10}u").fmtRemoveEmpty("b", "ที่รัก", "f", "h", "j", "l", "n"));
 }
 
 TEST_INSUITE(dString, Trivial)
@@ -421,148 +424,18 @@ TEST_INSUITE(dString, Trivial)
     CHECK_EQUAL(0, FTS::String("").lenInt());
     CHECK_EQUAL(1, FTS::String("a").len());
     CHECK_EQUAL(1, FTS::String("a").lenInt());
-    CHECK_EQUAL(5, FTS::String("abcde").len());
-    CHECK_EQUAL(5, FTS::String("abcde").lenInt());
+    CHECK_EQUAL(1, FTS::String("à").len());
+    CHECK_EQUAL(1, FTS::String("à").lenInt());
+    CHECK_EQUAL(5, FTS::String("abcdé").len());
+    CHECK_EQUAL(5, FTS::String("abcdé").lenInt());
+    CHECK_EQUAL(6, FTS::String("ที่รัก").len());
+    CHECK_EQUAL(6, FTS::String("ที่รัก").lenInt());
 
-    /* Some conversion functions. */
+    // Some conversion functions.
     CHECK_EQUAL(std::string(""), std::string(FTS::String("").c_str()));
-    CHECK_EQUAL(std::string("abcde"), std::string(FTS::String("abcde").c_str()));
+    CHECK_EQUAL(std::string("abcdé"), std::string(FTS::String("abcdé").c_str()));
     CHECK_EQUAL(std::string(""), FTS::String("").str());
-    CHECK_EQUAL(std::string("abcde"), FTS::String("abcde").str());
-}
-
-TEST_INSUITE(dString, RemRepl)
-{
-    CHECK_EQUAL("", FTS::String("!").removeChar(0));
-    CHECK_EQUAL("", FTS::String("").removeChar(0));
-    CHECK_EQUAL("", FTS::String("").removeChar(1));
-    CHECK_EQUAL("", FTS::String("!").removeChar(1));
-    CHECK_EQUAL("Hello, World!", FTS::String("!Hello, World!").removeChar(0));
-    CHECK_EQUAL("Hello, World!", FTS::String("H!ello, World!").removeChar(1));
-    CHECK_EQUAL("Hello, World!", FTS::String("Hello, World!?").removeChar(13));
-    CHECK_EQUAL("Hello, World", FTS::String("Hello, World!").removeChar(13));
-    CHECK_EQUAL("Hello, World", FTS::String("Hello, World!").removeChar(14));
-    CHECK_EQUAL("Hello, World", FTS::String("Hello, World!").removeChar(-1));
-
-    CHECK_EQUAL("!", FTS::String("").addChar(0, '!'));
-    CHECK_EQUAL("!", FTS::String("").addChar(1, '!'));
-    CHECK_EQUAL("!", FTS::String("").addChar(10, '!'));
-    CHECK_EQUAL("Hello, World!", FTS::String("ello, World!").addChar(0, 'H'));
-    CHECK_EQUAL("Hello, World!", FTS::String("Hllo, World!").addChar(1, 'e'));
-    CHECK_EQUAL("Hello, World!", FTS::String("Hello, World").addChar(12, '!'));
-    CHECK_EQUAL("Hello, World!", FTS::String("Hello, World").addChar(13, '!'));
-    CHECK_EQUAL("Hello, World!", FTS::String("Hello, World").addChar(130, '!'));
-
-    CHECK_EQUAL("d", FTS::String("Hello, World").replaceStr(0, 11, ""));
-    CHECK_EQUAL("d", FTS::String("Hello, World").replaceStr(0, 11, FTS::String("")));
-    CHECK_EQUAL("H", FTS::String("Hello, World").replaceStr(1, 11, ""));
-    CHECK_EQUAL("H", FTS::String("Hello, World").replaceStr(1, 11, FTS::String("")));
-    CHECK_EQUAL("Hd", FTS::String("Hello, World").replaceStr(1, 10, ""));
-    CHECK_EQUAL("Hd", FTS::String("Hello, World").replaceStr(1, 10, FTS::String("")));
-    CHECK_EQUAL("", FTS::String("Hello, World").replaceStr(0, 12, ""));
-    CHECK_EQUAL("", FTS::String("Hello, World").replaceStr(0, 12, FTS::String("")));
-    CHECK_EQUAL("", FTS::String("Hello, World").replaceStr(0, 120, ""));
-    CHECK_EQUAL("", FTS::String("Hello, World").replaceStr(0, 120, FTS::String("")));
-    CHECK_EQUAL("Hello, World!", FTS::String("you suck").replaceStr(0, 8, "Hello, World!"));
-    CHECK_EQUAL("Hello, World!", FTS::String("you suck").replaceStr(0, 8, FTS::String("Hello, World!")));
-    CHECK_EQUAL("Hello, World!", FTS::String("you suck").replaceStr(0, 120, "Hello, World!"));
-    CHECK_EQUAL("Hello, World!", FTS::String("you suck").replaceStr(0, 120, FTS::String("Hello, World!")));
-    CHECK_EQUAL("Hello, World!", FTS::String("Mello, World!").replaceStr(0, 1, "H"));
-    CHECK_EQUAL("Hello, World!", FTS::String("Mello, World!").replaceStr(0, 1, FTS::String("H")));
-    CHECK_EQUAL("Hello, World!", FTS::String("llo, World!").replaceStr(0, 0, "He"));
-    CHECK_EQUAL("Hello, World!", FTS::String("llo, World!").replaceStr(0, 0, FTS::String("He")));
-    CHECK_EQUAL("Hello, World!", FTS::String("Fucking ello, World!").replaceStr(0, 8, "H"));
-    CHECK_EQUAL("Hello, World!", FTS::String("Fucking ello, World!").replaceStr(0, 8, FTS::String("H")));
-    CHECK_EQUAL("Hello, World!", FTS::String("Fucking llo, World!").replaceStr(0, 8, "He"));
-    CHECK_EQUAL("Hello, World!", FTS::String("Fucking llo, World!").replaceStr(0, 8, FTS::String("He")));
-    CHECK_EQUAL("Hello, World!", FTS::String("Hello, Worlorz?").replaceStr(11, 4, "d!"));
-    CHECK_EQUAL("Hello, World!", FTS::String("Hello, Worlorz?").replaceStr(11, 4, FTS::String("d!")));
-    CHECK_EQUAL("Hello, World!", FTS::String("Hello, Worlorz?").replaceStr(11, 10, "d!"));
-    CHECK_EQUAL("Hello, World!", FTS::String("Hello, Worlorz?").replaceStr(11, 10, FTS::String("d!")));
-    CHECK_EQUAL("Hello, World!", FTS::String("you suck").replaceStr(0, 120, "Hello, World!"));
-    CHECK_EQUAL("Hello, World!", FTS::String("you suck").replaceStr(0, 120, FTS::String("Hello, World!")));
-    CHECK_EQUAL("you sucHello, World!", FTS::String("you suck").replaceStr(7, -1, "Hello, World!"));
-    CHECK_EQUAL("you sucHello, World!", FTS::String("you suck").replaceStr(7, -1, FTS::String("Hello, World!")));
-    CHECK_EQUAL("Hello, World!", FTS::String("Hello, World!").replaceStr(100, 3, "abc"));
-    CHECK_EQUAL("Hello, World!", FTS::String("Hello, World!").replaceStr(100, 3, FTS::String("abc")));
-    CHECK_EQUAL("Hello, World!", FTS::String("Hello, World!").replaceStr(100, 120, "abc"));
-    CHECK_EQUAL("Hello, World!", FTS::String("Hello, World!").replaceStr(100, 120, FTS::String("abc")));
-
-    CHECK_EQUAL("", FTS::String("").replaceStr("", ""));
-    CHECK_EQUAL("c", FTS::String("c").replaceStr("c", "c"));
-    CHECK_EQUAL("c", FTS::String("c").replaceStr("a", "b"));
-    CHECK_EQUAL("c", FTS::String("b").replaceStr("b", "c"));
-    CHECK_EQUAL("asd", FTS::String("ard").replaceStr("ar", "as"));
-    CHECK_EQUAL("dos", FTS::String("dos").replaceStr("dosa", "aaa"));
-    CHECK_EQUAL("dos", FTS::String("dos").replaceStr("ados", "aaa"));
-    CHECK_EQUAL("Hello, World!", FTS::String("Hello,World!").replaceStr(",", ", "));
-    CHECK_EQUAL("Hello, World!", FTS::String("Bye, Dude").replaceStr("Bye, Dude", "Hello, World!"));
-    CHECK_EQUAL("Hello, World!", FTS::String("Bye, World!").replaceStr("Bye", "Hello"));
-
-}
-
-TEST_INSUITE(dString, Trimming)
-{
-    CHECK_EQUAL("", FTS::String("").trimLeft());
-    CHECK_EQUAL("", FTS::String(" \n \r \t ").trimLeft());
-    CHECK_EQUAL("Hello, World!", FTS::String("Hello, World!").trimLeft());
-    CHECK_EQUAL("Hello, World!", FTS::String("  Hello, World!").trimLeft());
-    CHECK_EQUAL("Hello, World!", FTS::String("\n\r\t Hello, World!").trimLeft());
-    CHECK_EQUAL("Hello, World!", FTS::String(" \n \r \t Hello, World!").trimLeft());
-    CHECK_EQUAL("Hello, World!  ", FTS::String("Hello, World!  ").trimLeft());
-    CHECK_EQUAL("Hello, World!", FTS::String("!!!?!?!?!11Hello, World!").trimLeft("!?1"));
-    CHECK_EQUAL("Hello, World!", FTS::String("!!!Hello, World!").trimLeft("!!!!"));
-
-    CHECK_EQUAL("", FTS::String("").trimRight());
-    CHECK_EQUAL("", FTS::String(" \n \r \t ").trimRight());
-    CHECK_EQUAL("Hello, World!", FTS::String("Hello, World!").trimRight());
-    CHECK_EQUAL("Hello, World!", FTS::String("Hello, World!  ").trimRight());
-    CHECK_EQUAL("Hello, World!", FTS::String("Hello, World!\n\r\t ").trimRight());
-    CHECK_EQUAL("Hello, World!", FTS::String("Hello, World! \n \r \t ").trimRight());
-    CHECK_EQUAL("  Hello, World!", FTS::String("  Hello, World!").trimRight());
-    CHECK_EQUAL("Hello, World", FTS::String("Hello, World?1!!!!?!?!?!11").trimRight("!?1"));
-    CHECK_EQUAL("Hello, World", FTS::String("Hello, World!!!").trimRight("!!!!"));
-
-    CHECK_EQUAL("", FTS::String("").trim());
-    CHECK_EQUAL("", FTS::String(" \n \r \t ").trim());
-    CHECK_EQUAL("Hello, World!", FTS::String("Hello, World!").trim());
-    CHECK_EQUAL("Hello, World!", FTS::String("  Hello, World!  ").trim());
-    CHECK_EQUAL("Hello, World!", FTS::String("\n\r\t Hello, World!\n\r\t ").trim());
-    CHECK_EQUAL("Hello, World!", FTS::String(" \n \r \t Hello, World! \n \r \t ").trim());
-    CHECK_EQUAL("Hello, World", FTS::String("Hello, World").trim(" ,"));
-    CHECK_EQUAL("Hello, World", FTS::String("!?!?!?!11Hello, World?1!!!!?!?!?!11").trim("!?1"));
-    CHECK_EQUAL("Hello, World", FTS::String("!!!Hello, World!!!").trim("!!!!"));
-
-    FTS::String hello("  Hello  ");
-    CHECK_EQUAL("Hello  ", hello.trimLeft());
-    CHECK_EQUAL("  Hello  ", hello);
-    CHECK_EQUAL("  Hello", hello.trimRight());
-    CHECK_EQUAL("  Hello  ", hello);
-    CHECK_EQUAL("Hello", hello.trim());
-    CHECK_EQUAL("  Hello  ", hello);
-}
-
-TEST_INSUITE(dString, UpperLower)
-{
-    CHECK_EQUAL("", FTS::String("").lower());
-    CHECK_EQUAL("0123456789", FTS::String("0123456789").lower());
-    CHECK_EQUAL("abcdefghijklmnopqrstuvwxyz", FTS::String("abcdefghijklmnopqrstuvwxyz").lower());
-    CHECK_EQUAL("abcdefghijklmnopqrstuvwxyz", FTS::String("ABCDEFGHIJKLMNOPQRSTUVWXYZ").lower());
-    CHECK_EQUAL("abcdefghijklmnopqrstuvwxyz", FTS::String("AbCdEfGhIjKlMnOpQrStUvWxYz").lower());
-    CHECK_EQUAL("abcdefghijklmnopqrstuvwxyz", FTS::String("aBcDeFgHiJkLmNoPqRsTuVwXyZ").lower());
-
-    CHECK_EQUAL("", FTS::String("").upper());
-    CHECK_EQUAL("0123456789", FTS::String("0123456789").upper());
-    CHECK_EQUAL("ABCDEFGHIJKLMNOPQRSTUVWXYZ", FTS::String("ABCDEFGHIJKLMNOPQRSTUVWXYZ").upper());
-    CHECK_EQUAL("ABCDEFGHIJKLMNOPQRSTUVWXYZ", FTS::String("abcdefghijklmnopqrstuvwxyz").upper());
-    CHECK_EQUAL("ABCDEFGHIJKLMNOPQRSTUVWXYZ", FTS::String("AbCdEfGhIjKlMnOpQrStUvWxYz").upper());
-    CHECK_EQUAL("ABCDEFGHIJKLMNOPQRSTUVWXYZ", FTS::String("aBcDeFgHiJkLmNoPqRsTuVwXyZ").upper());
-
-    FTS::String a("AbCd");
-    CHECK_EQUAL("abcd", a.lower());
-    CHECK_EQUAL("AbCd", a);
-    CHECK_EQUAL("ABCD", a.upper());
-    CHECK_EQUAL("AbCd", a);
+    CHECK_EQUAL(std::string("abcdé"), FTS::String("abcdé").str());
 }
 
 TEST_INSUITE(dString, Searching)
@@ -585,6 +458,10 @@ TEST_INSUITE(dString, Searching)
     CHECK_EQUAL(4, FTS::String("bababbabbba").find(FTS::String("bbabb")));
     CHECK_EQUAL(4, FTS::String("bababbabbba").find("bbabb", 1));
     CHECK_EQUAL(4, FTS::String("bababbabbba").find(FTS::String("bbabb"), 1));
+    CHECK_EQUAL(7, FTS::String("Héllô, ที่รัก!").find("ที่รัก"));
+    CHECK_EQUAL(7, FTS::String("Héllô, ที่รัก!").find(FTS::String("ที่รัก")));
+    CHECK_EQUAL(14, FTS::String("Héllô, ที่รัก Héllô!").find("Héllô", 1));
+    CHECK_EQUAL(14, FTS::String("Héllô, ที่รัก Héllô!").find(FTS::String("Héllô"), 1));
 
     CHECK(FTS::String("").ieq(""));
     CHECK(FTS::String("").ieq(FTS::String("")));
@@ -610,8 +487,8 @@ TEST_INSUITE(dString, Searching)
     CHECK(not FTS::String("!abc").neq(FTS::String("!abcdefghijklmnopqrstuvwxyz?")));
     CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").neq("!abcdefghijklmnopqrstuvwxyz?"));
     CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").neq(FTS::String("!abcdefghijklmnopqrstuvwxyz?")));
-    CHECK(not FTS::String("!abcdefghijklmnopqrstuvwxyz?").neq("!abcxyz", 0));
-    CHECK(not FTS::String("!abcdefghijklmnopqrstuvwxyz?").neq(FTS::String("!abcxyz"), 0));
+    CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").neq("!abcxyz", 0));
+    CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").neq(FTS::String("!abcxyz"), 0));
     CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").neq("!abcxyz", 1));
     CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").neq(FTS::String("!abcxyz"), 1));
     CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").neq("!abcxyz", 2));
@@ -641,12 +518,12 @@ TEST_INSUITE(dString, Searching)
     CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").nieq(FTS::String("!abcdefghijklmnopqrstuvwxyz?")));
     CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").nieq(FTS::String("!ABCDEFGHIJKLMNOPQRSTUVWXYZ?")));
     CHECK(FTS::String("!aBcDeFgHiJkLmNoPqRsTuVwXyZ?").nieq(FTS::String("!AbCdEfGhIjKlMnOpQrStUvWxYz?")));
-    CHECK(not FTS::String("!abcdefghijklmnopqrstuvwxyz?").nieq("!abcxyz", 0));
-    CHECK(not FTS::String("!abcdefghijklmnopqrstuvwxyz?").nieq("!ABCXYZ", 0));
-    CHECK(not FTS::String("!AbCdefghijklmnopqrstuvwxyz?").nieq("!aBcXyZ", 0));
-    CHECK(not FTS::String("!abcdefghijklmnopqrstuvwxyz?").nieq(FTS::String("!abcxyz"), 0));
-    CHECK(not FTS::String("!abcdefghijklmnopqrstuvwxyz?").nieq(FTS::String("!ABCXYZ"), 0));
-    CHECK(not FTS::String("!AbCdefghijklmnopqrstuvwxyz?").nieq(FTS::String("!aBcXyZ"), 0));
+    CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").nieq("!abcxyz", 0));
+    CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").nieq("!ABCXYZ", 0));
+    CHECK(FTS::String("!AbCdefghijklmnopqrstuvwxyz?").nieq("!aBcXyZ", 0));
+    CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").nieq(FTS::String("!abcxyz"), 0));
+    CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").nieq(FTS::String("!ABCXYZ"), 0));
+    CHECK(FTS::String("!AbCdefghijklmnopqrstuvwxyz?").nieq(FTS::String("!aBcXyZ"), 0));
     CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").nieq("!abcxyz", 1));
     CHECK(FTS::String("!abCdefghijklmnopqrstuvwxyz?").nieq("!aBcxyz", 1));
     CHECK(FTS::String("!abcdefghijklmnopqrstuvwxyz?").nieq(FTS::String("!abcxyz"), 1));
@@ -677,6 +554,140 @@ TEST_INSUITE(dString, Searching)
     CHECK(not FTS::String("").contains("H"));
     CHECK(not FTS::String("Hello, World!").contains("n"));
     CHECK(not FTS::String("Hello, World!").contains("noob"));
+}
+
+TEST_INSUITE(dString, RemRepl)
+{
+    CHECK_EQUAL("", FTS::String("!").removeChar(0));
+    CHECK_EQUAL("", FTS::String("").removeChar(0));
+    CHECK_EQUAL("", FTS::String("").removeChar(1));
+    CHECK_EQUAL("", FTS::String("!").removeChar(1));
+    CHECK_EQUAL("Héllô, ที่รัก!", FTS::String("!Héllô, ที่รัก!").removeChar(0));
+    CHECK_EQUAL("Héllô, ที่รัก!", FTS::String("Hé!llô, ที่รัก!").removeChar(2));
+    CHECK_EQUAL("Héllô, ที่รัก!", FTS::String("Héllô, ที่รัก!?").removeChar(14));
+    CHECK_EQUAL("Héllô, ที่รัก", FTS::String("Héllô, ที่รัก!").removeChar(13));
+    CHECK_EQUAL("Héllô, ที่รัก", FTS::String("Héllô, ที่รัก!").removeChar(14));
+    CHECK_EQUAL("Héllô, ที่รัก", FTS::String("Héllô, ที่รัก!").removeChar(-1));
+
+    CHECK_EQUAL("!", FTS::String("").addChar(0, '!'));
+    CHECK_EQUAL("!", FTS::String("").addChar(1, '!'));
+    CHECK_EQUAL("!", FTS::String("").addChar(10, '!'));
+    CHECK_EQUAL("Héllô, ที่รัก!", FTS::String("éllô, ที่รัก!").addChar(0, 'H'));
+    CHECK_EQUAL("Hellô, ที่รัก!", FTS::String("Hllô, ที่รัก!").addChar(1, 'e'));
+    CHECK_EQUAL("Héllô, ที่รัก!", FTS::String("Héllô, ที่รัก").addChar(13, '!'));
+    CHECK_EQUAL("Héllô, ที่รัก!", FTS::String("Héllô, ที่รัก").addChar(14, '!'));
+    CHECK_EQUAL("Héllô, ที่รัก!", FTS::String("Héllô, ที่รัก").addChar(130, '!'));
+
+    CHECK_EQUAL("ก", FTS::String("Héllô, ที่รัก").replaceStr(0, 12, ""));
+    CHECK_EQUAL("ก", FTS::String("Héllô, ที่รัก").replaceStr(0, 12, FTS::String("")));
+    CHECK_EQUAL("H", FTS::String("Héllô, ที่รัก").replaceStr(1, 12, ""));
+    CHECK_EQUAL("H", FTS::String("Héllô, ที่รัก").replaceStr(1, 12, FTS::String("")));
+    CHECK_EQUAL("Hก", FTS::String("Héllô, ที่รัก").replaceStr(1, 11, ""));
+    CHECK_EQUAL("Hก", FTS::String("Héllô, ที่รัก").replaceStr(1, 11, FTS::String("")));
+    CHECK_EQUAL("", FTS::String("Héllô, ที่รัก").replaceStr(0, 13, ""));
+    CHECK_EQUAL("", FTS::String("Héllô, ที่รัก").replaceStr(0, 13, FTS::String("")));
+    CHECK_EQUAL("", FTS::String("Héllô, ที่รัก").replaceStr(0, 120, ""));
+    CHECK_EQUAL("", FTS::String("Héllô, ที่รัก").replaceStr(0, 120, FTS::String("")));
+    CHECK_EQUAL("Héllô, ที่รัก!", FTS::String("you sücก").replaceStr(0, 8, "Héllô, ที่รัก!"));
+    CHECK_EQUAL("Héllô, ที่รัก!", FTS::String("you sücก").replaceStr(0, 8, FTS::String("Héllô, ที่รัก!")));
+    CHECK_EQUAL("Héllô, ที่รัก!", FTS::String("you sücก").replaceStr(0, 120, "Héllô, ที่รัก!"));
+    CHECK_EQUAL("Héllô, ที่รัก!", FTS::String("you sücก").replaceStr(0, 120, FTS::String("Héllô, ที่รัก!")));
+    CHECK_EQUAL("Héllô, ที่รัก!", FTS::String("Méllô, ที่รัก!").replaceStr(0, 1, "H"));
+    CHECK_EQUAL("Héllô, ที่รัก!", FTS::String("Méllô, ที่รัก!").replaceStr(0, 1, FTS::String("H")));
+    CHECK_EQUAL("Héllô, ที่รัก!", FTS::String("llô, ที่รัก!").replaceStr(0, 0, "Hé"));
+    CHECK_EQUAL("Héllô, ที่รัก!", FTS::String("llô, ที่รัก!").replaceStr(0, 0, FTS::String("Hé")));
+    CHECK_EQUAL("Héllô, ที่รัก!", FTS::String("Fucking éllô, ที่รัก!").replaceStr(0, 8, "H"));
+    CHECK_EQUAL("Héllô, ที่รัก!", FTS::String("Fucking éllô, ที่รัก!").replaceStr(0, 8, FTS::String("H")));
+    CHECK_EQUAL("Héllô, ที่รัก!", FTS::String("Fucking éllô, ที่รัก!").replaceStr(0, 9, "Hé"));
+    CHECK_EQUAL("Héllô, ที่รัก!", FTS::String("Fucking éllô, ที่รัก!").replaceStr(0, 9, FTS::String("Hé")));
+    CHECK_EQUAL("Héllô, ที่รัก!", FTS::String("Héllô, ที่รัorz?").replaceStr(12, 4, "ก!"));
+    CHECK_EQUAL("Héllô, ที่รัก!", FTS::String("Héllô, ที่รัorz?").replaceStr(12, 4, FTS::String("ก!")));
+    CHECK_EQUAL("Héllô, ที่รัก!", FTS::String("Héllô, ที่รัorz?").replaceStr(12, 10, "ก!"));
+    CHECK_EQUAL("Héllô, ที่รัก!", FTS::String("Héllô, ที่รัorz?").replaceStr(12, 10, FTS::String("ก!")));
+    CHECK_EQUAL("Héllô, ที่รัก!", FTS::String("you sücก").replaceStr(0, 120, "Héllô, ที่รัก!"));
+    CHECK_EQUAL("Héllô, ที่รัก!", FTS::String("you sücก").replaceStr(0, 120, FTS::String("Héllô, ที่รัก!")));
+    CHECK_EQUAL("you sücHéllô, ที่รัก!", FTS::String("you sücก").replaceStr(7, -1, "Héllô, ที่รัก!"));
+    CHECK_EQUAL("you sücHéllô, ที่รัก!", FTS::String("you sücก").replaceStr(7, -1, FTS::String("Héllô, ที่รัก!")));
+    CHECK_EQUAL("Héllô, ที่รัก!", FTS::String("Héllô, ที่รัก!").replaceStr(100, 3, "abc"));
+    CHECK_EQUAL("Héllô, ที่รัก!", FTS::String("Héllô, ที่รัก!").replaceStr(100, 3, FTS::String("abc")));
+    CHECK_EQUAL("Héllô, ที่รัก!", FTS::String("Héllô, ที่รัก!").replaceStr(100, 120, "abc"));
+    CHECK_EQUAL("Héllô, ที่รัก!", FTS::String("Héllô, ที่รัก!").replaceStr(100, 120, FTS::String("abc")));
+
+    CHECK_EQUAL("", FTS::String("").replaceStr("", ""));
+    CHECK_EQUAL("c", FTS::String("c").replaceStr("c", "c"));
+    CHECK_EQUAL("c", FTS::String("c").replaceStr("a", "b"));
+    CHECK_EQUAL("c", FTS::String("b").replaceStr("b", "c"));
+    CHECK_EQUAL("asd", FTS::String("ard").replaceStr("ar", "as"));
+    CHECK_EQUAL("dos", FTS::String("dos").replaceStr("dosa", "aaa"));
+    CHECK_EQUAL("dos", FTS::String("dos").replaceStr("ados", "aaa"));
+    CHECK_EQUAL("Héllô, ที่รัก!", FTS::String("Héllô,ที่รัก!").replaceStr(",", ", "));
+    CHECK_EQUAL("Héllô, ที่รัก!", FTS::String("Bye, ที่รัก").replaceStr("Bye, ที่รัก", "Héllô, ที่รัก!"));
+    CHECK_EQUAL("Héllô, ที่รัก!", FTS::String("Bye, ที่รัก!").replaceStr("Bye", "Héllô"));
+
+}
+
+TEST_INSUITE(dString, Trimming)
+{
+    CHECK_EQUAL("", FTS::String("").trimLeft());
+    CHECK_EQUAL("", FTS::String(" \n \r \t ").trimLeft());
+    CHECK_EQUAL("Héllô, ที่รัก!", FTS::String("Héllô, ที่รัก!").trimLeft());
+    CHECK_EQUAL("Héllô, ที่รัก!", FTS::String("  Héllô, ที่รัก!").trimLeft());
+    CHECK_EQUAL("Héllô, ที่รัก!", FTS::String("\n\r\t Héllô, ที่รัก!").trimLeft());
+    CHECK_EQUAL("Héllô, ที่รัก!", FTS::String(" \n \r \t Héllô, ที่รัก!").trimLeft());
+    CHECK_EQUAL("Héllô, ที่รัก!  ", FTS::String("Héllô, ที่รัก!  ").trimLeft());
+    CHECK_EQUAL("Héllô, ที่รัก!", FTS::String("!!!?!?!?!11Héllô, ที่รัก!").trimLeft("!?1"));
+    CHECK_EQUAL("Héllô, ที่รัก!", FTS::String("!!!Héllô, ที่รัก!").trimLeft("!!!!"));
+
+    CHECK_EQUAL("", FTS::String("").trimRight());
+    CHECK_EQUAL("", FTS::String(" \n \r \t ").trimRight());
+    CHECK_EQUAL("Héllô, ที่รัก!", FTS::String("Héllô, ที่รัก!").trimRight());
+    CHECK_EQUAL("Héllô, ที่รัก!", FTS::String("Héllô, ที่รัก!  ").trimRight());
+    CHECK_EQUAL("Héllô, ที่รัก!", FTS::String("Héllô, ที่รัก!\n\r\t ").trimRight());
+    CHECK_EQUAL("Héllô, ที่รัก!", FTS::String("Héllô, ที่รัก! \n \r \t ").trimRight());
+    CHECK_EQUAL("  Héllô, ที่รัก!", FTS::String("  Héllô, ที่รัก!").trimRight());
+    CHECK_EQUAL("Héllô, ที่รัก", FTS::String("Héllô, ที่รัก?1!!!!?!?!?!11").trimRight("!?1"));
+    CHECK_EQUAL("Héllô, ที่รัก", FTS::String("Héllô, ที่รัก!!!").trimRight("!!!!"));
+
+    CHECK_EQUAL("", FTS::String("").trim());
+    CHECK_EQUAL("", FTS::String(" \n \r \t ").trim());
+    CHECK_EQUAL("Héllô, ที่รัก!", FTS::String("Héllô, ที่รัก!").trim());
+    CHECK_EQUAL("Héllô, ที่รัก!", FTS::String("  Héllô, ที่รัก!  ").trim());
+    CHECK_EQUAL("Héllô, ที่รัก!", FTS::String("\n\r\t Héllô, ที่รัก!\n\r\t ").trim());
+    CHECK_EQUAL("Héllô, ที่รัก!", FTS::String(" \n \r \t Héllô, ที่รัก! \n \r \t ").trim());
+    CHECK_EQUAL("Héllô, ที่รัก", FTS::String("Héllô, ที่รัก").trim(" ,"));
+    CHECK_EQUAL("Héllô, ที่รัก", FTS::String("!?!?!?!11Héllô, ที่รัก?1!!!!?!?!?!11").trim("!?1"));
+    CHECK_EQUAL("Héllô, ที่รัก", FTS::String("!!!Héllô, ที่รัก!!!").trim("!!!!"));
+
+    FTS::String hello("  Héllô  ");
+    CHECK_EQUAL("Héllô  ", hello.trimLeft());
+    CHECK_EQUAL("  Héllô  ", hello);
+    CHECK_EQUAL("  Héllô", hello.trimRight());
+    CHECK_EQUAL("  Héllô  ", hello);
+    CHECK_EQUAL("Héllô", hello.trim());
+    CHECK_EQUAL("  Héllô  ", hello);
+}
+
+TEST_INSUITE(dString, UpperLower)
+{
+    CHECK_EQUAL("", FTS::String("").lower());
+    CHECK_EQUAL("0123456789", FTS::String("0123456789").lower());
+    CHECK_EQUAL("abcdefghijklmnopqrstuvwxyz", FTS::String("abcdefghijklmnopqrstuvwxyz").lower());
+    CHECK_EQUAL("abcdefghijklmnopqrstuvwxyz", FTS::String("ABCDEFGHIJKLMNOPQRSTUVWXYZ").lower());
+    CHECK_EQUAL("abcdefghijklmnopqrstuvwxyz", FTS::String("AbCdEfGhIjKlMnOpQrStUvWxYz").lower());
+    CHECK_EQUAL("abcdefghijklmnopqrstuvwxyz", FTS::String("aBcDeFgHiJkLmNoPqRsTuVwXyZ").lower());
+
+    CHECK_EQUAL("", FTS::String("").upper());
+    CHECK_EQUAL("0123456789", FTS::String("0123456789").upper());
+    CHECK_EQUAL("ABCDEFGHIJKLMNOPQRSTUVWXYZ", FTS::String("ABCDEFGHIJKLMNOPQRSTUVWXYZ").upper());
+    CHECK_EQUAL("ABCDEFGHIJKLMNOPQRSTUVWXYZ", FTS::String("abcdefghijklmnopqrstuvwxyz").upper());
+    CHECK_EQUAL("ABCDEFGHIJKLMNOPQRSTUVWXYZ", FTS::String("AbCdEfGhIjKlMnOpQrStUvWxYz").upper());
+    CHECK_EQUAL("ABCDEFGHIJKLMNOPQRSTUVWXYZ", FTS::String("aBcDeFgHiJkLmNoPqRsTuVwXyZ").upper());
+
+    FTS::String a("AbCd");
+    CHECK_EQUAL("abcd", a.lower());
+    CHECK_EQUAL("AbCd", a);
+    CHECK_EQUAL("ABCD", a.upper());
+    CHECK_EQUAL("AbCd", a);
 }
 
 TEST_INSUITE(dString, Splitting)
