@@ -91,6 +91,14 @@ void FTS::ModelManager::removeModel(const String& in_sName)
 
 void FTS::ModelManager::removeAllModels()
 {
+    if(m_mHardwareModels.size() > 1) {
+        String sWarning = "The following hardware models haven't been unloaded:\n";
+        for(auto model = m_mHardwareModels.begin() ; model != m_mHardwareModels.end() ; ++model) {
+            sWarning += "    -> " + model->first + " (" + String::nr(model->second.use_count()) + " references)\n";
+        }
+        FTSMSGDBG(sWarning, 2);
+    }
+
     m_mHardwareModels.clear();
 }
 

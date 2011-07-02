@@ -57,7 +57,6 @@ private:
     /// \return The hardware model used when there is an error loading one.
     std::shared_ptr<HardwareModel> getErrorModel();
 
-    // Or maybe shared_ptr? THINK ABOUT IT.
     std::map<String, std::shared_ptr<HardwareModel> > m_mHardwareModels;
 };
 

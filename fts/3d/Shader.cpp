@@ -1013,12 +1013,22 @@ FTS::ShaderManager::~ShaderManager()
     FTSMSGDBG("Destroying shader manager", 2);
     SAFE_DELETE(m_pInclManager);
 
+    String sWarning = "The following shader programs haven't been unloaded:\n";
+
     for(auto i = m_linkedShaders.begin() ; i != m_linkedShaders.end() ; ++i) {
         // Do not delete anyone referencing the default program, as it may
         // be referenced by several entries, resulting in multi-deletes.
-        if(i->second != this->getDefaultProgram())
-            delete i->second;
+        if(i->second == this->getDefaultProgram())
+            continue;
+
+        sWarning += "    -> " + i->first + "\n";
+        delete i->second;
     }
+
+    if(m_linkedShaders.size() > 1) {
+        FTSMSGDBG(sWarning, 2);
+    }
+
     // But don't forget to delete it anyways.
     delete getDefaultProgram();
 }
