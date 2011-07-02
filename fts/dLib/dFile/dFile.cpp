@@ -106,7 +106,7 @@ File::File(const File& o)
 /// Destroys the file object. CARE: This will not save the file before doing so.
 File::~File()
 {
-    SAFE_DELETE(m_pSDC);
+    delete m_pSDC;
 }
 
 /** This not only looks if the file really exists on the harddisk, but it also

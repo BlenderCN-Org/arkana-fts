@@ -29,6 +29,8 @@ public:
 
     uint32_t fletcher32() const;
 
+    virtual ~DataContainer() {};
+
 protected:
     DataContainer() {};
     DataContainer(const DataContainer&) {};
