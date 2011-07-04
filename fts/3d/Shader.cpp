@@ -876,7 +876,7 @@ bool FTS::ShaderManager::makeShader(const String& in_sShaderName, const String& 
     try {
         this->findShader(prettyShaderName);
         return true;
-    } catch( NotExistException& e) {
+    } catch( NotExistException&) {
         // We expect this if the shader wasn't load.
     } catch(...) { 
         FTSMSG("Unknonwn exception makeShader {1}", FTS::MsgType::Warning, prettyShaderName);
