@@ -360,7 +360,8 @@ ADD_PCH_RULE(${fts_SOURCE_DIR}/3d/3d.h SOURCES_COMMON)
 ADD_PCH_RULE(${fts_SOURCE_DIR}/dLib/dString/dString.h SOURCES_COMMON)
 ADD_PCH_RULE(${fts_SOURCE_DIR}/main/main.h SOURCES_GAME)
 
-execute_process(COMMAND svnversion -n WORKING_DIRECTORY ${fts_SOURCE_DIR} OUTPUT_VARIABLE SVN_REVISION)
+execute_process(COMMAND git describe --dirty WORKING_DIRECTORY ${fts_SOURCE_DIR} OUTPUT_VARIABLE FTS_VERSION_FULL_RAW)
+string(STRIP ${FTS_VERSION_FULL_RAW} FTS_VERSION_FULL)
 configure_file(${fts_SOURCE_DIR}/main/revision.h.in ${fts_SOURCE_DIR}/main/revision.h)
 
 add_executable(fts ${SOURCES_COMMON} ${SOURCES_GAME})

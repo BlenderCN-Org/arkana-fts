@@ -394,12 +394,12 @@ bool FTS::MainMenuRlv::cbUpdate(const CEGUI::EventArgs & in_ea)
         }
 
         // Extract the version information.
-        int iVersion[4] = {0};
-        sscanf(StreamedConstDataContainer(pNewestVersion).readstr().c_str(), "%d.%d.%d.%d", &iVersion[0], &iVersion[1], &iVersion[2], &iVersion[3]);
+        int iVersion[3] = {0};
+        sscanf(StreamedConstDataContainer(pNewestVersion).readstr().c_str(), "%d.%d.%d", &iVersion[0], &iVersion[1], &iVersion[2]);
         SAFE_DELETE(pNewestVersion);
 
         // Look if we have a new version.
-        if(makeFTSVersionUInt64(iVersion[0],iVersion[1],iVersion[2],iVersion[3]) > getFTSVersionUInt64()) {
+        if(makeFTSVersionUInt32(iVersion[0],iVersion[1],iVersion[2]) > getFTSVersionUInt32()) {
             wUpdate->getChild("dlg_Update/Desc")->
                 setText(getTranslatedString("Update_Found", "ui"));
             wUpdate->getChild("dlg_Update/Ok")->setEnabled(true);
