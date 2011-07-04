@@ -18,6 +18,12 @@ void TestSuite::addTest(Test *t)
 void TestSuite::run(TestResult& result)
 {
     result.startSuite(*this);
+
+    if(!TestRegistry::mayIRun(*this)) {
+        result.suiteWasSkipped(*this);
+        return;
+    }
+
     std::vector<Test *>::iterator it = tests.begin ();
     if(TestRegistry::catchExceptions()) {
         try
@@ -37,4 +43,9 @@ void TestSuite::run(TestResult& result)
     }
     teardown();
     result.endSuite(*this);
+}
+
+std::size_t TestSuite::testCount() const
+{
+    return tests.size();
 }
