@@ -46,6 +46,12 @@ void TestResult::startSuite(const TestSuite& /*suite*/)
 {
 }
 
+void TestResult::suiteWasSkipped (const TestSuite& suite)
+{
+    testCount += suite.testCount();
+    skipCount += suite.testCount();
+}
+
 void TestResult::endSuite(const TestSuite& /*suite*/)
 {
 }

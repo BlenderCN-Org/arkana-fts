@@ -139,7 +139,7 @@ int String::getByteCount(const char* in_pszString, std::string::size_type in_utf
 
 }
 
-int String::byteCount() const
+std::string::size_type String::byteCount() const
 {
     StringSize len = strlen();
     return std::get<1>(len);

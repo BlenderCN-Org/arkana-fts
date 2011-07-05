@@ -11,6 +11,7 @@
 #include "sound/SndObjOpenAL.h"
 #include "sndobjpool.h"
 #include "SndSysOpenAL.h"
+#include <assert.h>
 
 namespace FTS {
 

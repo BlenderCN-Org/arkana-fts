@@ -69,12 +69,20 @@ enable_testing()
 
 # Build the examples and tests #
 ################################
-add_subdirectory(examples/pizza)
+# add an option for building the examples
+if(NOT DEFINED ATEST_BUILD_EXAMPLES)
+    set(ATEST_BUILD_EXAMPLES TRUE)
+endif()
+set(BUILD_EXAMPLES ${ATEST_BUILD_EXAMPLES} CACHE BOOL "TRUE to build the aTest examples, FALSE to ignore them")
 
-add_test(PeetsaGeneral examples/pizza/peetsa -TS)
-add_test(PeetsaDough examples/pizza/peetsa TS_Dough)
-add_test(PeetsaSauce examples/pizza/peetsa TS_Sauce)
-add_test(PeetsaIngredients examples/pizza/peetsa TS_Ingredients)
+if(${ATEST_BUILD_EXAMPLES})
+    add_subdirectory(examples/pizza)
+
+    add_test(PeetsaGeneral examples/pizza/peetsa -TS)
+    add_test(PeetsaDough examples/pizza/peetsa TS_Dough)
+    add_test(PeetsaSauce examples/pizza/peetsa TS_Sauce)
+    add_test(PeetsaIngredients examples/pizza/peetsa TS_Ingredients)
+endif()
 
 # The compiling process. #
 ##########################

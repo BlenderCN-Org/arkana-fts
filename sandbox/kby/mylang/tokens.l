@@ -99,8 +99,9 @@ int first_time = 1 ;
 "and"                   return TOKEN(TAND);
 "or"                    return TOKEN(TOR);
 "def"                   return TOKEN(TDEF);
+"var"                   return TOKEN(TVAR);
 "while"                 return TOKEN(TWHILE);
-\#[tf]/[ \t\n]          SAVE_TOKEN; return TBOOL;
+#[tf]/[ \t\n),]          SAVE_TOKEN; return TBOOL;
 [ \t\n]                 ;
 [a-zA-Z_][a-zA-Z0-9_&%\$\?\-]*  SAVE_TOKEN; return TIDENTIFIER;
 -?[0-9]+\.[0-9]*        SAVE_TOKEN; return TDOUBLE;
@@ -120,6 +121,7 @@ int first_time = 1 ;
 "-"                     return TOKEN(TMINUS);
 "*"                     return TOKEN(TMUL);
 "/"                     return TOKEN(TDIV);
+":"                     return TOKEN(TCOLON);
 .                       printf("line %d, len %d Unknown token %s !\n", yylineno, yyleng, yytext); yyterminate();
 
 %%

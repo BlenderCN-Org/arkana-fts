@@ -5,7 +5,7 @@
 #include "dLib/aTest/TestResultSQL.h"
 #include <fstream>
 
-int TEST_MAIN(int argc, char *argv[])
+int run_tests(int argc, const char *argv[])
 {
     std::string sProjName = "unnamed project";
 
@@ -25,10 +25,6 @@ int TEST_MAIN(int argc, char *argv[])
     TestResultSQL world(sql, sProjName);
     TestResultCombiner result(hello, world);
     TestRegistry::runAllTests(result);
-
-#if WINDOOF
-    system("pause");
-#endif
 
     return (result.getFailureCount());
 }

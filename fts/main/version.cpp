@@ -1,9 +1,17 @@
 #include "version.h"
-#include "revision.h"
+#ifndef _WIN32
+#  include "revision.h"
+#endif
 
 #define MAJ 0
 #define MIN 0
 #define REL 4
+
+#ifndef D_FTS_FULL_VERSION_STR
+#  define STR_HELPER(x) #x
+#  define STR(x) STR_HELPER(x)
+#  define D_FTS_FULL_VERSION_STR "v" STR(MAJ) "." STR(MIN) "." STR(REL)
+#endif
 
 #include <sstream>
 
@@ -25,32 +33,11 @@ int getReleaseVersion()
     return REL;
 }
 
-/// \return The revision version.
-int getRevisionVersion()
-{
-    int iRev = 0;
-    std::istringstream ss(D_FTS_REVISION_STR);
-    ss >> iRev;
-    return iRev;
-}
-
-/// \return A string that looks like this: "0.1.5.2567"
+/// \return A string that describes the exact version to a human
 std::string getFTSVersionString()
 {
-    std::ostringstream ss;
-    ss << getMajorVersion() << "." << getMinorVersion() << "." << getReleaseVersion() << "." << getRevisionVersion();
-    return ss.str();
+    return D_FTS_FULL_VERSION_STR;
 }
-
-#  define FTS_MK_VERSION_UINT32(a,b,c) ((uint32_t)((uint32_t)(a) * (uint32_t)100000000) + \
-                                        (uint32_t)((uint32_t)(b) * (uint32_t)100000) +   \
-                                        (uint32_t)((uint32_t)(c) * (uint32_t)1)       \
-                                       )
-#  define FTS_MK_VERSION_UINT64(a,b,c,d) ((uint64_t)((uint64_t)(a) * (uint64_t)1000000000*(uint64_t)1000000) + \
-                                          (uint64_t)((uint64_t)(b) * (uint64_t)1000000000*(uint64_t)1000) +   \
-                                          (uint64_t)((uint64_t)(c) * (uint64_t)1000000000) +     \
-                                          (uint64_t)((uint64_t)(d) * (uint64_t)1)            \
-                                         )
 
 uint32_t makeFTSVersionUInt32(int iMaj, int iMin, int iRel)
 {
@@ -70,11 +57,6 @@ uint64_t makeFTSVersionUInt64(int iMaj, int iMin, int iRel, int iRev)
 uint32_t getFTSVersionUInt32()
 {
     return makeFTSVersionUInt32(getMajorVersion(), getMinorVersion(), getReleaseVersion());
-}
-
-uint64_t getFTSVersionUInt64()
-{
-    return makeFTSVersionUInt64(getMajorVersion(), getMinorVersion(), getReleaseVersion(), getRevisionVersion());
 }
 
  /* EOF */

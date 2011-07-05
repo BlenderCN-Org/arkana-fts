@@ -163,6 +163,11 @@ void TestResultSQL::startSuite(const TestSuite& suite)
           << "" << std::endl;
 }
 
+void TestResultSQL::suiteWasSkipped(const TestSuite& suite)
+{
+    this->endSuite(suite);
+}
+
 void TestResultSQL::endSuite(const TestSuite& suite)
 {
     // Now we can update the stoptime of the suite.

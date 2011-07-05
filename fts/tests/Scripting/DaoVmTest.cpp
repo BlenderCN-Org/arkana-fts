@@ -28,13 +28,13 @@ public:
         new DaoVm();
     }
     void teardown()
-	{
-		delete DaoVm::getSingletonPtr();
+    {
+        delete DaoVm::getSingletonPtr();
         mainVmSpace = nullptr;
         mainVmProcess = nullptr;
         delete DefaultLogger::getSingletonPtr();
         delete InputManager::getSingletonPtr();
-	}
+    }
 protected:
 };
 
@@ -45,7 +45,7 @@ public:
         DaoVm::getSingleton().pushContext();
     }
     void teardown()
-	{
+    {
         DaoVm::getSingleton().popContext();
     }
 protected:

@@ -39,6 +39,8 @@ int enterMainLoop();
 int cleanFTS(void);
 void exitfunc(void);
 
+int run_tests(int argc, const char* argv[]);
+
 /* -------------------------- */
 /* Var's                      */
 /* -------------------------- */
@@ -95,7 +97,7 @@ String PRINT_FUN =
 "                                    \n";
 #endif // DEBUG
 
-int GAME_MAIN(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
     try {
     printf("CWD: %s\n", Path::wd().c_str());
@@ -103,6 +105,20 @@ int GAME_MAIN(int argc, char *argv[])
 #ifdef SIGPIPE
     signal(SIGPIPE, SIG_IGN); /* Ignore broken pipe */
 #endif /* SIGPIPE */
+
+    // In debug mode, always run the tests on startup!
+#ifdef DEBUG
+    // The -tDaoVm disables the DaoVm tests, as currently the Dao VM cannot be
+    // initialized more than one time. This is the fault of Dao, not Arkana.
+    const char* test_argv[] = {"./tests", "fts", "-tDaoVm"};
+    int failures = run_tests(sizeof(test_argv)/sizeof(test_argv[0]), test_argv);
+    if(failures > 0) {
+#if WINDOOF
+        system("pause");
+#endif
+        return failures;
+    }
+#endif
 
     if(!FileUtils::dirExists(DATA)) {
         std::cout << "FTS not running in the correct directory: " << std::endl

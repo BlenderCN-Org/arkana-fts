@@ -8,7 +8,7 @@
 
 void TestRegistry::addTest (Test *test)
 {
-	instance ().add (test);
+    instance ().add (test);
 }
 
 void TestRegistry::addDo(const std::string& sRestriction)
@@ -23,18 +23,18 @@ void TestRegistry::addDont(const std::string& sRestriction)
 
 void TestRegistry::runAllTests (TestResult& result, bool bCatchExceptions)
 {
-	instance ().run (result, bCatchExceptions);
+    instance ().run (result, bCatchExceptions);
 }
 
 
 TestRegistry& TestRegistry::instance () {
-	static TestRegistry registry;
-	return registry;
+    static TestRegistry registry;
+    return registry;
 }
 
 
 void TestRegistry::add (Test *test) {
-	tests.push_back (test);
+    tests.push_back (test);
 }
 
 void TestRegistry::addDo_(const std::string& sRestriction) {
@@ -48,11 +48,11 @@ void TestRegistry::addDont_(const std::string& sRestriction) {
 
 void TestRegistry::run (TestResult& result, bool bCatchExceptions) {
     m_bCatchExceptions = bCatchExceptions;
-	result.startTests ();
-	for (std::vector<Test *>::iterator it = tests.begin (); it != tests.end (); ++it) {
+    result.startTests ();
+    for (std::vector<Test *>::iterator it = tests.begin (); it != tests.end (); ++it) {
         (*it)->run (result);
     }
-	result.endTests ();
+    result.endTests ();
 }
 
 bool TestRegistry::catchExceptions() {
