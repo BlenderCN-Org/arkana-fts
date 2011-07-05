@@ -88,7 +88,7 @@ String::StringSize String::strlen() const
     return ret;
 }
 
-const char* String::advance(const char* in_pszString, std::string::size_type in_utf8Len)
+const char* String::advance(const char* in_pszString, std::allocator< char >::size_type in_utf8Len) const
 {
     const char * p = in_pszString;
     if(in_utf8Len <= 0 ) return p;

@@ -41,7 +41,7 @@ private:
     static String fromSpecialNumber(T number);
     void fromStringWithLength(const char* in_pszString, std::string::size_type in_iStart, std::string::size_type in_iLength);
     int getByteCount(const char* in_pszString, std::string::size_type in_utf8Len);
-    const char* advance(const char* in_pszString, std::string::size_type in_utf8Len);
+    const char* advance(const char* in_pszString, std::string::size_type in_utf8Len) const;
     typedef std::tuple<std::string::size_type, std::string::size_type> StringSize;
     StringSize strlen() const;
 public:
