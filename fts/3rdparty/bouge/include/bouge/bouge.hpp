@@ -26,11 +26,7 @@
 
 #include <bouge/Config.hpp>
 
-#include <bouge/Math/Matrix.hpp>
-#include <bouge/Math/Quaternion.hpp>
-#include <bouge/Math/Util.hpp>
-#include <bouge/Math/Vector.hpp>
-#include <bouge/Math/TimeFunction.hpp>
+#include <bouge/Math.hpp>
 
 #include <bouge/Animation.hpp>
 #include <bouge/BoneInstance.hpp>
