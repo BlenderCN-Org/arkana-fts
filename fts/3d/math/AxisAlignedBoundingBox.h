@@ -1,9 +1,9 @@
 #ifndef AXISALIGNEDBOUNDINGBOX_H
 #define AXISALIGNEDBOUNDINGBOX_H
 
+#include "3d/Mathfwd.h"
+
 namespace FTS {
-    class Vector;
-    class AffineMatrix;
 
 /// This class represents an axis-aligned bounding-box, that means that the six
 /// planes of the bounding box are parallel to the main axes (X,Y,Z).
@@ -18,7 +18,7 @@ public:
     /// This constructor is mainly intended as a starting-point for building
     /// an AABB for a whole model.
     /// \param in_point The first point to use for the AABB.
-    AxisAlignedBoundingBox(const FTS::Vector& in_point);
+    AxisAlignedBoundingBox(const Vector& in_point);
 
     /// Constructs a square AABB around the origin.
     /// \param in_fScale The distance from the origin to each plane.

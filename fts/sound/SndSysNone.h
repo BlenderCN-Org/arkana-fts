@@ -16,7 +16,6 @@
 
 namespace FTS {
     class ISndObj;
-    class Vector;
 
 class SndSysNone : public ISndSys
 {

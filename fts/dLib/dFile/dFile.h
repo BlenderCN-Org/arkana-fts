@@ -251,17 +251,34 @@ public:
     int write(long double in);
     int write(const String &in);
 
-    template<typename T>
-    File& operator <<(const T& in) {
-        this->write(in);
-        return *this;
-    };
+    // Again, these can't be templated if we want other classes to define
+    // the >> and << operator with a templated input.
 
-    template<typename T>
-    File& operator >>(T& out) {
-        this->read(out);
-        return *this;
-    };
+    inline File& operator << (int8_t in) { this->write(in); return *this; };
+    inline File& operator << (uint8_t in) { this->write(in); return *this; };
+    inline File& operator << (int16_t in) { this->write(in); return *this; };
+    inline File& operator << (uint16_t in) { this->write(in); return *this; };
+    inline File& operator << (int32_t in) { this->write(in); return *this; };
+    inline File& operator << (uint32_t in) { this->write(in); return *this; };
+    inline File& operator << (int64_t in) { this->write(in); return *this; };
+    inline File& operator << (uint64_t in) { this->write(in); return *this; };
+    inline File& operator << (float in) { this->write(in); return *this; };
+    inline File& operator << (double in) { this->write(in); return *this; };
+    inline File& operator << (long double in) { this->write(in); return *this; };
+    inline File& operator << (String in) { this->write(in); return *this; };
+
+    inline File& operator >>(int8_t& out) { this->read(out); return *this; };
+    inline File& operator >>(uint8_t& out) { this->read(out); return *this; };
+    inline File& operator >>(int16_t& out) { this->read(out); return *this; };
+    inline File& operator >>(uint16_t& out) { this->read(out); return *this; };
+    inline File& operator >>(int32_t& out) { this->read(out); return *this; };
+    inline File& operator >>(uint32_t& out) { this->read(out); return *this; };
+    inline File& operator >>(int64_t& out) { this->read(out); return *this; };
+    inline File& operator >>(uint64_t& out) { this->read(out); return *this; };
+    inline File& operator >>(float& out) { this->read(out); return *this; };
+    inline File& operator >>(double& out) { this->read(out); return *this; };
+    inline File& operator >>(long double& out) { this->read(out); return *this; };
+    inline File& operator >>(String& out) { this->read(out); return *this; };
 };
 
 namespace FileUtils {

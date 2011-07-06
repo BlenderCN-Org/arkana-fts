@@ -31,11 +31,6 @@
 #  endif // TEST_MAIN
 #endif
 
-// Help KDevelop's parser understand C++0x
-#ifdef IN_KDEVELOP_PARSER
-#  define __GXX_EXPERIMENTAL_CXX0X__
-#endif
-
 #  define _USE_MATH_DEFINES // needed for math constants like M_PI (under windows)
 #  include <sys/stat.h>
 #  include <string.h>

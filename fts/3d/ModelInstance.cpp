@@ -14,11 +14,10 @@
 #include "HardwareModel.h"
 
 #include "3d/3d.h"
-#include "3d/math/Matrix.h"
+#include "3d/Math.h"
 #include "graphic/Color.h"
 #include "logging/logger.h"
 #include "main/Clock.h"
-#include "utilities/Math.h"
 
 #include <bouge/bouge.hpp>
 

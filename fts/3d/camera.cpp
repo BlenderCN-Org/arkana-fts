@@ -11,7 +11,7 @@
 
 #include "logging/logger.h"
 #include "main/runlevels.h" // To get the active camera.
-#include "math/Quaternion.h"
+#include "3d/Math.h"
 #include "3d/Resolution.h" // To construct a default camera.
 #include "3d/3d.h" // To setup the viewport (glViewport)
 
@@ -97,7 +97,7 @@ Camera& FTS::Camera::resetOrientation()
 {
     Lock l(m_Mutex);
     m_viewMatrix = AffineMatrix::translation(m_viewMatrix);
-    FTSMSGDBG("View matrix:\n{1}", 4, m_viewMatrix.toString());
+    FTSMSGDBG("View matrix:\n{1}", 4, m_viewMatrix.to_s());
 
     return *this;
 }
@@ -120,7 +120,7 @@ Camera& Camera::lookAt(const Vector& in_vTgt)
     // First, look what we have to rotate around the camera's Y.
     // For this, project both the front and the target vectors onto the
     // camera's XZ plane and find out their angle.
-    Vector vTgtEyeXZ = Vector(vTgtEyeSpace).setY(0.0f).normalize();
+    Vector vTgtEyeXZ = Vector(vTgtEyeSpace).y(0.0f).normalize();
     Vector vCamFront(0.0f, 0.0f, -1.0f);
     float fThetaTgt = atan2f(-vTgtEyeXZ.z(), vTgtEyeXZ.x());
     float fThetaFront = atan2f(-vCamFront.z(), vCamFront.x());
@@ -129,7 +129,7 @@ Camera& Camera::lookAt(const Vector& in_vTgt)
     // Next, look what we have to rotate around the camera's X.
     // For this, project both the front and the target vectors onto the
     // camera's YZ plane and find out their angle.
-    Vector vTgtEyeYZ = Vector(vTgtEyeSpace).setX(0.0f).normalize();
+    Vector vTgtEyeYZ = Vector(vTgtEyeSpace).x(0.0f).normalize();
     fThetaTgt = atan2f(vTgtEyeYZ.z(), vTgtEyeYZ.y());
     fThetaFront = atan2f(vCamFront.z(), vCamFront.y());
     this->rotateX(fThetaTgt-fThetaFront);
@@ -152,7 +152,7 @@ Camera& Camera::position(const Vector& in_vPos)
     // Translate the camera to the new position. That means translate the whole
     // scene to the opposite, that's why we do curpos-newpos.
     m_viewMatrix *= AffineMatrix::translation(this->getPos() - in_vPos);
-    FTSMSGDBG("View matrix:\n{1}", 4, m_viewMatrix.toString());
+    FTSMSGDBG("View matrix:\n{1}", 4, m_viewMatrix.to_s());
 
     return *this;
 }
@@ -271,7 +271,7 @@ Camera& Camera::moveGlobalZ(float in_fAmount)
  */
 Camera& Camera::moveFrontParralelToGlobalXY(float in_fAmount)
 {
-    Vector vFrontXY = this->getFront().setZ(0.0f).normalize();
+    Vector vFrontXY = this->getFront().z(0.0f).normalize();
     if(nearZero(vFrontXY.len())) {
         return this->moveUp(in_fAmount);
     }
@@ -290,7 +290,7 @@ Camera& Camera::moveFrontParralelToGlobalXY(float in_fAmount)
  */
 Camera& Camera::moveFrontParralelToGlobalXZ(float in_fAmount)
 {
-    Vector vFrontXZ = this->getFront().setY(0.0f).normalize();
+    Vector vFrontXZ = this->getFront().y(0.0f).normalize();
     if(nearZero(vFrontXZ.len())) {
         return this->moveUp(in_fAmount);
     }
@@ -309,7 +309,7 @@ Camera& Camera::moveFrontParralelToGlobalXZ(float in_fAmount)
  */
 Camera& Camera::moveFrontParralelToGlobalYZ(float in_fAmount)
 {
-    Vector vFrontYZ = this->getFront().setX(0.0f).normalize();
+    Vector vFrontYZ = this->getFront().x(0.0f).normalize();
     if(nearZero(vFrontYZ.len())) {
         return this->moveUp(in_fAmount);
     }
@@ -343,8 +343,8 @@ Camera& Camera::rotate(const Vector& in_axis, float in_fRadians)
     // Rotate in the other direction because we're the camera!
     Quaternion q = Quaternion::rotation(in_axis, -in_fRadians);
     Lock l(m_Mutex);
-    m_viewMatrix = AffineMatrix::rotationQuat(q) * m_viewMatrix;
-    FTSMSGDBG("View matrix:\n{1}", 4, m_viewMatrix.toString());
+    m_viewMatrix = AffineMatrix::rotation(q) * m_viewMatrix;
+    FTSMSGDBG("View matrix:\n{1}", 4, m_viewMatrix.to_s());
     return *this;
 }
 
@@ -367,8 +367,8 @@ Camera& Camera::rotateGlobal(const Vector& in_axis, float in_fRadians)
     // Rotate in the other direction because we're the camera!
     Quaternion q = Quaternion::rotation(vGlobalAxis, -in_fRadians);
     Lock l(m_Mutex);
-    m_viewMatrix = AffineMatrix::rotationQuat(q) * m_viewMatrix;
-    FTSMSGDBG("View matrix:\n{1}", 4, m_viewMatrix.toString());
+    m_viewMatrix = AffineMatrix::rotation(q) * m_viewMatrix;
+    FTSMSGDBG("View matrix:\n{1}", 4, m_viewMatrix.to_s());
 
     return *this;
 }
@@ -390,7 +390,7 @@ Camera& Camera::rotateX(float in_fRadians)
     Lock l(m_Mutex);
     // Rotate in the other direction because we're the camera!
     m_viewMatrix = AffineMatrix::rotationX(-in_fRadians) * m_viewMatrix;
-    FTSMSGDBG("View matrix:\n{1}", 4, m_viewMatrix.toString());
+    FTSMSGDBG("View matrix:\n{1}", 4, m_viewMatrix.to_s());
 
     return *this;
 }
@@ -412,7 +412,7 @@ Camera& Camera::rotateY(float in_fRadians)
     Lock l(m_Mutex);
     // Rotate in the other direction because we're the camera!
     m_viewMatrix = AffineMatrix::rotationY(-in_fRadians) * m_viewMatrix;
-    FTSMSGDBG("View matrix:\n{1}", 4, m_viewMatrix.toString());
+    FTSMSGDBG("View matrix:\n{1}", 4, m_viewMatrix.to_s());
 
     return *this;
 }
@@ -434,7 +434,7 @@ Camera& Camera::rotateZ(float in_fRadians)
     Lock l(m_Mutex);
     // Rotate in the other direction because we're the camera!
     m_viewMatrix = AffineMatrix::rotationZ(-in_fRadians) * m_viewMatrix;
-    FTSMSGDBG("View matrix:\n{1}", 4, m_viewMatrix.toString());
+    FTSMSGDBG("View matrix:\n{1}", 4, m_viewMatrix.to_s());
 
     return *this;
 }

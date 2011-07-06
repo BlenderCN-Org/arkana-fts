@@ -1,6 +1,6 @@
 #include "Resolution.h"
 
-#include "utilities/Math.h"
+#include "3d/Math.h"
 
 #include "dLib/dString/dString.h"
 

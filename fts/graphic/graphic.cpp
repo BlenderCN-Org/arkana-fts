@@ -6,6 +6,7 @@
 #include "graphic/graphic.h"
 #include "graphic/image.h"
 #include "3d/3d.h"
+#include "3d/Mathfwd.h"
 #include "logging/logger.h"
 #include "logging/Chronometer.h"
 #include "utilities/Math.h"

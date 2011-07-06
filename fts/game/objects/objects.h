@@ -11,7 +11,7 @@
 #include "main.h"
 
 #include "3d/3d.h"
-#include "3d/math/Vector.h"
+#include "3d/Math.h"
 #include "dLib/dString/dString.h"
 #include "dLib/dFile/dFile.h"
 

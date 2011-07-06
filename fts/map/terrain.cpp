@@ -3,16 +3,14 @@
 #include "map/quad.h"
 
 #include "dLib/dFile/dFile.h"
+#include "dLib/dConf/configuration.h"
 
 #include "3d/3d.h"
-#include "3d/math/Vector.h"
+#include "3d/Math.h"
 #include "logging/logger.h"
 #include "graphic/graphic.h"
 #include "utilities/utilities.h"
 #include "ui/ui.h"
-#include "dLib/dConf/configuration.h"
-
-#include "3d/3d.h"
 
 using namespace FTS;
 

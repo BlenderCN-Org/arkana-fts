@@ -10,7 +10,7 @@
 
 #include <list>
 
-#include "3d/math/Vector.h"
+#include "3d/Math.h"
 #include "3d/3d.h"
 #include "utilities/utilities.h"
 

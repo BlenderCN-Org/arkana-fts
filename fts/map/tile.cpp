@@ -9,8 +9,8 @@
 
 #include "3d/3d.h"
 
+#include "3d/Mathfwd.h"
 #include "logging/logger.h"
-#include "utilities/Math.h"
 #include "graphic/graphic.h"
 #include "graphic/image.h"
 

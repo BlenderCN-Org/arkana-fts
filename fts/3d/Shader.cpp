@@ -1,20 +1,18 @@
 #include "Shader.h"
 
 #include "3d/3d.h"
-#include "3d/math/Vector.h"
-#include "3d/math/Quaternion.h"
-#include "3d/math/Matrix.h"
+#include "3d/Math.h"
 #include "logging/logger.h"
-#include "utilities/NonCopyable.h"
 #include "main/Exception.h"
-#include "dLib/dBrowse/dBrowse.h"
+#include "utilities/NonCopyable.h"
 #include "utilities/utilities.h"
 #include "graphic/Color.h"
+#include "dLib/dBrowse/dBrowse.h"
+#include "dLib/dFile/dFile.h"
 
 #include <map>
 #include <vector>
 #include <set>
-#include <dLib/dFile/dFile.h>
 
 using namespace FTS;
 

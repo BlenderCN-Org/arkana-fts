@@ -5,32 +5,13 @@
  * \brief This file contains some mathematical utility functions.
  **/
 
-#ifndef D_MATH_H
-#define D_MATH_H
+#ifndef D_FTS_MATH_H
+#define D_FTS_MATH_H
 
 #include <algorithm>
 #include <stdlib.h>
 
-#define D_FTS_EPSILON      0.0001
-
 namespace FTS {
-    static const float pi = 3.141592f;
-    static const float rad2deg = 57.29577f;
-    static const float deg2rad = 0.01745329f;
-
-    /// Checks if a floating point value is nearly zero.
-    /// \param val The value to check if it is near zero.
-    /// \returns true if \a val is nearly zero.
-    inline bool nearZero(const float& val) {
-        return ((val > 0.0f && val < D_FTS_EPSILON)
-             || (val < 0.0f && val > -D_FTS_EPSILON)
-             || (val == 0.0f));
-    }
-
-    template<class T>
-    inline T clamp(T in_val, T in_min, T in_max) {
-        return std::min(std::max(in_val, in_max), in_min);
-    }
 
 /// Get a random number between two numbers.
 /** Returns a random number between \a in_iMin and \a in_iMax.
@@ -60,31 +41,8 @@ T random(T in_dMin, T in_dMax)
     return static_cast<T>(posval + min);
 }
 
-/// Returns the next power of two value from \a in_i
-/** Returns the next bigger power of two value from \a in_i
- *
- * \param in_i The value wich to get the bigger power of 2 from.
- *
- * \return a power of two.
- *
- * \Note If \a in_i is 6, this function returns 8, because 8 is the next power of two.\n
- *       If \a in_i is 17, this function returns 32, because 32 is the next power of two.
- *
- * \author Pompei2
- */
-template<typename T>
-T power_of_two(T in_i)
-{
-    T iValue = 1;
-
-    while(iValue < in_i)
-        iValue <<= 1;
-
-    return iValue;
-}
-
 } // namespace FTS
 
-#endif // D_MATH_H
+#endif // D_FTS_MATH_H
 
  /* EOF */

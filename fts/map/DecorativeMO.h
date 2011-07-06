@@ -15,8 +15,8 @@ namespace FTS {
 /// a hill, ... All kind of stuff the player will not "click" onto.
 class DecorativeMO : public MapObject, public NonCopyable {
 public:
-    DecorativeMO(std::unique_ptr<ModelInstance> in_pModelInst, const Vector& in_vPos = Vector(0.0f), float in_fOrientation = 0.0f, const Vector& in_vScale = Vector(1.0f));
-    DecorativeMO(std::unique_ptr<ModelInstance> in_pModelInst, const Vector& in_vPos, const Quaternion& in_qRot, const Vector& in_vScale = Vector(1.0f));
+    DecorativeMO(std::unique_ptr<ModelInstance> in_pModelInst, const Vector& in_vPos = Vector(), float in_fOrientation = 0.0f, const Vector& in_vScale = Vector(1.0f, 1.0f, 1.0f));
+    DecorativeMO(std::unique_ptr<ModelInstance> in_pModelInst, const Vector& in_vPos, const Quaternion& in_qRot, const Vector& in_vScale = Vector(1.0f, 1.0f, 1.0f));
 
     DecorativeMO(DecorativeMO&&);
     DecorativeMO& operator=(DecorativeMO&&);

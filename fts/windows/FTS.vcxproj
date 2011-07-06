@@ -92,10 +92,12 @@
       <PreprocessorDefinitions>NDEBUG;D_STRING_FTS_PATHS;D_USE_CEGUI;ALL_STATIC;CEGUI_STATIC;D_SND_SYS=1;DAO_DIRECT_API;DAO_SND_STATIC;CAL3D_API=;D_CAL3D_INTEGRATION;BOUGE_STATIC</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DisableSpecificWarnings>4018;4267;4129;4311;4313;4005;4521;4291;4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>main.h</PrecompiledHeaderFile>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <StringPooling>true</StringPooling>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
     </ClCompile>
     <Link>
       <AdditionalDependencies>freetype.lib;pcre.lib;OpenGL32.lib;glu32.lib;SDL.lib;SDLmain.lib;CEGUIBase.lib;OpenGLGUIRenderer.lib;wsock32.lib;user32.lib;CEGUIFalagardWRBase.lib;CEGUITinyXMLParser.lib;OpenAl32.lib;alut.lib;libvorbis.lib;libvorbisfile.lib;libogg.lib;dao.lib;cal3d.lib;bouge.lib;winmm.lib;dxguid.lib;dsound.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -103,8 +105,6 @@
       <EnableUAC>false</EnableUAC>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <DelayLoadDLLs>%(DelayLoadDLLs)</DelayLoadDLLs>
-      <GenerateMapFile>true</GenerateMapFile>
-      <MapFileName>$(TargetDir)$(TargetName).map</MapFileName>
       <SubSystem>Console</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -222,9 +222,6 @@
     <ClCompile Include="..\3d\camera.cpp" />
     <ClCompile Include="..\3d\light.cpp" />
     <ClCompile Include="..\3d\Renderer.cpp" />
-    <ClCompile Include="..\3d\math\Matrix.cpp" />
-    <ClCompile Include="..\3d\math\Quaternion.cpp" />
-    <ClCompile Include="..\3d\math\Vector.cpp" />
     <ClCompile Include="..\input\keys.cpp" />
     <ClCompile Include="..\dLib\dBrowse\windows.cpp" />
     <ClCompile Include="..\dLib\dFile\dFile.cpp" />
@@ -355,9 +352,6 @@
     <ClInclude Include="..\3d\camera.h" />
     <ClInclude Include="..\3d\light.h" />
     <ClInclude Include="..\3d\Renderer.h" />
-    <ClInclude Include="..\3d\math\Matrix.h" />
-    <ClInclude Include="..\3d\math\Quaternion.h" />
-    <ClInclude Include="..\3d\math\Vector.h" />
     <ClInclude Include="..\input\Input.h" />
     <ClInclude Include="..\dLib\dBrowse\dBrowse.h" />
     <ClInclude Include="..\dLib\dMem\dMem.h" />

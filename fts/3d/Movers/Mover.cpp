@@ -1,7 +1,7 @@
 #include "Mover.h"
 
+#include "3d/Math.h"
 #include "main/Clock.h"
-#include "utilities/Math.h"
 
 FTS::Mover::Mover(const std::weak_ptr<MapObject>& in_pWhom, float in_fDuration, const String& in_sName)
     : m_pWhom(in_pWhom)

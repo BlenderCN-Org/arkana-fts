@@ -3,11 +3,12 @@
 
 #include "main.h"
 
+#include "3d/Mathfwd.h"
+
 namespace FTS {
     class Quad;
     class Tileset;
     class File;
-    class Vector;
 
     typedef int (Quad::*pfnQuadDraw) (float x, float y, float z, float multip);
 

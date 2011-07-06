@@ -9,7 +9,7 @@
 #include "SndTypes.h"
 
 #include "dLib/dString/dPath.h"
-#include "3d/math/Vector.h"
+#include "3d/Math.h"
 #include "logging/Chronometer.h"
 
 namespace FTS {

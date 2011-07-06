@@ -75,12 +75,13 @@ void FTS::MapObject::rot(float in_fOrientation)
 
 float FTS::MapObject::orientation() const
 {
-    AxisAngle aa = m_qRot.toAxisAngle();
+    Vector axis = m_qRot.axis();
+    float angle = m_qRot.angle();
 
-    if(aa.axis == Vector(0.0f, 0.0f, 1.0f))
-        return aa.angle;
-    else if(aa.axis == Vector(0.0f, 0.0f, -1.0f))
-        return -aa.angle;
+    if(axis == Vector(0.0f, 0.0f, 1.0f))
+        return angle;
+    else if(axis == Vector(0.0f, 0.0f, -1.0f))
+        return -angle;
 
     return 0.0f;
 }
@@ -107,5 +108,5 @@ FTS::Vector FTS::MapObject::scale() const
 
 FTS::AffineMatrix FTS::MapObject::getModelMatrix() const
 {
-    return AffineMatrix::translation(m_vPos) * AffineMatrix::rotationQuat(m_qRot) * AffineMatrix::scale(m_vScale);
+    return AffineMatrix::translation(m_vPos) * AffineMatrix::rotation(m_qRot) * AffineMatrix::scale(m_vScale);
 }

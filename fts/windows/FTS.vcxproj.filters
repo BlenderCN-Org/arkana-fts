@@ -231,15 +231,6 @@
     <ClCompile Include="..\3d\Renderer.cpp">
       <Filter>3D</Filter>
     </ClCompile>
-    <ClCompile Include="..\3d\math\Matrix.cpp">
-      <Filter>3D\math</Filter>
-    </ClCompile>
-    <ClCompile Include="..\3d\math\Quaternion.cpp">
-      <Filter>3D\math</Filter>
-    </ClCompile>
-    <ClCompile Include="..\3d\math\Vector.cpp">
-      <Filter>3D\math</Filter>
-    </ClCompile>
     <ClCompile Include="..\input\keys.cpp">
       <Filter>Input</Filter>
     </ClCompile>
@@ -637,15 +628,6 @@
     </ClInclude>
     <ClInclude Include="..\3d\Renderer.h">
       <Filter>3D</Filter>
-    </ClInclude>
-    <ClInclude Include="..\3d\math\Matrix.h">
-      <Filter>3D\math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\3d\math\Quaternion.h">
-      <Filter>3D\math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\3d\math\Vector.h">
-      <Filter>3D\math</Filter>
     </ClInclude>
     <ClInclude Include="..\input\Input.h">
       <Filter>Input</Filter>

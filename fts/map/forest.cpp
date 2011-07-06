@@ -162,9 +162,9 @@ int Forest::plantForest(int in_iQuadID, float in_fQuadX, float in_fQuadY)
         while(!bCorrect) {
             // TODO: The Z Pos. Overall, it would be better to already store the X/Y pos
             // Directly into the quads and give this forest really a quad !
-            vPos.setX(in_fQuadX + ((float)random(0,100) / 100.0f)*FTS_QUAD_SIZE)
-                .setY(in_fQuadY - ((float)random(0,100) / 100.0f)*FTS_QUAD_SIZE)
-                .setZ(3.0f);
+            vPos.x(in_fQuadX + ((float)random(0,100) / 100.0f)*FTS_QUAD_SIZE)
+                .y(in_fQuadY - ((float)random(0,100) / 100.0f)*FTS_QUAD_SIZE)
+                .z(3.0f);
             bCorrect = true;
 
             // Check agains all trees in this quad if there is a minimum distance.

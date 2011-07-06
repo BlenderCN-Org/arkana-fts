@@ -10,8 +10,7 @@
 
 #include "main.h"
 
-#include "3d/math/Matrix.h"
-#include "3d/math/Vector.h"
+#include "3d/Math.h"
 #include "utilities/threading.h"
 #include "utilities/command.h"
 
