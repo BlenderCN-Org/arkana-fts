@@ -271,6 +271,8 @@ namespace bouge {
                                 // in the origin.
                                 // Hopefully, ... TODO
                                 throw BadDataException("We got a vertex (" + to_s(vtxId) + ") without any influences in submesh " + iSubMesh->name() + ". This is bad, please fix it, for example by creating a 'root bone' which influences it, but doesn't move.", __FILE__, __LINE__);
+                                // But we'd have to add that bone to the skeleton ...
+                                // How to solve this dilemma?
 //                                 vtx.addInfluence(Influence(1.0f, "__bicali__dummy__"));
 //                                 m_boneIndices.push_back(0.0f);
                             } else {
