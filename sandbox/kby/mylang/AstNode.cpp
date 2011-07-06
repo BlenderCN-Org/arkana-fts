@@ -77,11 +77,12 @@ Value* Boolean::codeGen(CodeGenContext& context)
 Value* Identifier::codeGen(CodeGenContext& context)
 {
     std::cout << "  Creating identifier reference: " << name << std::endl;
-    if (context.locals().find(name) == context.locals().end()) {
+    AllocaInst* alloc = context.findVariable(name);
+    if (alloc == nullptr) {
         std::cerr << "  undeclared variable " << name << std::endl;
         return nullptr;
     }
-    return new LoadInst(context.locals()[name], "", false, context.currentBlock());
+    return new LoadInst(alloc, name, false, context.currentBlock());
 }
 
 Value* MethodCall::codeGen(CodeGenContext& context)
@@ -178,11 +179,11 @@ Value* CompOperator::codeGen(CodeGenContext& context)
 Value* Assignment::codeGen(CodeGenContext& context)
 {
     std::cout << "  Creating assignment for " << lhs->getName() << std::endl;
-    if( context.locals().find(lhs->getName()) == context.locals().end() ) {
+    AllocaInst * var = context.findVariable(lhs->getName()) ;
+    if( var == nullptr ) {
         std::cerr << "      undeclared variable " << lhs->getName() << std::endl;
         return nullptr;
     }
-    AllocaInst * var = context.locals()[lhs->getName()] ;
     const Type* varType = var->getType()->getElementType();
     Value* value = rhs->codeGen(context);
     if( value == nullptr ) {
@@ -202,7 +203,7 @@ Value* Assignment::codeGen(CodeGenContext& context)
         return nullptr;
     }
     
-    return new StoreInst(value, context.locals()[lhs->getName()], false, context.currentBlock());
+    return new StoreInst(value, var, false, context.currentBlock());
 }
 
 Value* Block::codeGen(CodeGenContext& context)
@@ -271,6 +272,26 @@ Value* FunctionDeclaration::codeGen(CodeGenContext& context)
     context.endScope();
     return function;
 }
+
+Value* ClassDeclaration::codeGen(CodeGenContext& context)
+{
+    std::cout << "  Creating Class: " << id->getName() << std::endl;
+    std::vector<const Type*>StructTy_fields;
+    std::for_each(block->statements.begin(), block->statements.end(),
+        [&StructTy_fields,&context](Statement* statement) {
+            if(statement->getType() == NodeType::variable) {
+                // Type Definitions
+                VariableDeclaration* vardecl = dynamic_cast<VariableDeclaration*>(statement);
+                StructTy_fields.push_back(typeOf(vardecl->getIdentifierOfVariablenType(), context));
+            }
+        }
+    );
+    StructType* StructTy_class = StructType::get(context.getGlobalContext(), StructTy_fields, /*isPacked=*/false);
+    context.getModule()->addTypeName(std::string("class.") +  id->getName(), StructTy_class);
+    
+    return block->codeGen(context);
+}
+
 
 Value* Conditional::codeGen(CodeGenContext& context)
 {

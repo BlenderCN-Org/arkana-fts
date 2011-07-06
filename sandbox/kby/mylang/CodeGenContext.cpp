@@ -44,6 +44,12 @@ void display(char * str, ...)
 }
 
 namespace AST {
+
+    CodeGenContext::CodeGenContext() {
+        llvm::InitializeNativeTarget();
+        module = new llvm::Module("main", llvmContext);
+    }
+
 void CodeGenContext::setupBuiltIns()
 {
     std::vector<const Type *> argTypesOneInt(1, Type::getInt64Ty(getGlobalContext()));
@@ -142,6 +148,33 @@ void CodeGenContext::optimize()
     );
     
     fpm.run(*mainFunction);
+}
+
+void CodeGenContext::newScope(BasicBlock* bb)
+{
+    if( bb == nullptr) {
+        bb = llvm::BasicBlock::Create(getGlobalContext(),"scope");
+    }
+    codeBlocks.push_front(new CodeGenBlock(bb));
+}
+
+void CodeGenContext::endScope() {
+    CodeGenBlock* top = codeBlocks.front();
+    codeBlocks.pop_front();
+    delete top;
+}
+
+ValueNames& CodeGenContext::locals() {
+    return codeBlocks.front()->getValueNames();
+}
+
+AllocaInst* CodeGenContext::findVariable(std::string varName)
+{
+    ValueNames& names =  locals();
+    if(names.find(varName) != names.end() ) {
+        return names[varName];
+    }
+    return nullptr;
 }
 
 }

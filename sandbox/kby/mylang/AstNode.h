@@ -14,10 +14,24 @@ typedef std::vector<Statement*> StatementList;
 typedef std::vector<Expression*> ExpressionList;
 typedef std::vector<VariableDeclaration*> VariableList;
 
+namespace NodeType {
+enum Enum {
+    expression,
+    variable,
+    klass,
+    function,
+    integer,
+    decimal,
+    string,
+    boolean,
+    identifier
+};
+}
 class Node {
 public:
     virtual ~Node() {}
     virtual llvm::Value* codeGen(CodeGenContext& context) = 0 ;
+    virtual NodeType::Enum getType() = 0 ;
 };
 
 class Expression : public Node {
@@ -28,6 +42,7 @@ public:
 class Statement : public Node {
 public:
     virtual ~Statement() {}
+    NodeType::Enum getType() {return NodeType::expression;}
 };
 
 class Integer : public Expression {
@@ -36,6 +51,7 @@ public:
     Integer(long long value) : value(value) {}
     virtual ~Integer() {}
     virtual llvm::Value* codeGen(CodeGenContext& context);
+    NodeType::Enum getType() {return NodeType::integer;}
 };
 
 class Double : public Expression {
@@ -44,6 +60,7 @@ public:
     Double(double value) : value(value) {}
     virtual ~Double() {}
     virtual llvm::Value* codeGen(CodeGenContext& context);
+    NodeType::Enum getType() {return NodeType::decimal;}
 };
 
 class String : public Expression {
@@ -52,6 +69,7 @@ public:
     String(const std::string& value) : value(value) {}
     virtual ~String() { }
     virtual llvm::Value* codeGen(CodeGenContext& context);
+    NodeType::Enum getType() {return NodeType::string;}
 };
 
 class Boolean : public Expression {
@@ -64,6 +82,7 @@ public:
     }
     virtual ~Boolean() {}
     virtual llvm::Value* codeGen(CodeGenContext& context);
+    NodeType::Enum getType() {return NodeType::boolean;}
 };
 
 class Identifier : public Expression {
@@ -73,6 +92,7 @@ public:
     virtual ~Identifier() {}
     std::string getName() const {return name;} 
     virtual llvm::Value* codeGen(CodeGenContext& context);
+    NodeType::Enum getType() {return NodeType::identifier;}
 };
 
 class MethodCall : public Expression {
@@ -91,6 +111,7 @@ public:
         delete id;
     }
     virtual llvm::Value* codeGen(CodeGenContext& context);
+    NodeType::Enum getType() {return NodeType::expression;}
 };
 
 class UnaryOperator : public Expression {
@@ -103,6 +124,7 @@ public:
         delete rhs;
     }
     virtual llvm::Value* codeGen(CodeGenContext& context);
+    NodeType::Enum getType() {return NodeType::expression;}
 };
 
 // Binary operators are +,-,*,/
@@ -119,6 +141,7 @@ public:
     }
     int getOperator() const {return op;}
     virtual llvm::Value* codeGen(CodeGenContext& context);
+    NodeType::Enum getType() {return NodeType::expression;}
 };
 
 class CompOperator : public Expression {
@@ -134,6 +157,7 @@ public:
     }
     int getOperator() const {return op;}
     virtual llvm::Value* codeGen(CodeGenContext& context);
+    NodeType::Enum getType() {return NodeType::expression;}
 };
 
 class Assignment : public Expression {
@@ -143,6 +167,7 @@ public:
     Assignment(Identifier* lhs, Expression* rhs) : lhs(lhs), rhs(rhs) {}
     virtual ~Assignment() {delete lhs; delete rhs; }
     virtual llvm::Value* codeGen(CodeGenContext& context);
+    NodeType::Enum getType() {return NodeType::expression;}
 };
 
 class Block : public Expression {
@@ -157,19 +182,21 @@ public:
         statements.clear();
     }
     virtual llvm::Value* codeGen(CodeGenContext& context);
+    NodeType::Enum getType() {return NodeType::expression;}
 };
 
 class ExpressionStatement : public Statement
- {
+{
     Expression* expression;
 public:
     ExpressionStatement(Expression* expression) : expression(expression) {}
     virtual ~ExpressionStatement() { delete expression; }
     virtual llvm::Value* codeGen(CodeGenContext& context);
+    NodeType::Enum getType() {return NodeType::expression;}
 };
 
 class VariableDeclaration : public Statement
- {
+{
     Identifier* type;
     Identifier* id;
     Expression *assignmentExpr;
@@ -185,10 +212,11 @@ public:
     const Identifier& getIdentifierOfVariablenType() const {return *type;}
     std::string getVariablenName() const {return id->getName();}
     virtual llvm::Value* codeGen(CodeGenContext& context);
+    NodeType::Enum getType() {return NodeType::variable;}
 };
 
 class FunctionDeclaration : public Statement
- {
+{
     Identifier* type;
     Identifier* id;
     VariableList* arguments;
@@ -209,10 +237,29 @@ public:
         delete block;
     }
     virtual llvm::Value* codeGen(CodeGenContext& context);
+    NodeType::Enum getType() {return NodeType::function;}
 };
 
+class ClassDeclaration : public Statement
+{
+    Identifier* id;
+    Block* block;
+public:
+    ClassDeclaration(Identifier* id, Block* block)
+    : id(id), block(block) {}
+    virtual ~ClassDeclaration()
+    {
+        delete id;
+        delete block;
+    }
+    virtual llvm::Value* codeGen(CodeGenContext& context);
+    NodeType::Enum getType() {return NodeType::klass;}
+};
+
+
+
 class Conditional : public Statement
- {
+{
     CompOperator* cmpOp;
     Expression *thenExpr;
     Expression *elseExpr;
@@ -224,10 +271,11 @@ public:
         delete cmpOp; delete thenExpr; delete elseExpr;
     }
     virtual llvm::Value* codeGen(CodeGenContext& context);
+    NodeType::Enum getType() {return NodeType::expression;}
 };
 
 class WhileLoop : public Statement
- {
+{
     Expression* condition;
     Block *loopBlock;
     Block *elseBlock;
@@ -239,16 +287,18 @@ public:
         delete condition; delete loopBlock; delete elseBlock;
     }
     virtual llvm::Value* codeGen(CodeGenContext& context);
+    NodeType::Enum getType() {return NodeType::expression;}
 };
 
 
 class Return : public Statement
- {
+{
     Expression* retExpr;
 public:
     Return(Expression* expr = NULL) : retExpr(expr) {}
     virtual ~Return() {delete retExpr;}
     virtual llvm::Value* codeGen(CodeGenContext& context);
+    NodeType::Enum getType() {return NodeType::expression;}
 };
 
 };

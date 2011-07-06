@@ -1,6 +1,6 @@
 #include <stack>
 #include <map>
-#include <set>
+#include <list>
 #include "llvm/Module.h"
 #include "llvm/Function.h"
 #include "llvm/Type.h"
@@ -21,7 +21,6 @@
 
 namespace AST {
     
-class Block;
 
 class VarDef
 {
@@ -49,37 +48,29 @@ public:
 };
 
 class CodeGenContext {
-    std::stack<CodeGenBlock *> codeBlocks;
+    std::list<CodeGenBlock *> codeBlocks;
     llvm::Function *mainFunction;
     llvm::Module *module;
     llvm::LLVMContext llvmContext;
     void setCurrentBlock(llvm::BasicBlock *block) {
-        codeBlocks.top()->setCodeBlock(block); 
+        codeBlocks.front()->setCodeBlock(block);
     }
     void setupBuiltIns();
 public:
-    CodeGenContext() { 
-        llvm::InitializeNativeTarget();
-        module = new llvm::Module("main", llvmContext);
-    }
-    ~CodeGenContext() {
-        llvm::llvm_shutdown();
-    }
+    CodeGenContext() ;
+    ~CodeGenContext() { llvm::llvm_shutdown(); }
         
     llvm::Module * getModule() {return module;}
     llvm::LLVMContext& getGlobalContext() {return llvmContext;}
-    void newScope() { 
-        llvm::BasicBlock* bblock = llvm::BasicBlock::Create(getGlobalContext(),"scope");
-        codeBlocks.push(new CodeGenBlock(bblock)); 
-    }
-    void newScope(llvm::BasicBlock* bb) {codeBlocks.push(new CodeGenBlock(bb));}
-    void endScope() {CodeGenBlock* top = codeBlocks.top(); codeBlocks.pop();delete top;}
+    void newScope(llvm::BasicBlock* bb = nullptr) ;
+    void endScope();
     void setInsertPoint(llvm::BasicBlock* bblock) {setCurrentBlock(bblock);}
     llvm::BasicBlock* getInsertPoint() {return currentBlock();}
-    void generateCode(Block& root);
+    void generateCode(class Block& root);
     llvm::GenericValue runCode();
-    ValueNames& locals() { return codeBlocks.top()->getValueNames(); }
-    llvm::BasicBlock *currentBlock() { return codeBlocks.top()->currentBlock(); }
+    ValueNames& locals() ;
+    llvm::AllocaInst* findVariable(std::string varName);
+    llvm::BasicBlock *currentBlock() { return codeBlocks.front()->currentBlock(); }
     void optimize();
 };
 

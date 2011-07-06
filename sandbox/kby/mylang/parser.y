@@ -32,7 +32,7 @@
 %token <token> TPLUS TMINUS TMUL TDIV
 %token <token> TNOT TAND TOR
 %token <token> TIF TELSE TWHILE
-%token <token> TSQUOTE TDEF TRETURN TRETURN_SIMPLE TVAR
+%token <token> TSQUOTE TDEF TRETURN TRETURN_SIMPLE TVAR IS
 %token <token> INDENT UNINDENT 
 
 /* Define the type of node our nonterminal symbols represent.
@@ -45,7 +45,7 @@
 %type <varvec> func_decl_args
 %type <exprvec> call_args
 %type <block> program stmts block
-%type <stmt> stmt var_decl func_decl conditional return while
+%type <stmt> stmt var_decl func_decl conditional return while class_decl
 %type <token> comparison 
 
 /* Operator precedence for mathematical operators */
@@ -54,6 +54,8 @@
 %left TAND TNOT
 
 %start program
+%debug
+%verbose
 
 %%
 
@@ -67,6 +69,7 @@ stmts : stmt { $$ = new AST::Block(); $$->statements.push_back($<stmt>1); }
 
 stmt : var_decl
      | func_decl
+     | class_decl
      | conditional 
      | return
      | while
@@ -86,9 +89,12 @@ while : TWHILE expr block TELSE block {$$ = new AST::WhileLoop($2,$3,$5);}
       | TWHILE expr block {$$ = new AST::WhileLoop($2,$3);}
       ; 
 
-var_decl : ident ident { $$ = new AST::VariableDeclaration($1, $2);}
+var_decl : ident ident { $$ = new AST::VariableDeclaration($1, $2); }
          | ident ident TEQUAL expr { $$ = new AST::VariableDeclaration($1, $2, $4); }
          ;
+
+class_decl: TDEF ident block {$$ = new AST::ClassDeclaration($2, $3); }
+          ;
 
 func_decl : TDEF ident TLPAREN func_decl_args TRPAREN TCOLON ident block { $$ = new AST::FunctionDeclaration($7, $2, $4, $8); }
           | TDEF ident TLPAREN func_decl_args TRPAREN block { $$ = new AST::FunctionDeclaration($2, $4, $6); }
@@ -98,6 +104,7 @@ func_decl_args : /*blank*/  { $$ = new AST::VariableList(); }
           | var_decl { $$ = new AST::VariableList(); $$->push_back($<var_decl>1); }
           | func_decl_args TCOMMA var_decl { $1->push_back($<var_decl>3); }
           ;
+
 
 ident : TIDENTIFIER { $$ = new AST::Identifier(*$1); delete $1; }
       ;
