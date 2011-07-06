@@ -52,4 +52,27 @@ private:
 
 #endif // GCC < 4.5 nullptr workaround
 
+////////////////////////////////////////////////////////////////////////////////
+// Letting KDevelop understand std::shared_ptr and other C++0x stuff.
+////////////////////////////////////////////////////////////////////////////////
+#ifdef IN_KDEVELOP_PARSER
+
+#  define __GXX_EXPERIMENTAL_CXX0X__
+#  define _GLIBCXX_BEGIN_NAMESPACE(x) namespace x {
+#  define _GLIBCXX_END_NAMESPACE }
+
+#  include <memory>
+
+struct Foo {
+    void doIt() {};
+};
+
+shared_ptr<Foo> pFoo1;
+
+std::shared_ptr<Foo> pFoo;
+pFoo->doIt();
+// typedef
+
+#endif // IN_KDEVELOP_PARSER
+
 #endif // D_WORKAROUNDS_H

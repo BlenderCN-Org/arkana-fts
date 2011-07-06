@@ -8,18 +8,16 @@
 #include "game/objects/tree.h"
 #include "utilities/Math.h"
 
-using namespace FTS;
-
-Tree::Tree()
+FTS::Tree::Tree()
 {
 }
 
-Tree::~Tree()
+FTS::Tree::~Tree()
 {
     this->unload();
 }
 
-int Tree::load(const String &in_sName)
+int FTS::Tree::load(const FTS::String &in_sName)
 {
     if(m_bLoaded)
         this->unload();
@@ -29,7 +27,7 @@ int Tree::load(const String &in_sName)
     return ERR_OK;
 }
 
-int Tree::unload()
+int FTS::Tree::unload()
 {
     if(!m_bLoaded)
         return ERR_OK;
@@ -38,17 +36,17 @@ int Tree::unload()
     return ERR_OK;
 }
 
-File& Tree::store(File& out_File) const
+FTS::File& FTS::Tree::store(FTS::File& out_File) const
 {
     return UnitBase::store(out_File) << m_vScale;
 }
 
-File& Tree::restore(File& in_File)
+FTS::File& FTS::Tree::restore(FTS::File& in_File)
 {
     return UnitBase::restore(in_File) >> m_vScale;
 }
 
-int Tree::draw(unsigned int in_uiTicks)
+int FTS::Tree::draw(unsigned int in_uiTicks)
 {
     return ERR_OK;
 }
@@ -65,7 +63,7 @@ int Tree::draw(unsigned int in_uiTicks)
  *
  * \author Pompei2
  */
-Tree *Tree::randomize()
+FTS::Tree *FTS::Tree::randomize()
 {
     // Choose a random "main scale" factor between 0.8 and 1.2 first:
     float fMainScale = 0.8f + ((float)random(0, 100) / 100.0f)*0.4f;

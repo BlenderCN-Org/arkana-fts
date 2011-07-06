@@ -8,7 +8,7 @@
 #include "SndTypes.h"
 
 #include "dLib/dString/dPath.h"
-#include "3d/math/Vector.h"
+#include "3d/Mathfwd.h"
 #include "sound/SndObj.h"
 
 namespace FTS {

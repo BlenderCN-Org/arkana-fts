@@ -16,6 +16,8 @@
 
 #include "main/Updateable.h"
 
+#include "3d/Math.h"
+
 #include <bouge/bougefwd.hpp>
 
 #include <memory>
@@ -24,12 +26,10 @@
 
 namespace FTS {
     class String;
-    class Vector;
     class Color;
     class ModelManager;
     class HardwareModel;
     class AxisAlignedBoundingBox;
-    class AffineMatrix;
 
 class ModelInstance : protected Updateable {
 public:

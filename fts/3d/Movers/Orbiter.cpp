@@ -1,6 +1,5 @@
 #include "Orbiter.h"
 
-#include "3d/math/Quaternion.h"
 #include "main/Clock.h"
 #include "main/Exception.h"
 #include "map/MapObject.h"

@@ -1,9 +1,7 @@
 #ifndef D_MAP_OBJECT_H
 #define D_MAP_OBJECT_H
 
-#include "3d/math/Vector.h"
-#include "3d/math/Quaternion.h"
-#include "3d/math/Matrix.h"
+#include "3d/Math.h"
 
 namespace FTS {
     class Color;
@@ -16,12 +14,12 @@ public:
     /// \param in_vPos The position of the object.
     /// \param in_fOrientation The rotation around Z-axis (in radians).
     /// \param in_vScale How the object is scaled, in the three directions.
-    MapObject(const Vector& in_vPos = Vector(0.0f), float in_fOrientation = 0.0f, const Vector& in_vScale = Vector(1.0f));
+    MapObject(const Vector& in_vPos = Vector(), float in_fOrientation = 0.0f, const Vector& in_vScale = Vector(1.0f, 1.0f, 1.0f));
 
     /// \param in_vPos The position of the object.
     /// \param in_qRot The (arbitrary) rotation of the object.
     /// \param in_vScale How the object is scaled, in the three directions.
-    MapObject(const Vector& in_vPos, const Quaternion& in_qRot, const Vector& in_vScale = Vector(1.0f));
+    MapObject(const Vector& in_vPos, const Quaternion& in_qRot, const Vector& in_vScale = Vector(1.0f, 1.0f, 1.0f));
 
     virtual ~MapObject();
 

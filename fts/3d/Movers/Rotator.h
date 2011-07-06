@@ -3,7 +3,7 @@
 
 #include "Mover.h"
 
-#include "3d/math/Quaternion.h"
+#include "3d/Math.h"
 
 namespace FTS {
 

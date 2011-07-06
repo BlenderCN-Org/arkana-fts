@@ -10,9 +10,7 @@
 #include "HardwareModel.h"
 
 #include "3d/3d.h"
-#include "3d/math/Vector.h"
-#include "3d/math/Quaternion.h"
-#include "3d/math/Matrix.h"
+#include "3d/Math.h"
 #include "3d/Shader.h"
 #include "3d/camera.h"
 #include "graphic/graphic.h"

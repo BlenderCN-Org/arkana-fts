@@ -37,7 +37,6 @@ bool FTS::Rotator::update(const Clock& in_clock)
     // And update its rotation.
     MapObject* pObj = m_pWhom.lock().get();
     Quaternion result = m_qFrom.nlerp(m_qTo, this->percentDone());
-    AxisAngle aa = result.toAxisAngle();
     pObj->rot(result);
     return true;
 }

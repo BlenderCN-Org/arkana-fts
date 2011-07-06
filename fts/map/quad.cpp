@@ -8,15 +8,13 @@
 #include "map/quad.h"
 #include "map/tile.h"
 
-#include "dLib/dFile/dFile.h"
 #include "3d/3d.h"
-#include "3d/math/Vector.h"
+#include "3d/Math.h"
 #include "graphic/graphic.h"
 #include "logging/logger.h"
 #include "utilities/utilities.h"
+#include "dLib/dFile/dFile.h"
 #include "dLib/dConf/configuration.h"
-
-#include "3d/3d.h"
 
 #include <cmath>
 
@@ -121,7 +119,7 @@ int Quad::load(File *out_pFile, float in_fMultiplier,
     // Now allocate the array for my normals.
     m_pfNormals = new Vector[nVerts];
     for(uint8_t i = 0; i < nVerts ; i++) {
-        m_pfNormals[i].setX(0.0f).setY(0.0f).setZ(1.0f);
+        m_pfNormals[i].x(0.0f).y(0.0f).z(1.0f);
     }
 
     // And choose the appropriate rendering function.

@@ -272,8 +272,8 @@ int SunMoon::recalcSelf(int in_iSecondsInDay)
     //                |
     //              24/0h
     float fSunPosInRad = ((float)iSecsInDay / (float)iMaxSecsInDay) * (float)M_PI * 2 - (float)M_PI_4;
-    m_pos.setX(cos(fSunPosInRad)*100.0f)
-         .setZ(100.0f);
+    m_pos.x(cos(fSunPosInRad)*100.0f)
+         .z(100.0f);
 //         ->setZ(sin(fSunPosInRad)*100.0f);
 
     // We separate the day into four parts:

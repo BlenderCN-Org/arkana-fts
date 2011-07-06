@@ -5,7 +5,7 @@
 #include "dLib/dString/dString.h"
 
 #include "3d/opengl_wrapper.h"
-#include "3d/math/Matrix.h"
+#include "3d/Math.h"
 #include "3d/VertexArrayObject.h"
 
 #include <map>

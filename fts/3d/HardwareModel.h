@@ -23,7 +23,6 @@
 namespace FTS {
     class Color;
     class Archive;
-    class Vector;
     class ModelInstance;
     class ModelManager;
     class Camera;

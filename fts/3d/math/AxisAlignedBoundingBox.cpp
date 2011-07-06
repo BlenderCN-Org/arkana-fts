@@ -1,9 +1,8 @@
 #include "AxisAlignedBoundingBox.h"
 
-#include "Vector.h"
-#include "Matrix.h"
+#include <bouge/Math.hpp>
 
-FTS::AxisAlignedBoundingBox::AxisAlignedBoundingBox(const FTS::Vector& in_point)
+FTS::AxisAlignedBoundingBox::AxisAlignedBoundingBox(const bouge::Vector& in_point)
     : m_fTop(in_point.z())
     , m_fBottom(in_point.z())
     , m_fLeft(in_point.x())
@@ -33,7 +32,7 @@ FTS::AxisAlignedBoundingBox::AxisAlignedBoundingBox(float in_fTop, float in_fBot
 {
 }
 
-FTS::AxisAlignedBoundingBox& FTS::AxisAlignedBoundingBox::update(const FTS::Vector& in_point)
+FTS::AxisAlignedBoundingBox& FTS::AxisAlignedBoundingBox::update(const bouge::Vector& in_point)
 {
     m_fTop    = std::max(m_fTop,    in_point.z());
     m_fBottom = std::min(m_fBottom, in_point.z());
@@ -45,7 +44,7 @@ FTS::AxisAlignedBoundingBox& FTS::AxisAlignedBoundingBox::update(const FTS::Vect
     return *this;
 }
 
-FTS::AffineMatrix FTS::AxisAlignedBoundingBox::getModelMatrix() const
+bouge::AffineMatrix FTS::AxisAlignedBoundingBox::getModelMatrix() const
 {
     float dx_2 = (this->right() - this->left())*0.5f;
     float dy_2 = (this->back() - this->front())*0.5f;
@@ -54,5 +53,5 @@ FTS::AffineMatrix FTS::AxisAlignedBoundingBox::getModelMatrix() const
     float yMid = this->back() - dy_2;
     float zMid = this->top() - dz_2;
 
-    return AffineMatrix::translation(xMid, yMid, zMid) * AffineMatrix::scale(dx_2, dy_2, dz_2);
+    return bouge::AffineMatrix::translation(xMid, yMid, zMid) * bouge::AffineMatrix::scale(dx_2, dy_2, dz_2);
 }

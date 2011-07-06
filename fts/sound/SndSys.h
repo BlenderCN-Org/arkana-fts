@@ -16,11 +16,11 @@
 #include "main/Stackable.h"
 #include "logging/logger.h"
 #include "SndGrp.h"
+#include "3d/Mathfwd.h"
 
 namespace FTS {
     class SndPlayList;
     class ISndObj;
-    class Vector;
 
 //! Exception class to get out the error messages of the sound system.
 /// This exception is thrown when there is some hardware limit reached, making
