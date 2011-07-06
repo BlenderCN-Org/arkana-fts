@@ -16,12 +16,11 @@
 
 #include "main/Updateable.h"
 
+#include <bouge/bougefwd.hpp>
+
 #include <memory>
-#include <vector>
 #include <set>
 #include <map>
-#include <list>
-#include <bouge/bougefwd.hpp>
 
 namespace FTS {
     class String;
@@ -40,33 +39,35 @@ public:
     void render(const AffineMatrix& in_modelMatrix, const Color& in_playerColor);
 
     // Handling of the skin.
-    std::vector<String> getAvailableSkins() const;
+    const std::set<String>& skins() const;
     void selectSkin(const String& in_sSkinName);
 
     // Handling of the animations
-    void playAsAction(const String& in_sAnimName, float in_fSpeed = 1.0f, float in_fFadeIn = 0.3f, float in_fFadeOut = 0.3f);
-    void playAsCycle(const String& in_sAnimName, float in_fWeight = 1.0f, float in_fFadeIn = 0.3f);
-    void stopAction(const String& in_sAnimName, float in_fFadeOut = 0.0f);
-    void stopCycle(const String& in_sAnimName, float in_fFadeOut = 0.0f);
+    bouge::AnimationPtr playAction(const String& in_sAnimName, float in_fSpeed = 1.0f, float in_fFadeIn = 0.3f, float in_fFadeOut = 0.3f);
+    bouge::AnimationPtr playCycle(const String& in_sAnimName, float in_fSpeed = 1.0f, float in_fFadeIn = 0.3f, float in_fWeight = 1.0f);
+    void stop(const String& in_sAnimName, float in_fFadeOut = 0.0f);
     void stopAll(float in_fFadeOut = 0.0f);
+    void pause(const String& in_sAnimName);
+    void resume(const String& in_sAnimName);
+    bool paused(const String& in_sAnimName) const;
 
     void pause();
     void resume();
-    void pauseAction(const String& in_sAnimName);
-    void resumeAction(const String& in_sAnimName);
+    bool paused() const;
 
-    void setCycleSpeed(float in_fSpeed);
-    float getCycleSpeed() const;
+    void speed(float in_fSpeed);
+    float speed() const;
+
+    void speed(const String& in_sAnimName, float in_fSpeed);
+    float speed(const String& in_sAnimName) const;
 
     // Animation information
-    std::vector<String> getAvailableMoves() const;
-    bool isPaused() const;
-    bool isActionPaused(const String& in_sAnimName) const;
+    const std::set<String>& moves() const;
 
     // Some informations about the model.
-    uint32_t getVertexCount() const;
-    uint32_t getFaceCount() const;
-    AxisAlignedBoundingBox getRestAABB() const;
+    uint32_t vertexCount() const;
+    uint32_t faceCount() const;
+    AxisAlignedBoundingBox restAABB() const;
 
 protected:
     friend class FTS::ModelManager;
@@ -89,12 +90,6 @@ private:
 
     /// And this is the number of this instance, relative to the hw model.
     unsigned int m_uiInstanceNumber;
-
-    /// The animation speeds of all currently playing animations that are paused.
-    std::list<float> m_lPausedTimeFactors;
-
-    /// The animation speeds of all currently playing actions that are paused.
-    std::map<String, float> m_lPausedActionTimeFactors;
 };
 
 }; // namespace FTS

@@ -840,6 +840,31 @@ bool FTS::Program::setUniformArrayElement(const String& in_sUniformName, uint16_
     return true;
 }
 
+bool FTS::Program::setUniformArrayElementInverse(const String& in_sUniformName, uint16_t in_iArrayIdx, const AffineMatrix& in_mat, bool in_transpose)
+{
+    auto i = m_uniforms.find(in_sUniformName);
+    if(i == m_uniforms.end())
+        return false;
+
+    if(in_iArrayIdx >= i->second.size) {
+        FTSMSG("Shader::setUniformArrayElement("+in_sUniformName+", "+String::nr(in_iArrayIdx)+"): index out of bounds (max is "+String::nr(i->second.size)+")\n", MsgType::WarningNoMB);
+        return false;
+    }
+
+    verifGL("Shader::setUniformArrayElement("+in_sUniformName+", "+String::nr(in_iArrayIdx)+") start");
+    if(i->second.type == GL_FLOAT_MAT3) {
+        glUniformMatrix3fv(i->second.arrayIds[in_iArrayIdx], 1, in_transpose ? GL_TRUE : GL_FALSE, in_mat.array9fInverse());
+    } else if(i->second.type == GL_FLOAT_MAT4) {
+        glUniformMatrix4fv(i->second.arrayIds[in_iArrayIdx], 1, in_transpose ? GL_TRUE : GL_FALSE, in_mat.array16fInverse());
+    } else {
+        verifGL("Shader::setUniformArrayElement("+in_sUniformName+", "+String::nr(in_iArrayIdx)+") badend");
+        return false;
+    }
+
+    verifGL("Shader::setUniformArrayElement("+in_sUniformName+", "+String::nr(in_iArrayIdx)+") end");
+    return true;
+}
+
 GLuint Program::m_uiCurrentlyBoundShaderId = (GLuint)-1;
 
 void FTS::Program::bind()

@@ -18,8 +18,7 @@
 #include "bouge/bougefwd.hpp"
 
 #include <memory>
-#include <vector>
-#include <map>
+#include <set>
 
 namespace FTS {
     class Color;
@@ -34,14 +33,12 @@ class HardwareModel : public NonCopyable {
 public:
     String getName() const;
 
-    std::vector<String> getSkinList() const;
-    int getSkinId(const String& in_sSkinName) const;
+    const std::set<String>& skins() const;
+    const std::set<FTS::String>& anims() const;
 
-    std::vector<String> getAnimList() const;
-
-    uint32_t getVertexCount() const;
-    uint32_t getFaceCount() const;
-    AxisAlignedBoundingBox getRestAABB() const;
+    uint32_t vertexCount() const;
+    uint32_t faceCount() const;
+    AxisAlignedBoundingBox restAABB() const;
 
     bool isStatic() const;
 
@@ -73,10 +70,6 @@ protected:
     void setupVAO(struct MaterialUserData& in_ud) const;
 
     void unloadResources() const;
-//     int getOrCreateErrorMatId(const String& in_sModelName);
-
-//     void loadHardware(int in_nMaxTexturesPerMesh, int in_nMaxBonesPerMesh);
-//     void precomputeAABB(const std::vector<float>& in_vVertices);
 
 private:
     bouge::CoreModelPtr m_pCoreModel;
@@ -89,13 +82,10 @@ private:
     std::unique_ptr<ElementsBufferObject> m_pVtxIdxVBO;
 
     /// Names of all the textures <i>loaded</i> by this model.
-    std::vector<String> m_loadedTexs;
+    std::set<String> m_loadedTexs;
 
     /// Names of all the custom shader names used in a custom program <i>loaded</i> by this model.
-    std::vector<String> m_loadedProgs;
-
-    /// Maps the skin name to the Cal3d material set number.
-    std::map<String, int> m_mSkins;
+    std::set<String> m_loadedProgs;
 
     /// The AABB of the rest-position.
     AxisAlignedBoundingBox m_restAABB;

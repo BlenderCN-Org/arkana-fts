@@ -28,6 +28,7 @@
 #include "bouge/IOModules/XML/Loader.hpp"
 #include "bouge/IOModules/XMLParserCommon/XMLParserModules/TinyXMLParser.hpp"
 
+#include <vector>
 #include <algorithm>
 
 extern const char* sErrorModelMesh;
@@ -51,8 +52,8 @@ struct MaterialUserData : public bouge::UserData {
     /// The shader to be used by this material.
     Program* prog;
 
-    std::vector< std::pair<String, Vector> > uniforms_f;
-    std::vector< std::pair<String, Graphic*> > uniforms_tex;
+    std::map<String, Vector> uniforms_f;
+    std::map<String, Graphic*> uniforms_tex;
 
     /// A VAO storing the shader, shader's vertex attrib setup and vbo setup
     /// on the graphics card.
@@ -109,8 +110,8 @@ struct MaterialUserData : public bouge::UserData {
             }
         } else {
             // But if some custom shader is used, it has to specify ALL compile flags it needs.
-            std::vector<String> sFlags;
-            String(in_mat.proprety("ShaderCompileFlags")).split(std::back_inserter(sFlags));
+            std::set<String> sFlags;
+            String(in_mat.proprety("ShaderCompileFlags")).split(std::inserter(sFlags, sFlags.begin()));
             for(auto flag = sFlags.begin() ; flag != sFlags.end() ; ++flag) {
                 flags |= *flag;
             }
@@ -138,7 +139,7 @@ struct MaterialUserData : public bouge::UserData {
                 case GL_FLOAT_VEC2:
                 case GL_FLOAT_VEC3:
                 case GL_FLOAT_VEC4:
-                    uniforms_f.push_back(std::make_pair(prop.name(), Vector(&prop.valueAsFvec()[0])));
+                    uniforms_f[prop.name()] = Vector(&prop.valueAsFvec()[0]);
                     break;
                 case GL_SAMPLER_2D:
                     Graphic* pGraphic = nullptr;
@@ -150,7 +151,7 @@ struct MaterialUserData : public bouge::UserData {
                         // If not, try to load it from Arkana-FTS.
                         pGraphic = GraphicManager::getSingleton().getOrLoadGraphic(prop.value());
                     }
-                    uniforms_tex.push_back(std::make_pair(prop.name(), pGraphic));
+                    uniforms_tex[prop.name()] = pGraphic;
                     break;
                 //TODO: more types, for example matrices, ints, ...
                 }
@@ -190,7 +191,7 @@ FTS::HardwareModel::HardwareModel(const FTS::String& in_sName)
 FTS::HardwareModel::HardwareModel(const FTS::String& in_sName, FTS::Archive& in_modelArch)
     : m_pCoreModel(new bouge::CoreModel(in_sName.str()))
 {
-    std::vector<String> loadedShads;
+    std::set<String> loadedShads;
 
     try {
     bouge::XMLLoader loader(new bouge::TinyXMLParser());
@@ -230,7 +231,7 @@ FTS::HardwareModel::HardwareModel(const FTS::String& in_sName, FTS::Archive& in_
 
             /// \TODO Integrate the archive name into the path (instead of the hacky way above).
             GraphicManager::getSingleton().getOrLoadGraphic(pFchk->getFile(), sName);
-            m_loadedTexs.push_back(sName);
+            m_loadedTexs.insert(sName);
         } else if(fName.ext().lower() == "vert"
                || fName.ext().lower() == "frag"
                || fName.ext().lower() == "geom"
@@ -242,7 +243,7 @@ FTS::HardwareModel::HardwareModel(const FTS::String& in_sName, FTS::Archive& in_
 
             /// \TODO Integrate the archive name into the path (instead of the hacky way above).
             ShaderManager::getSingleton().loadShaderCode(sName, sShaderSrc);
-            loadedShads.push_back(sName);
+            loadedShads.insert(sName);
         }
     }
     } catch(const ArkanaException&) {
@@ -288,7 +289,7 @@ FTS::HardwareModel::HardwareModel(const FTS::String& in_sName, FTS::Archive& in_
         iMat->userData = bouge::UserDataPtr(mud);
 
         if(!sEmbeddedShaderName.empty())
-            m_loadedProgs.push_back(sEmbeddedShaderName);
+            m_loadedProgs.insert(sEmbeddedShaderName);
     }
 
     // We no more need the source code of the shaders loaded by this model.
@@ -396,48 +397,39 @@ FTS::String FTS::HardwareModel::getName() const
     return m_pCoreModel->name();
 }
 
-std::vector<FTS::String> FTS::HardwareModel::getSkinList() const
+const std::set<FTS::String>& FTS::HardwareModel::skins() const
 {
-    std::vector<String> ret;
+    static std::set<String> ret;
 
-    for(auto i = m_mSkins.begin() ; i != m_mSkins.end() ; ++i) {
-        ret.push_back(i->first);
+    ret.clear();
+    for(auto matset = m_pCoreModel->begin_materialset() ; matset != m_pCoreModel->end_materialset() ; ++matset) {
+        ret.insert(matset->name());
     }
-
     return ret;
 }
 
-int FTS::HardwareModel::getSkinId(const FTS::String& in_sSkinName) const
+const std::set<FTS::String>& FTS::HardwareModel::anims() const
 {
-    auto i = m_mSkins.find(in_sSkinName);
-    if(i == m_mSkins.end())
-        return 0;
+    static std::set<FTS::String> ret;
 
-    return i->second;
-}
-
-std::vector<FTS::String> FTS::HardwareModel::getAnimList() const
-{
-    std::vector<FTS::String> ret;
-
-//     for(int i = 0 ; i < m_pCoreModel->getNumCoreAnimations() ; ++i) {
-//         ret.push_back(m_pCoreModel->getCoreAnimation(i)->getName());
-//     }
-
+    ret.clear();
+    for(auto anim = m_pCoreModel->begin_animation() ; anim != m_pCoreModel->end_animation() ; ++anim) {
+        ret.insert(anim->name());
+    }
     return ret;
 }
 
-uint32_t FTS::HardwareModel::getVertexCount() const
+uint32_t FTS::HardwareModel::vertexCount() const
 {
     return m_pHardwareModel->vertexCount();
 }
 
-uint32_t FTS::HardwareModel::getFaceCount() const
+uint32_t FTS::HardwareModel::faceCount() const
 {
     return m_pHardwareModel->faceCount();
 }
 
-FTS::AxisAlignedBoundingBox FTS::HardwareModel::getRestAABB() const
+FTS::AxisAlignedBoundingBox FTS::HardwareModel::restAABB() const
 {
     return m_restAABB;
 }
@@ -483,9 +475,9 @@ void FTS::HardwareModel::render(const AffineMatrix& in_modelMatrix, const Color&
 
         // We can now also give it the bone matrices.
         for(std::size_t i = 0 ; i < submesh.boneCount() ; ++i) {
-            //bouge::BoneInstancePtrC bone = m_modelInst->skeleton()->bone(submesh.boneName(i));
-            //prog->uniformMatrix4fv(uBonesPalette(i), 1, false, bone->transformMatrix().array16f());
-            //prog->uniformMatrix3fv(uBonesPaletteInvTrans(i), 1, true, bone->transformMatrix().array9fInverse());
+            bouge::BoneInstancePtrC bone = in_modelInst->skeleton()->bone(submesh.boneName(i));
+//             prog->setUniformArrayElement("uBonesPalette", i, bone->transformMatrix().array16f());
+//             prog->setUniformArrayElementInverse("uBonesPaletteInvTrans", i, true, bone->transformMatrix().array9f());
 
             // TODO: replace by real bone matrices of model instance
             prog->setUniformArrayElement("uBonesPalette", i, AffineMatrix());

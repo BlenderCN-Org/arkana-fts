@@ -22,11 +22,8 @@
 
 #include <bouge/bouge.hpp>
 
-#include <limits>
-
 // TODO: when creating a model using this core model:
     // Start the idle animation if there is any?
-    // currently not working: speed of cycle.
 
 std::map<FTS::String, std::set<unsigned int> > FTS::ModelInstance::m_mUsedNames;
 
@@ -37,19 +34,9 @@ FTS::ModelInstance::ModelInstance(std::shared_ptr<FTS::HardwareModel> in_pHwMode
     // And we need to select the default skin...
     this->selectSkin("Default");
 
-/*
-    // We need to give the model all the meshes...
-    for(int iMesh = 0; iMesh < in_pHwModel->m_pCoreModel->getCoreMeshCount(); ++iMesh) {
-        m_pModel->attachMesh(iMesh);
-    }
-
-    // We calculate every vertex position, normal, etc. in the shader, thus
-    // we don't want Cal3D to calculate it internally.
-    m_pModel->disableInternalData();
-
     // If I have at least one animation, register me as an updateable.
     // Without animation, we don't need to get updated!
-    if(m_pHwModel->getAnimList().size() > 0) {
+    if(m_pHwModel->anims().size() > 0) {
         // Find an unique name for it:
         // NOTE: If this gets a bottleneck, we might create an addUnnamed
         //       method to the UpdateableManager...
@@ -64,15 +51,16 @@ FTS::ModelInstance::ModelInstance(std::shared_ptr<FTS::HardwareModel> in_pHwMode
             }
         }
     }
-*/
 }
 
 FTS::ModelInstance::~ModelInstance()
 {
-//     if(m_pHwModel->getAnimList().size() > 0) {
-//         UpdateableManager::getSingleton().rem(m_pHwModel->getName() + String::nr(m_uiInstanceNumber));
-//         m_mUsedNames[m_pHwModel->getName()].erase(m_uiInstanceNumber);
-//     }
+    // If I have at least one animation, I've been registered as an updateable.
+    // Unregister me now!
+    if(m_pHwModel->anims().size() > 0) {
+        UpdateableManager::getSingleton().rem(m_pHwModel->getName() + String::nr(m_uiInstanceNumber));
+        m_mUsedNames[m_pHwModel->getName()].erase(m_uiInstanceNumber);
+    }
 }
 
 void FTS::ModelInstance::render(const FTS::Vector& in_pos, const Color& in_playerColor)
@@ -85,256 +73,110 @@ void FTS::ModelInstance::render(const FTS::AffineMatrix& in_modelMatrix, const C
     m_pHwModel->render(in_modelMatrix, in_playerColor, m_pModel);
 }
 
-std::vector<FTS::String> FTS::ModelInstance::getAvailableSkins() const
+const std::set<FTS::String>& FTS::ModelInstance::skins() const
 {
-//     return m_pHwModel->getSkinList();
-    return std::vector<String>();
+    return m_pHwModel->skins();
 }
 
 void FTS::ModelInstance::selectSkin(const FTS::String& in_sSkinName)
 {
     // getSkinId defaults to 0 if there is no skin with such a name.
     // This is good as it will then select the "default" skin instead of crash.
-//     m_pModel->setMaterialSet(m_pHwModel->getSkinId(in_sSkinName));
+    m_pModel->selectMatSet(in_sSkinName.str());
 }
 
-std::vector<FTS::String> FTS::ModelInstance::getAvailableMoves() const
+const std::set<FTS::String>& FTS::ModelInstance::moves() const
 {
-//     return m_pHwModel->getAnimList();
-    return std::vector<String>();
+    return m_pHwModel->anims();
 }
 
-void FTS::ModelInstance::playAsAction(const String& in_sAnimName, float in_fSpeed, float in_fFadeIn, float in_fFadeOut)
+bouge::AnimationPtr FTS::ModelInstance::playAction(const String& in_sAnimName, float in_fSpeed, float in_fFadeIn, float in_fFadeOut)
 {
-    /*
-    int id = m_pModel->getCoreModel()->getCoreAnimationId(in_sAnimName.str());
-    if(id < 0) {
-        FTS18N("TODO: PlayAsAction with invalid action warn message", MsgType::WarningNoMB);
-        return;
-    }
-
-    // Play this action!
-    m_pModel->getMixer()->executeAction(id, in_fFadeIn, in_fFadeOut);
-
-    // Set the speed with which this animation shall be played.
-    if(m_pModel->getMixer()->getAnimationActionList().size() > 0) {
-        m_pModel->getMixer()->getAnimationActionList().front()->setTimeFactor(in_fSpeed);
-    }
-    m_pModel->update(0.0);
-    */
+    return m_pModel->playOneShot(in_sAnimName.str(), in_fSpeed, in_fFadeIn, in_fFadeOut);
 }
 
-void FTS::ModelInstance::playAsCycle(const String& in_sAnimName, float in_fWeight, float in_fFadeIn)
+bouge::AnimationPtr FTS::ModelInstance::playCycle(const String& in_sAnimName, float in_fSpeed, float in_fFadeIn, float in_fWeight)
 {
-    /*
-    int id = m_pModel->getCoreModel()->getCoreAnimationId(in_sAnimName.str());
-    if(id < 0) {
-        FTS18N("TODO: PlayAsCycle with invalid action warn message", MsgType::WarningNoMB);
-        return;
-    }
-
-    // Fade out (all) the current cycle(s) if any before starting the new one
-    // in case we want the new one to be the sole cycle.
-    if(FTS::nearZero(in_fWeight - 1.0f)) {
-//         for(auto iCycleId = m_currentCycles.begin() ; i != m_currentCycles.end() ; ++i) {
-//             m_pModel->getMixer()->clearCycle(iCycleId, in_fFadeIn);
-//         }
-    }
-
-    // Now, start fading in the cycle.
-    m_pModel->getMixer()->blendCycle(id, in_fWeight, in_fFadeIn);
-    m_pModel->update(0.0);
-    */
+    return m_pModel->playCycle(in_sAnimName.str(), in_fSpeed, in_fFadeIn, in_fWeight);
 }
 
-void FTS::ModelInstance::stopAction(const String& in_sAnimName, float in_fFadeOut)
+void FTS::ModelInstance::stop(const String& in_sAnimName, float in_fFadeOut)
 {
-    /*
-    int id = m_pModel->getCoreModel()->getCoreAnimationId(in_sAnimName.str());
-    if(id < 0) {
-        FTS18N("TODO: stopAction with invalid action warn message", MsgType::WarningNoMB);
-        return;
-    }
-
-    // No fade out, stop it immediately.
-    if(nearZero(in_fFadeOut)) {
-        m_pModel->getMixer()->removeAction(id);
-        return;
-    }
-
-    // Fake the fade-out by adjusting the time factor.
-    CalAnimationAction* pAction = m_pModel->getMixer()->animationActionFromCoreAnimationId(id);
-    if(pAction) {
-        float fTimeLeft = std::max(pAction->getCoreAnimation()->getDuration() - pAction->getTime(), 0.001f);
-        pAction->setDelayOut(fTimeLeft);
-        pAction->setTimeFactor(fTimeLeft / in_fFadeOut);
-        FTSMSG("Time left: {1}\nFade out: {2}\nNew time factor: {3}", MsgType::Raw, String::nr(fTimeLeft), String::nr(in_fFadeOut), String::nr(in_fFadeOut / fTimeLeft));
-    }
-    */
-}
-
-void FTS::ModelInstance::stopCycle(const String& in_sAnimName, float in_fFadeOut)
-{
-    /*
-    int id = m_pModel->getCoreModel()->getCoreAnimationId(in_sAnimName.str());
-    if(id < 0) {
-        FTS18N("TODO: stopCycle with invalid action warn message", MsgType::WarningNoMB);
-        return;
-    }
-
-    m_pModel->getMixer()->clearCycle(id, in_fFadeOut);
-    */
+    m_pModel->stop(in_sAnimName.str(), in_fFadeOut);
 }
 
 void FTS::ModelInstance::stopAll(float in_fFadeOut)
 {
-    /*
-    // First, stop all the cycles.
-    std::vector<CalAnimation *> &cycles = m_pModel->getMixer()->getAnimationVector();
-    for(std::size_t i = 0 ; i < cycles.size() ; ++i) {
-        m_pModel->getMixer()->clearCycle(i, in_fFadeOut);
-    }
-
-    // Then, stop all the actions.
-    for(int i = 0 ; i < m_pModel->getCoreModel()->getCoreAnimationCount() ; ++i) {
-        this->stopAction(m_pModel->getCoreModel()->getCoreAnimation(i)->getName(), in_fFadeOut);
-    }
-    */
+    m_pModel->stopAll(in_fFadeOut);
 }
 
 void FTS::ModelInstance::pause()
 {
-    /*
-    // Don't pause a paused model!
-    if(this->isPaused())
-        return;
-
-    m_lPausedTimeFactors.push_back(m_pModel->getMixer()->getTimeFactor());
-    m_pModel->getMixer()->setTimeFactor(0.0f);
-
-    // Unfortunately, we have to pause the actions separately, they do not
-    // consider the mixer's time factor :(
-    std::list<CalAnimationAction*>& actions = m_pModel->getMixer()->getAnimationActionList();
-    for(auto action = actions.begin() ; action != actions.end() ; ++action) {
-        CalAnimationAction* pAction = *action;
-        m_lPausedTimeFactors.push_back(pAction->getTimeFactor());
-        pAction->setTimeFactor(0.0f);
-    }
-    */
+    m_pModel->pauseAll();
 }
 
 void FTS::ModelInstance::resume()
 {
-    /*
-    if(!m_lPausedTimeFactors.empty()) {
-        m_pModel->getMixer()->setTimeFactor(m_lPausedTimeFactors.front());
-        m_lPausedTimeFactors.pop_front();
-    } else {
-        m_pModel->getMixer()->setTimeFactor(1.0f);
-    }
-
-    // Same as for the pausing...
-    std::list<CalAnimationAction*>& actions = m_pModel->getMixer()->getAnimationActionList();
-    for(auto action = actions.begin() ; action != actions.end() ; ++action) {
-        CalAnimationAction* pAction = *action;
-        if(!m_lPausedTimeFactors.empty()) {
-            pAction->setTimeFactor(m_lPausedTimeFactors.front());
-            m_lPausedTimeFactors.pop_front();
-        } else {
-            pAction->setTimeFactor(1.0f);
-        }
-    }
-
-    m_lPausedTimeFactors.clear();
-    */
+    m_pModel->resumeAll();
 }
 
-bool FTS::ModelInstance::isPaused() const
+bool FTS::ModelInstance::paused() const
 {
-//     return !m_lPausedTimeFactors.empty();
-    return false;
+    return m_pModel->paused();
 }
 
-void FTS::ModelInstance::pauseAction(const String& in_sAnimName)
+void FTS::ModelInstance::pause(const String& in_sAnimName)
 {
-    /*
-    // Don't pause a paused action!
-    if(this->isActionPaused(in_sAnimName))
-        return;
-
-    // Go find that action...
-    std::list<CalAnimationAction*>& actions = m_pModel->getMixer()->getAnimationActionList();
-    for(auto action = actions.begin() ; action != actions.end() ; ++action) {
-        CalAnimationAction* pAction = *action;
-        if(pAction->getCoreAnimation()->getName() != in_sAnimName)
-            continue;
-
-        // Found it, pause it! (and keep in mind its current speed.)
-        m_lPausedActionTimeFactors[in_sAnimName] = pAction->getTimeFactor();
-        pAction->setTimeFactor(0.0f);
-        break;
-    }
-    */
+    m_pModel->pause(in_sAnimName.str());
 }
 
-void FTS::ModelInstance::resumeAction(const String& in_sAnimName)
+void FTS::ModelInstance::resume(const String& in_sAnimName)
 {
-    /*
-    // Don't resume a running action!
-    if(!this->isActionPaused(in_sAnimName))
-        return;
-
-    // Go find that action...
-    std::list<CalAnimationAction*>& actions = m_pModel->getMixer()->getAnimationActionList();
-    for(auto action = actions.begin() ; action != actions.end() ; ++action) {
-        CalAnimationAction* pAction = *action;
-        if(pAction->getCoreAnimation()->getName() != in_sAnimName)
-            continue;
-
-        // Found it, resume it!
-        pAction->setTimeFactor(m_lPausedActionTimeFactors[in_sAnimName]);
-        m_lPausedActionTimeFactors.erase(in_sAnimName);
-        break;
-    }
-    */
+    m_pModel->resume(in_sAnimName.str());
 }
 
-bool FTS::ModelInstance::isActionPaused(const String& in_sAnimName) const
+bool FTS::ModelInstance::paused(const String& in_sAnimName) const
 {
-//     return m_lPausedActionTimeFactors.find(in_sAnimName) != m_lPausedActionTimeFactors.end();
-    return false;
+    return m_pModel->paused(in_sAnimName.str());
 }
 
-void FTS::ModelInstance::setCycleSpeed(float in_fSpeed)
+void FTS::ModelInstance::speed(float in_fSpeed)
 {
-    // As far as I can tell, the default cal3d mixer only supports one
-    // animation speed (time factor) for all cyclic animations together!
-//     m_pModel->getMixer()->setTimeFactor(in_fSpeed);
+    m_pModel->speed(in_fSpeed);
 }
 
-float FTS::ModelInstance::getCycleSpeed() const
+float FTS::ModelInstance::speed() const
 {
-//     return m_pModel->getMixer()->getTimeFactor();
-    return 1.0f;
+    return m_pModel->speed();
 }
 
-uint32_t FTS::ModelInstance::getVertexCount() const
+void FTS::ModelInstance::speed(const FTS::String& in_sAnimName, float in_fSpeed)
 {
-    return m_pHwModel->getVertexCount();
+    m_pModel->speed(in_sAnimName.str(), in_fSpeed);
 }
 
-uint32_t FTS::ModelInstance::getFaceCount() const
+float FTS::ModelInstance::speed(const FTS::String& in_sAnimName) const
 {
-    return m_pHwModel->getFaceCount();
+    return m_pModel->speed(in_sAnimName.str());
 }
 
-FTS::AxisAlignedBoundingBox FTS::ModelInstance::getRestAABB() const
+uint32_t FTS::ModelInstance::vertexCount() const
 {
-    return m_pHwModel->getRestAABB();
+    return m_pHwModel->vertexCount();
+}
+
+uint32_t FTS::ModelInstance::faceCount() const
+{
+    return m_pHwModel->faceCount();
+}
+
+FTS::AxisAlignedBoundingBox FTS::ModelInstance::restAABB() const
+{
+    return m_pHwModel->restAABB();
 }
 
 bool FTS::ModelInstance::update(const Clock& in_c)
 {
-//     m_pModel->update(static_cast<float>(in_c.getDeltaT()));
+    m_pModel->mixer()->update(static_cast<float>(in_c.getDeltaT()));
     return true;
 }

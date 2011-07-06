@@ -28,7 +28,7 @@
 #include "scripting/DaoFunction.h"
 #include "sound/SndSys.h"
 #include "sound/SndObj.h"
-#include <3d/Movers/Orbiter.h>
+#include "3d/Movers/Orbiter.h"
 
 using namespace FTS;
 
@@ -329,7 +329,7 @@ void FTS::ModelViewerRlv::render3D(const Clock&)
         (*i)->render(m_playerColor);
 
         if(m_bShowAABB) {
-            m_pAABB->render(AffineMatrix::translation((*i)->pos()) * (*i)->getModelInst()->getRestAABB().getModelMatrix(), Color(0.0f, 0.0f, 0.0f));
+            m_pAABB->render(AffineMatrix::translation((*i)->pos()) * (*i)->getModelInst()->restAABB().getModelMatrix(), Color(0.0f, 0.0f, 0.0f));
         }
     }
 }
@@ -397,11 +397,12 @@ int FTS::ModelViewerRlv::setupMovesCombobox()
         cb->setText("");
 
         // Now fill it with the available moves.
-        const std::vector<String>& vMoves = m_modelInsts.front()->getModelInst()->getAvailableMoves();
+        const std::set<String>& moves = m_modelInsts.front()->getModelInst()->moves();
 
-        if(!vMoves.empty()) {
-            (new SimpleListItem(vMoves.front()))->addAsDefault(cb);
-            for(auto i = vMoves.begin() + 1 ; i != vMoves.end() ; ++i) {
+        if(!moves.empty()) {
+            auto i = moves.begin();
+            (new SimpleListItem(*i++))->addAsDefault(cb);
+            for( ; i != moves.end() ; ++i) {
                 cb->addItem(new SimpleListItem(*i));
             }
         }
@@ -421,12 +422,13 @@ int FTS::ModelViewerRlv::setupSkinsCombobox()
         cb->setText("");
 
         // And now fill it with the available skins:
-        const std::vector<String>& vSkins = m_modelInsts.front()->getModelInst()->getAvailableSkins();
+        const std::set<String>& skins = m_modelInsts.front()->getModelInst()->skins();
 
         // We can assume that there is always at least one skin. Still, never trust.
-        if(!vSkins.empty()) {
-            (new SimpleListItem(vSkins.front()))->addAsDefault(cb);
-            for(auto i = vSkins.begin() + 1 ; i != vSkins.end() ; ++i) {
+        if(!skins.empty()) {
+            auto i = skins.begin();
+            (new SimpleListItem(*i++))->addAsDefault(cb);
+            for( ; i != skins.end() ; ++i) {
                 cb->addItem(new SimpleListItem(*i));
             }
         } else {
@@ -447,9 +449,9 @@ int FTS::ModelViewerRlv::setupStatusbar()
 
         const ModelInstance* pInst = m_modelInsts.front()->getModelInst();
 
-        pWM->getWindow("mdlviewer/statusbar/lblVertsVal")->setText(String::nr(pInst->getVertexCount()));
-        pWM->getWindow("mdlviewer/statusbar/lblFaceVal")->setText(String::nr(pInst->getFaceCount()));
-        pWM->getWindow("mdlviewer/statusbar/lblMovesVal")->setText(String::nr(pInst->getAvailableMoves().size()));
+        pWM->getWindow("mdlviewer/statusbar/lblVertsVal")->setText(String::nr(pInst->vertexCount()));
+        pWM->getWindow("mdlviewer/statusbar/lblFaceVal")->setText(String::nr(pInst->faceCount()));
+        pWM->getWindow("mdlviewer/statusbar/lblMovesVal")->setText(String::nr(pInst->moves().size()));
     } catch(CEGUI::Exception & e) {
         FTS18N("CEGUI", MsgType::Error, e.getMessage());
     }
@@ -490,8 +492,8 @@ int FTS::ModelViewerRlv::setupModelInstances()
 
     // Get the width and depth of the model in resting pose.
     ModelInstance *pInst = m_pModelManager->createInstance(m_sModelName);
-    float fModelW = pInst->getRestAABB().right() - pInst->getRestAABB().left();
-    float fModelD = pInst->getRestAABB().back() - pInst->getRestAABB().front();
+    float fModelW = pInst->restAABB().right() - pInst->restAABB().left();
+    float fModelD = pInst->restAABB().back() - pInst->restAABB().front();
     SAFE_DELETE(pInst);
 
     // Compute an approximation of the distance we want between models.
@@ -785,7 +787,7 @@ bool FTS::ModelViewerRlv::cbPlayAction(const CEGUI::EventArgs &)
     float fSpeed = this->getSelectedMoveSpeed();
 
     for(auto i = m_modelInsts.begin() ; i != m_modelInsts.end() ; ++i) {
-        (*i)->getModelInst()->playAsAction(sName, fSpeed);
+        (*i)->getModelInst()->playAction(sName, fSpeed);
     }
 
     // Again, for our halloween   e a s t e r   e g g:
@@ -816,8 +818,7 @@ bool FTS::ModelViewerRlv::cbPlayCycle(const CEGUI::EventArgs & in_ea)
     float fSpeed = this->getSelectedMoveSpeed();
 
     for(auto i = m_modelInsts.begin() ; i != m_modelInsts.end() ; ++i) {
-        (*i)->getModelInst()->playAsCycle(sName, 1.0f);
-        (*i)->getModelInst()->setCycleSpeed(fSpeed);
+        (*i)->getModelInst()->playCycle(sName, fSpeed);
     }
 
     return true;
@@ -836,7 +837,7 @@ bool FTS::ModelViewerRlv::cbPlayCycle(const CEGUI::EventArgs & in_ea)
 bool FTS::ModelViewerRlv::cbPlayPause(const CEGUI::EventArgs & in_ea)
 {
     for(auto i = m_modelInsts.begin() ; i != m_modelInsts.end() ; ++i) {
-        if((*i)->getModelInst()->isPaused())
+        if((*i)->getModelInst()->paused())
             (*i)->getModelInst()->resume();
         else
             (*i)->getModelInst()->pause();
@@ -845,7 +846,7 @@ bool FTS::ModelViewerRlv::cbPlayPause(const CEGUI::EventArgs & in_ea)
     // Now we need to change the icon on the button accordingly:
     try {
         CEGUI::Window* pButton = CEGUI::WindowManager::getSingletonPtr()->getWindow("mdlviewer/panel/frmMoves/btnPlayPause");
-        if(m_modelInsts.front()->getModelInst()->isPaused()) {
+        if(m_modelInsts.front()->getModelInst()->paused()) {
             pButton->setProperty("ImageNormal", "set:FTSUI image:ResumeN");
             pButton->setProperty("ImageHover", "set:FTSUI image:ResumeH");
             pButton->setProperty("ImagePushed", "set:FTSUI image:ResumeN");
