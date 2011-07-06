@@ -31,6 +31,7 @@ public:
     virtual void testWasRun (const Test& test);
     virtual void testWasSkipped(const Test& test);
     virtual void startSuite(const TestSuite& suite);
+    virtual void suiteWasSkipped (const TestSuite& suite);
     virtual void endSuite(const TestSuite& suite);
 };
 

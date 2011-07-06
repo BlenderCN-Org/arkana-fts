@@ -1,5 +1,5 @@
 Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+# Visual C++ Express 2010
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FTS", "FTS.vcxproj", "{B87C1993-6C88-4835-81EF-208458B8B716}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D08F06C9-4359-471F-B5E6-2BF0D86D5D77}"
@@ -8,15 +8,12 @@ Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug_Static|Win32 = Debug_Static|Win32
 		Release_Static|Win32 = Release_Static|Win32
-		Test_Static|Win32 = Test_Static|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{B87C1993-6C88-4835-81EF-208458B8B716}.Debug_Static|Win32.ActiveCfg = Debug_Static|Win32
 		{B87C1993-6C88-4835-81EF-208458B8B716}.Debug_Static|Win32.Build.0 = Debug_Static|Win32
 		{B87C1993-6C88-4835-81EF-208458B8B716}.Release_Static|Win32.ActiveCfg = Release_Static|Win32
 		{B87C1993-6C88-4835-81EF-208458B8B716}.Release_Static|Win32.Build.0 = Release_Static|Win32
-		{B87C1993-6C88-4835-81EF-208458B8B716}.Test_Static|Win32.ActiveCfg = Test_Static|Win32
-		{B87C1993-6C88-4835-81EF-208458B8B716}.Test_Static|Win32.Build.0 = Test_Static|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

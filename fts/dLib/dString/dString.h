@@ -42,7 +42,7 @@ private:
     void fromStringWithLength(const char* in_pszString, std::string::size_type in_iStart, std::string::size_type in_iLength);
     int getByteCount(const char* in_pszString, std::string::size_type in_utf8Len);
     const char* advance(const char* in_pszString, std::string::size_type in_utf8Len);
-    typedef std::tuple<std::string::size_type, int> StringSize;
+    typedef std::tuple<std::string::size_type, std::string::size_type> StringSize;
     StringSize strlen() const;
 public:
     static const String sWhiteSpace;
@@ -255,7 +255,7 @@ public:
     /// This function returns the amout of bytes this string takes in memory.
     ///
     /// \return the size of the string in bytes, 0 if it is empty.
-    int byteCount() const;
+    std::string::size_type byteCount() const;
 
     /// Get the C-String (read-only).
     /// Get the C-string that builds this string, in read-only mode.

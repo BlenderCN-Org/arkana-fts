@@ -91,6 +91,7 @@ set(SOURCES_COMMON
             logging/Chronometer.cpp
             logging/ftslogger.cpp
             logging/logger.cpp
+            main/main.cpp
             main/Clock.cpp
             main/Exception.cpp
             main/load_fts_rlv.cpp
@@ -115,6 +116,12 @@ set(SOURCES_COMMON
             sound/SndSys.cpp
             sound/SndSysOpenAL.cpp
             sound/SndPlayList.cpp
+            tests/mainNice.cpp
+            tests/3d/ResolutionTest.cpp
+            tests/dLib/dFile/dFileArchiveTest.cpp
+            tests/Scripting/DaoVmTest.cpp
+            tests/dLib/dString/dPathTest.cpp
+            tests/dLib/dString/dStringTest.cpp
             ui/cegui_items/progressbar/ArkanaProgressBarWR.cpp
             ui/cegui_items/progressbar/ArkanaProgressBarWRProperties.cpp
             ui/cegui_items/ArkanaResourceProvider.cpp
@@ -156,8 +163,6 @@ set(SOURCES_COMMON
             scripting/DaoFunction.cpp
             scripting/hotkey.cpp
    )
-
-set(SOURCES_GAME main/main.cpp)
 
 if(UNIX)
     set(SOURCES_COMMON ${SOURCES_COMMON} dLib/dBrowse/linux.cpp)
@@ -318,18 +323,10 @@ list(APPEND FTS_INCLUDES "3rdparty/dao/src")
 list(APPEND FTS_LIBS "dao")
 
 # Add unit testing stuff
+set(ATEST_BUILD_EXAMPLES FALSE)
 add_subdirectory(${fts_SOURCE_DIR}/dLib/aTest)
 list(APPEND FTS_INCLUDES dLib)
 list(APPEND FTS_LIBS aTest)
-set(SOURCES_TEST tests/mainNice.cpp
-                 tests/3d/ResolutionTest.cpp
-                 tests/dLib/dFile/dFileArchiveTest.cpp
-                 tests/Scripting/DaoVmTest.cpp
-                 tests/dLib/dString/dPathTest.cpp
-                 tests/dLib/dString/dStringTest.cpp
-                 )
-add_definitions(-DGAME_MAIN=main)
-add_definitions(-DTEST_MAIN=main)
 
 # Add additional include search directories.
 include_directories(${fts_SOURCE_DIR})
@@ -363,20 +360,16 @@ ADD_PCH_RULE(${fts_SOURCE_DIR}/3d/3d.h SOURCES_COMMON)
 ADD_PCH_RULE(${fts_SOURCE_DIR}/dLib/dString/dString.h SOURCES_COMMON)
 ADD_PCH_RULE(${fts_SOURCE_DIR}/main/main.h SOURCES_GAME)
 
-execute_process(COMMAND svnversion -n WORKING_DIRECTORY ${fts_SOURCE_DIR} OUTPUT_VARIABLE SVN_REVISION)
+execute_process(COMMAND git describe --dirty WORKING_DIRECTORY ${fts_SOURCE_DIR} OUTPUT_VARIABLE FTS_VERSION_FULL_RAW)
+string(STRIP ${FTS_VERSION_FULL_RAW} FTS_VERSION_FULL)
 configure_file(${fts_SOURCE_DIR}/main/revision.h.in ${fts_SOURCE_DIR}/main/revision.h)
 
 add_executable(fts ${SOURCES_COMMON} ${SOURCES_GAME})
 target_link_libraries(fts ${FTS_LIBS} )
 
-add_executable(test ${SOURCES_COMMON} ${SOURCES_TEST})
-target_link_libraries(test ${FTS_LIBS})
-
 # copy the executable as a post-build step. #
 #############################################
 add_custom_command(TARGET fts POST_BUILD COMMAND cp ${fts_BINARY_DIR}/fts ${fts_SOURCE_DIR} VERBATIM)
-add_custom_command(TARGET test POST_BUILD COMMAND cp ${fts_BINARY_DIR}/test ${fts_SOURCE_DIR} VERBATIM)
-add_custom_command(TARGET test POST_BUILD COMMAND test fts WORKING_DIRECTORY ${fts_SOURCE_DIR} VERBATIM)
 
 # installation to the system. #
 #    OUTDATED AND UNTESTED    #

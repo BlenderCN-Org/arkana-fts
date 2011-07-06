@@ -60,6 +60,13 @@ void TestResultCombiner::startSuite(const TestSuite& suite)
     m_second.startSuite(suite);
 }
 
+void TestResultCombiner::suiteWasSkipped(const TestSuite& suite)
+{
+    TestResult::suiteWasSkipped(suite);
+    m_first.suiteWasSkipped(suite);
+    m_second.suiteWasSkipped(suite);
+}
+
 void TestResultCombiner::endSuite(const TestSuite& suite)
 {
     TestResult::endSuite(suite);

@@ -61,6 +61,15 @@ void TestResultNiceOutput::startSuite(const TestSuite& suite)
     m_prefix.push_back(m_sIdent);
 }
 
+void TestResultNiceOutput::suiteWasSkipped (const TestSuite& suite)
+{
+    TestResult::suiteWasSkipped(suite);
+
+    m_out <<  "                                                                      [SKIPPED]" << std::endl;
+
+    m_prefix.pop_back();
+}
+
 void TestResultNiceOutput::endSuite(const TestSuite& suite)
 {
     TestResult::endSuite(suite);

@@ -14,12 +14,10 @@
 int getMajorVersion();
 int getMinorVersion();
 int getReleaseVersion();
-int getRevisionVersion();
 
 std::string getFTSVersionString();
 
 uint32_t getFTSVersionUInt32();
-uint64_t getFTSVersionUInt64();
 uint32_t makeFTSVersionUInt32(int iMaj, int iMin, int iRel);
 uint64_t makeFTSVersionUInt64(int iMaj, int iMin, int iRel, int iRev);
 

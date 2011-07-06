@@ -16,6 +16,8 @@ public:
     virtual void setup() {};
     virtual void teardown() {};
 
+    virtual std::size_t testCount() const;
+
 protected:
     std::vector<Test *>     tests;
 };
