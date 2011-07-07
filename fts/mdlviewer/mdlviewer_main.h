@@ -69,7 +69,6 @@ private:
 
     // When a scrollbar changed, also change the according label.
     bool cbhsScrollChanged(const CEGUI::EventArgs & in_ea);
-    bool cbMoveSelectionChanged(const CEGUI::EventArgs & in_ea);
 
     String getSelectedMoveName() const;
     float getSelectedMoveSpeed() const;

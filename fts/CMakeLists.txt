@@ -42,9 +42,6 @@ set(SOURCES_COMMON
             tools/server2/checksum/md5.cpp
             tools/server2/checksum/sha2.cpp
             3d/math/AxisAlignedBoundingBox.cpp
-#             3d/math/Matrix.cpp
-#             3d/math/Quaternion.cpp
-#             3d/math/Vector.cpp
             3d/Movers/Mover.cpp
             3d/Movers/Orbiter.cpp
             3d/Movers/Translator.cpp

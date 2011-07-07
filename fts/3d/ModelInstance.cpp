@@ -89,6 +89,11 @@ const std::set<FTS::String>& FTS::ModelInstance::moves() const
     return m_pHwModel->anims();
 }
 
+bouge::CoreAnimationPtrC FTS::ModelInstance::getMove(const String& in_sName)
+{
+    return m_pModel->findAnimToUse(in_sName.str());
+}
+
 bouge::AnimationPtr FTS::ModelInstance::playAction(const String& in_sAnimName, float in_fSpeed, float in_fFadeIn, float in_fFadeOut)
 {
     return m_pModel->playOneShot(in_sAnimName.str(), in_fSpeed, in_fFadeIn, in_fFadeOut);
