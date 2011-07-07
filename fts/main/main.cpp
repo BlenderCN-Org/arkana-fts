@@ -290,10 +290,6 @@ int cleanFTS(void)
         Logger::getSingleton().doneConsoleMessage();
     } catch(const ArkanaException&) { }
 
-    try {
-        Logger::getSingleton().doneConsoleMessage();
-    } catch(const ArkanaException&) { }
-
     delete GUI::getSingletonPtr();
 
     SDL_Quit();
