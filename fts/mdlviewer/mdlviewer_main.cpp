@@ -29,6 +29,7 @@
 #include "sound/SndSys.h"
 #include "sound/SndObj.h"
 #include "3d/Movers/Orbiter.h"
+#include <bouge/CoreAnimation.hpp>
 
 using namespace FTS;
 
@@ -172,14 +173,6 @@ int FTS::ModelViewerRlv::loadGUI()
     try {
         pWM->getWindow("mdlviewer/panel/frmMoves/btnStop")
            ->subscribeEvent(CEGUI::PushButton::EventClicked, FTS_SUBS(FTS::ModelViewerRlv::cbStop));
-    } catch(CEGUI::Exception & e) {
-        FTS18N("CEGUI", MsgType::Error, e.getMessage());
-    }
-
-    try {
-        pWM->getWindow("mdlviewer/panel/frmMoves/cbMove")
-           ->subscribeEvent(CEGUI::Combobox::EventListSelectionAccepted,
-                            FTS_SUBS(FTS::ModelViewerRlv::cbMoveSelectionChanged));
     } catch(CEGUI::Exception & e) {
         FTS18N("CEGUI", MsgType::Error, e.getMessage());
     }
@@ -615,6 +608,21 @@ bool FTS::ModelViewerRlv::cbLoadDone(const CEGUI::EventArgs & in_ea)
     InputManager::getSingleton().add("Translator Test D", Key::D, pMoverD);
     InputManager::getSingleton().add("Translator Test D Stopper", Key::D, new MoverStopper(pMoverD), false);
 
+    try {
+        CEGUI::WindowManager *pWM = CEGUI::WindowManager::getSingletonPtr();
+
+        if(!m_modelInsts.empty()) {
+            ModelInstance* pInst = (*m_modelInsts.begin())->getModelInst();
+
+            // And also model-info like verts, frames.
+            pWM->getWindow("mdlviewer/statusbar/lblVertsVal")->setText(String::nr(pInst->vertexCount()));
+            pWM->getWindow("mdlviewer/statusbar/lblFaceVal")->setText(String::nr(pInst->faceCount()));
+            pWM->getWindow("mdlviewer/statusbar/lblMovesVal")->setText(String::nr(pInst->moves().size()));
+        }
+    } catch(CEGUI::Exception& e) {
+        FTS18N("CEGUI", MsgType::Error, e.getMessage());
+    }
+
     // This is for our halloween e a s t e r   e g g.
     // When the pumpkin model is loaded, play the zombie music :)
     DaoFunctionCall<>("HalloweenEasterEgg")(m_sModelName);
@@ -722,49 +730,6 @@ bool FTS::ModelViewerRlv::cbhsScrollChanged(const CEGUI::EventArgs & in_ea)
             // Add new models or delete some.
             this->setupModelInstances();
         }
-    } catch(CEGUI::Exception & e) {
-        FTS18N("CEGUI", MsgType::Error, e.getMessage());
-    }
-
-    return true;
-}
-
-/** Gets called when the user selects a move of the model. \n
- *
- *  This method adapts the information labels values to the ones from the
- *  current move.
- *
- * \param in_ea unused.
- *
- * \return true
- *
- * \author Pompei2
- */
-bool FTS::ModelViewerRlv::cbMoveSelectionChanged(const CEGUI::EventArgs & in_ea)
-{
-    try {
-        // Set some text empty:
-        CEGUI::WindowManager *pWM = CEGUI::WindowManager::getSingletonPtr();
-/*        pWM->getWindow("mdlviewer/panel/frmMoves/lblFramesVal")->setText("0");
-        pWM->getWindow("mdlviewer/panel/frmMoves/lblFPSVal")->setText("0");
-
-        if(m_pModel == NULL)
-            return true;
-
-        // Get the newly selected move.
-        const Move *pMove = m_pModel->findMove(this->getSelectedMoveName());
-        if(pMove == NULL)
-            return true;
-
-        // And update its info:
-        pWM->getWindow("mdlviewer/panel/frmMoves/lblFramesVal")->setText(String::nr(pMove->getFrameCount()));
-        pWM->getWindow("mdlviewer/panel/frmMoves/lblFPSVal")->setText(String::nr(pMove->getFPS()));
-
-        // And also model-info like verts, frames.
-        pWM->getWindow("mdlviewer/statusbar/lblVertsVal")->setText(String::nr((pMove->getVertCount()));
-        pWM->getWindow("mdlviewer/statusbar/lblFaceVal")->setText(String::nr((pMove->getFaceCount()));
-        pWM->getWindow("mdlviewer/statusbar/lblMovesVal")->setText(String::nr((m_pModel->getNMoves()));
-*/
     } catch(CEGUI::Exception & e) {
         FTS18N("CEGUI", MsgType::Error, e.getMessage());
     }

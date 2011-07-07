@@ -474,12 +474,8 @@ void FTS::HardwareModel::render(const AffineMatrix& in_modelMatrix, const Color&
         // We can now also give it the bone matrices.
         for(std::size_t i = 0 ; i < submesh.boneCount() ; ++i) {
             bouge::BoneInstancePtrC bone = in_modelInst->skeleton()->bone(submesh.boneName(i));
-//             prog->setUniformArrayElement("uBonesPalette", i, bone->transformMatrix().array16f());
-//             prog->setUniformArrayElementInverse("uBonesPaletteInvTrans", i, true, bone->transformMatrix().array9f());
-
-            // TODO: replace by real bone matrices of model instance
-            prog->setUniformArrayElement("uBonesPalette", i, AffineMatrix());
-            prog->setUniformArrayElement("uBonesPaletteInvTrans", i, AffineMatrix());
+            prog->setUniformArrayElement("uBonesPalette", i, bone->transformMatrix());
+            prog->setUniformArrayElementInverse("uBonesPaletteInvTrans", i, bone->transformMatrix(), true);
         }
 
         // Set all the material-registered uniforms.

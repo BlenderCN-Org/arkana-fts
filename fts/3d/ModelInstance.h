@@ -63,6 +63,7 @@ public:
 
     // Animation information
     const std::set<String>& moves() const;
+    bouge::CoreAnimationPtrC getMove(const String& in_sName);
 
     // Some informations about the model.
     uint32_t vertexCount() const;
