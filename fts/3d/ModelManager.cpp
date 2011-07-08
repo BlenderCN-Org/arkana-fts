@@ -78,6 +78,11 @@ std::shared_ptr<FTS::HardwareModel> FTS::ModelManager::getOrLoad(const FTS::Stri
         // If it hasn't been loaded successfully, we still add it to the map as being
         // the error texture. To avoid hundreds of reload trials.
         m_mHardwareModels[in_sName] = this->getErrorModel();
+    } catch(const std::exception& e) {
+        FTS18N("CorruptData", MsgType::Error, in_sName, e.what());
+
+        // same here.
+        m_mHardwareModels[in_sName] = this->getErrorModel();
     }
 
     return m_mHardwareModels[in_sName];
