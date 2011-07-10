@@ -36,6 +36,7 @@ set(SOURCES Test.cpp
             TestResultCompiler.cpp
             TestResultCombiner.cpp
             TestResultNiceOutput.cpp
+            TestResultDebugOut.cpp
             TestResultSQL.cpp
             TestSuite.cpp
    )
