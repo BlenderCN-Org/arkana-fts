@@ -36,13 +36,6 @@ EnhancedXMLDocument::EnhancedXMLDocument ( File& filename )
     // Generally, you expect fgets to translate from the convention of the OS to the c/unix
     // convention, and not work generally.
 
-    /*
-    while( fgets( buf, sizeof(buf), file ) )
-    {
-        data += buf;
-    }
-    */
-
     char* buf = new char[ length+1 ];
     filename.read ( buf, length, sizeof ( char ) );
 
@@ -106,16 +99,19 @@ EnhancedXMLDocument::EnhancedXMLDocument ( File& filename )
 Configuration::Configuration ( const Options& in_options )
 {
     m_opts = in_options;
+    m_defaults = in_options;
 }
 
 Configuration::Configuration ( const FTS::DefaultOptions& in_defaults )
 {
     m_opts = in_defaults.getDefaults();
+    m_defaults = m_opts;
 }
 
 Configuration::Configuration ( File& in_file, const FTS::DefaultOptions& in_defaults )
 {
     m_opts = in_defaults.getDefaults() ;
+    m_defaults = m_opts;
     EnhancedXMLDocument docConf ( in_file );
     parse ( docConf );
 }
@@ -131,6 +127,7 @@ Configuration::Configuration ( const String& in_fileName, const DefaultOptions& 
         m_confFileName = Path::userdir(in_fileName);
     }
     m_opts = in_defaults.getDefaults() ;
+    m_defaults = m_opts;
     CEGUITinyXML::TiXmlDocument docConf ( m_confFileName.c_str() );
     if ( docConf.LoadFile() )
     {
@@ -172,17 +169,32 @@ String Configuration::get ( String in_optName )
 
 bool Configuration::getBool ( String in_optName )
 {
-    return m_opts[in_optName].to<bool>();
+    try {
+        bool ret = m_defaults[in_optName].toExactly<bool>();
+        return m_opts[in_optName].to<bool>(ret);
+    } catch (std::bad_cast ex) {
+        throw CorruptDataException(in_optName,"Bad cast of bool option in Configuration::getBool()", MsgType::Horror);
+    }
 }
 
 int Configuration::getInt ( String in_optName )
 {
-    return m_opts[in_optName].to<int>();
+    try {
+        int ret = m_defaults[in_optName].toExactly<int>();
+        return m_opts[in_optName].to<int>(ret);
+    } catch (std::bad_cast ex) {
+        throw CorruptDataException(in_optName,"Bad cast of bool option in Configuration::getInt()", MsgType::Horror);
+    }
 }
 
 float Configuration::getFloat ( String in_optName )
 {
-    return m_opts[in_optName].to<float>();
+    try {
+        float ret = m_defaults[in_optName].toExactly<float>();
+        return m_opts[in_optName].to<float>(ret);
+    } catch (std::bad_cast ex) {
+        throw CorruptDataException(in_optName,"Bad cast of bool option in Configuration::getFloat()", MsgType::Horror);
+    }
 }
 
 void Configuration::set ( String in_optName, String value )

@@ -60,7 +60,8 @@ struct MaterialUserData {
             // color thus make it fully transparent.
             // The shader makes the rest. standard c++ says true -> 1.0f, false -> 0.0f
             // and that's exactly what we need, cool :)
-            this->alphaAsPlayerCol = static_cast<float>(sAlphaAsPlayerColor.to<bool>());
+            bool defAlphaAsPlayerCol = true; 
+            this->alphaAsPlayerCol = static_cast<float>(sAlphaAsPlayerColor.to<bool>(defAlphaAsPlayerCol));
         }
 
         String sDrawMode = in_coreMat.getProprety("Mode");

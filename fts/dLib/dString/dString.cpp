@@ -1078,10 +1078,11 @@ bool operator <(const char *in_pszString, const FTS::String& in_sString)
 }
 
 namespace FTS {
-    template<>
-    bool String::to<bool>() const
+    template<> 
+    bool& String::to<bool>(bool& t) const
     {
-        return this->ieq("True");
+        t = this->nieq("True");
+        return t;
     }
 
     template<>
