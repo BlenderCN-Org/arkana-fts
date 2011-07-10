@@ -10,7 +10,12 @@
   <LINK SUBMESH="Right">Mars</LINK>
 </MATSET>
 
-<!--<MATSET NAME="Earth Balloon">
+<MATSET NAME="Embedded shader">
   <LINK SUBMESH="Left">Earth</LINK>
-  <LINK SUBMESH="Right">Balloon</LINK>
-</MATSET>-->
+  <LINK SUBMESH="Right">UV Shader</LINK>
+</MATSET>
+
+<MATSET NAME="Embedded shader 2">
+  <LINK SUBMESH="Left">Earth</LINK>
+  <LINK SUBMESH="Right">UV Shader 2</LINK>
+</MATSET>

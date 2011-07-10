@@ -20,3 +20,15 @@
     <PROPERTY NAME="uMaterialDiffuse">1 1 1 1</PROPERTY>
     <PROPERTY NAME="uMaterialSpecular">1 0 0 5</PROPERTY>
 </MATERIAL>
+
+<MATERIAL NAME="UV Shader">
+    <PROPERTY NAME="VertexShader">texUV.vert</PROPERTY>
+    <PROPERTY NAME="FragmentShader">texUV.frag</PROPERTY>
+</MATERIAL>
+
+<MATERIAL NAME="UV Shader 2">
+    <PROPERTY NAME="VertexShader">texUV.vert</PROPERTY>
+    <PROPERTY NAME="FragmentShader">texUV.frag</PROPERTY>
+    <PROPERTY NAME="ShaderCompileFlags">UNIFORM_DIFFUSE_COLOR</PROPERTY>
+    <PROPERTY NAME="uMaterialDiffuse">0 1 1 1</PROPERTY>
+</MATERIAL>
