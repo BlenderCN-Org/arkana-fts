@@ -120,7 +120,7 @@ TEST_INSUITE_WITHSETUP(tDaoVm, DaoVmClean, Function)
             DaoFunctionCall<bool> daoTypeError("a");
             auto t = daoTypeError();
             FAIL("expected InvalidDataType exception");
-        } catch ( const DaoVmInvalidDataType& ex ) {
+        } catch ( const DaoVmInvalidDataType& ) {
         }
 
         DaoFunctionCall<> daoTypeError("a");
@@ -130,7 +130,7 @@ TEST_INSUITE_WITHSETUP(tDaoVm, DaoVmClean, Function)
         FAIL(String("caught {1}\n").fmt(String::nr(i)).c_str());
     } catch (char * s) {
         FAIL(String("caught {1}\n").fmt(s).c_str());
-    } catch (DaoVmFunctionNotFound& ex) {
+    } catch (DaoVmFunctionNotFound&) {
         FAIL("caught FunctionNotFound\n");
     } catch (const std::exception& ex) {
         FAIL(ex.what());
@@ -171,7 +171,7 @@ TEST_INSUITE_WITHSETUP(tDaoVm, DaoVmClean, Hotkeys)
         CHECK(DaoVm::getSingleton().getOutput().contains("Y = "));
 
 
-    } catch (DaoVmFunctionNotFound& ex) {
+    } catch (DaoVmFunctionNotFound&) {
         printf("caught FunctionNotFound\n");
     } catch (const std::exception& ex) {
         FAIL(ex.what());
@@ -254,7 +254,7 @@ TEST_INSUITE_WITHSETUP(tDaoVm, DaoVmClean, Context)
         CHECK(DaoVm::getSingleton().getOutput().contains("global_a= 77"));
 
 
-    } catch (DaoVmFunctionNotFound& ex) {
+    } catch (DaoVmFunctionNotFound&) {
         printf("caught FunctionNotFound\n");
     } catch (const std::exception& ex) {
         FAIL(ex.what());
