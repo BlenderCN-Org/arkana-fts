@@ -10,6 +10,7 @@
 #include "dLib/dBrowse/dBrowse.h"
 #include "dLib/dFile/dFile.h"
 
+#include <iterator>
 #include <map>
 #include <vector>
 #include <set>
