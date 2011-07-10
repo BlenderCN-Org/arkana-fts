@@ -110,7 +110,7 @@ int main(int argc, char *argv[])
 #ifdef DEBUG
     // The -tDaoVm disables the DaoVm tests, as currently the Dao VM cannot be
     // initialized more than one time. This is the fault of Dao, not Arkana.
-    const char* test_argv[] = {"./tests", "fts", "-tDaoVm"};
+    const char* test_argv[] = {"./tests", "fts", "-tDaoVm", "-Shaders"};
     int failures = run_tests(sizeof(test_argv)/sizeof(test_argv[0]), test_argv);
     if(failures > 0) {
 #if WINDOOF
