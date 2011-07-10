@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<MATSET NAME="Earth Moon">
+  <LINK SUBMESH="Left">Earth</LINK>
+  <LINK SUBMESH="Right">Moon</LINK>
+</MATSET>
+
+<MATSET NAME="Earth Mars">
+  <LINK SUBMESH="Left">Earth</LINK>
+  <LINK SUBMESH="Right">Mars</LINK>
+</MATSET>
+
+<!--<MATSET NAME="Earth Balloon">
+  <LINK SUBMESH="Left">Earth</LINK>
+  <LINK SUBMESH="Right">Balloon</LINK>
+</MATSET>-->

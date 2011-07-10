@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<MATERIAL NAME="Earth">
+    <PROPERTY NAME="uTexture">earth.png</PROPERTY>
+    <PROPERTY NAME="uMaterialAmbient">0.1 0.1 0.1 1</PROPERTY>
+    <PROPERTY NAME="uMaterialDiffuse">1 1 1 1</PROPERTY>
+    <PROPERTY NAME="uMaterialSpecular">0.5 0.5 0.5 1</PROPERTY>
+</MATERIAL>
+
+<MATERIAL NAME="Moon">
+    <PROPERTY NAME="uTexture">moon.png</PROPERTY>
+    <PROPERTY NAME="uMaterialAmbient">0.5 0.5 0.5 1</PROPERTY>
+    <PROPERTY NAME="uMaterialDiffuse">1 1 1 1</PROPERTY>
+    <PROPERTY NAME="uMaterialSpecular">0.5 0.5 0.5 1</PROPERTY>
+</MATERIAL>
+
+<MATERIAL NAME="Mars">
+    <PROPERTY NAME="uTexture">mars.png</PROPERTY>
+    <PROPERTY NAME="uMaterialAmbient">0.1 0.1 0.1 1</PROPERTY>
+    <PROPERTY NAME="uMaterialDiffuse">1 1 1 1</PROPERTY>
+    <PROPERTY NAME="uMaterialSpecular">1 0 0 5</PROPERTY>
+</MATERIAL>

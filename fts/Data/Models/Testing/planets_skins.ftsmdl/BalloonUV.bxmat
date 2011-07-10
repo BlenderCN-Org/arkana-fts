@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<MATERIAL NAME="BalloonUV">
+    <PROPERTY NAME="ambient">0.4 0.4 0.4 1</PROPERTY>
+    <PROPERTY NAME="diffuse">0.639216 0.639216 0.639216 1</PROPERTY>
+    <PROPERTY NAME="shininess">1.0</PROPERTY>
+    <PROPERTY NAME="specular">0.501961 0.501961 0.501961 1</PROPERTY>
+</MATERIAL>
