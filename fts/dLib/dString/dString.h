@@ -491,7 +491,7 @@ public:
     /// equal to the amount of char in_pszNeedle or this (if lower) has.
     ///
     /// \param in_pszNeedle The string you want to compare to.
-    /// \param in_nChars    The number of charachters to compare, or 0 to compare the whole string.
+    /// \param in_nChars    The number of charachters to compare, or 0 to compare the whole needle string.
     ///
     /// \return If the string beginning matches, true.
     /// \return If the string beginning doesn't match, false.
@@ -617,15 +617,7 @@ public:
     unsigned char getCharAt(std::string::size_type in_iIndex) const;
 
     static String EMPTY;
-
-    template<typename T> T to() const
-    {
-        T ret;
-        std::istringstream i(m_s);
-        i >> ret;
-        return ret;
-    }
-
+        
     template<typename T> T toExactly() const
     {
         T ret;
@@ -637,11 +629,17 @@ public:
         return ret;
     }
 
-    template<typename T> void to(T& t) const { t = this->to<T>(); };
-    template<typename T> void toExactly(T& t) const { t = this->toExactly<T>(); };
+    template<typename T> T& to(T& t) const 
+    { 
+        std::istringstream i(m_s);
+        i >> t;
+        return t;
+    };
+
+    template<typename T> T& toExactly(T& t) const { t = this->toExactly<T>(); return t; }
 };
 
-template<> bool String::to<bool>() const;
+template<> bool& String::to<bool>(bool& t) const; 
 template<> bool String::toExactly<bool>() const;
 
 }; // namespace FTS;

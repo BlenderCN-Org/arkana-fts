@@ -34,6 +34,7 @@ namespace FTS {
 	    void parse(CEGUITinyXML::TiXmlDocument& doc);
             Path m_confFileName;
             Options m_opts;
+            Options m_defaults;
     };
     
     class EnhancedXMLDocument : public CEGUITinyXML::TiXmlDocument 

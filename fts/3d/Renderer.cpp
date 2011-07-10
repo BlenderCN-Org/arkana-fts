@@ -88,7 +88,8 @@ void FTS::Renderer::createSDLWindow(const Resolution& in_res)
     String sVersion = glGetString(GL_VERSION);
     std::vector<String> versions;
     sVersion.split(std::inserter(versions, versions.begin()), ".");
-    if(versions.size() < 2 || versions[0].to<int>() < 3) {
+    int subVersion = 0;
+    if(versions.size() < 2 || versions[0].to<int>(subVersion) < 3) {
         throw TooOldOpenGLException(sVersion, "3.0");
     }
 

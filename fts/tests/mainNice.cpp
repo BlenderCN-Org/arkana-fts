@@ -3,6 +3,8 @@
 #include "dLib/aTest/TestResultNiceOutput.h"
 #include "dLib/aTest/TestResultCombiner.h"
 #include "dLib/aTest/TestResultSQL.h"
+#include "dLib/aTest/TestResultDebugOut.h"
+
 #include <fstream>
 
 int run_tests(int argc, const char *argv[])
@@ -23,8 +25,10 @@ int run_tests(int argc, const char *argv[])
     std::ofstream sql((sProjName + ".sql").c_str());
     TestResultNiceOutput hello(std::cerr);
     TestResultSQL world(sql, sProjName);
+    TestResultDebugOut debugOut;
     TestResultCombiner result(hello, world);
-    TestRegistry::runAllTests(result);
+    TestResultCombiner result2(result, debugOut);
+    TestRegistry::runAllTests(result2);
 
     return (result.getFailureCount());
 }
