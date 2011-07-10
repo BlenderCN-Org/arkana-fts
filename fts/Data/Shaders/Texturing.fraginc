@@ -1,0 +1,26 @@
+#ifndef D_TEXTURING_FRAGINC
+#define D_TEXTURING_FRAGINC
+
+smooth in vec2 TextureCo;
+
+uniform sampler2D uTexture;
+
+#ifdef D_USE_PLAYER_COLOR
+uniform vec4 uPlayerColor = vec4(1.0);
+#endif
+
+vec4 getTextureColor()
+{
+    vec4 texCol = texture(uTexture, TextureCo);
+
+    if(texCol.a < 0.95)
+        discard;
+
+#ifdef D_USE_PLAYER_COLOR
+    return vec4(mix(uPlayerColor.rgb, texCol.rgb, texCol.a), texCol.a + uPlayerColor.a);
+#else
+    return texCol;
+#endif
+}
+
+#endif // D_TEXTURING_FRAGINC

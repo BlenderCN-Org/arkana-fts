@@ -1,0 +1,29 @@
+#ifndef D_LIGHTING_FRAGINC
+#define D_LIGHTING_FRAGINC
+
+uniform vec3 uGlobalAmbient = vec3(0.1, 0.05, 0.01);
+uniform vec3 uLightDiffuse = vec3(0.8);
+uniform vec3 uMaterialDiffuse = vec3(1.0);
+uniform vec3 uMaterialAmbient = vec3(0.0);
+
+// In this one, we encode the color in the first three components and the shininess in the alpha component.
+uniform vec4 uMaterialSpecular = vec4(1.0, 1.0, 1.0, 50.0);
+
+smooth in vec3 EyeVector;
+smooth in vec3 LightDir;
+
+vec3 getLightingColor(in vec3 in_normal)
+{
+    vec3 L = normalize(LightDir);
+    vec3 E = normalize(EyeVector);
+    float nDotL = max(dot(in_normal, L), 0.0);
+
+    // Here, we make it a bit differently than usual Blinn, we'll see later if it indeed looks better or not :)
+    vec3 ambient = (1.0 - nDotL) * uGlobalAmbient;
+
+    vec3 specular = max(pow(dot(reflect(L, in_normal), E), uMaterialSpecular.a), 0.0) * uMaterialSpecular.rgb;
+
+    return min(ambient + uMaterialAmbient + specular + uLightDiffuse * uMaterialDiffuse * nDotL, vec3(1.0, 1.0, 1.0));
+}
+
+#endif // D_LIGHTING_FRAGINC

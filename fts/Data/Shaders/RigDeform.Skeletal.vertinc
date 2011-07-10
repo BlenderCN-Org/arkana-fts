@@ -1,0 +1,28 @@
+#ifndef D_RIGDEFORM_SKELETAL_VERTINC
+#define D_RIGDEFORM_SKELETAL_VERTINC
+
+uniform mat4 uBonesPalette[D_MAX_BONES_PER_MESH];
+uniform mat3 uBonesPaletteInvTrans[D_MAX_BONES_PER_MESH];
+
+in vec4 aWeights;
+in vec4 aIndices;
+
+vec3 Skeletal_rigDeform(vec3 v)
+{
+    vec3 ret = (uBonesPalette[int(aIndices[0])] * vec4(v, 1.0)).xyz * aWeights[0];
+        ret += (uBonesPalette[int(aIndices[1])] * vec4(v, 1.0)).xyz * aWeights[1];
+        ret += (uBonesPalette[int(aIndices[2])] * vec4(v, 1.0)).xyz * aWeights[2];
+        ret += (uBonesPalette[int(aIndices[3])] * vec4(v, 1.0)).xyz * aWeights[3];
+    return ret;
+}
+
+vec3 Skeletal_rigDeformInvTran(vec3 v)
+{
+    vec3 ret = uBonesPaletteInvTrans[int(aIndices[0])] * v * aWeights[0];
+        ret += uBonesPaletteInvTrans[int(aIndices[1])] * v * aWeights[1];
+        ret += uBonesPaletteInvTrans[int(aIndices[2])] * v * aWeights[2];
+        ret += uBonesPaletteInvTrans[int(aIndices[3])] * v * aWeights[3];
+    return ret;
+}
+
+#endif // D_RIGDEFORM_SKELETAL_VERTINC

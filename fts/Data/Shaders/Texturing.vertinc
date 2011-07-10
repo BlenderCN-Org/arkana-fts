@@ -1,0 +1,13 @@
+#ifndef D_TEXTURING_VERTINC
+#define D_TEXTURING_VERTINC
+
+in vec2 aVertexTextureCo;
+
+smooth out vec2 TextureCo;
+
+void doTexturingCalculus()
+{
+    TextureCo = aVertexTextureCo;
+}
+
+#endif // D_TEXTURING_VERTINC

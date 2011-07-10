@@ -1,0 +1,32 @@
+#ifndef D_RIGDEFORM_VERTINC
+#define D_RIGDEFORM_VERTINC
+
+#ifdef D_SKELETAL_ANIMATION_OPTION
+
+#include "/RigDeform.Skeletal.vertinc"
+
+vec3 deform(vec3 v)
+{
+    return Skeletal_rigDeform(v);
+}
+
+vec3 deformInvTran(vec3 v)
+{
+    return Skeletal_rigDeformInvTran(v);
+}
+
+#else // D_SKELETAL_ANIMATION_OPTION
+
+vec3 deform(vec3 v)
+{
+    return v;
+}
+
+vec3 deformInvTran(vec3 v)
+{
+    return v;
+}
+
+#endif // D_SKELETAL_ANIMATION_OPTION
+
+#endif // D_RIGDEFORM_VERTINC

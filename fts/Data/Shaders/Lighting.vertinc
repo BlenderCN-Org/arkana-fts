@@ -1,0 +1,20 @@
+#ifndef D_LIGHTING_VERTINC
+#define D_LIGHTING_VERTINC
+
+uniform vec3 uLightDirection = vec3(0.0, 0.0, 1.0);
+
+smooth out vec3 EyeVector;
+smooth out vec3 LightDir;
+
+void doLightingCalculus(mat3 norMtx, vec3 pos)
+{
+    EyeVector = -pos;
+
+// For completely flat shading
+//    LightDir = norMtx * aVertexNormal;
+
+// For diffuse shading
+    LightDir = norMtx * uLightDirection;
+}
+
+#endif // D_LIGHTING_VERTINC
