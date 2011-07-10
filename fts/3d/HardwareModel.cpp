@@ -160,12 +160,8 @@ struct MaterialUserData : public bouge::UserData {
 
         // Setup shader attributes in a VAO.
         // This will actually be done by the hardware model later on.
-
-        // TODO MOAR
     }
 };
-
-void setupVAO(const FTS::HardwareModel& in_hwmodel, FTS::MaterialUserData& in_ud);
 
 } // namespace FTS
 

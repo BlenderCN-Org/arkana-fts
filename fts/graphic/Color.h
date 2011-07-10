@@ -8,9 +8,6 @@
 #  include <CEGUIcolour.h>
 #  include <CEGUIColourRect.h>
 #endif
-#ifdef D_CAL3D_INTEGRATION
-#  include <cal3d/corematerial.h>
-#endif
 
 #include <vector>
 
@@ -96,11 +93,6 @@ public:
     operator CEGUI::colour() const;
     operator CEGUI::ColourRect() const;
 #endif // D_USE_CEGUI
-
-#ifdef D_CAL3D_INTEGRATION
-    Color(const CalCoreMaterial::Color&);
-    operator CalCoreMaterial::Color() const;
-#endif // D_CAL3D_INTEGRATION
 
     /////////////////////////////////////
     // Accessors, getters and setters. //

@@ -122,21 +122,6 @@ FTS::Color::operator CEGUI::ColourRect() const
 }
 #endif // D_USE_CEGUI
 
-#ifdef D_CAL3D_INTEGRATION
-FTS::Color::Color(const CalCoreMaterial::Color& o)
-{
-    m_col[0] = static_cast<float>(o.red)/255.0f;
-    m_col[1] = static_cast<float>(o.green)/255.0f;
-    m_col[2] = static_cast<float>(o.blue)/255.0f;
-    m_col[3] = static_cast<float>(o.alpha)/255.0f;
-}
-
-FTS::Color::operator CalCoreMaterial::Color() const
-{
-    return CalCoreMaterial::Color(this->ir(), this->ig(), this->ib(), this->ia());
-}
-#endif
-
 /////////////////////////////////////
 // Accessors, getters and setters. //
 /////////////////////////////////////

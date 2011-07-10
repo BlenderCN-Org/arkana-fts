@@ -80,7 +80,7 @@ protected:
     virtual bool update(const Clock&);
 
 private:
-    /// The Cal3d model instance.
+    /// The bouge model instance.
     bouge::ModelInstancePtr m_pModel;
 
     /// The HardwareModel that I am an instance of.

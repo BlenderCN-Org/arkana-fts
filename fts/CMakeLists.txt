@@ -295,11 +295,6 @@ endif()
 list(APPEND FTS_INCLUDES ${PCRE_INCLUDE_DIR})
 list(APPEND FTS_LIBS ${PCRE_LIBRARIES})
 
-# Add cal3d
-add_subdirectory(${fts_SOURCE_DIR}/3rdparty/cal3d)
-list(APPEND FTS_INCLUDES "3rdparty/cal3d/src")
-list(APPEND FTS_LIBS "cal3d")
-
 # Add bouge
 set(BOUGE_BUILD_EXAMPLES FALSE)
 set(BOUGE_BUILD_STATICCRT TRUE)
@@ -347,7 +342,6 @@ include_directories(${OPENGL_INCLUDE_DIR})
 # Add additional defines:
 add_definitions(-DD_STRING_FTS_LIBS)
 add_definitions(-DD_USE_CEGUI)
-add_definitions(-DD_CAL3D_INTEGRATION)
 add_definitions(-DD_STRING_FTS_PATHS)
 
 # And show the flags.

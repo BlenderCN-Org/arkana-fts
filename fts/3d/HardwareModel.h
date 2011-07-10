@@ -52,7 +52,7 @@ protected:
     /// \param in_sName The name the model should have - can be arbitrary.
     HardwareModel(const String& in_sName);
 
-    /// Constructs a model from an archive of Cal3d files and others.
+    /// Constructs a model from an archive of bouge files and others.
     /// \param in_sName The name the model should have - can be arbitrary.
     /// \param in_modelArch The archive containing the files to load the model.
     /// \throws CorruptDataException If some file in the archive is faulty.
