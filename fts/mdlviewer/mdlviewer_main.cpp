@@ -99,6 +99,19 @@ bool FTS::ModelViewerRlv::unload()
     if(pMgr) {
         pMgr->unregisterDefaultMenuShortcuts();
         pMgr->delShortcut("MainMenu/nextGuiInfo");
+        pMgr->delShortcut("Translator Test W");
+        pMgr->delShortcut("Translator Test W Stopper");
+        pMgr->delShortcut("Translator Test S");
+        pMgr->delShortcut("Translator Test S Stopper");
+        pMgr->delShortcut("Translator Test A");
+        pMgr->delShortcut("Translator Test A Stopper");
+        pMgr->delShortcut("Translator Test D");
+        pMgr->delShortcut("Translator Test D Stopper");
+        pMgr->delShortcut("Translator Test Space");
+        pMgr->delShortcut("Rotator Test Q");
+        pMgr->delShortcut("Rotator Test E");
+        pMgr->delShortcut("Orbiter Test Y");
+        pMgr->delShortcut("Orbiter Test X");
     }
 
     this->unloadDefaultCursor();
