@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<MATSET NAME="Sux Bad">
+  <LINK SUBMESH="Left">Moon</LINK>
+  <LINK SUBMESH="no such submesh">Mars</LINK>
+</MATSET>

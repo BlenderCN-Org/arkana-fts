@@ -88,6 +88,14 @@ private:
 
     /// The AABB of the rest-position.
     AxisAlignedBoundingBox m_restAABB;
+
+    /// Just used for convenience, such that the skins and anims methods can
+    /// return cons refs and thus be used in loops right away.
+    std::set<String> m_anims;
+
+    /// Just used for convenience, such that the skins and anims methods can
+    /// return cons refs and thus be used in loops right away.
+    std::set<String> m_skins;
 };
 
 }; // namespace FTS

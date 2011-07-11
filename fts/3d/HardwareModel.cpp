@@ -186,10 +186,9 @@ FTS::HardwareModel::HardwareModel(const FTS::String& in_sName, FTS::Archive& in_
     : m_pCoreModel(new bouge::CoreModel(in_sName.str()))
 {
     std::set<String> loadedShads;
-
-    try {
     bouge::XMLLoader loader(new bouge::TinyXMLParser());
 
+    try {
     // There is only one skeleton and one mesh per model file. Load them first.
     String sData = in_modelArch.getFile("mesh.bxmesh").readstr();
     m_pCoreModel->mesh(loader.loadMesh(sData.c_str(), sData.byteCount()));
@@ -198,6 +197,13 @@ FTS::HardwareModel::HardwareModel(const FTS::String& in_sName, FTS::Archive& in_
     if(in_modelArch.hasChunk("skeleton.bxskel")) {
         String sData = in_modelArch.getFile("skeleton.bxskel").readstr();
         m_pCoreModel->skeleton(loader.loadSkeleton(sData.c_str(), sData.byteCount()));
+    }
+    } catch(const ArkanaException&) {
+        this->unloadResources();
+        throw;
+    } catch(const std::exception& ex) {
+        this->unloadResources();
+        throw CorruptDataException("Model: " + in_sName, ex.what());
     }
 
     // Now we load all materials, material sets and animations we can find in the archive.
@@ -209,6 +215,8 @@ FTS::HardwareModel::HardwareModel(const FTS::String& in_sName, FTS::Archive& in_
         Path fName = i->first;
 
         // Just try out what kind of file it may be, depending on the extension
+        // If one fails, just go to the next one. Those here aren't crucial.
+        try {
         if(fName.ext().lower() == "bxmset") {
             String data = pFchk->getFile().readstr();
             m_pCoreModel->addMaterialSets(loader.loadMaterialSet(data.c_str(), data.byteCount()));
@@ -239,36 +247,62 @@ FTS::HardwareModel::HardwareModel(const FTS::String& in_sName, FTS::Archive& in_
             ShaderManager::getSingleton().loadShaderCode(sName, sShaderSrc);
             loadedShads.insert(sName);
         }
-    }
-    } catch(const ArkanaException&) {
-        this->unloadResources();
-        throw;
-    } catch(const std::exception& ex) {
-        this->unloadResources();
-        throw CorruptDataException("Model: " + in_sName, ex.what());
+        } catch(const ArkanaException& ex) {
+            FTSMSG(ex.what(), MsgType::Warning);
+        } catch(const std::exception& ex) {
+            FTSMSG(ex.what(), MsgType::Warning);
+        }
     }
 
     try {
 
-    // First consistency checkpoint //
+    // Bones consistency checkpoint //
     //////////////////////////////////
     std::set<std::string> missingBones = m_pCoreModel->missingBones();
     if(!missingBones.empty()) {
         throw CorruptDataException("Model: " + in_sName, "Missing the following bones in the skeleton: " + bouge::to_s(missingBones.begin(), missingBones.end()));
     }
 
+    // Matset consistency checkpoint //
+    ///////////////////////////////////
+    struct MatSetErrors {
+        std::set<std::string> missingMats;
+        std::set<std::string> missingSubmeshes;
+        MatSetErrors() {};
+        MatSetErrors(std::set<std::string> missingMats, std::set<std::string> missingSubmeshes) : missingMats(missingMats), missingSubmeshes(missingSubmeshes) {};
+    };
+
+    // Find all matsets which are missing some materials and remove them from the model.
+    std::map<std::string, MatSetErrors> badMatSets;
+    for(auto matset = m_pCoreModel->begin_materialset() ; matset != m_pCoreModel->end_materialset() ; ++matset) {
+        std::set<std::string> missingMaterials = m_pCoreModel->missingMaterials(matset->name());
+        std::set<std::string> missingSubmeshes = m_pCoreModel->missingMatsetSpecs(matset->name());
+        if(!missingMaterials.empty() || !missingSubmeshes.empty()) {
+            badMatSets[matset->name()] = MatSetErrors(missingMaterials, missingSubmeshes);
+        }
+    }
+
+    // Take out all the bad material sets.
+    for(auto matset = badMatSets.begin() ; matset != badMatSets.end() ; ++matset) {
+        // But with a readable error message please!
+        String msg = "The material set \"" + matset->first + "\"";
+        if(!matset->second.missingMats.empty()) {
+            msg += " uses the undefined materials \"" + join(matset->second.missingMats.begin(), matset->second.missingMats.end(), "\", \"") + "\"";
+            if(!matset->second.missingSubmeshes.empty()) {
+                msg += " and";
+            }
+        }
+        if(!matset->second.missingSubmeshes.empty()) {
+            msg += " is missing the assossiations for the submeshes \"" + join(matset->second.missingSubmeshes.begin(), matset->second.missingSubmeshes.end(), "\", \"") + "\"";
+        }
+        FTS18N("CorruptData", MsgType::Warning, in_sName, msg);
+
+        m_pCoreModel->removeMaterialSet(matset->first);
+    }
+
+    // If there is no more material set left, we got a problem :)
     if(m_pCoreModel->materialSetCount() < 1) {
-        throw CorruptDataException("Model: " + in_sName, "Needs at least one materialset");
-    }
-
-    std::set<std::string> missingMaterials = m_pCoreModel->missingMaterials();
-    if(!missingMaterials.empty()) {
-        throw CorruptDataException("Model: " + in_sName, "Missing the following materials in the model: " + bouge::to_s(missingMaterials.begin(), missingMaterials.end()));
-    }
-
-    std::set<std::string> missingMatsetSpecs = m_pCoreModel->missingMatsetSpecs();
-    if(!missingMatsetSpecs.empty()) {
-        throw CorruptDataException("Model: " + in_sName, "Missing the material set specifications for the following submeshes: " + bouge::to_s(missingMatsetSpecs.begin(), missingMatsetSpecs.end()));
+        throw CorruptDataException("Model: " + in_sName, "Needs at least one valid materialset");
     }
 
     // Converts the data for use on the GPU and uploads it into a VBO.
@@ -296,6 +330,14 @@ FTS::HardwareModel::HardwareModel(const FTS::String& in_sName, FTS::Archive& in_
     } catch(...) {
         this->unloadResources();
         throw;
+    }
+
+    // Cache some informations.
+    for(auto matset = m_pCoreModel->begin_materialset() ; matset != m_pCoreModel->end_materialset() ; ++matset) {
+        m_skins.insert(matset->name());
+    }
+    for(auto anim = m_pCoreModel->begin_animation() ; anim != m_pCoreModel->end_animation() ; ++anim) {
+        m_anims.insert(anim->name());
     }
 }
 
@@ -393,24 +435,12 @@ FTS::String FTS::HardwareModel::getName() const
 
 const std::set<FTS::String>& FTS::HardwareModel::skins() const
 {
-    static std::set<String> ret;
-
-    ret.clear();
-    for(auto matset = m_pCoreModel->begin_materialset() ; matset != m_pCoreModel->end_materialset() ; ++matset) {
-        ret.insert(matset->name());
-    }
-    return ret;
+    return m_skins;
 }
 
 const std::set<FTS::String>& FTS::HardwareModel::anims() const
 {
-    static std::set<FTS::String> ret;
-
-    ret.clear();
-    for(auto anim = m_pCoreModel->begin_animation() ; anim != m_pCoreModel->end_animation() ; ++anim) {
-        ret.insert(anim->name());
-    }
-    return ret;
+    return m_anims;
 }
 
 uint32_t FTS::HardwareModel::vertexCount() const
