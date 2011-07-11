@@ -1,0 +1,326 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\IOModules">
+      <UniqueIdentifier>{2878c477-70d4-4e4f-9da5-a21d6c88b1cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\IOModules\XML">
+      <UniqueIdentifier>{d922aa65-d662-4984-91b1-ba758405f0b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\IOModules\XMLParserCommon">
+      <UniqueIdentifier>{e90cd4bc-0eba-4407-9bf4-543f8d2d6dd5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\IOModules\XMLParserCommon\XMLParserModules">
+      <UniqueIdentifier>{b97856a6-c155-452c-9e33-01eef36c0651}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Math">
+      <UniqueIdentifier>{c7a8da43-9561-423a-a063-20d34403e8ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Math">
+      <UniqueIdentifier>{fd23f562-aeeb-46ad-b438-7dc0bb1a9534}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\IOModules">
+      <UniqueIdentifier>{8ece347a-832a-4f6c-ab19-4216075e13f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\IOModules\XML">
+      <UniqueIdentifier>{acd7efad-28b3-4691-a223-819001cbffdd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\IOModules\XMLParserCommon">
+      <UniqueIdentifier>{58204661-e068-41ea-a95f-e285ff8d7665}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\IOModules\XMLParserCommon\XMLParserModules">
+      <UniqueIdentifier>{3379fb4c-922d-45a2-9e46-abfd1bfad321}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\IOModules\XMLParserCommon\XMLParserModules\TinyXMLParser">
+      <UniqueIdentifier>{3c2149d9-f342-4d36-a06d-666f772664fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\IOModules\XMLParserCommon\XMLParserModules\TinyXMLParser\bougetinyxml">
+      <UniqueIdentifier>{8635c8b7-9fb2-43ba-bbba-42c91c4b4308}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\include\bouge\Animation.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\bouge\BoneInstance.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\bouge\bouge.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\bouge\bougefwd.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\bouge\Config.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\bouge\CoreAnimation.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\bouge\CoreBone.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\bouge\CoreHardwareMesh.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\bouge\CoreKeyframe.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\bouge\CoreMaterial.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\bouge\CoreMaterialSet.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\bouge\CoreMesh.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\bouge\CoreModel.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\bouge\CoreSkeleton.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\bouge\CoreTrack.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\bouge\Exception.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\bouge\Face.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\bouge\Loader.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\bouge\Mixer.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\bouge\ModelInstance.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\bouge\Saver.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\bouge\SkeletonInstance.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\bouge\StaticModelInstance.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\bouge\UserData.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\bouge\Util.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\bouge\Vertex.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\bouge\IOModules\XML\CoreAnimation_Handler.hpp">
+      <Filter>Header Files\IOModules\XML</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\bouge\IOModules\XML\CoreMaterial_Handler.hpp">
+      <Filter>Header Files\IOModules\XML</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\bouge\IOModules\XML\CoreMaterialSet_Handler.hpp">
+      <Filter>Header Files\IOModules\XML</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\bouge\IOModules\XML\CoreMesh_Handler.hpp">
+      <Filter>Header Files\IOModules\XML</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\bouge\IOModules\XML\CoreSkeleton_Handler.hpp">
+      <Filter>Header Files\IOModules\XML</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\bouge\IOModules\XML\Loader.hpp">
+      <Filter>Header Files\IOModules\XML</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\bouge\IOModules\XML\Saver.hpp">
+      <Filter>Header Files\IOModules\XML</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\bouge\IOModules\XMLParserCommon\XMLAttributes.hpp">
+      <Filter>Header Files\IOModules\XMLParserCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\bouge\IOModules\XMLParserCommon\XMLHandler.hpp">
+      <Filter>Header Files\IOModules\XMLParserCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\bouge\IOModules\XMLParserCommon\XMLParser.hpp">
+      <Filter>Header Files\IOModules\XMLParserCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\bouge\IOModules\XMLParserCommon\XMLSerializer.hpp">
+      <Filter>Header Files\IOModules\XMLParserCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\bouge\IOModules\XMLParserCommon\XMLParserModules\TinyXMLParser.hpp">
+      <Filter>Header Files\IOModules\XMLParserCommon\XMLParserModules</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\bouge\Math\Matrix.hpp">
+      <Filter>Header Files\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\bouge\Math\Quaternion.hpp">
+      <Filter>Header Files\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\bouge\Math\TimeFunction.hpp">
+      <Filter>Header Files\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\bouge\Math\Util.hpp">
+      <Filter>Header Files\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\bouge\Math\Vector.hpp">
+      <Filter>Header Files\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\bouge\IOModules\XMLParserCommon\XMLParserModules\TinyXMLParser\bougetinyxml\tinyxml.h">
+      <Filter>Source Files\IOModules\XMLParserCommon\XMLParserModules\TinyXMLParser\bougetinyxml</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\include\bouge\IOModules\XMLParserCommon\XMLSerializer.inl">
+      <Filter>Header Files\IOModules\XMLParserCommon</Filter>
+    </None>
+    <None Include="..\..\include\bouge\Math\Matrix.inl">
+      <Filter>Header Files\Math</Filter>
+    </None>
+    <None Include="..\..\include\bouge\Math\Quaternion.inl">
+      <Filter>Header Files\Math</Filter>
+    </None>
+    <None Include="..\..\include\bouge\Math\Vector.inl">
+      <Filter>Header Files\Math</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\bouge\Animation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\bouge\BoneInstance.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\bouge\CoreAnimation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\bouge\CoreBone.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\bouge\CoreHardwareMesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\bouge\CoreKeyframe.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\bouge\CoreMaterial.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\bouge\CoreMaterialSet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\bouge\CoreMesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\bouge\CoreModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\bouge\CoreSkeleton.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\bouge\CoreTrack.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\bouge\Exception.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\bouge\Face.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\bouge\Loader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\bouge\Mixer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\bouge\ModelInstance.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\bouge\Saver.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\bouge\SkeletonInstance.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\bouge\StaticModelInstance.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\bouge\UserData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\bouge\Util.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\bouge\Vertex.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\bouge\Math\Matrix.cpp">
+      <Filter>Source Files\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\bouge\Math\Quaternion.cpp">
+      <Filter>Source Files\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\bouge\Math\TimeFunction.cpp">
+      <Filter>Source Files\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\bouge\Math\Vector.cpp">
+      <Filter>Source Files\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\bouge\IOModules\XML\CoreAnimation_Handler.cpp">
+      <Filter>Source Files\IOModules\XML</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\bouge\IOModules\XML\CoreMaterial_Handler.cpp">
+      <Filter>Source Files\IOModules\XML</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\bouge\IOModules\XML\CoreMaterialSet_Handler.cpp">
+      <Filter>Source Files\IOModules\XML</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\bouge\IOModules\XML\CoreMesh_Handler.cpp">
+      <Filter>Source Files\IOModules\XML</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\bouge\IOModules\XML\CoreSkeleton_Handler.cpp">
+      <Filter>Source Files\IOModules\XML</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\bouge\IOModules\XML\Loader.cpp">
+      <Filter>Source Files\IOModules\XML</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\bouge\IOModules\XML\Saver.cpp">
+      <Filter>Source Files\IOModules\XML</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\bouge\IOModules\XMLParserCommon\XMLAttributes.cpp">
+      <Filter>Source Files\IOModules\XMLParserCommon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\bouge\IOModules\XMLParserCommon\XMLHandler.cpp">
+      <Filter>Source Files\IOModules\XMLParserCommon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\bouge\IOModules\XMLParserCommon\XMLParser.cpp">
+      <Filter>Source Files\IOModules\XMLParserCommon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\bouge\IOModules\XMLParserCommon\XMLParserModules\TinyXMLParser\TinyXMLParser.cpp">
+      <Filter>Source Files\IOModules\XMLParserCommon\XMLParserModules\TinyXMLParser</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\bouge\IOModules\XMLParserCommon\XMLParserModules\TinyXMLParser\bougetinyxml\tinyxml.cpp">
+      <Filter>Source Files\IOModules\XMLParserCommon\XMLParserModules\TinyXMLParser\bougetinyxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\bouge\IOModules\XMLParserCommon\XMLParserModules\TinyXMLParser\bougetinyxml\tinyxmlerror.cpp">
+      <Filter>Source Files\IOModules\XMLParserCommon\XMLParserModules\TinyXMLParser\bougetinyxml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\bouge\IOModules\XMLParserCommon\XMLParserModules\TinyXMLParser\bougetinyxml\tinyxmlparser.cpp">
+      <Filter>Source Files\IOModules\XMLParserCommon\XMLParserModules\TinyXMLParser\bougetinyxml</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,203 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug_Static|Win32">
+      <Configuration>Debug_Static</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_Static|Win32">
+      <Configuration>Release_Static</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{8A2C37A2-AE96-4291-9997-61514A88A2D3}</ProjectGuid>
+    <RootNamespace>bouge</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">
+    <OutDir>$(SolutionDir)/vc10lib/</OutDir>
+    <TargetName>$(ProjectName)_d</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'">
+    <OutDir>$(SolutionDir)/vc10lib/</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)/vc10lib/</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <TargetName>$(ProjectName)_d</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)/vc10lib/</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>BOUGE_STATIC;BOUGE_EXPORT;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>../../include</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <ObjectFileName>$(IntDir)/a/b/%(RelativeDir)/</ObjectFileName>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>BOUGE_STATIC;BOUGE_EXPORT;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>../../include</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <StringPooling>true</StringPooling>
+      <ObjectFileName>$(IntDir)/a/b/%(RelativeDir)/</ObjectFileName>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PreprocessorDefinitions>BOUGE_STATIC;BOUGE_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PreprocessorDefinitions>BOUGE_STATIC;BOUGE_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\include\bouge\Animation.hpp" />
+    <ClInclude Include="..\..\include\bouge\BoneInstance.hpp" />
+    <ClInclude Include="..\..\include\bouge\bouge.hpp" />
+    <ClInclude Include="..\..\include\bouge\bougefwd.hpp" />
+    <ClInclude Include="..\..\include\bouge\Config.hpp" />
+    <ClInclude Include="..\..\include\bouge\CoreAnimation.hpp" />
+    <ClInclude Include="..\..\include\bouge\CoreBone.hpp" />
+    <ClInclude Include="..\..\include\bouge\CoreHardwareMesh.hpp" />
+    <ClInclude Include="..\..\include\bouge\CoreKeyframe.hpp" />
+    <ClInclude Include="..\..\include\bouge\CoreMaterial.hpp" />
+    <ClInclude Include="..\..\include\bouge\CoreMaterialSet.hpp" />
+    <ClInclude Include="..\..\include\bouge\CoreMesh.hpp" />
+    <ClInclude Include="..\..\include\bouge\CoreModel.hpp" />
+    <ClInclude Include="..\..\include\bouge\CoreSkeleton.hpp" />
+    <ClInclude Include="..\..\include\bouge\CoreTrack.hpp" />
+    <ClInclude Include="..\..\include\bouge\Exception.hpp" />
+    <ClInclude Include="..\..\include\bouge\Face.hpp" />
+    <ClInclude Include="..\..\include\bouge\IOModules\XMLParserCommon\XMLAttributes.hpp" />
+    <ClInclude Include="..\..\include\bouge\IOModules\XMLParserCommon\XMLHandler.hpp" />
+    <ClInclude Include="..\..\include\bouge\IOModules\XMLParserCommon\XMLParser.hpp" />
+    <ClInclude Include="..\..\include\bouge\IOModules\XMLParserCommon\XMLParserModules\TinyXMLParser.hpp" />
+    <ClInclude Include="..\..\include\bouge\IOModules\XMLParserCommon\XMLSerializer.hpp" />
+    <ClInclude Include="..\..\include\bouge\IOModules\XML\CoreAnimation_Handler.hpp" />
+    <ClInclude Include="..\..\include\bouge\IOModules\XML\CoreMaterialSet_Handler.hpp" />
+    <ClInclude Include="..\..\include\bouge\IOModules\XML\CoreMaterial_Handler.hpp" />
+    <ClInclude Include="..\..\include\bouge\IOModules\XML\CoreMesh_Handler.hpp" />
+    <ClInclude Include="..\..\include\bouge\IOModules\XML\CoreSkeleton_Handler.hpp" />
+    <ClInclude Include="..\..\include\bouge\IOModules\XML\Loader.hpp" />
+    <ClInclude Include="..\..\include\bouge\IOModules\XML\Saver.hpp" />
+    <ClInclude Include="..\..\include\bouge\Loader.hpp" />
+    <ClInclude Include="..\..\include\bouge\Math\Matrix.hpp" />
+    <ClInclude Include="..\..\include\bouge\Math\Quaternion.hpp" />
+    <ClInclude Include="..\..\include\bouge\Math\TimeFunction.hpp" />
+    <ClInclude Include="..\..\include\bouge\Math\Util.hpp" />
+    <ClInclude Include="..\..\include\bouge\Math\Vector.hpp" />
+    <ClInclude Include="..\..\include\bouge\Mixer.hpp" />
+    <ClInclude Include="..\..\include\bouge\ModelInstance.hpp" />
+    <ClInclude Include="..\..\include\bouge\Saver.hpp" />
+    <ClInclude Include="..\..\include\bouge\SkeletonInstance.hpp" />
+    <ClInclude Include="..\..\include\bouge\StaticModelInstance.hpp" />
+    <ClInclude Include="..\..\include\bouge\UserData.hpp" />
+    <ClInclude Include="..\..\include\bouge\Util.hpp" />
+    <ClInclude Include="..\..\include\bouge\Vertex.hpp" />
+    <ClInclude Include="..\..\src\bouge\IOModules\XMLParserCommon\XMLParserModules\TinyXMLParser\bougetinyxml\tinyxml.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\include\bouge\IOModules\XMLParserCommon\XMLSerializer.inl" />
+    <None Include="..\..\include\bouge\Math\Matrix.inl" />
+    <None Include="..\..\include\bouge\Math\Quaternion.inl" />
+    <None Include="..\..\include\bouge\Math\Vector.inl" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\bouge\Animation.cpp" />
+    <ClCompile Include="..\..\src\bouge\BoneInstance.cpp" />
+    <ClCompile Include="..\..\src\bouge\CoreAnimation.cpp" />
+    <ClCompile Include="..\..\src\bouge\CoreBone.cpp" />
+    <ClCompile Include="..\..\src\bouge\CoreHardwareMesh.cpp" />
+    <ClCompile Include="..\..\src\bouge\CoreKeyframe.cpp" />
+    <ClCompile Include="..\..\src\bouge\CoreMaterial.cpp" />
+    <ClCompile Include="..\..\src\bouge\CoreMaterialSet.cpp" />
+    <ClCompile Include="..\..\src\bouge\CoreMesh.cpp" />
+    <ClCompile Include="..\..\src\bouge\CoreModel.cpp" />
+    <ClCompile Include="..\..\src\bouge\CoreSkeleton.cpp" />
+    <ClCompile Include="..\..\src\bouge\CoreTrack.cpp" />
+    <ClCompile Include="..\..\src\bouge\Exception.cpp" />
+    <ClCompile Include="..\..\src\bouge\Face.cpp" />
+    <ClCompile Include="..\..\src\bouge\IOModules\XMLParserCommon\XMLAttributes.cpp" />
+    <ClCompile Include="..\..\src\bouge\IOModules\XMLParserCommon\XMLHandler.cpp" />
+    <ClCompile Include="..\..\src\bouge\IOModules\XMLParserCommon\XMLParser.cpp" />
+    <ClCompile Include="..\..\src\bouge\IOModules\XMLParserCommon\XMLParserModules\TinyXMLParser\bougetinyxml\tinyxml.cpp" />
+    <ClCompile Include="..\..\src\bouge\IOModules\XMLParserCommon\XMLParserModules\TinyXMLParser\bougetinyxml\tinyxmlerror.cpp" />
+    <ClCompile Include="..\..\src\bouge\IOModules\XMLParserCommon\XMLParserModules\TinyXMLParser\bougetinyxml\tinyxmlparser.cpp" />
+    <ClCompile Include="..\..\src\bouge\IOModules\XMLParserCommon\XMLParserModules\TinyXMLParser\TinyXMLParser.cpp" />
+    <ClCompile Include="..\..\src\bouge\IOModules\XML\CoreAnimation_Handler.cpp" />
+    <ClCompile Include="..\..\src\bouge\IOModules\XML\CoreMaterialSet_Handler.cpp" />
+    <ClCompile Include="..\..\src\bouge\IOModules\XML\CoreMaterial_Handler.cpp" />
+    <ClCompile Include="..\..\src\bouge\IOModules\XML\CoreMesh_Handler.cpp" />
+    <ClCompile Include="..\..\src\bouge\IOModules\XML\CoreSkeleton_Handler.cpp" />
+    <ClCompile Include="..\..\src\bouge\IOModules\XML\Loader.cpp" />
+    <ClCompile Include="..\..\src\bouge\IOModules\XML\Saver.cpp" />
+    <ClCompile Include="..\..\src\bouge\Loader.cpp" />
+    <ClCompile Include="..\..\src\bouge\Math\Matrix.cpp" />
+    <ClCompile Include="..\..\src\bouge\Math\Quaternion.cpp" />
+    <ClCompile Include="..\..\src\bouge\Math\TimeFunction.cpp" />
+    <ClCompile Include="..\..\src\bouge\Math\Vector.cpp" />
+    <ClCompile Include="..\..\src\bouge\Mixer.cpp" />
+    <ClCompile Include="..\..\src\bouge\ModelInstance.cpp" />
+    <ClCompile Include="..\..\src\bouge\Saver.cpp" />
+    <ClCompile Include="..\..\src\bouge\SkeletonInstance.cpp" />
+    <ClCompile Include="..\..\src\bouge\StaticModelInstance.cpp" />
+    <ClCompile Include="..\..\src\bouge\UserData.cpp" />
+    <ClCompile Include="..\..\src\bouge\Util.cpp" />
+    <ClCompile Include="..\..\src\bouge\Vertex.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
