@@ -13,14 +13,16 @@ vec4 getTextureColor()
 {
     vec4 texCol = texture(uTexture, TextureCo);
 
-    if(texCol.a < 0.95)
+#ifdef D_USE_PLAYER_COLOR
+    vec4 finalCol = vec4(mix(uPlayerColor.rgb, texCol.rgb, texCol.a), texCol.a + uPlayerColor.a);
+#else
+    vec4 finalCol = texCol;
+#endif
+
+    if(finalCol.a < 0.95)
         discard;
 
-#ifdef D_USE_PLAYER_COLOR
-    return vec4(mix(uPlayerColor.rgb, texCol.rgb, texCol.a), texCol.a + uPlayerColor.a);
-#else
-    return texCol;
-#endif
+    return finalCol;
 }
 
 #endif // D_TEXTURING_FRAGINC

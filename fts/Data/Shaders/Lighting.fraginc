@@ -14,16 +14,27 @@ smooth in vec3 LightDir;
 
 vec3 getLightingColor(in vec3 in_normal)
 {
+    // We can assume in_normal is normalized already.
+
     vec3 L = normalize(LightDir);
     vec3 E = normalize(EyeVector);
-    float nDotL = max(dot(in_normal, L), 0.0);
 
+    // Ambient term
+    vec3 ambient = uGlobalAmbient * uMaterialAmbient;
     // Here, we make it a bit differently than usual Blinn, we'll see later if it indeed looks better or not :)
-    vec3 ambient = (1.0 - nDotL) * uGlobalAmbient;
+//     vec3 ambient = (1.0 - nDotL) * uGlobalAmbient;
 
-    vec3 specular = max(pow(dot(reflect(L, in_normal), E), uMaterialSpecular.a), 0.0) * uMaterialSpecular.rgb;
+    // Diffuse term
+    float nDotL = dot(in_normal, L);
+    vec3 diffuse = uLightDiffuse * uMaterialDiffuse * nDotL;
+//     vec3 diffuse = vec3(0.0);
 
-    return min(ambient + uMaterialAmbient + specular + uLightDiffuse * uMaterialDiffuse * nDotL, vec3(1.0, 1.0, 1.0));
+    // Specular term
+    vec3 r = normalize(-reflect(L, in_normal));
+    vec3 specular = uMaterialSpecular.rgb * pow(clamp(dot(r, E), 0.0, 1.0), uMaterialSpecular.a);
+//     vec3 specular = vec3(0.0);
+
+    return clamp(ambient + diffuse + specular, 0.0, 1.0);
 }
 
 #endif // D_LIGHTING_FRAGINC

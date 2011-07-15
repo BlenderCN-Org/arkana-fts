@@ -23,6 +23,7 @@ in vec3 aVertexPosition;
 #ifdef D_LIT_OPTION
     uniform mat3 qNormalMatrix = mat3(1.0);
     uniform mat4 uModelViewMatrix = mat4(1.0);
+    uniform mat4 uViewMatrix = mat4(1.0);
 
     in vec3 aVertexNormal;
     smooth out vec3 Normal;
@@ -43,7 +44,7 @@ void main()
     Normal = qNormalMatrix * localNor;
     vec3 pos = (uModelViewMatrix * vec4(localPos, 1.0)).xyz;
 
-    doLightingCalculus(qNormalMatrix, pos);
+    doLightingCalculus(qNormalMatrix, mat3(uViewMatrix), pos);
 #endif
 
 #ifdef D_TEXTURED_OPTION

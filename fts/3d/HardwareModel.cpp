@@ -89,7 +89,14 @@ struct MaterialUserData : public bouge::UserData {
         // when the model is destroyed.
         out_ShadernameToDestroy = sVertShader != sDefVert ? sVertShader : (sFragShader != sDefFrag ? sFragShader : (sGeomShader != sDefGeom ? sGeomShader : String::EMPTY));
         bool hasCustomShader = !out_ShadernameToDestroy.empty();
+
+        // The user may choose any compile flags in the material properties.
         ShaderCompileFlags flags;
+        std::set<String> sFlags;
+        String(in_mat.proprety("ShaderCompileFlags")).split(std::inserter(sFlags, sFlags.begin()));
+        for(auto flag = sFlags.begin() ; flag != sFlags.end() ; ++flag) {
+            flags |= *flag;
+        }
 
         // When using default shaders (this should be the norm), we have to
         // determine the shader compile flags automatically:
@@ -108,11 +115,6 @@ struct MaterialUserData : public bouge::UserData {
             }
         } else {
             // But if some custom shader is used, it has to specify ALL compile flags it needs.
-            std::set<String> sFlags;
-            String(in_mat.proprety("ShaderCompileFlags")).split(std::inserter(sFlags, sFlags.begin()));
-            for(auto flag = sFlags.begin() ; flag != sFlags.end() ; ++flag) {
-                flags |= *flag;
-            }
 
             // Additionally, we want to use an embedded shader file over a default one.
             if(ShaderManager::getSingleton().hasShader(in_sModelName + MODEL_FILENAME_SEP + sVertShader)) {
@@ -477,16 +479,20 @@ void FTS::HardwareModel::render(const AffineMatrix& in_modelMatrix, const Color&
     // Preliminary gets to shorten the code.
     Camera& cam = RunlevelManager::getSingleton().getCurrRunlevel()->getActiveCamera();
 
+    // This actually is a very big optimization, belive it or not, I profiled it!
     static const std::string uModelViewProjectionMatrix = "uModelViewProjectionMatrix";
     static const std::string uModelViewMatrix = "uModelViewMatrix";
+    static const std::string uViewMatrix = "uViewMatrix";
     static const std::string uProjectionMatrix = "uProjectionMatrix";
     static const std::string uInvModelViewProjectionMatrix = "uInvModelViewProjectionMatrix";
     static const std::string uInvModelViewMatrix = "uInvModelViewMatrix";
+    static const std::string uNormalMatrix = "qNormalMatrix";
 
     // Pre-calculate a few matrices:
-    General4x4Matrix mvp = cam.getViewProjectionMatrix() * in_modelMatrix;
-    AffineMatrix mv = cam.getViewMatrix() * in_modelMatrix;
+    AffineMatrix v = cam.getViewMatrix();
     General4x4Matrix p = cam.getProjectionMatrix();
+    AffineMatrix mv = v * in_modelMatrix;
+    General4x4Matrix mvp = p * mv;
 
     // Now, render each submesh of the mesh one after. It may need to get split
     // for example if it has too many bones.
@@ -507,9 +513,11 @@ void FTS::HardwareModel::render(const AffineMatrix& in_modelMatrix, const Color&
         // Give the shader the matrices he needs, and their inverses.
         prog->setUniform(uModelViewProjectionMatrix, mvp);
         prog->setUniform(uModelViewMatrix, mv);
+        prog->setUniform(uViewMatrix, v);
         prog->setUniform(uProjectionMatrix, p);
         prog->setUniformInverse(uInvModelViewProjectionMatrix, mvp);
         prog->setUniformInverse(uInvModelViewMatrix, mv);
+        prog->setUniformInverse(uNormalMatrix, mv, true);
 
         // We can now also give it the bone matrices.
         if(!m_isStatic) {
@@ -519,6 +527,14 @@ void FTS::HardwareModel::render(const AffineMatrix& in_modelMatrix, const Color&
                 prog->setUniformArrayElementInverse("uBonesPaletteInvTrans", i, bone->transformMatrix(), true);
             }
         }
+
+        // Set various other uniforms
+        prog->setUniform("uPlayerColor", in_playerCol);
+
+        // TODO: implement the sun/moon right here.
+        prog->setUniform("uLightDirection", Vector(1.0f, -1.0f, 1.0f));
+        prog->setUniform("uLightDiffuse", Vector(1.0f, 1.0f, 1.0f));
+        prog->setUniform("uGlobalAmbient", Vector(1.0f, 1.0f, 1.0f));
 
         // Set all the material-registered uniforms.
         for(auto uniform = pUD->uniforms_f.begin() ; uniform != pUD->uniforms_f.end() ; ++uniform) {

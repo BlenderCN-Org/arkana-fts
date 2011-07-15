@@ -6,7 +6,7 @@ uniform vec3 uLightDirection = vec3(0.0, 0.0, 1.0);
 smooth out vec3 EyeVector;
 smooth out vec3 LightDir;
 
-void doLightingCalculus(mat3 norMtx, vec3 pos)
+void doLightingCalculus(mat3 norMtx, mat3 viewMtx, vec3 pos)
 {
     EyeVector = -pos;
 
@@ -14,7 +14,10 @@ void doLightingCalculus(mat3 norMtx, vec3 pos)
 //    LightDir = norMtx * aVertexNormal;
 
 // For diffuse shading
-    LightDir = norMtx * uLightDirection;
+    // Get the light direction into eye space.
+//     LightDir = norMtx * uLightDirection;
+    LightDir = viewMtx * uLightDirection;
+//     LightDir = uLightDirection;
 }
 
 #endif // D_LIGHTING_VERTINC
