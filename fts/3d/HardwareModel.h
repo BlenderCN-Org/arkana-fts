@@ -96,6 +96,9 @@ private:
     /// Just used for convenience, such that the skins and anims methods can
     /// return cons refs and thus be used in loops right away.
     std::set<String> m_skins;
+
+    /// We can make some big optimizations for static meshes.
+    bool m_isStatic;
 };
 
 }; // namespace FTS

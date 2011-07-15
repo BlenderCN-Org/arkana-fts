@@ -167,6 +167,7 @@ struct MaterialUserData : public bouge::UserData {
 
 FTS::HardwareModel::HardwareModel(const FTS::String& in_sName)
     : m_pCoreModel(new bouge::CoreModel(in_sName.str()))
+    , m_isStatic(true)
 {
     bouge::XMLLoader loader(new bouge::TinyXMLParser());
     m_pCoreModel->mesh(loader.loadMesh(sErrorModelMesh));
@@ -184,6 +185,7 @@ FTS::HardwareModel::HardwareModel(const FTS::String& in_sName)
 
 FTS::HardwareModel::HardwareModel(const FTS::String& in_sName, FTS::Archive& in_modelArch)
     : m_pCoreModel(new bouge::CoreModel(in_sName.str()))
+    , m_isStatic(false)
 {
     std::set<String> loadedShads;
     bouge::XMLLoader loader(new bouge::TinyXMLParser());
@@ -311,6 +313,9 @@ FTS::HardwareModel::HardwareModel(const FTS::String& in_sName, FTS::Archive& in_
 
     // Converts the data for use on the GPU and uploads it into a VBO.
     this->createHardwareMesh();
+
+    // We can recognize static models as models without any vertex influences.
+    m_isStatic = m_pHardwareModel->boneIndicesPerVertex() == 0;
 
     // Now we can load all the resources needed by all the materials.
     // We offload this task to the MaterialUserData class.
@@ -462,6 +467,11 @@ FTS::AxisAlignedBoundingBox FTS::HardwareModel::restAABB() const
     return m_restAABB;
 }
 
+bool FTS::HardwareModel::isStatic() const
+{
+    return m_isStatic;
+}
+
 void FTS::HardwareModel::render(const AffineMatrix& in_modelMatrix, const Color& in_playerCol, bouge::ModelInstancePtrC in_modelInst)
 {
     // Preliminary gets to shorten the code.
@@ -502,10 +512,12 @@ void FTS::HardwareModel::render(const AffineMatrix& in_modelMatrix, const Color&
         prog->setUniformInverse(uInvModelViewMatrix, mv);
 
         // We can now also give it the bone matrices.
-        for(std::size_t i = 0 ; i < submesh.boneCount() ; ++i) {
-            bouge::BoneInstancePtrC bone = in_modelInst->skeleton()->bone(submesh.boneName(i));
-            prog->setUniformArrayElement("uBonesPalette", i, bone->transformMatrix());
-            prog->setUniformArrayElementInverse("uBonesPaletteInvTrans", i, bone->transformMatrix(), true);
+        if(!m_isStatic) {
+            for(std::size_t i = 0 ; i < submesh.boneCount() ; ++i) {
+                bouge::BoneInstancePtrC bone = in_modelInst->skeleton()->bone(submesh.boneName(i));
+                prog->setUniformArrayElement("uBonesPalette", i, bone->transformMatrix());
+                prog->setUniformArrayElementInverse("uBonesPaletteInvTrans", i, bone->transformMatrix(), true);
+            }
         }
 
         // Set all the material-registered uniforms.

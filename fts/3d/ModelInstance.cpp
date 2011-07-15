@@ -181,6 +181,8 @@ FTS::AxisAlignedBoundingBox FTS::ModelInstance::restAABB() const
 
 bool FTS::ModelInstance::update(const Clock& in_c)
 {
-    m_pModel->mixer()->update(static_cast<float>(in_c.getDeltaT()));
+    if(!m_pHwModel->isStatic()) {
+        m_pModel->mixer()->update(static_cast<float>(in_c.getDeltaT()));
+    }
     return true;
 }
