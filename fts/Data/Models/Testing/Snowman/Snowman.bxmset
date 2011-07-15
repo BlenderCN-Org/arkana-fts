@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Automatically exported from Blender v2.56 (sub 1) using the bouge exporter by Lucas Beyer -->
+<MATSET NAME="default">
+  <LINK SUBMESH="rock4 Sphere.003">stone1</LINK>
+  <LINK SUBMESH="SnowballHead Sphere.002">SnowballHead</LINK>
+  <LINK SUBMESH="SnowballBig Sphere">SnowballBigHole</LINK>
+  <LINK SUBMESH="SnowballMid Sphere.001">SnowballMidSmooth</LINK>
+  <LINK SUBMESH="rock4.001 Sphere.004">stone1</LINK>
+  <LINK SUBMESH="Carrot Cone.004">Carrot</LINK>
+</MATSET>
+

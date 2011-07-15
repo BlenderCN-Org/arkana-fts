@@ -1,78 +1,79 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Automatically exported from Blender v2.56 (sub 1) using the bouge exporter by Lucas Beyer -->
-<MATERIAL NAME="Pumpkin">
-  <PROPERTY NAME="uTexture">Faces/Pumpkin.png</PROPERTY>
-  <PROPERTY NAME="uMaterialAmbient">0.2 0.2 0.2 1</PROPERTY>
-  <PROPERTY NAME="uMaterialDiffuse">0.8 0.8 0.8 1</PROPERTY>
-  <PROPERTY NAME="uMaterialSpecular">0 0 0 1</PROPERTY>
-</MATERIAL>
-
 <MATERIAL NAME="SadFace">
-  <PROPERTY NAME="uTexture">Faces/SadFace.png</PROPERTY>
-  <PROPERTY NAME="uMaterialAmbient">0.2 0.2 0.2 1</PROPERTY>
+  <PROPERTY NAME="uMaterialSpecular">1 1 1 50</PROPERTY>
+  <PROPERTY NAME="uTexture">textures/SadFace.png</PROPERTY>
   <PROPERTY NAME="uMaterialDiffuse">0.8 0.8 0.8 1</PROPERTY>
-  <PROPERTY NAME="uMaterialSpecular">0 0 0 1</PROPERTY>
+  <PROPERTY NAME="uMaterialAmbient">0.2 0.2 0.2 1</PROPERTY>
 </MATERIAL>
 
 <MATERIAL NAME="Monster">
-  <PROPERTY NAME="uTexture">Faces/Monster.png</PROPERTY>
-  <PROPERTY NAME="uMaterialAmbient">0.2 0.2 0.2 1</PROPERTY>
-  <PROPERTY NAME="uMaterialDiffuse">0.8 0.8 0.8 1</PROPERTY>
   <PROPERTY NAME="uMaterialSpecular">0 0 0 1</PROPERTY>
+  <PROPERTY NAME="uTexture">textures/Monster.png</PROPERTY>
+  <PROPERTY NAME="uMaterialDiffuse">0.8 0.8 0.8 1</PROPERTY>
+  <PROPERTY NAME="uMaterialAmbient">0.2 0.2 0.2 1</PROPERTY>
 </MATERIAL>
 
 <MATERIAL NAME="Circley">
-  <PROPERTY NAME="uTexture">Faces/Circley.png</PROPERTY>
-  <PROPERTY NAME="uMaterialAmbient">0.2 0.2 0.2 1</PROPERTY>
-  <PROPERTY NAME="uMaterialDiffuse">0.8 0.8 0.8 1</PROPERTY>
   <PROPERTY NAME="uMaterialSpecular">0 0 0 1</PROPERTY>
+  <PROPERTY NAME="uTexture">textures/Circley.png</PROPERTY>
+  <PROPERTY NAME="uMaterialDiffuse">0.8 0.8 0.8 1</PROPERTY>
+  <PROPERTY NAME="uMaterialAmbient">0.2 0.2 0.2 1</PROPERTY>
 </MATERIAL>
 
 <MATERIAL NAME="Kitty">
-  <PROPERTY NAME="uTexture">Faces/Kitty.png</PROPERTY>
-  <PROPERTY NAME="uMaterialAmbient">0.2 0.2 0.2 1</PROPERTY>
-  <PROPERTY NAME="uMaterialDiffuse">0.8 0.8 0.8 1</PROPERTY>
   <PROPERTY NAME="uMaterialSpecular">0 0 0 1</PROPERTY>
+  <PROPERTY NAME="uTexture">textures/Kitty.png</PROPERTY>
+  <PROPERTY NAME="uMaterialDiffuse">0.8 0.8 0.8 1</PROPERTY>
+  <PROPERTY NAME="uMaterialAmbient">0.2 0.2 0.2 1</PROPERTY>
 </MATERIAL>
 
 <MATERIAL NAME="Spider">
-  <PROPERTY NAME="uTexture">Faces/Spider.png</PROPERTY>
-  <PROPERTY NAME="uMaterialAmbient">0.2 0.2 0.2 1</PROPERTY>
-  <PROPERTY NAME="uMaterialDiffuse">0.8 0.8 0.8 1</PROPERTY>
   <PROPERTY NAME="uMaterialSpecular">0 0 0 1</PROPERTY>
+  <PROPERTY NAME="uTexture">textures/Spider.png</PROPERTY>
+  <PROPERTY NAME="uMaterialDiffuse">0.8 0.8 0.8 1</PROPERTY>
+  <PROPERTY NAME="uMaterialAmbient">0.2 0.2 0.2 1</PROPERTY>
 </MATERIAL>
 
 <MATERIAL NAME="HappyFaceWithEyes">
-  <PROPERTY NAME="uTexture">Faces/HappyFaceWithEyes.png</PROPERTY>
-  <PROPERTY NAME="uMaterialAmbient">0.2 0.2 0.2 1</PROPERTY>
-  <PROPERTY NAME="uMaterialDiffuse">0.8 0.8 0.8 1</PROPERTY>
   <PROPERTY NAME="uMaterialSpecular">0 0 0 1</PROPERTY>
+  <PROPERTY NAME="uTexture">textures/HappyFaceWithEyes.png</PROPERTY>
+  <PROPERTY NAME="uMaterialDiffuse">0.8 0.8 0.8 1</PROPERTY>
+  <PROPERTY NAME="uMaterialAmbient">0.2 0.2 0.2 1</PROPERTY>
 </MATERIAL>
 
 <MATERIAL NAME="HappyFace">
-  <PROPERTY NAME="uTexture">Faces/HappyFace.png</PROPERTY>
-  <PROPERTY NAME="uMaterialAmbient">0.2 0.2 0.2 1</PROPERTY>
-  <PROPERTY NAME="uMaterialDiffuse">0.8 0.8 0.8 1</PROPERTY>
   <PROPERTY NAME="uMaterialSpecular">0 0 0 1</PROPERTY>
+  <PROPERTY NAME="uTexture">textures/HappyFace.png</PROPERTY>
+  <PROPERTY NAME="uMaterialDiffuse">0.8 0.8 0.8 1</PROPERTY>
+  <PROPERTY NAME="uMaterialAmbient">0.2 0.2 0.2 1</PROPERTY>
 </MATERIAL>
 
 <MATERIAL NAME="Cyclopes">
-  <PROPERTY NAME="uTexture">Faces/Cyclopes.png</PROPERTY>
-  <PROPERTY NAME="uMaterialAmbient">0.2 0.2 0.2 1</PROPERTY>
-  <PROPERTY NAME="uMaterialDiffuse">0.8 0.8 0.8 1</PROPERTY>
   <PROPERTY NAME="uMaterialSpecular">0 0 0 1</PROPERTY>
+  <PROPERTY NAME="uTexture">textures/Cyclopes.png</PROPERTY>
+  <PROPERTY NAME="uMaterialDiffuse">0.8 0.8 0.8 1</PROPERTY>
+  <PROPERTY NAME="uMaterialAmbient">0.2 0.2 0.2 1</PROPERTY>
 </MATERIAL>
 
 <MATERIAL NAME="SadFaceWithEyes">
-  <PROPERTY NAME="uTexture">Faces/SadFaceWithEyes.png</PROPERTY>
-  <PROPERTY NAME="uMaterialAmbient">0.2 0.2 0.2 1</PROPERTY>
-  <PROPERTY NAME="uMaterialDiffuse">0.8 0.8 0.8 1</PROPERTY>
   <PROPERTY NAME="uMaterialSpecular">0 0 0 1</PROPERTY>
+  <PROPERTY NAME="uTexture">textures/SadFaceWithEyes.png</PROPERTY>
+  <PROPERTY NAME="uMaterialDiffuse">0.8 0.8 0.8 1</PROPERTY>
+  <PROPERTY NAME="uMaterialAmbient">0.2 0.2 0.2 1</PROPERTY>
 </MATERIAL>
 
 <MATERIAL NAME="CircleyCrossEyed">
-  <PROPERTY NAME="uTexture">Faces/CircleyCrossEyed.png</PROPERTY>
-  <PROPERTY NAME="uMaterialAmbient">0.2 0.2 0.2 1</PROPERTY>
-  <PROPERTY NAME="uMaterialDiffuse">0.8 0.8 0.8 1</PROPERTY>
   <PROPERTY NAME="uMaterialSpecular">0 0 0 1</PROPERTY>
+  <PROPERTY NAME="uTexture">textures/CircleyCrossEyed.png</PROPERTY>
+  <PROPERTY NAME="uMaterialDiffuse">0.8 0.8 0.8 1</PROPERTY>
+  <PROPERTY NAME="uMaterialAmbient">0.2 0.2 0.2 1</PROPERTY>
 </MATERIAL>
+
+<MATERIAL NAME="Pumpkin">
+  <PROPERTY NAME="uMaterialSpecular">0 0 0 1</PROPERTY>
+  <PROPERTY NAME="uTexture">textures/Pumpkin.png</PROPERTY>
+  <PROPERTY NAME="uMaterialDiffuse">0.8 0.8 0.8 1</PROPERTY>
+  <PROPERTY NAME="uMaterialAmbient">0.2 0.2 0.2 1</PROPERTY>
+</MATERIAL>
+
