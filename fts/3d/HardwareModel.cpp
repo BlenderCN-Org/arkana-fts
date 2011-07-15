@@ -189,13 +189,17 @@ FTS::HardwareModel::HardwareModel(const FTS::String& in_sName, FTS::Archive& in_
     bouge::XMLLoader loader(new bouge::TinyXMLParser());
 
     try {
+    String sModelBaseName = Path(in_sName).basename().withoutExt();
+
     // There is only one skeleton and one mesh per model file. Load them first.
-    String sData = in_modelArch.getFile("mesh.bxmesh").readstr();
+    String sMeshName = in_modelArch.hasChunk("mesh.bxmesh") ? "mesh.bxmesh" : sModelBaseName + ".bxmesh";
+    String sData = in_modelArch.getFile(sMeshName).readstr();
     m_pCoreModel->mesh(loader.loadMesh(sData.c_str(), sData.byteCount()));
 
     // But even the skeleton is optional in some cases.
-    if(in_modelArch.hasChunk("skeleton.bxskel")) {
-        String sData = in_modelArch.getFile("skeleton.bxskel").readstr();
+    String sSkelName = in_modelArch.hasChunk("skeleton.bxskel") ? "skeleton.bxskel" : sModelBaseName + ".bxskel";
+    if(in_modelArch.hasChunk(sSkelName)) {
+        String sData = in_modelArch.getFile(sSkelName).readstr();
         m_pCoreModel->skeleton(loader.loadSkeleton(sData.c_str(), sData.byteCount()));
     }
     } catch(const ArkanaException&) {
