@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Automatically exported from Blender v2.56 (sub 1) using the bouge exporter by Lucas Beyer -->
+<MATERIAL NAME="Default">
+  <PROPERTY NAME="uMaterialSpecular">0 0 0 1</PROPERTY>
+  <PROPERTY NAME="uTexture">textures/paultry.png</PROPERTY>
+  <PROPERTY NAME="uMaterialDiffuse">0.8 0.8 0.8 1</PROPERTY>
+  <PROPERTY NAME="uMaterialAmbient">0.2 0.2 0.2 1</PROPERTY>
+</MATERIAL>
+
