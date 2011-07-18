@@ -43,7 +43,7 @@ public:
     ///       That is the format Arkana-FTS and its tools save all files on disk.
     /// \note To see if there was an error during the read (end of file reached)
     ///       check the eof method after the call to read.
-    inline ReadableStream *read(int8_t &out) {this->read(&out, sizeof(int8_t), 1); return this;};
+    inline ReadableStream& read(int8_t &out) {this->read(&out, sizeof(int8_t), 1); return *this;};
     /// Reads one 8 bit (1 byte) signed integer from the file.
     /// \return The read data
     /// \note This method assumes the file is stored little-endian on the disk.
@@ -58,7 +58,7 @@ public:
     ///       That is the format Arkana-FTS and its tools save all files on disk.
     /// \note To see if there was an error during the read (end of file reached)
     ///       check the eof method after the call to read.
-    inline ReadableStream *read(uint8_t &out) {this->read(&out, sizeof(uint8_t), 1); return this;};
+    inline ReadableStream& read(uint8_t &out) {this->read(&out, sizeof(uint8_t), 1); return *this;};
     /// Reads one 8 bit (1 byte) unsigned integer from the file.
     /// \return The read data
     /// \note This method assumes the file is stored little-endian on the disk.
@@ -73,7 +73,7 @@ public:
     ///       That is the format Arkana-FTS and its tools save all files on disk.
     /// \note To see if there was an error during the read (end of file reached)
     ///       check the eof method after the call to read.
-    inline ReadableStream *read(int16_t &out) {this->read(&out, sizeof(int16_t), 1); return this;};
+    inline ReadableStream& read(int16_t &out) {this->read(&out, sizeof(int16_t), 1); return *this;};
     /// Reads one 16 bit (2 bytes) signed integer from the file.
     /// \return The read data
     /// \note This method assumes the file is stored little-endian on the disk.
@@ -88,7 +88,7 @@ public:
     ///       That is the format Arkana-FTS and its tools save all files on disk.
     /// \note To see if there was an error during the read (end of file reached)
     ///       check the eof method after the call to read.
-    inline ReadableStream *read(uint16_t &out) {this->read(&out, sizeof(uint16_t), 1); return this;};
+    inline ReadableStream& read(uint16_t &out) {this->read(&out, sizeof(uint16_t), 1); return *this;};
     /// Reads one 16 bit (2 bytes) unsigned integer from the file.
     /// \return The read data
     /// \note This method assumes the file is stored little-endian on the disk.
@@ -103,7 +103,7 @@ public:
     ///       That is the format Arkana-FTS and its tools save all files on disk.
     /// \note To see if there was an error during the read (end of file reached)
     ///       check the eof method after the call to read.
-    inline ReadableStream *read(int32_t &out) {this->read(&out, sizeof(int32_t), 1); return this;};
+    inline ReadableStream& read(int32_t &out) {this->read(&out, sizeof(int32_t), 1); return *this;};
     /// Reads one 32 bit (4 bytes) signed integer from the file.
     /// \return The read data
     /// \note This method assumes the file is stored little-endian on the disk.
@@ -118,7 +118,7 @@ public:
     ///       That is the format Arkana-FTS and its tools save all files on disk.
     /// \note To see if there was an error during the read (end of file reached)
     ///       check the eof method after the call to read.
-    inline ReadableStream *read(uint32_t &out) {this->read(&out, sizeof(uint32_t), 1); return this;};
+    inline ReadableStream& read(uint32_t &out) {this->read(&out, sizeof(uint32_t), 1); return *this;};
     /// Reads one 32 bit (4 bytes) unsigned integer from the file.
     /// \return The read data
     /// \note This method assumes the file is stored little-endian on the disk.
@@ -133,7 +133,7 @@ public:
     ///       That is the format Arkana-FTS and its tools save all files on disk.
     /// \note To see if there was an error during the read (end of file reached)
     ///       check the eof method after the call to read.
-    inline ReadableStream *read(int64_t &out) {this->read(&out, sizeof(int64_t), 1); return this;};
+    inline ReadableStream& read(int64_t &out) {this->read(&out, sizeof(int64_t), 1); return *this;};
     /// Reads one 64 bit (8 bytes) signed integer from the file.
     /// \return The read data
     /// \note This method assumes the file is stored little-endian on the disk.
@@ -148,7 +148,7 @@ public:
     ///       That is the format Arkana-FTS and its tools save all files on disk.
     /// \note To see if there was an error during the read (end of file reached)
     ///       check the eof method after the call to read.
-    inline ReadableStream *read(uint64_t &out) {this->read(&out, sizeof(uint64_t), 1); return this;};
+    inline ReadableStream& read(uint64_t &out) {this->read(&out, sizeof(uint64_t), 1); return *this;};
     /// Reads one 64 bit (8 bytes) unsigned integer from the file.
     /// \return The read data
     /// \note This method assumes the file is stored little-endian on the disk.
@@ -161,7 +161,7 @@ public:
     /// \return this
     /// \note To see if there was an error during the read (end of file reached)
     ///       check the eof method after the call to read.
-    inline ReadableStream *read(float &out) {this->readNoEndian(&out, sizeof(float)); return this;};
+    inline ReadableStream& read(float &out) {this->readNoEndian(&out, sizeof(float)); return *this;};
     /// Reads one 32 bit (4 bytes) floating point value from the file.
     /// \return The read data
     /// \note To see if there was an error during the read (end of file reached)
@@ -172,7 +172,7 @@ public:
     /// \return this
     /// \note To see if there was an error during the read (end of file reached)
     ///       check the eof method after the call to read.
-    inline ReadableStream *read(double &out) {this->readNoEndian(&out, sizeof(double)); return this;};
+    inline ReadableStream& read(double &out) {this->readNoEndian(&out, sizeof(double)); return *this;};
     /// Reads one 64 bit (8 bytes) floating point value from the file.
     /// \return The read data
     /// \note To see if there was an error during the read (end of file reached)
@@ -183,14 +183,14 @@ public:
     /// \return this
     /// \note To see if there was an error during the read (end of file reached)
     ///       check the eof method after the call to read.
-    inline ReadableStream *read(long double &out) {this->readNoEndian(&out, sizeof(long double)); return this;};
+    inline ReadableStream& read(long double &out) {this->readNoEndian(&out, sizeof(long double)); return *this;};
     /// Reads one 128 bit (16 bytes) floating point value from the file.
     /// \return The read data
     /// \note To see if there was an error during the read (end of file reached)
     ///       check the eof method after the call to read.
     inline long double readld() {long double out; this->read(out); return out;};
 
-    ReadableStream *read(String &out);
+    ReadableStream& read(String &out);
     String readstr();
 
     // These are the methods that need to be implemented by a class that wants

@@ -140,18 +140,18 @@ size_t FTS::ReadableStream::readNoEndian(RawDataContainer &out_data)
  *
  * \author Pompei2
  */
-ReadableStream *FTS::ReadableStream::read(String &out)
+ReadableStream& FTS::ReadableStream::read(String &out)
 {
     // Nothing to read.
     if(this->invalid() || this->eod()) {
         out = String::EMPTY;
-        return this;
+        return *this;
     }
 
     out = String((const char *)this->getDataAtCursorPos(), 0, this->getSizeTillEnd());
     this->setCursorPos(this->getCursorPos() + out.byteCount() + 1);
 
-    return this;
+    return *this;
 }
 
 /** Reads one zero-terminated string out of the data.
