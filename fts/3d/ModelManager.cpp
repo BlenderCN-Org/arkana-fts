@@ -56,20 +56,20 @@ std::shared_ptr<FTS::HardwareModel> FTS::ModelManager::getOrLoad(const FTS::Stri
 
     // Not loaded yet, then load it!
     try {
-        Archive::Ptr pArch;
-
         // Check if the name is either just a "name" (of a model in or models dir) ...
-        try {
-            pArch.reset(Archive::loadArchive(Path::datadir(D_MODELS_DIRNAME) + Path(in_sName + ".ftsmdl")));
-        } catch(const ArkanaException& ) {
-            // ... or if we got a full path name.
-            pArch.reset(Archive::loadArchive(in_sName));
-
-            // If none of the above work, we pass the exception up.
+        Path toOpen = Path::datadir(D_MODELS_DIRNAME) + Path(in_sName + ".ftsmdl");
+        if(!FileUtils::exists(toOpen)) {
+            // Next, try to open it without the .ftsmdl extension (in the case it is a directory)
+            toOpen = Path::datadir(D_MODELS_DIRNAME) + Path(in_sName);
+            if(!FileUtils::exists(toOpen)) {
+                // Last chance is that we got a full pathname already:
+                toOpen = in_sName;
+            }
         }
 
         // Load the model out of the archive.
-        m_mHardwareModels[in_sName] = std::shared_ptr<HardwareModel>(new HardwareModel(in_sName, *pArch.get()));
+        Archive::Ptr pArch  = Archive::Ptr(Archive::loadArchive(toOpen));
+        m_mHardwareModels[in_sName] = std::shared_ptr<HardwareModel>(new HardwareModel(in_sName, *pArch));
 
         // And here the archive gets closed again, automagic :)
     } catch(const FTS::LoggableException& e) {
