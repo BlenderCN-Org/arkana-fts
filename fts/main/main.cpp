@@ -266,15 +266,11 @@ int cleanFTS(void)
     delete DaoVm::getSingletonPtr();
 
     try {
-        if(CEGUI::WindowManager::getSingletonPtr())
-            CEGUI::WindowManager::getSingleton().destroyAllWindows();
-        if(CEGUI::ImagesetManager::getSingletonPtr())
-            CEGUI::ImagesetManager::getSingleton().destroyAllImagesets();
         if(CEGUI::System::getSingletonPtr()) {
             // Also deinits Image codec.
             delete CEGUI::System::getSingletonPtr()->getRenderer();
             /// \TODO: Debug why here is a pure virtual function call!
-            //delete CEGUI::System::getSingletonPtr();
+//             delete CEGUI::System::getSingletonPtr();
         }
     } catch(CEGUI::Exception & e) {
         FTS18N("CEGUI", MsgType::Error, e.getMessage());
