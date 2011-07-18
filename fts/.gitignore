@@ -1,0 +1,51 @@
+# Ignore automatically generated FTS files
+main/revision.h
+v.i
+v.i5
+*.log
+
+# Ignore some of the VC++ user-files
+*.vcxproj.user
+*.sdf
+*.suo
+*.ilk
+*.pdb
+*.exe
+
+# Ignore the VC++ build folders
+Debug_Static/
+Release_Static/
+ipch/
+3rdparty/freetype/builds/win32/
+3rdparty/freetype/objs/
+3rdparty/sound/libogg/win32/
+3rdparty/dao/objs
+
+# Ignore KDevelop-specific folders too
+.kdev*
+*.kdev4
+
+# Ignore precompiled headers
+*.gch
+
+# Ignore CMake build files
+build/
+
+# Ignore profiler and debugger files
+gmon.out
+
+# And some system's temp files
+*~
+*.tmp
+*.bak
+*.blend1
+*.blend2
+*.swp*
+
+# Ignore video files (for now)
+*.mp4
+*.webm
+*.ogv
+*.avi
+*.glc
+
