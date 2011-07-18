@@ -25,6 +25,7 @@
   <PROPERTY NAME="uTexture">SnowballHead.png</PROPERTY>
   <PROPERTY NAME="uMaterialDiffuse">0 0.8 0 1</PROPERTY>
   <PROPERTY NAME="uMaterialAmbient">0.2 0.2 0.2 1</PROPERTY>
+  <PROPERTY NAME="ShaderCompileFlags">D_USE_PLAYER_COLOR</PROPERTY>
 </MATERIAL>
 
 <MATERIAL NAME="SnowballMidSmooth">
