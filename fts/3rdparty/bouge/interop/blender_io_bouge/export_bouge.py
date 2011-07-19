@@ -252,15 +252,21 @@ def save_materials(filepath, mats):
             #   - Relative, it's all fine, keep the path.
             #   - Absolute, just use the filename and put it in a 'textures' subdir.
             img = tex.texture.image
+            if img.file_format != 'PNG':
+                print("Warning: texture {} is not in png format! Trying to convert but that may fail!".format(tex.name))
+
             imgfile = img.filepath[2:] if img.filepath[:2] == "//" else os.path.join('textures', os.path.basename(img.filepath))
             imgfile_png = os.path.join(os.path.dirname(imgfile), os.path.splitext(os.path.basename(imgfile))[0] + '.png')
             bmat.setprop('uTexture' + (str(i) if i else ''), imgfile_png)
 
             # And now save the packed (or even just loaded?) image to disk.
             old_filepath = img.filepath
+            old_format = img.file_format
+            img.file_format = 'PNG'
             img.filepath = os.path.join(os.path.dirname(filepath), imgfile_png)
             img.save()
             img.filepath = old_filepath
+            img.file_format = old_format
 
         bmat.writeXML(file)
 
@@ -422,7 +428,6 @@ def save(operator, context, filepath="",
 
     selected = context.selected_objects
     if use_selection:
-        print("using selection")
         objects = selected
     else:
         objects = context.scene.objects
