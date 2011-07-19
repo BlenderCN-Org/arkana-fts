@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Automatically exported from Blender v2.56 (sub 1) using the bouge exporter by Lucas Beyer -->
-<MESH NAME="BaseFemale_25">
+<MESH NAME="BaseFemale">
   <SUBMESH NAME="HumanFemale meHumanFemale">
   <VERTEX><POS>-0.24966 0.05077 0.84740</POS>
           <ATTRIB TYPE="aVertexNormal">0.92239 0.28355 -0.26222</ATTRIB>
