@@ -62,6 +62,8 @@ FTS::Renderer::~Renderer()
  */
 void FTS::Renderer::createSDLWindow(const Resolution& in_res)
 {
+    verifGL("Renderer::createSDLWindow start");
+
     // Flags to pass to SDL_SetVideoMode
     uint32_t iVideoFlags = Renderer::calcSDLVideoFlags(in_res.fs);
 
@@ -94,6 +96,7 @@ void FTS::Renderer::createSDLWindow(const Resolution& in_res)
     }
 
     SDL_WM_SetCaption(FTS_WINDOW_TITLE, NULL);
+    verifGL("Renderer::createSDLWindow end");
 }
 
 /** Creates the video flags combination to be used by the SDL to create display.
@@ -148,6 +151,8 @@ uint32_t FTS::Renderer::calcSDLVideoFlags(bool in_bFullscreen)
  */
 void FTS::Renderer::init()
 {
+    verifGL("Renderer::init start");
+
     // Enable smooth shading
     glShadeModel(GL_SMOOTH);
 
@@ -178,7 +183,7 @@ void FTS::Renderer::init()
     // That is specified counter-clockwise disappear ! It drives me crazy.
 //     glDisable(GL_CULL_FACE);
 
-    verifGL("initGL: all");
+    verifGL("Renderer::init end");
 
     // Create the lighting system and then create the sun and the moon, hehehe.
     /// \TODO: Move this into the runlevel
@@ -205,6 +210,8 @@ void FTS::Renderer::deinit()
  **/
 void FTS::Renderer::enter2DMode(const Camera& in_cam)
 {
+    verifGL("Renderer::enter2DMode start");
+
     Program::unbind();
     VertexBufferObject::unbind();
     ElementsBufferObject::unbind();
@@ -222,7 +229,7 @@ void FTS::Renderer::enter2DMode(const Camera& in_cam)
 
     in_cam.use();
 
-    verifGL("GUI::enter2DMode( )");
+    verifGL("Renderer::enter2DMode end");
 }
 
 /// This function enters into the 3D drawing mode.
@@ -235,6 +242,8 @@ void FTS::Renderer::enter2DMode(const Camera& in_cam)
  **/
 void FTS::Renderer::enter3DMode(const Camera& in_cam)
 {
+    verifGL("Renderer::enter3DMode start");
+
     // Re-Enable stuff.
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
@@ -247,7 +256,7 @@ void FTS::Renderer::enter3DMode(const Camera& in_cam)
     GraphicManager::getSingleton().reinitFrame();
     in_cam.use();
 
-    verifGL("GUI::enter3DMode( ), glPopAttrib( );");
+    verifGL("Renderer::enter3DMode end");
 }
 
 /// Completely change the resolution, color depth and fullscreen of the game.

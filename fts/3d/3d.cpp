@@ -9,23 +9,6 @@
 
 using namespace FTS;
 
-/// Used for testing purposes.
-/*extern GLenum glBlendEnums[15];
-extern int g_iBlends1, g_iBlends2;
-
-// Used for testing purposes.
-GLenum glBlendEnums[15] = {
-    GL_ZERO, GL_ONE,
-    GL_SRC_COLOR, GL_ONE_MINUS_SRC_COLOR,
-    GL_DST_COLOR, GL_ONE_MINUS_DST_COLOR,
-    GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA,
-    GL_DST_ALPHA, GL_ONE_MINUS_DST_ALPHA,
-    GL_CONSTANT_COLOR, GL_ONE_MINUS_CONSTANT_COLOR,
-    GL_CONSTANT_ALPHA, GL_ONE_MINUS_CONSTANT_ALPHA,
-    GL_SRC_ALPHA_SATURATE
-};
-int g_iBlends1 = 1, g_iBlends2 = 3;
-*/
 #ifdef DEBUG
 /// Check the OpenGL state for errors.
 /** This looks if there was an OpenGL error, if yes, prints it out.
@@ -84,6 +67,8 @@ bool FTS::glHasExtension(const char* extname)
 {
     static std::set<String> exts;
 
+    verifGL("glHasExtension start");
+
     if(exts.empty()) {
         // Load all extensions:
         if(glGetString(GL_VERSION)[0] >= '3') {
@@ -98,6 +83,7 @@ bool FTS::glHasExtension(const char* extname)
         }
     }
 
+    verifGL("glHasExtension end");
     return exts.find(extname) != exts.end();
 }
 

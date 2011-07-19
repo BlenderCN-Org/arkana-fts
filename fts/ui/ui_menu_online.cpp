@@ -212,11 +212,6 @@ void FTS::LoginMenuRlv::render3D(const Clock&)
     // We want to render light. Currently at 12 o'clock.
     LightSystem::getSys()->renderAll(12*60*60);
 
-    // In debug mode draw a coordinate system.
-#ifdef DEBUG
-    this->renderCoordSys();
-#endif
-
     m_pMenuBGInst->render(Vector(0.0, 0.0, 0.0), Color());
 }
 

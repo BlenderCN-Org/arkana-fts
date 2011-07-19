@@ -595,6 +595,7 @@ Camera& Camera::perspectiveProjection(float in_fFoV,
  */
 const Camera& Camera::use() const
 {
+    verifGL("Camera::use start");
     Lock l(m_Mutex);
     glViewport(0, 0, (GLsizei)m_fW, (GLsizei)m_fH);
     glMatrixMode(GL_PROJECTION);
@@ -602,6 +603,7 @@ const Camera& Camera::use() const
     glMatrixMode(GL_MODELVIEW);
     glLoadMatrixf(m_viewMatrix.array16f());
 
+    verifGL("Camera::use end");
     return *this;
 }
 

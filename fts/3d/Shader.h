@@ -155,7 +155,7 @@ public:
 protected:
     CompiledShaderPtr compileShader(const String& in_sShaderName, const ShaderCompileFlags& flags = ShaderCompileFlags());
     Program* getDefaultProgram();
-    String buildShaderName(String baseName, const ShaderCompileFlags& flags);
+    String buildShaderName(String baseName);
     String buildProgramName(const String& vtxBaseName, const String& fragBaseName, const String& geomBaseName, const ShaderCompileFlags& flags);
 
 private:

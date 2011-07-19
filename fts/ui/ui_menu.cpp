@@ -248,11 +248,6 @@ void FTS::MainMenuRlv::render3D(const Clock&)
     LightSystem::getSys()->renderAll(12*60*60);
 
     m_pMenuBGInst->render(Vector(0.0, 0.0, 0.0), Color());
-
-    // In debug mode draw a coordinate system.
-#ifdef DEBUG
-    this->renderCoordSys();
-#endif
 }
 
 /** This method returns a unique name for the runlevel.

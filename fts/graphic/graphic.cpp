@@ -92,6 +92,7 @@ Graphic::~Graphic()
  */
 void Graphic::create(const uint8_t * const in_pData, uint16_t in_uiW, uint16_t in_uiH, TextureFilter in_forceFilter, Anisotropy in_forceAnisotropy)
 {
+    verifGL("Graphic::create(" + String::nr(in_uiW) + "x" + String::nr(in_uiH) + ") start");
     // Preliminary sanity checks.
     const uint64_t uiMaxTexSize = GraphicManager::getSingleton().getMaxTextureSize();
     if(in_pData == NULL)
@@ -140,7 +141,7 @@ void Graphic::create(const uint8_t * const in_pData, uint16_t in_uiW, uint16_t i
 
     // Ask for the memory for the texture.
     glGenTextures(1, &m_uiID);
-    verifGL("Graphic::create, glGenTextures");
+    verifGL("Graphic::create(" + String::nr(in_uiW) + "x" + String::nr(in_uiH) + ") glGenTextures");
     FTSMSGDBG("Created texture with ID "+String::nr(m_uiID), 3);
 
     // Set the texture's params
@@ -195,7 +196,7 @@ void Graphic::create(const uint8_t * const in_pData, uint16_t in_uiW, uint16_t i
     default:
         break;
     }
-    verifGL("loadTexture, glTexParameterf");
+    verifGL("Graphic::create(" + String::nr(in_uiW) + "x" + String::nr(in_uiH) + ") glTexParameterf");
 
     // And finally create the OpenGL texture(s).
     /// \todo: mipmaps in our own file format.
@@ -203,8 +204,8 @@ void Graphic::create(const uint8_t * const in_pData, uint16_t in_uiW, uint16_t i
         gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, m_uiRealW, m_uiRealH, GL_RGBA, GL_UNSIGNED_BYTE, pPOTData);
     else*/
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_uiRealW, m_uiRealH, 0, GL_RGBA, GL_UNSIGNED_BYTE, pPOTData);
-    verifGL("Graphic::create, glTexImage2D/Build2DMipmaps");
 
+    verifGL("Graphic::create(" + String::nr(in_uiW) + "x" + String::nr(in_uiH) + ") end");
     SAFE_DELETE_ARR(pPOTData);
 }
 
@@ -216,10 +217,11 @@ void Graphic::create(const uint8_t * const in_pData, uint16_t in_uiW, uint16_t i
  */
 void Graphic::destroy()
 {
+    verifGL("Graphic::destroy(id="+String::nr(m_uiID)+") start");
     if(this->isLoaded()) {
         glDeleteTextures(1, &m_uiID);
-        verifGL("Graphic::unload( ), glDeleteTextures");
     }
+    verifGL("Graphic::destroy(id="+String::nr(m_uiID)+") end");
 
     m_uiID = 0;
     m_pfTexcoord[0] = m_pfTexcoord[1] = m_pfTexcoord[2] = m_pfTexcoord[3] = 0.0f;
@@ -259,6 +261,8 @@ uint8_t *Graphic::copyPixels(bool in_bRealTextureSize) const
         return NULL;
     }
 
+    verifGL("Graphic::copyPixels(id="+String::nr(m_uiID)+") start");
+
     // First at all, select the texture and store the previously selected one.
     // NOT using this->select as we want to hide those changes, not screw up the
     //     manager's state.
@@ -275,20 +279,23 @@ uint8_t *Graphic::copyPixels(bool in_bRealTextureSize) const
     if(iFmt != GL_RGBA || iW != m_uiRealW || iH != m_uiRealH) {
         glBindTexture(GL_TEXTURE_2D, iLastTex);
         FTS18N("InvParam", MsgType::Horror, "Graphic::copyPixels(inconsistent data), m_uiID = "+String::nr(m_uiID));
+        verifGL("Graphic::copyPixels(id="+String::nr(m_uiID)+") badend");
         return NULL;
     }
 
     uint8_t *pMem = new uint8_t[(uint32_t)m_uiRealW*(uint32_t)m_uiRealH*4];
     if(pMem == NULL) {
         glBindTexture(GL_TEXTURE_2D, iLastTex);
+        verifGL("Graphic::copyPixels(id="+String::nr(m_uiID)+") badend2");
         return NULL;
     }
 
     glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, pMem);
-    verifGL("Graphic::getPixels");
 
     // Restore the old texture.
     glBindTexture(GL_TEXTURE_2D, iLastTex);
+
+    verifGL("Graphic::copyPixels(id="+String::nr(m_uiID)+") end");
 
     // If for a good hazard (or the rectangle texture extension is used) the
     // size of the OpenGL texture matches the original image size, this is an
@@ -380,7 +387,7 @@ int Graphic::draw(int16_t in_iX, int16_t in_iY) const
     const int32_t iX_W = (int32_t)in_iX + (int32_t)m_uiW;
     const int32_t iY_H = (int32_t)in_iY + (int32_t)m_uiH;
 
-    verifGL("pre Graphic::draw("+String::nr(in_iX)+","+String::nr(in_iY)+")");
+    verifGL("Graphic::draw(id="+String::nr(m_uiID)+", "+String::nr(in_iX)+","+String::nr(in_iY)+") start");
     this->select();
 
     // Draw a rectangle with the texture on it.
@@ -399,7 +406,7 @@ int Graphic::draw(int16_t in_iX, int16_t in_iY) const
       glTexCoord2f(m_pfTexcoord[2], m_pfTexcoord[3]);
       glVertex2i(iX_W, iY_H);
     glEnd();
-    verifGL("Graphic::draw("+String::nr(in_iX)+","+String::nr(in_iY)+")");
+    verifGL("Graphic::draw(id="+String::nr(m_uiID)+", "+String::nr(in_iX)+","+String::nr(in_iY)+") end");
 
     return ERR_OK;
 }
@@ -424,6 +431,8 @@ int Graphic::drawSub(int16_t in_iX, int16_t in_iY, uint16_t in_iSubX,
     const float fTopTex = m_pfTexcoord[1] + (float)in_iSubY/(float)m_uiH;
     const float fBottomTex = m_pfTexcoord[3] - ((float)m_uiH-(float)in_iSubH-(float)in_iSubY)/(float)m_uiH;
 
+    verifGL("Graphic::drawSub(id="+String::nr(m_uiID)+", "+String::nr(in_iX)+","+String::nr(in_iY)+") start");
+
     this->select();
 
     // Draw a rectangle with the texture on it.
@@ -442,7 +451,7 @@ int Graphic::drawSub(int16_t in_iX, int16_t in_iY, uint16_t in_iSubX,
       glTexCoord2f(fRightTex, fBottomTex);
       glVertex2i(iX_W, iY_H);
     glEnd();
-    verifGL("Graphic::drawSub("+String::nr(in_iX)+","+String::nr(in_iY)+")");
+    verifGL("Graphic::drawSub(id="+String::nr(m_uiID)+", "+String::nr(in_iX)+","+String::nr(in_iY)+") end");
 
     return ERR_OK;
 }
@@ -463,6 +472,7 @@ int Graphic::drawRot(int16_t in_iX, int16_t in_iY, float in_fDegrees) const
     const int32_t iX_W = (int32_t)in_iX + (int32_t)m_uiW;
     const int32_t iY_H = (int32_t)in_iY + (int32_t)m_uiH;
 
+    verifGL("Graphic::drawRot(id="+String::nr(m_uiID)+", "+String::nr(in_iX)+","+String::nr(in_iY)+") start");
     this->select();
 
     // Draw a rectangle with the texture on it.
@@ -481,9 +491,9 @@ int Graphic::drawRot(int16_t in_iX, int16_t in_iY, float in_fDegrees) const
       glTexCoord2f(m_pfTexcoord[2], m_pfTexcoord[3]);
       glVertex2i(iX_W, iY_H);
     glEnd();
-    verifGL("Graphic::drawRot("+String::nr(in_iX)+","+String::nr(in_iY)+")");
-
     glPopMatrix();
+
+    verifGL("Graphic::drawRot(id="+String::nr(m_uiID)+", "+String::nr(in_iX)+","+String::nr(in_iY)+") end");
     return ERR_OK;
 }
 
@@ -499,6 +509,7 @@ int Graphic::drawZoom(int16_t in_iX, int16_t in_iY, float in_fZoomX, float in_fZ
     const float fX_WZX = (float)in_iX + (float)m_uiW*in_fZoomX;
     const float fY_HZY = (float)in_iY + (float)m_uiH*in_fZoomY;
 
+    verifGL("Graphic::drawZoom(id="+String::nr(m_uiID)+", "+String::nr(in_iX)+","+String::nr(in_iY)+") start");
     this->select();
 
     // And finally, draw a rectangle with the texture on it.
@@ -517,7 +528,7 @@ int Graphic::drawZoom(int16_t in_iX, int16_t in_iY, float in_fZoomX, float in_fZ
       glTexCoord2f(m_pfTexcoord[2], m_pfTexcoord[3]);
       glVertex2f(fX_WZX, fY_HZY);
     glEnd();
-    verifGL("Graphic::drawZoom("+String::nr(in_iX)+","+String::nr(in_iY)+")");
+    verifGL("Graphic::drawZoom(id="+String::nr(m_uiID)+", "+String::nr(in_iX)+","+String::nr(in_iY)+") end");
 
     return ERR_OK;
 }
@@ -535,6 +546,7 @@ int Graphic::drawColoured(int16_t in_iX, int16_t in_iY,
     const int32_t iX_W = (int32_t)in_iX + (int32_t)m_uiW;
     const int32_t iY_H = (int32_t)in_iY + (int32_t)m_uiH;
 
+    verifGL("Graphic::drawColoured(id="+String::nr(m_uiID)+", "+String::nr(in_iX)+","+String::nr(in_iY)+") start");
     this->select();
 
     // Draw a rectangle with the texture on it.
@@ -553,7 +565,7 @@ int Graphic::drawColoured(int16_t in_iX, int16_t in_iY,
       glTexCoord2f(m_pfTexcoord[2], m_pfTexcoord[3]);
       glVertex2i(iX_W, iY_H);
     glEnd();
-    verifGL("Graphic::drawColoured("+String::nr(in_iX)+","+String::nr(in_iY)+")");
+    verifGL("Graphic::drawColoured(id="+String::nr(m_uiID)+", "+String::nr(in_iX)+","+String::nr(in_iY)+") end");
 
     return ERR_OK;
 }
@@ -571,6 +583,7 @@ int Graphic::drawEx(int16_t in_iX, int16_t in_iY, uint16_t in_iSubX,
                     float in_fRotate, float in_fZoomX, float in_fZoomY,
                     float in_fR, float in_fG, float in_fB, float in_fA) const
 {
+    verifGL("Graphic::drawEx(id="+String::nr(m_uiID)+", "+String::nr(in_iX)+","+String::nr(in_iY)+") start");
     this->select();
 
     // And finally, draw a rectangle with the texture on it.
@@ -589,7 +602,7 @@ int Graphic::drawEx(int16_t in_iX, int16_t in_iY, uint16_t in_iSubX,
       glTexCoord2f( m_pfTexcoord[2], m_pfTexcoord[3] );
       glVertex2f( (float)in_iX + (float)m_uiW*in_fZoomX, (float)in_iY + (float)m_uiH*in_fZoomY );
     glEnd( );
-    verifGL("Graphic::drawEx("+String::nr(in_iX)+","+String::nr(in_iY)+")");
+    verifGL("Graphic::drawEx(id="+String::nr(m_uiID)+", "+String::nr(in_iX)+","+String::nr(in_iY)+") end");
 
     return ERR_OK;
 }
@@ -615,6 +628,7 @@ int Graphic::drawExCentered(int16_t in_iX, int16_t in_iY, uint16_t in_iSubX,
  */
 void Graphic::select(uint8_t in_iTexUnit) const
 {
+    verifGL("Graphic::select(id="+String::nr(m_uiID)+", texUnit="+String::nr(in_iTexUnit)+") start");
     // We don't call this->isLoaded() as this one calling glIsTexture may be slow.
     if(m_uiID != 0) {
         // Check for silly input arguments and ignore them.
@@ -630,7 +644,7 @@ void Graphic::select(uint8_t in_iTexUnit) const
         glEnable(GL_TEXTURE_2D); /// \TODO: We only need GL_TEXTURE_2D as long as we use old-style OpenGL! (Currently only in quad.cpp)
         glBindTexture(GL_TEXTURE_2D, m_uiID);
         GraphicManager::getSingleton().setSelectedGraphic(in_iTexUnit, this->getID());
-        verifGL("Graphic::select("+String::nr(in_iTexUnit)+") ("+String::nr(m_uiID)+")");
+        verifGL("Graphic::select(id="+String::nr(m_uiID)+", texUnit="+String::nr(in_iTexUnit)+") end");
     } else {
         // Select the error texture:
         GraphicManager::getSingleton().getErrorTexture()->select(in_iTexUnit);
@@ -648,11 +662,12 @@ bool Graphic::grab()
     if(!this->isLoaded())
         return true;
 
+    verifGL("Graphic::grab(id="+String::nr(m_uiID)+") start");
     m_pGrabbedPixels = this->copyPixels(false);
 
     // Calling destroy() is _not_ the good thing. We need to keep the w, h, ...
     glDeleteTextures(1, &m_uiID);
-    verifGL("Graphic::grab( ), glDeleteTextures");
+    verifGL("Graphic::grab(id="+String::nr(m_uiID)+") start");
 
     // But some of the vars need to be reset.
     m_uiID = 0;
@@ -1262,15 +1277,19 @@ const Graphic *GraphicManager::getErrorTexture() const
 
 uint64_t GraphicManager::getMaxTextureSize() const
 {
+    verifGL("Graphic::getMaxTextureSize start");
     GLint iMaxTex = 0;
     glGetIntegerv(GL_MAX_TEXTURE_SIZE, &iMaxTex);
+    verifGL("Graphic::getMaxTextureSize end");
     return (uint64_t)iMaxTex;
 }
 
 uint8_t GraphicManager::getMaxTextureUnits() const
 {
+    verifGL("Graphic::getMaxTextureUnits start");
     GLint iMaxTex = 0;
     glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &iMaxTex);
+    verifGL("Graphic::getMaxTextureUnits end");
     return (uint8_t)iMaxTex;
 }
 
@@ -1504,6 +1523,7 @@ bool GraphicManager::isGraphicSelected(uint8_t in_uiTexUnit, uint32_t in_uiTexID
 
 void GraphicManager::reinitFrame()
 {
+    verifGL("Graphic::reinitFrame start");
     // Deselect any still selected textures.
     /// \TODO: Ideally, there is no more need to do this _if_ we draw
     ///        _anything_ using our own shaders, just as OpenGL 3.x wants it.
@@ -1519,6 +1539,7 @@ void GraphicManager::reinitFrame()
     m_vSelectedTextures[0] = 0;
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, 0);
+    verifGL("Graphic::reinitFrame end");
 }
 
  /* EOF */

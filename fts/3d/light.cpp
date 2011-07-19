@@ -81,6 +81,7 @@ int LightSystem::renderAll(int in_iSecondsInDay)
 
 int LightSystem::setupGLLighting(void)
 {
+    verifGL("LightSystem::setupGLLighting start");
     // Enable lighting and calculate the specular color after the texture
     // mapping is done, so the specular point doesn't disappear.
     glEnable(GL_LIGHTING);
@@ -98,7 +99,7 @@ int LightSystem::setupGLLighting(void)
     // VERY bad option, don't know its use, just caused me trouble !!
 //     glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
 
-    verifGL("LightSystem::setupGLLighting( )");
+    verifGL("LightSystem::setupGLLighting end");
 
     return ERR_OK;
 }
@@ -123,6 +124,7 @@ SunMoon::~SunMoon(void)
 
 Light *SunMoon::enable(void)
 {
+    verifGL("SunMoon::enable start");
     // Look for the first "free" OpenGL light.
     int i = 0;
     while(m_bUsedGLLights[i]) i++;
@@ -143,16 +145,19 @@ Light *SunMoon::enable(void)
     // And what it is like.
 //     this->render(12.0f);
 
+    verifGL("SunMoon::enable end");
     return this;
 }
 
 Light *SunMoon::disable(void)
 {
+    verifGL("SunMoon::disable start");
     glDisable(GL_LIGHT0+m_iLightID);
     m_bUsedGLLights[m_iLightID] = false;
     m_iLightID = -1;
     m_nEnabledLights--;
     m_bEnabled = false;
+    verifGL("SunMoon::disable end");
     return this;
 }
 
@@ -183,6 +188,7 @@ int SunMoon::render(int in_iSecondsInDay)
     if(!m_bEnabled)
         return ERR_OK;
 
+    verifGL("SunMoon::render start");
     this->recalcSelf(in_iSecondsInDay);
 
     float fPos[] = {m_pos.x(), m_pos.y(), m_pos.z(), 1.0f};
@@ -248,6 +254,7 @@ int SunMoon::render(int in_iSecondsInDay)
     glPopMatrix();
 #endif
 
+    verifGL("SunMoon::render end");
     return ERR_OK;
 }
 

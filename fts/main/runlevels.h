@@ -33,7 +33,6 @@ protected:
     Runlevel() : m_pDefCursor(NULL) {};
 
     void renderCEGUI();
-    void renderCoordSys();
     int loadDefaultCursor();
     int unloadDefaultCursor();
 

@@ -24,6 +24,8 @@ using namespace FTS;
  */
 void FTS::Runlevel::renderCEGUI()
 {
+    verifGL("Runlevel::renderCEGUI start");
+
     // Make the first texture unit active if it is not yet, so CEGUI gets what
     // it wants.
     glActiveTexture(GL_TEXTURE0);
@@ -31,6 +33,7 @@ void FTS::Runlevel::renderCEGUI()
 
     if (GUI::getSingletonPtr() == NULL)
         return ;
+    verifGL("Runlevel::renderCEGUI end1");
 
     // Try to render the GUI if it exists.
     try {
@@ -43,6 +46,7 @@ void FTS::Runlevel::renderCEGUI()
     // Deselect any texture they might have kept selected.
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, 0);
+    verifGL("Runlevel::renderCEGUI end2");
 
     // Now we will draw a dotted line around the currently active widget.
     // But do not draw it when a tooltip is currently active.
@@ -91,46 +95,8 @@ void FTS::Runlevel::renderCEGUI()
         glVertex2i(iRight, y);
     }
     glEnd();
-}
 
-/** This renders a coordinate system (x,y,z axis).
- *
- * \author Pompei2
- */
-void FTS::Runlevel::renderCoordSys()
-{
-    /// \TODO GL32
-    /*    glPushAttrib(GL_ALL_ATTRIB_BITS);
-        glEnable(GL_COLOR_MATERIAL);
-        glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-        glBegin(GL_LINES);
-        {
-            // X (Left negative/right positive)
-            glColor3f(1.0f,0.0f,0.0f);
-            glVertex3f(0.0f,0.0f,0.0f);
-            glVertex3f(0.0f+1000.0f,0.0f,0.0f);
-            glColor3f(0.25f,0.0f,0.0f);
-            glVertex3f(0.0f,0.0f,0.0f);
-            glVertex3f(0.0f-1000.0f,0.0f,0.0f);
-            // Y (into positive/outwards negative)
-            glColor3f(0.0f,1.0f,0.0f);
-            glVertex3f(0.0f,0.0f,0.0f);
-            glVertex3f(0.0f,0.0f+1000.0f,0.0f);
-            glColor3f(0.0f,0.25f,0.0f);
-            glVertex3f(0.0f,0.0f,0.0f);
-            glVertex3f(0.0f,0.0f-1000.0f,0.0f);
-            // Z (up positive/down negative)
-            glColor3f(0.0f,0.0f,1.0f);
-            glVertex3f(0.0f,0.0f,0.0f);
-            glVertex3f(0.0f,0.0f,0.0f+1000.0f);
-            glColor3f(0.0f,0.0f,0.25f);
-            glVertex3f(0.0f,0.0f,0.0f);
-            glVertex3f(0.0f,0.0f,0.0f-1000.0f);
-        }
-        glEnd();
-        glDisable(GL_COLOR_MATERIAL);
-        glPopAttrib();
-    */
+    verifGL("Runlevel::renderCEGUI end3");
 }
 
 /** This loads the default cursor object. should be called in your subclass'

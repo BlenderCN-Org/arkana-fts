@@ -98,6 +98,7 @@ public:
     /// default constructor
     ShaderIncludeManagerNativeGL()
     {
+        verifGL("ShaderIncludeManagerNativeGL::ShaderIncludeManagerNativeGL start");
         glNamedStringARB = (t_glNamedStringARB)FTS::glGetProcAddress("glNamedStringARB");
         glDeleteNamedStringARB = (t_glDeleteNamedStringARB)FTS::glGetProcAddress("glDeleteNamedStringARB");
 
@@ -105,30 +106,36 @@ public:
             throw NotExistException("GL_ARB_shading_language_include", "OpenGL extension");
 
         FTSMSGDBG("Using native GL include manager", 2);
+        verifGL("ShaderIncludeManagerNativeGL::ShaderIncludeManagerNativeGL end");
     }
 
     /// default destructor
     virtual ~ShaderIncludeManagerNativeGL()
     {
+        verifGL("ShaderIncludeManagerNativeGL::~ShaderIncludeManagerNativeGL start");
         for(std::list<Path>::iterator i = m_names.begin() ; i != m_names.end() ; ++i) {
             glDeleteNamedStringARB(-1, i->c_str());
         }
+        verifGL("ShaderIncludeManagerNativeGL::~ShaderIncludeManagerNativeGL end");
     }
 
     virtual bool addIncludeFile(const Path& in_sFileName, const String& in_sContent)
     {
         // Clear it.
         glGetError();
-        glNamedStringARB(SHADER_INCLUDE_ARB, -1, ("/" + in_sFileName).c_str(), -1, in_sContent.c_str());
+        String name = "/" + in_sFileName;
+        glNamedStringARB(SHADER_INCLUDE_ARB, -1, name.c_str(), -1, in_sContent.c_str());
         if(glGetError() != GL_NO_ERROR)
             return false;
-        m_names.push_back(in_sFileName);
+        m_names.push_back(name);
 
         return true;
     }
 
     virtual String compileShader(const GLuint in_id, const String& in_sShaderName, String in_sSrc, const ShaderCompileFlags& in_flags)
     {
+        verifGL("ShaderIncludeManagerNativeGL::compileShader start");
+
         // We split up the source into:
         //  - the version line
         //  - the extension specifications
@@ -142,6 +149,8 @@ public:
         FTSMSGDBG("Compiling shader " + in_sShaderName + " sourcecode:\n" + sRealSourceWithOptions.left(500) + " ...", 3);
         glShaderSource(in_id, 1, &src, NULL);
         glCompileShader(in_id);
+
+        verifGL("ShaderIncludeManagerNativeGL::compileShader end");
         return String::EMPTY;
     }
 private:
@@ -175,6 +184,8 @@ public:
 
     virtual String compileShader(const GLuint in_id, const String& in_sShaderName, String in_sSrc, const ShaderCompileFlags& in_flags)
     {
+        verifGL("ShaderIncludeManagerWorkaround::compileShader start");
+
         try {
             size_t start = 0, end = 0, line = 0;
             String sName;
@@ -220,6 +231,8 @@ public:
         FTSMSGDBG("Compiling shader " + in_sShaderName + " sourcecode:\n" + source.left(500) + " ...", 3);
         glShaderSource(in_id, 1, &src, NULL);
         glCompileShader(in_id);
+
+        verifGL("ShaderIncludeManagerWorkaround::compileShader end");
         return String::EMPTY;
     }
 private:
@@ -333,8 +346,8 @@ public:
     /// \throws CorruptDataException When the shader cannot compile.
     CompiledShader(const String& in_sShaderName, const String& in_sSourceCode, GLuint in_type, ShaderIncludeManager* in_pIncMgr, const ShaderCompileFlags& in_flags)
     {
-        verifGL("Shader::~CompiledShader pre " + in_sShaderName);
-        FTSMSGDBG("Shader::CompiledShader: Preparing to compile " + in_sShaderName, 2);
+        verifGL("CompiledShader::CompiledShader start " + in_sShaderName);
+        FTSMSGDBG("CompiledShader::CompiledShader: Preparing to compile " + in_sShaderName, 2);
         m_id = glCreateShader(in_type);
         String sErr = in_pIncMgr->compileShader(m_id, in_sShaderName, in_sSourceCode, in_flags);
 
@@ -360,17 +373,17 @@ public:
             throw CorruptDataException(in_sShaderName, m_sLog);
         }
 
-        FTSMSGDBG("Shader::CompiledShader: done with " + in_sShaderName + "; id = " + String::nr(m_id), 2);
-        verifGL("Shader::~CompiledShader post " + in_sShaderName);
+        FTSMSGDBG("CompiledShader::CompiledShader: done with " + in_sShaderName + "; id = " + String::nr(m_id), 2);
+        verifGL("CompiledShader::CompiledShader end " + in_sShaderName);
     };
 
     virtual ~CompiledShader()
     {
         if(m_id != 0) {
-            verifGL("Shader::~CompiledShader pre");
-            FTSMSGDBG("Shader::CompiledShader: deleting " + String::nr(m_id), 2);
+            verifGL("CompiledShader::~CompiledShader start");
+            FTSMSGDBG("CompiledShader::CompiledShader: deleting " + String::nr(m_id), 2);
             glDeleteShader(m_id);
-            verifGL("Shader::~CompiledShader");
+            verifGL("CompiledShader::~CompiledShader end");
         }
     };
 
@@ -384,31 +397,37 @@ private:
 
 FTS::Program::Program(const CompiledShader& in_vert, const CompiledShader& in_frag, const String& in_sShaderName)
 {
-    verifGL("Shader::ShaderLinker: start of " + in_sShaderName);
-    FTSMSGDBG("Shader::ShaderLinker: Preparing to link " + in_sShaderName + " using: " + String::nr(in_vert.id()) + ", " + String::nr(in_frag.id()), 2);
+    verifGL("Program::Program: start of " + in_sShaderName);
+    FTSMSGDBG("Program::Program: Preparing to link " + in_sShaderName + " using: " + String::nr(in_vert.id()) + ", " + String::nr(in_frag.id()), 2);
 
     m_id = glCreateProgram();
     glAttachShader(this->id(), in_vert.id());
     glAttachShader(this->id(), in_frag.id());
     glLinkProgram(this->id());
+
+    verifGL("Program::Program: end of " + in_sShaderName);
     this->init(in_sShaderName);
 }
 
 FTS::Program::Program(const CompiledShader& in_vert, const CompiledShader& in_frag, const CompiledShader& in_geom, const String& in_sShaderName)
 {
-    verifGL("Shader::ShaderLinker: start of " + in_sShaderName);
-    FTSMSGDBG("Shader::ShaderLinker: Preparing to link " + in_sShaderName + " using: " + String::nr(in_vert.id()) + ", " + String::nr(in_frag.id()) + ", " + String::nr(in_geom.id()), 2);
+    verifGL("Program::Program: start of " + in_sShaderName);
+    FTSMSGDBG("Program::Program: Preparing to link " + in_sShaderName + " using: " + String::nr(in_vert.id()) + ", " + String::nr(in_frag.id()) + ", " + String::nr(in_geom.id()), 2);
 
     m_id = glCreateProgram();
     glAttachShader(this->id(), in_vert.id());
     glAttachShader(this->id(), in_frag.id());
     glAttachShader(this->id(), in_geom.id());
     glLinkProgram(this->id());
+
+    verifGL("Program::Program: end of " + in_sShaderName);
     this->init(in_sShaderName);
 }
 
 void FTS::Program::init(const String& in_sShaderName)
 {
+    verifGL("Program::init: start of " + in_sShaderName);
+
     // We always get the info log, it might contain some useful warnings!
     GLint loglen = 0;
     glGetProgramiv(this->id(), GL_INFO_LOG_LENGTH, &loglen);
@@ -417,7 +436,7 @@ void FTS::Program::init(const String& in_sShaderName)
     m_sLog = &pszLog[0];
 
     if(!m_sLog.empty()) {
-        FTSMSGDBG("Shader::ShaderLinker: info-log of " + in_sShaderName + ":\n" + m_sLog, 2);
+        FTSMSGDBG("Program::init: info-log of " + in_sShaderName + ":\n" + m_sLog, 2);
     }
 
     // If there was an error, we throw it as an exception.
@@ -430,8 +449,8 @@ void FTS::Program::init(const String& in_sShaderName)
     // Say that the fragment shader "out" variable "Color" is the output to the screen (0).
     glBindFragDataLocation(this->id(), 0, "Color");
 
-    verifGL("Shader::ShaderLinker: link of " + in_sShaderName);
-    FTSMSGDBG("Shader::ShaderLinker: done with " + in_sShaderName + "; got id = " + String::nr(this->id()), 2);
+    verifGL("Program::init: link of " + in_sShaderName);
+    FTSMSGDBG("Program::init: done with " + in_sShaderName + "; got id = " + String::nr(this->id()), 2);
 
     // If all that worked, we query all attributes and all uniforms that are
     // available in the program and store their informations.
@@ -451,7 +470,7 @@ void FTS::Program::init(const String& in_sShaderName)
         a.id = glGetAttribLocation(this->id(), a.name.c_str());
 
         m_attribs[a.name] = a;
-        FTSMSGDBG("Shader::ShaderLinker: found attrib " + a.name + " id = " + String::nr(a.id), 3);
+        FTSMSGDBG("Program::init: found attrib " + a.name + " id = " + String::nr(a.id), 3);
     }
 
     // Then the uniforms:
@@ -475,10 +494,10 @@ void FTS::Program::init(const String& in_sShaderName)
         }
 
         m_uniforms[u.name] = u;
-        FTSMSGDBG("Shader::ShaderLinker: found uniform " + u.name + " id = " + String::nr(u.id), 3);
+        FTSMSGDBG("Program::init: found uniform " + u.name + " id = " + String::nr(u.id), 3);
     }
 
-    verifGL("Shader::ShaderLinker: end of " + in_sShaderName);
+    verifGL("Program::init: end of " + in_sShaderName);
 }
 
 const FTS::Program::Attribute& FTS::Program::vertexAttribute(const String& in_sAttribName) const
@@ -503,7 +522,7 @@ bool FTS::Program::setVertexAttribute(const String& in_sAttribName, const Vertex
     if(i == m_attribs.end())
         return false;
 
-    verifGL("Shader::setVertexAttribute("+in_sAttribName+") start");
+    verifGL("Program::setVertexAttribute("+in_sAttribName+") start");
     // Do some verifications
     if(in_buffer.type == GL_FLOAT) {
         switch(in_buffer.nComponents) {
@@ -533,7 +552,7 @@ bool FTS::Program::setVertexAttribute(const String& in_sAttribName, const Vertex
     glVertexAttribPointer(i->second.id, in_buffer.nComponents, in_buffer.type, in_buffer.normalize, in_buffer.stride, NULL);
 
     /// \TODO: where to disable the vertex attribute?
-    verifGL("Shader::setVertexAttribute("+in_sAttribName+") end");
+    verifGL("Program::setVertexAttribute("+in_sAttribName+") end");
     return true;
 }
 
@@ -543,7 +562,7 @@ bool FTS::Program::setVertexAttribute(const String& in_sAttribName, const Vertex
     if(i == m_attribs.end())
         return false;
 
-    verifGL("Shader::setVertexAttribute(interleaved: "+in_sAttribName+") start");
+    verifGL("Program::setVertexAttribute(interleaved: "+in_sAttribName+") start");
     // Do some verifications
     if(in_buffer.type == GL_FLOAT) {
         switch(in_nComponents) {
@@ -574,7 +593,7 @@ bool FTS::Program::setVertexAttribute(const String& in_sAttribName, const Vertex
     glVertexAttribPointer(i->second.id, in_nComponents, in_buffer.type, in_buffer.normalize, in_buffer.stride, (const GLvoid*)(in_offset * sizeof_));
 
     /// \TODO: where to disable the vertex attribute?
-    verifGL("Shader::setVertexAttribute("+in_sAttribName+") end");
+    verifGL("Program::setVertexAttribute("+in_sAttribName+") end");
     return true;
 }
 
@@ -599,13 +618,13 @@ bool FTS::Program::setUniform(const String& in_sUniformName, float in_v)
     if(i == m_uniforms.end())
         return false;
 
-    verifGL("Shader::setUniform("+in_sUniformName+") start");
+    verifGL("Program::setUniform("+in_sUniformName+") start");
     if(i->second.type == GL_FLOAT) {
         glUniform1f(i->second.id, in_v);
-        verifGL("Shader::setUniform("+in_sUniformName+") end");
+        verifGL("Program::setUniform("+in_sUniformName+") end");
         return true;
     } else {
-        verifGL("Shader::setUniform("+in_sUniformName+") badend");
+        verifGL("Program::setUniform("+in_sUniformName+") badend");
         return false;
     }
 }
@@ -616,7 +635,7 @@ bool FTS::Program::setUniform(const String& in_sUniformName, const Vector& in_v)
     if(i == m_uniforms.end())
         return false;
 
-    verifGL("Shader::setUniform("+in_sUniformName+") start");
+    verifGL("Program::setUniform("+in_sUniformName+") start");
     switch(i->second.type) {
     case GL_FLOAT:
         glUniform1f(i->second.id, in_v.x());
@@ -631,11 +650,11 @@ bool FTS::Program::setUniform(const String& in_sUniformName, const Vector& in_v)
         glUniform4fv(i->second.id, 1, in_v.array4f());
         break;
     default:
-        verifGL("Shader::setUniform("+in_sUniformName+") badend");
+        verifGL("Program::setUniform("+in_sUniformName+") badend");
         return false;
     };
 
-    verifGL("Shader::setUniform("+in_sUniformName+") end");
+    verifGL("Program::setUniform("+in_sUniformName+") end");
     return true;
 }
 
@@ -645,7 +664,7 @@ bool FTS::Program::setUniform(const String& in_sUniformName, const Color& in_c)
     if(i == m_uniforms.end())
         return false;
 
-    verifGL("Shader::setUniform("+in_sUniformName+") start");
+    verifGL("Program::setUniform("+in_sUniformName+") start");
     switch(i->second.type) {
     case GL_FLOAT_VEC2:
         glUniform2fv(i->second.id, 1, in_c.array3f());
@@ -657,11 +676,11 @@ bool FTS::Program::setUniform(const String& in_sUniformName, const Color& in_c)
         glUniform4fv(i->second.id, 1, in_c.array4f());
         break;
     default:
-        verifGL("Shader::setUniform("+in_sUniformName+") badend");
+        verifGL("Program::setUniform("+in_sUniformName+") badend");
         return false;
     };
 
-    verifGL("Shader::setUniform("+in_sUniformName+") end");
+    verifGL("Program::setUniform("+in_sUniformName+") end");
     return true;
 }
 
@@ -671,7 +690,7 @@ bool FTS::Program::setUniform(const String& in_sUniformName, const Quaternion& i
     if(i == m_uniforms.end())
         return false;
 
-    verifGL("Shader::setUniform("+in_sUniformName+") start");
+    verifGL("Program::setUniform("+in_sUniformName+") start");
     switch(i->second.type) {
     case GL_FLOAT_VEC2:
         glUniform2fv(i->second.id, 1, in_q.array4f());
@@ -683,11 +702,11 @@ bool FTS::Program::setUniform(const String& in_sUniformName, const Quaternion& i
         glUniform4fv(i->second.id, 1, in_q.array4f());
         break;
     default:
-        verifGL("Shader::setUniform("+in_sUniformName+") badend");
+        verifGL("Program::setUniform("+in_sUniformName+") badend");
         return false;
     };
 
-    verifGL("Shader::setUniform("+in_sUniformName+") end");
+    verifGL("Program::setUniform("+in_sUniformName+") end");
     return true;
 }
 
@@ -697,14 +716,14 @@ bool FTS::Program::setUniform(const String& in_sUniformName, const General4x4Mat
     if(i == m_uniforms.end())
         return false;
 
-    verifGL("Shader::setUniform("+in_sUniformName+") start");
+    verifGL("Program::setUniform("+in_sUniformName+") start");
     if(i->second.type != GL_FLOAT_MAT4) {
-        verifGL("Shader::setUniform("+in_sUniformName+") badend");
+        verifGL("Program::setUniform("+in_sUniformName+") badend");
         return false;
     }
 
     glUniformMatrix4fv(i->second.id, 1, in_transpose ? GL_TRUE : GL_FALSE, in_mat.array16f());
-    verifGL("Shader::setUniform("+in_sUniformName+") end");
+    verifGL("Program::setUniform("+in_sUniformName+") end");
     return true;
 }
 
@@ -714,17 +733,17 @@ bool FTS::Program::setUniform(const String& in_sUniformName, const AffineMatrix&
     if(i == m_uniforms.end())
         return false;
 
-    verifGL("Shader::setUniform("+in_sUniformName+") start");
+    verifGL("Program::setUniform("+in_sUniformName+") start");
     if(i->second.type == GL_FLOAT_MAT3) {
         glUniformMatrix3fv(i->second.id, 1, in_transpose ? GL_TRUE : GL_FALSE, in_mat.array9f());
     } else if(i->second.type == GL_FLOAT_MAT4) {
         glUniformMatrix4fv(i->second.id, 1, in_transpose ? GL_TRUE : GL_FALSE, in_mat.array16f());
     } else {
-        verifGL("Shader::setUniform("+in_sUniformName+") badend");
+        verifGL("Program::setUniform("+in_sUniformName+") badend");
         return false;
     }
 
-    verifGL("Shader::setUniform("+in_sUniformName+") end");
+    verifGL("Program::setUniform("+in_sUniformName+") end");
     return true;
 }
 
@@ -734,17 +753,17 @@ bool FTS::Program::setUniformInverse(const String& in_sUniformName, const Affine
     if(i == m_uniforms.end())
         return false;
 
-    verifGL("Shader::setUniformInv("+in_sUniformName+") start");
+    verifGL("Program::setUniformInv("+in_sUniformName+") start");
     if(i->second.type == GL_FLOAT_MAT3) {
         glUniformMatrix3fv(i->second.id, 1, in_transpose ? GL_TRUE : GL_FALSE, in_mat.array9fInverse());
     } else if(i->second.type == GL_FLOAT_MAT4) {
         glUniformMatrix4fv(i->second.id, 1, in_transpose ? GL_TRUE : GL_FALSE, in_mat.array16fInverse());
     } else {
-        verifGL("Shader::setUniformInv("+in_sUniformName+") badend");
+        verifGL("Program::setUniformInv("+in_sUniformName+") badend");
         return false;
     }
 
-    verifGL("Shader::setUniformInv("+in_sUniformName+") end");
+    verifGL("Program::setUniformInv("+in_sUniformName+") end");
     return true;
 }
 
@@ -754,14 +773,14 @@ bool FTS::Program::setUniformInverse(const String& in_sUniformName, const Genera
     if(i == m_uniforms.end())
         return false;
 
-    verifGL("Shader::setUniformInv("+in_sUniformName+") start");
+    verifGL("Program::setUniformInv("+in_sUniformName+") start");
     if(i->second.type != GL_FLOAT_MAT4) {
-        verifGL("Shader::setUniformInv("+in_sUniformName+") badend");
+        verifGL("Program::setUniformInv("+in_sUniformName+") badend");
         return false;
     }
 
     glUniformMatrix4fv(i->second.id, 1, in_transpose ? GL_TRUE : GL_FALSE, in_mat.array16fInverse());
-    verifGL("Shader::setUniformInv("+in_sUniformName+") end");
+    verifGL("Program::setUniformInv("+in_sUniformName+") end");
     return true;
 }
 
@@ -772,14 +791,14 @@ bool FTS::Program::setUniformSampler(const String& in_sUniformName, uint8_t in_i
     if(i == m_uniforms.end())
         return false;
 
-    verifGL("Shader::setUniformSampler("+in_sUniformName+") start");
+    verifGL("Program::setUniformSampler("+in_sUniformName+") start");
     if(i->second.type != GL_SAMPLER_2D){
-        verifGL("Shader::setUniformSampler("+in_sUniformName+", "+String::nr(in_iTexUnit)+") badend");
+        verifGL("Program::setUniformSampler("+in_sUniformName+", "+String::nr(in_iTexUnit)+") badend");
         return false;
     }
 
     glUniform1i(i->second.id, (GLint)in_iTexUnit);
-    verifGL("Shader::setUniformSampler("+in_sUniformName+", "+String::nr(in_iTexUnit)+") end");
+    verifGL("Program::setUniformSampler("+in_sUniformName+", "+String::nr(in_iTexUnit)+") end");
     return true;
 }
 
@@ -790,11 +809,11 @@ bool FTS::Program::setUniformArrayElement(const String& in_sUniformName, uint16_
         return false;
 
     if(in_iArrayIdx >= i->second.size) {
-        FTSMSG("Shader::setUniformArrayElement("+in_sUniformName+", "+String::nr(in_iArrayIdx)+"): index out of bounds (max is "+String::nr(i->second.size)+")\n", MsgType::WarningNoMB);
+        FTSMSG("Program::setUniformArrayElement("+in_sUniformName+", "+String::nr(in_iArrayIdx)+"): index out of bounds (max is "+String::nr(i->second.size)+")\n", MsgType::WarningNoMB);
         return false;
     }
 
-    verifGL("Shader::setUniformArrayElement("+in_sUniformName+", "+String::nr(in_iArrayIdx)+") start");
+    verifGL("Program::setUniformArrayElement("+in_sUniformName+", "+String::nr(in_iArrayIdx)+") start");
     switch(i->second.type) {
     case GL_FLOAT_VEC2:
         glUniform2fv(i->second.arrayIds[in_iArrayIdx], 1, in_v.array3f());
@@ -806,11 +825,11 @@ bool FTS::Program::setUniformArrayElement(const String& in_sUniformName, uint16_
         glUniform4fv(i->second.arrayIds[in_iArrayIdx], 1, in_v.array4f());
         break;
     default:
-        verifGL("Shader::setUniformArrayElement("+in_sUniformName+", "+String::nr(in_iArrayIdx)+") badend");
+        verifGL("Program::setUniformArrayElement("+in_sUniformName+", "+String::nr(in_iArrayIdx)+") badend");
         return false;
     };
 
-    verifGL("Shader::setUniformArrayElement("+in_sUniformName+", "+String::nr(in_iArrayIdx)+") end");
+    verifGL("Program::setUniformArrayElement("+in_sUniformName+", "+String::nr(in_iArrayIdx)+") end");
     return true;
 }
 
@@ -821,21 +840,21 @@ bool FTS::Program::setUniformArrayElement(const String& in_sUniformName, uint16_
         return false;
 
     if(in_iArrayIdx >= i->second.size) {
-        FTSMSG("Shader::setUniformArrayElement("+in_sUniformName+", "+String::nr(in_iArrayIdx)+"): index out of bounds (max is "+String::nr(i->second.size)+")\n", MsgType::WarningNoMB);
+        FTSMSG("Program::setUniformArrayElement("+in_sUniformName+", "+String::nr(in_iArrayIdx)+"): index out of bounds (max is "+String::nr(i->second.size)+")\n", MsgType::WarningNoMB);
         return false;
     }
 
-    verifGL("Shader::setUniformArrayElement("+in_sUniformName+", "+String::nr(in_iArrayIdx)+") start");
+    verifGL("Program::setUniformArrayElement("+in_sUniformName+", "+String::nr(in_iArrayIdx)+") start");
     if(i->second.type == GL_FLOAT_MAT3) {
         glUniformMatrix3fv(i->second.arrayIds[in_iArrayIdx], 1, in_transpose ? GL_TRUE : GL_FALSE, in_mat.array9f());
     } else if(i->second.type == GL_FLOAT_MAT4) {
         glUniformMatrix4fv(i->second.arrayIds[in_iArrayIdx], 1, in_transpose ? GL_TRUE : GL_FALSE, in_mat.array16f());
     } else {
-        verifGL("Shader::setUniformArrayElement("+in_sUniformName+", "+String::nr(in_iArrayIdx)+") badend");
+        verifGL("Program::setUniformArrayElement("+in_sUniformName+", "+String::nr(in_iArrayIdx)+") badend");
         return false;
     }
 
-    verifGL("Shader::setUniformArrayElement("+in_sUniformName+", "+String::nr(in_iArrayIdx)+") end");
+    verifGL("Program::setUniformArrayElement("+in_sUniformName+", "+String::nr(in_iArrayIdx)+") end");
     return true;
 }
 
@@ -846,21 +865,21 @@ bool FTS::Program::setUniformArrayElementInverse(const String& in_sUniformName, 
         return false;
 
     if(in_iArrayIdx >= i->second.size) {
-        FTSMSG("Shader::setUniformArrayElement("+in_sUniformName+", "+String::nr(in_iArrayIdx)+"): index out of bounds (max is "+String::nr(i->second.size)+")\n", MsgType::WarningNoMB);
+        FTSMSG("Program::setUniformArrayElement("+in_sUniformName+", "+String::nr(in_iArrayIdx)+"): index out of bounds (max is "+String::nr(i->second.size)+")\n", MsgType::WarningNoMB);
         return false;
     }
 
-    verifGL("Shader::setUniformArrayElement("+in_sUniformName+", "+String::nr(in_iArrayIdx)+") start");
+    verifGL("Program::setUniformArrayElement("+in_sUniformName+", "+String::nr(in_iArrayIdx)+") start");
     if(i->second.type == GL_FLOAT_MAT3) {
         glUniformMatrix3fv(i->second.arrayIds[in_iArrayIdx], 1, in_transpose ? GL_TRUE : GL_FALSE, in_mat.array9fInverse());
     } else if(i->second.type == GL_FLOAT_MAT4) {
         glUniformMatrix4fv(i->second.arrayIds[in_iArrayIdx], 1, in_transpose ? GL_TRUE : GL_FALSE, in_mat.array16fInverse());
     } else {
-        verifGL("Shader::setUniformArrayElement("+in_sUniformName+", "+String::nr(in_iArrayIdx)+") badend");
+        verifGL("Program::setUniformArrayElement("+in_sUniformName+", "+String::nr(in_iArrayIdx)+") badend");
         return false;
     }
 
-    verifGL("Shader::setUniformArrayElement("+in_sUniformName+", "+String::nr(in_iArrayIdx)+") end");
+    verifGL("Program::setUniformArrayElement("+in_sUniformName+", "+String::nr(in_iArrayIdx)+") end");
     return true;
 }
 
@@ -872,10 +891,10 @@ void FTS::Program::bind()
     if(this->id() == m_uiCurrentlyBoundShaderId)
         return;
 
-    verifGL("Shader::bind("+String::nr(this->id())+") start");
+    verifGL("Program::bind("+String::nr(this->id())+") start");
     glUseProgram(this->id());
     m_uiCurrentlyBoundShaderId = this->id();
-    verifGL("Shader::bind("+String::nr(this->id())+") end");
+    verifGL("Program::bind("+String::nr(this->id())+") end");
 }
 
 void Program::unbind()
@@ -887,9 +906,9 @@ void Program::unbind()
 FTS::Program::~Program()
 {
     if(m_id != 0) {
-        verifGL("Shader::~Shader("+String::nr(this->id())+") start");
+        verifGL("Program::~Shader("+String::nr(this->id())+") start");
         glDeleteProgram(this->id());
-        verifGL("Shader::~Shader("+String::nr(this->id())+") end");
+        verifGL("Program::~Shader("+String::nr(this->id())+") end");
     }
 }
 
@@ -983,6 +1002,7 @@ FTS::ShaderManager::ShaderManager()
     : m_sep("|")
     , m_optSep(":")
 {
+    verifGL("ShaderManager::ShaderManager start");
     String sInfo;
 
     // Get some interesting informations.
@@ -994,7 +1014,7 @@ FTS::ShaderManager::ShaderManager()
     glGetIntegerv(GL_MAX_COMBINED_VERTEX_UNIFORM_COMPONENTS, &i3);
     sInfo += "\nMaximum vertex/fragment/combined uniform components: " + String::nr(i) + "/" + String::nr(i2) + "/" + String::nr(i3) + " (min: 16, w00t)";
 
-    FTSMSGDBG("Initialised shader manager, some OpenGL informations: "+sInfo, 2);
+    FTSMSGDBG("ShaderManager::ShaderManager: some OpenGL informations: "+sInfo, 2);
 
     // We need that extension to work. This is only included in recent drivers!
     // Recent as of March/April 2010
@@ -1030,11 +1050,13 @@ FTS::ShaderManager::ShaderManager()
     CompiledShaderPtr pFrag = this->compileShader(DefaultFragmentShader);
     String sDefaultShaderName = this->buildProgramName(DefaultVertexShader, DefaultFragmentShader, DefaultGeometryShader, ShaderCompileFlags());
     m_linkedShaders[sDefaultShaderName] = new Program(*pVert, *pFrag, sDefaultShaderName);
+    verifGL("ShaderManager::ShaderManager end");
 }
 
 FTS::ShaderManager::~ShaderManager()
 {
-    FTSMSGDBG("Destroying shader manager", 2);
+    verifGL("ShaderManager::~ShaderManager start");
+    FTSMSGDBG("ShaderManager::~ShaderManager", 2);
     SAFE_DELETE(m_pInclManager);
 
     String sWarning = "The following shader programs haven't been unloaded:\n";
@@ -1050,11 +1072,13 @@ FTS::ShaderManager::~ShaderManager()
     }
 
     if(m_linkedShaders.size() > 1) {
-        FTSMSGDBG(sWarning, 2);
+        FTSMSGDBG("ShaderManager::~ShaderManager: " + sWarning, 2);
     }
 
     // But don't forget to delete it anyways.
     delete getDefaultProgram();
+
+    verifGL("ShaderManager::~ShaderManager end");
 }
 
 void ShaderManager::destroyProgramsUsing(const FTS::String& in_sShaderName)
@@ -1143,6 +1167,7 @@ CompiledShaderPtr FTS::ShaderManager::compileShader(const String& in_sShaderName
 
 String FTS::ShaderManager::getCompiledShaderSource(const String& in_sShaderName, const ShaderCompileFlags& flags)
 {
+    verifGL("ShaderManager::getCompiledShaderSource(" + in_sShaderName + ", " + flags.toString() + ") start");
     CompiledShaderPtr shader = this->compileShader(in_sShaderName, flags);
     GLuint id = shader->id();
     GLint srclen = 0;
@@ -1150,6 +1175,7 @@ String FTS::ShaderManager::getCompiledShaderSource(const String& in_sShaderName,
     GLint realsrclen = 0;
     std::vector<GLchar> pszSrc(srclen);
     glGetShaderSource(id, srclen, &realsrclen, &pszSrc[0]);
+    verifGL("ShaderManager::getCompiledShaderSource(" + in_sShaderName + ", " + flags.toString() + ") end");
     return String(&pszSrc[0]);
 }
 
@@ -1187,15 +1213,15 @@ Program* ShaderManager::getDefaultProgram()
     return m_linkedShaders[defaultName];
 }
 
-String ShaderManager::buildShaderName(FTS::String baseName, const FTS::ShaderCompileFlags& flags)
+String ShaderManager::buildShaderName(FTS::String baseName)
 {
     // If the file is located within the shaders directory (or somewhere deeper)
     // we take out the whole shaders directory prefix so we kindo got "relative"
     // names to a kind of "include directory".
-    return baseName.replaceStr(D_SHADERS_DIRNAME, "") + join(m_optSep, flags.flags().begin(), flags.flags().end());
+    return baseName.replaceStr(D_SHADERS_DIRNAME, "");
 }
 
 String ShaderManager::buildProgramName(const FTS::String& vtxBaseName, const FTS::String& fragBaseName, const FTS::String& geomBaseName, const FTS::ShaderCompileFlags& flags)
 {
-    return this->buildShaderName(vtxBaseName, flags) + m_sep + this->buildShaderName(fragBaseName, flags) + m_sep + this->buildShaderName(geomBaseName, flags);
+    return this->buildShaderName(vtxBaseName) + m_sep + this->buildShaderName(fragBaseName) + m_sep + this->buildShaderName(geomBaseName) + join(m_optSep, flags.flags().begin(), flags.flags().end());
 }

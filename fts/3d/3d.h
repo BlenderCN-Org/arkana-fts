@@ -14,6 +14,7 @@ namespace FTS {
 /// \return ERR_OK if there was no error, else the opengl error code.
 /// \author Pompei2
 #ifdef DEBUG
+#include "dLib/dString/dString.h"
 int verifGL(const FTS::String& in_sMessage);
 #else                         // Personally I think in release mode no opengl error should happen !
 // int verifGL(const String &in_sMessage);

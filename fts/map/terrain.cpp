@@ -483,6 +483,8 @@ void Terrain::precalcNormals()
  */
 int Terrain::draw(unsigned int in_uiTicks)
 {
+    verifGL("Terrain::draw start");
+
     // We select the tilemap as primary texture.
     glEnable(GL_TEXTURE_2D);
     m_pTileset->lower()->selectMap(0);
@@ -573,6 +575,6 @@ int Terrain::draw(unsigned int in_uiTicks)
     }
 #endif
 
-    verifGL("CTerrain::draw");
+    verifGL("Terrain::draw end");
     return ERR_OK;
 }

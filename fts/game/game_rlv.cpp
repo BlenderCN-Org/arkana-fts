@@ -167,12 +167,6 @@ void GameRlv::render3D(const Clock& in_c)
     LightSystem::getSys()->renderAll((int)in_c.getCurrentTime());
 
     m_pMap->draw((unsigned int)(in_c.getCurrentTime()*1000.0));
-
-    // In debug mode draw a coordinate system.
-#ifdef DEBUG
-    if(m_bRenderCoordinateSystem)
-        this->renderCoordSys();
-#endif
 }
 
 /** This method needs to be overloaded. It has to return a unique name for
