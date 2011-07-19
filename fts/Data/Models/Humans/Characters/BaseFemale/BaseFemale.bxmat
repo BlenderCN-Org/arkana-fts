@@ -3,7 +3,7 @@
 <MATERIAL NAME="Material">
   <PROPERTY NAME="uMaterialSpecular">0 0 0 1</PROPERTY>
   <PROPERTY NAME="uTexture">skin.png</PROPERTY>
-  <PROPERTY NAME="uMaterialDiffuse">0.32 0.32 0.32 1</PROPERTY>
+  <PROPERTY NAME="uMaterialDiffuse">0.64 0.64 0.64 1</PROPERTY>
   <PROPERTY NAME="uMaterialAmbient">0.2 0.2 0.2 1</PROPERTY>
 </MATERIAL>
 
