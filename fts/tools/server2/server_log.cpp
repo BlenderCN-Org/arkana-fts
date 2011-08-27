@@ -4,6 +4,7 @@
 #include <errno.h>
 #include <string.h>
 #include <pthread.h>
+#include <fstream>
 
 using namespace FTS;
 using namespace FTSSrv2;
@@ -280,7 +281,9 @@ void FTSSrv2::ServerLogger::netlog(const FTS::String &s)
 {
     m_mutex.lock();
     FTS::String sFile = m_sNetLogFile;
+#if DEBUG
     bool bDaemon = m_bDaemon, bVerbose = m_bVerbose;
+#endif
     m_mutex.unlock();
 
     FTS::String sMsg = this->timeString() + ": " + s + "\n";
@@ -297,15 +300,13 @@ void FTSSrv2::ServerLogger::netlog(const FTS::String &s)
 size_t FTSSrv2::ServerLogger::addPlayer()
 {
     // Modify the statistics.
-    m_nPlayersMutex.lock();
+    Lock l(m_nPlayersMutex);
+
     m_nPlayers++;
-    FILE *pFile = fopen(m_sPlayersFile.c_str(), "w+");
-    if(pFile) {
-        fprintf(pFile, "%ld", m_nPlayers);
-        fflush(pFile);
-        fclose(pFile);
+    std::ofstream of(m_sPlayersFile.c_str(), std::ios_base::trunc);
+    if(of) {
+        of << m_nPlayers;
     }
-    m_nPlayersMutex.unlock();
 
     return m_nPlayers;
 }
@@ -313,15 +314,12 @@ size_t FTSSrv2::ServerLogger::addPlayer()
 size_t FTSSrv2::ServerLogger::remPlayer()
 {
     // Modify the statistics.
-    m_nPlayersMutex.lock();
+    Lock l(m_nPlayersMutex);
     m_nPlayers--;
-    FILE *pFile = fopen(m_sPlayersFile.c_str(), "w+");
-    if(pFile) {
-        fprintf(pFile, "%ld", m_nPlayers);
-        fflush(pFile);
-        fclose(pFile);
+    std::ofstream of(m_sPlayersFile.c_str(), std::ios_base::trunc);
+    if(of) {
+        of << m_nPlayers;
     }
-    m_nPlayersMutex.unlock();
 
     return m_nPlayers;
 }
@@ -329,15 +327,12 @@ size_t FTSSrv2::ServerLogger::remPlayer()
 size_t FTSSrv2::ServerLogger::addGame()
 {
     // Modify the statistics.
-    m_nGamesMutex.lock();
+    Lock l(m_nGamesMutex);
     m_nGames++;
-    FILE *pFile = fopen(m_sGamesFile.c_str(), "w+");
-    if(pFile) {
-        fprintf(pFile, "%ld", m_nGames);
-        fflush(pFile);
-        fclose(pFile);
+    std::ofstream of(m_sGamesFile.c_str(), std::ios_base::trunc);
+    if(of) {
+        of << m_nGames;
     }
-    m_nGamesMutex.unlock();
 
     return m_nGames;
 }
@@ -345,15 +340,13 @@ size_t FTSSrv2::ServerLogger::addGame()
 size_t FTSSrv2::ServerLogger::remGame()
 {
     // Modify the statistics.
-    m_nGamesMutex.lock();
+    Lock l(m_nGamesMutex);
     m_nGames--;
-    FILE *pFile = fopen(m_sGamesFile.c_str(), "w+");
-    if(pFile) {
-        fprintf(pFile, "%ld", m_nGames);
-        fflush(pFile);
-        fclose(pFile);
+    std::ofstream of(m_sGamesFile.c_str(), std::ios_base::trunc);
+    if(of) {
+        of << m_nGames;
     }
-    m_nGamesMutex.unlock();
 
     return m_nGames;
 }
+

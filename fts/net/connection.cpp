@@ -34,6 +34,7 @@ inline void close(SOCKET s)
 #  endif
 
 #include <cerrno>
+#include <cassert>
 
 using namespace FTS;
 

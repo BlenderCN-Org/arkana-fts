@@ -52,6 +52,8 @@ set(SOURCES main.cpp channel.cpp client.cpp db.cpp db_build.cpp dummy_types.cpp
             ../../utilities/DataContainer.cpp
             ../../utilities/Singleton.cpp
             ../../logging/logger.cpp
+            ../../logging/Chronometer.cpp
+            ../../main/Clock.cpp
             ../../main/Exception.cpp
    )
 
@@ -63,85 +65,39 @@ else()
     message(STATUS "Configuring for release")
 endif()
 
-if(DSRV_ROOT_IS_BAD)
-    message(STATUS "Server will start as user ${DSRV_ROOT_IS_BAD} if started as root")
-    add_definitions(-DDSRV_ROOT_IS_BAD="\\"${DSRV_ROOT_IS_BAD}\\"")
-endif()
+# The configuration settings.
+set(RUN_AS_USER "fts" CACHE STRING "The user as which to run the server, in case root starts it.")
+#set(USE_ANTIFLOOD True cache STRING "Use a flood-protection?")
 
-if(D_USE_ANTIFLOOD)
-    message(STATUS "Using anti-flooding system")
-    add_definitions(-DD_USE_ANTIFLOOD)
-endif()
+set(LOG_MAX_LOGFILE_KBYTES 10240 CACHE STRING "Maximum lenght of a logfile, in kb, before a new one is used.")
+set(LOG_DIR "/var/log" CACHE PATH "Where to write the logfiles?")
+set(LOG_PLAYERCOUNT_FILE "nplayers.txt" CACHE FILEPATH "File to write the amount of players currently online to.")
+set(LOG_GAMECOUNT_FILE "ngames.txt" CACHE FILEPATH "File to write the amount of games currently being played to.")
 
-if(DSRV_MAX_LOGFILE_BYTES)
-    message(STATUS "Setting maximum logfile length to ${DSRV_MAX_LOGFILE_BYTES}")
-    add_definitions(-DDSRV_MAX_LOGFILE_BYTES=${DSRV_MAX_LOGFILE_BYTES})
-endif()
+set(PORT_FIRST "0xAF75" CACHE STRING "First port in the range of ports to listen to.")
+set(PORT_LAST "0xAF7F" CACHE STRING "Last port in the range of ports to listen to.")
 
-if(DSRV_LOG_DIR)
-    message(STATUS "Setting default logfiles directory to ${DSRV_LOG_DIR}")
-    add_definitions(-DDSRV_LOG_DIR="\\"${DSRV_LOG_DIR}\\"")
-endif()
+set(MYSQL_HOST "localhost" CACHE STRING "The server holding the MySQL tables to use.")
+set(MYSQL_USER "fts" CACHE STRING "The MySQL username that should access the db.")
+set(MYSQL_PASS "" CACHE STRING "The password of the MySQL user.")
+set(MYSQL_DB "arkana_game" CACHE STRING "The name of the database to use.")
 
-if(DSRV_FILE_NPLAYERS)
-    message(STATUS "Setting player count filename to ${DSRV_FILE_NPLAYERS}")
-    add_definitions(-DDSRV_FILE_NPLAYERS="\\"${DSRV_FILE_NPLAYERS}\\"")
-endif()
+set(CHAT_DEFAULT_CHANNEL_NAME "Talk To Survive (main channel)" CACHE STRING "The name of the channel new users land in.")
+set(CHAT_DEFAULT_CHANNEL_MOTTO "This is the main channel in Arkana-FTS where everybody meets" CACHE STRING "The motto of the channel new users land in.")
+set(CHAT_DEFAULT_CHANNEL_ADMIN "Pompei2" CACHE STRING "The user who should be admin of the default channel.")
+set(CHAT_DEVS_CHANNEL_NAME "Dev's Channel" CACHE STRING "The name of the developer's channel.")
+set(CHAT_DEVS_CHANNEL_MOTTO "The channel for the developers of Arkana-FTS and the players wanting to know more." CACHE STRING "The motto of the dev's channel")
+set(CHAT_DEVS_CHANNEL_ADMIN "Pompei2" CACHE STRING "The user who should be admin of the dev's channel.")
+set(CHAT_DEFAULT_MOTTO "Arkana-FTS Rules!" CACHE STRING "The motto any newly created channel has by default.")
+set(CHAT_MAX_CHANS_PER_USER "3" CACHE STRING "The maximum amount of channes a user can create/own.")
 
-if(DSRV_FILE_NGAMES)
-    message(STATUS "Setting game count filename to ${DSRV_FILE_NGAMES}")
-    add_definitions(-DDSRV_FILE_NGAMES="\\"${DSRV_FILE_NGAMES}\\"")
-endif()
-
-if(DSRV_LOGFILE_ERR)
-    message(STATUS "Setting error log filename to ${DSRV_LOGFILE_ERR}")
-    add_definitions(-DDSRV_LOGFILE_ERR="\\"${DSRV_LOGFILE_ERR}\\"")
-endif()
-
-if(DSRV_LOGFILE_LOG)
-    message(STATUS "Setting log filename to ${DSRV_LOGFILE_LOG}")
-    add_definitions(-DDSRV_LOGFILE_LOG="\\"${DSRV_LOGFILE_LOG}\\"")
-endif()
-
-if(DSRV_LOGFILE_NETLOG)
-    message(STATUS "Setting net log filename to ${DSRV_LOGFILE_NETLOG}")
-    add_definitions(-DDSRV_LOGFILE_NETLOG="\\"${DSRV_LOGFILE_NETLOG}\\"")
-endif()
-
-if(DSRV_PORT_FIRST)
-    message(STATUS "Setting first port of the range to ${DSRV_PORT_FIRST}")
-    add_definitions(-DDSRV_PORT_FIRST=${DSRV_PORT_FIRST}\\"")
-endif()
-
-if(DSRV_PORT_LAST)
-    message(STATUS "Setting last port of the range to ${DSRV_PORT_LAST}")
-    add_definitions(-DDSRV_PORT_LAST=${DSRV_PORT_LAST}\\"")
-endif()
-
-if(DSRV_MYSQL_HOST)
-    message(STATUS "Setting MySQL host to ${DSRV_MYSQL_HOST}")
-    add_definitions(-DDSRV_MYSQL_HOST="\\"${DSRV_MYSQL_HOST}\\"")
-endif()
-
-if(DSRV_MYSQL_USER)
-    message(STATUS "Setting MySQL Username to ${DSRV_MYSQL_USER}")
-    add_definitions(-DDSRV_MYSQL_USER="\\"${DSRV_MYSQL_USER}\\"")
-endif()
-
-if(DSRV_MYSQL_PASS)
-    message(STATUS "Setting MySQL Password to ${DSRV_MYSQL_PASS}")
-    add_definitions(-DDSRV_MYSQL_PASS="\\"${DSRV_MYSQL_PASS}\\"")
-endif()
-
-if(DSRV_MYSQL_DB)
-    message(STATUS "Setting MySQL Database to ${DSRV_MYSQL_DB}")
-    add_definitions(-DDSRV_MYSQL_DB="\\"${DSRV_MYSQL_DB}\\"")
-endif()
+configure_file("${fts_server_SOURCE_DIR}/config.h.in" "config.h" ESCAPE_QUOTES)
 
 # Add additional source directories.
 include_directories(${fts_server_SOURCE_DIR}/../..
                     ${fts_server_SOURCE_DIR}/..
                     ${fts_server_SOURCE_DIR}
+                    ${fts_server_BINARY_DIR}
                     ${MYSQL_INCLUDE_DIR}
                    )
 
@@ -155,8 +111,9 @@ add_definitions(-DD_STRING_MYSQL
 
 # Compiler-dependent and build-dependend flags:
 if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -pg")
-    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -Wall")
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -std=c++0x -Wall -pg")
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -std=c++0x -Wall")
 elseif(MSVC)
 endif()
 
@@ -171,3 +128,5 @@ endif()
 ##########################
 add_executable(fts-server ${SOURCES})
 target_link_libraries(fts-server ${MYSQL_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+
+install(TARGETS fts-server DESTINATION bin)

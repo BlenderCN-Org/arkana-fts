@@ -1,6 +1,6 @@
 #include "server_log.h"
 #include "db.h"
-#include "mysql_config.h"
+#include "constants.h"
 #include <mysql/errmsg.h>
 
 using namespace FTS;
@@ -116,7 +116,6 @@ int FTSSrv2::DataBase::free(MYSQL_RES *&out_pRes)
         // We don't care about errors.
     }
 
-    // done.
     m_mutex.unlock();
     return ERR_OK;
 }
@@ -201,53 +200,6 @@ bool FTSSrv2::DataBase::query(MYSQL_RES *&out_pRes, const char *in_pszQuery, ...
     }
 
     return true;
-
-#if 0
-    int status = 0;
-    do {
-        MYSQL_RES *pRes = mysql_store_result(m_pSQL);
-        if(pRes) {
-            if(mysql_more_results(m_pSQL)) {
-                // If there are more, skip this one.
-                mysql_free_result(pRes);
-                // More results to come.
-            } else if(out_pRes != NULL) {
-                // If there are no more, store this one.
-                *out_pRes = pRes;
-                return true; // That was the last result.
-            } else /* out_pRes is NULL, do not lock the mutex! */ {
-                mysql_free_result(pRes);
-                m_mutex.unlock();
-                return true; // That was the last result.
-            }
-        } else {
-            if(mysql_field_count(m_pSQL) == 0) {
-                // Was a query that did not return results (insert/update/...)
-                if(!mysql_more_results(m_pSQL)) {
-                    m_mutex.unlock();
-                    return true;
-                }
-            } else {
-                // Errors occured during the query. (connection ? too large result ?)
-                FTSMSG("[ERROR] MySQL field count\nQuery string: "+String(pszQuery)+"\nError: "+this->getError(), MsgType::Error);
-                m_mutex.unlock();
-                return false;
-            }
-        }
-
-        // more results? -1 = no, >0 = error, 0 = yes (keep looping)
-        status = mysql_next_result(m_pSQL);
-        if(status > 0) {
-            FTSMSG("[ERROR] MySQL next result\nQuery string: "+String(pszQuery)+"\nError: "+this->getError(), MsgType::Error);
-            m_mutex.unlock();
-            return false;
-        }
-    } while(status == 0);
-
-    // Code should never come here!
-    m_mutex.unlock();
-    return false;
-#endif
 }
 
 int FTSSrv2::DataBase::storedFunctionInt(const char *in_pszFunc, const char *in_pszArgs)

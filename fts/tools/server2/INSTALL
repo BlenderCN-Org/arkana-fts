@@ -14,130 +14,78 @@
     * a working MySQL 5.x server (Tested with version 5.0.44-r2)
     * the MySQL 5.x C Client library (Tested with version 5.0.44-r2)
 
-  It is known to compile in GCC 4.1.2
+  It is known to compile in GCC 4.4
 
  How to install the Arkana-FTS Server
 --------------------------------------
 
   First of all, you need to create a new database user, know his password and
   create a new database the Arkana-FTS server will use.
-  Now you will have to edit the mysql_config.h file to reflect these settings.
 
   Next, you have to compile the server:
   Change into the directory "build", by typing
+
     > cd build
+
   There you must call CMake to check your system and create the Makefiles. This
-  is also the right time to select some options of the server. See a list of
-  available options below. In this example, the server will run as user
-  "username" in case he is started by root.
-    > cmake -DDSRV_ROOT_IS_BAD="username" ..
+  is also the right time to select some options of the server.
+
+  I recommend you to use a CMake GUI, like ccmake on linux systems:
+
+    > ccmake ..
+
+  There, press "c" once (configure), then customize everything you want. This
+  is also the time to type in the MySQL connection credentials.
+  Another recommendation is to set the cmake install directory to where you
+  want the server executable to reside and choose a writeable directory to
+  store the logfiles in.
+
+  When done choosing your options, press "c" again and then "g".
+
   If everything went fine, you should now have a Makefile in your directory
   and thus be able to run make
+
     > make
-  If everything went fine, you should have an executable called "fts-server"
-  in the "build" directory. Don't start it yet.
+
+  If it all went fine, run make install in order to copy the server to the
+  location you chose beforehand.
 
   Finally, you need to setup the database: start the mysql commandline client:
+
     > mysql -u USERNAME -p
+
   After entering the correct password, you get to the MySQL prompt, where you
   have to select the database you will work on:
+
     # use DATABASENAME
+
   Then you can create all the tables needed by the Arkana-FTS server by just
   running the script 'create.sql':
+
     # source create.sql
     # exit
+
   That's all! don't worry if the script prints some warnings, they are known.
 
- ADVANCED OPTIONS
-------------------
-
-  You can fine-tune your server a bit more during the "cmake .." step.
-  To do this, you need to add one or more of the following options to the
-  cmake command. Put them between the "cmake" and "..", examples that
-  demonstrate you how to use these options will follow.
-
-  Note: Most of these settings can also be changed using a command-line option
-        when starting the server.
-
-  This are the availabe options:
-
-    -DCMAKE_BUILD_TYPE=Debug              enable debugging info (DEFAULT: Release)
-    -DDSRV_ROOT_IS_BAD="username"         if started by root, the server will run as this user.
-    -DD_USE_ANTIFLOOD                     enable the anti-flooding system (CURRENTLY NOT WORKING)
-    -DDSRV_MAX_LOGFILE_BYTES=10485760     how big a logfile should get at most, in bytes.
-    -DDSRV_LOG_DIR="/var/log/"            set the default path for logfiles, must have a trailing /
-    -DDSRV_FILE_NPLAYERS="filename"       set the name of the player number file.
-    -DDSRV_FILE_NGAMES="filename"         set the name of the games number file.
-    -DDSRV_LOGFILE_ERR="filename"         set the name of the error logging file.
-    -DDSRV_LOGFILE_LOG="filename"         set the name of the actions logging file.
-    -DDSRV_LOGFILE_NETLOG="filename"      set the name of the network logging file.
-    -DDSRV_PORT_FIRST=0x0000              set the first port number.
-    -DDSRV_PORT_LAST=0xFFFF               set the last port number.
-    -DDSRV_MYSQL_HOST="localhost"         set the MySQL hostname.
-    -DDSRV_MYSQL_USER="fts-server"        set the MySQL user to connect.
-    -DDSRV_MYSQL_PASS=""                  set the MySQL password to connect.
-    -DDSRV_MYSQL_DB="fts"                 set the MySQL database to use.
-    -DDSRV_DEFAULT_CHANNEL_NAME="..."     set the default channel's name.
-    -DDSRV_DEFAULT_CHANNEL_MOTTO="..."    set the default channel's motto.
-    -DDSRV_DEFAULT_CHANNEL_ADMIN="..."    set the default channel's administrator name.
-    -DDSRV_DEVS_CHANNEL_NAME="..."        set the developer's channel name.
-    -DDSRV_DEVS_CHANNEL_MOTTO="..."       set the developer's channel motto.
-    -DDSRV_DEVS_CHANNEL_ADMIN="..."       set the developer's channel administrator name.
-    -DDSRV_DEFAULT_MOTTO="..."            set the default motto for any new channel.
-    -DDSRV_MAX_CHANS_PER_USER=3           set the amount of channels a user can own at most.
+Notes on the logfiles
+=====================
 
   The player/games number file will be created by the server and store the
   actual number of players logged in/games being played.
 
-  The error/actions/network logging files will also be created by the server and
-  will keep track of encountered errors, actions done by the players and
-  network traffic respectively. Thus the two latter files may become quite large,
-  that's why you can limit their size. After reaching the limit size, the file
-  gets renamed (it gets the current datetime appended) and a new one is created.
+  The error/actions/network logging files will also be created by the server in
+  the log directory and will keep track of encountered errors, actions done by
+  the players and network traffic respectively. Thus the two latter files may
+  become quite large, that's why you can limit their size. After reaching the
+  limit size, the file gets renamed (it gets the current datetime appended) and
+  a new one is created.
 
   The server needs to have write access to the path you choose for those four
-  files ! If the server can't access them, they will be created in the home
+  files! If the server can't access them, they will be created in the home
   directory of the executing user. If this home directory doesn't exist or is
   not writeable, the files will just be ignored.
-
-  The first and last port define the range of ports that the server will listen
-  to entering connections. If you choose to define the first port, you MUST
-  define the last port too, or you will get compile-errors.
-
-  The default values of these settings are the following:
-    DSRV_ROOT_IS_BAD="fts"
-    DSRV_MAX_LOGFILE_BYTES=10485760     (10 MB)
-    DSRV_LOG_DIR="/var/log/"
-    DSRV_FILE_NPLAYERS="fts_server.nplayers"
-    DSRV_FILE_NGAMES="fts_server.ngames"
-    DSRV_LOGFILE_ERR="fts_server.err"
-    DSRV_LOGFILE_LOG="fts_server.log"
-    DSRV_PORT_FIRST=44912
-    DSRV_PORT_LAST=44927
-    DSRV_MYSQL_HOST="localhost"
-    DSRV_MYSQL_USER="fts-server"
-    DSRV_MYSQL_PASS=""
-    DSRV_MYSQL_DB="fts"
-    DSRV_DEFAULT_CHANNEL_NAME="Talk To Survive (main channel)"
-    DSRV_DEFAULT_CHANNEL_MOTTO="This is the main channel in Arkana-FTS where everybody meets"
-    DSRV_DEFAULT_CHANNEL_ADMIN="Pompei2"
-    DSRV_DEVS_CHANNEL_NAME="Dev's Channel"
-    DSRV_DEVS_CHANNEL_MOTTO="The channel for the developers of Arkana-FTS and the players that want to know more."
-    DSRV_DEVS_CHANNEL_ADMIN="Pompei2"
-    DSRV_DEFAULT_MOTTO="Default Motto: Arkana - FTS Rules :)"
-    DSRV_MAX_CHANS_PER_USER=3
-
-  Examples:
-  - - - - -
-
-    Compile the server to use port 80 and 81 only (don't know if it works,
-    it's just an example :))
-      > cmake -DDSRV_PORT_FIRST=80 -DDSRV_PORT_LAST=81 ..
-
-    Compile the server in debug mode and choose two file locations
-      > cmake -DCMAKE_BUILD_TYPE=Debug -DDSRV_LOG_DIR="/home/foo/arkanalogs" ..
 
  Links
 -------
 
-  If you have any questions, visit the forum that you will find on the official fts page: arkana-fts.sourceforge.net
+  If you have any questions, visit the forum that you will find on the official fts page: arkana-fts.org

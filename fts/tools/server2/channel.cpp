@@ -40,18 +40,19 @@ int FTSSrv2::Channel::join(Client *in_pUser)
     String sJoinName = in_pUser->getNick();
 
     // Add the user to the users list.
-    m_mutex.lock();
-    m_lpUsers.push_back(in_pUser);
+    {
+        Lock l(m_mutex);
+        m_lpUsers.push_back(in_pUser);
 
-    // Tell everybody that somebody joined.
-    for(std::list<Client *>::const_iterator i = m_lpUsers.begin() ; i != m_lpUsers.end() ; ++i) {
-        // But don't tell myself !
-        if( in_pUser == (*i) )
-            continue;
+        // Tell everybody that somebody joined.
+        for(std::list<Client *>::const_iterator i = m_lpUsers.begin() ; i != m_lpUsers.end() ; ++i) {
+            // But don't tell myself !
+            if( in_pUser == (*i) )
+                continue;
 
-        (*i)->sendChatJoins( sJoinName );
+            (*i)->sendChatJoins( sJoinName );
+        }
     }
-    m_mutex.unlock();
 
     in_pUser->setMyChannel(this);
 
@@ -64,14 +65,15 @@ int FTSSrv2::Channel::quit(Client *in_pUser)
     String sQuitName = in_pUser->getNick();
 
     // Remove the user from the list.
-    m_mutex.lock();
-    m_lpUsers.remove(in_pUser);
+    {
+        Lock l(m_mutex);
+        m_lpUsers.remove(in_pUser);
 
-    // Tell everybody that somebody left.
-    for(std::list<Client *>::const_iterator i = m_lpUsers.begin() ; i != m_lpUsers.end() ; ++i) {
-        (*i)->sendChatQuits(sQuitName);
+        // Tell everybody that somebody left.
+        for(std::list<Client *>::const_iterator i = m_lpUsers.begin() ; i != m_lpUsers.end() ; ++i) {
+            (*i)->sendChatQuits(sQuitName);
+        }
     }
-    m_mutex.unlock();
 
     in_pUser->setMyChannel(NULL);
 
@@ -82,8 +84,8 @@ int FTSSrv2::Channel::quit(Client *in_pUser)
 int FTSSrv2::Channel::save()
 {
     String sQuery;
+    Lock l(m_mutex);
 
-    m_mutex.lock();
     // Create this channel from scratch.
     if( m_iID < 0 ) {
         sQuery = "\'" + DataBase::getUniqueDB()->escape(m_sName) + "\', " +
@@ -93,7 +95,6 @@ int FTSSrv2::Channel::save()
 
         m_iID = DataBase::getUniqueDB()->storedFunctionInt( "channelCreate", sQuery );
         if( m_iID < 0 ) {
-            m_mutex.unlock();
             FTSMSG("Error saving the channel:mysql stored function returned "+String::nr(m_iID), MsgType::Error);
             return -1;
         }
@@ -124,7 +125,6 @@ int FTSSrv2::Channel::save()
         DataBase::getUniqueDB()->storedFunctionInt( "channelAddOp", sQuery );
     }
 
-    m_mutex.unlock();
     return ERR_OK;
 }
 
@@ -163,16 +163,17 @@ int FTSSrv2::Channel::op(const String & in_sUser, bool in_bOninit)
     }
 
     // add to the operators list.
-    m_mutex.lock();
-    m_lsOperators.push_back(in_sUser);
+    {
+        Lock l(m_mutex);
+        m_lsOperators.push_back(in_sUser);
 
-    if(!in_bOninit) {
-        // Tell everybody that somebody op's, including to me.
-        for(std::list<Client *>::const_iterator i = m_lpUsers.begin() ; i != m_lpUsers.end() ; ++i) {
-            (*i)->sendChatOped( in_sUser );
+        if(!in_bOninit) {
+            // Tell everybody that somebody op's, including to me.
+            for(std::list<Client *>::const_iterator i = m_lpUsers.begin() ; i != m_lpUsers.end() ; ++i) {
+                (*i)->sendChatOped( in_sUser );
+            }
         }
     }
-    m_mutex.unlock();
 
     // Store the changes in the database.
     this->save();
@@ -190,14 +191,15 @@ int FTSSrv2::Channel::deop( const String & in_sUser )
     }
 
     // remove from the operators list.
-    m_mutex.lock();
-    m_lsOperators.remove(in_sUser);
+    {
+        Lock l(m_mutex);
+        m_lsOperators.remove(in_sUser);
 
-    // Tell everybody that somebody Deop's, including to me.
-    for(std::list<Client *>::const_iterator i = m_lpUsers.begin() ; i != m_lpUsers.end() ; ++i) {
-        (*i)->sendChatDeOped( in_sUser );
+        // Tell everybody that somebody Deop's, including to me.
+        for(std::list<Client *>::const_iterator i = m_lpUsers.begin() ; i != m_lpUsers.end() ; ++i) {
+            (*i)->sendChatDeOped( in_sUser );
+        }
     }
-    m_mutex.unlock();
 
     // Store the changes in the database.
     this->save();
@@ -208,15 +210,13 @@ int FTSSrv2::Channel::deop( const String & in_sUser )
 
 bool FTSSrv2::Channel::isop( const String & in_sUser )
 {
-    m_mutex.lock();
+    Lock l(m_mutex);
     for(std::list<String>::const_iterator i = m_lsOperators.begin() ; i != m_lsOperators.end() ; ++i) {
         if(in_sUser.ieq(*i)) {
-            m_mutex.unlock();
             return true;
         }
     }
 
-    m_mutex.unlock();
     return false;
 }
 
@@ -247,11 +247,10 @@ Packet *FTSSrv2::Channel::makeSystemMessagePacket( const String &in_sMessageID )
 
 int FTSSrv2::Channel::sendPacketToAll( Packet *in_pPacket )
 {
-    m_mutex.lock();
+    Lock l(m_mutex);
     for(std::list<Client *>::const_iterator i = m_lpUsers.begin() ; i != m_lpUsers.end() ; ++i) {
         (*i)->sendPacket(in_pPacket);
     }
-    m_mutex.unlock();
 
     return ERR_OK;
 }
@@ -262,14 +261,15 @@ int FTSSrv2::Channel::setMotto( const String & in_sMotto, const String & in_sUse
     if( !this->isop(in_sUser) && in_sUser != m_sAdmin )
         return -20;
 
-    m_mutex.lock();
-    m_sMotto = in_sMotto;
+    {
+        Lock l(m_mutex);
+        m_sMotto = in_sMotto;
 
-    // Tell everybody that somebody changed the motto, including to me.
-    for(std::list<Client *>::const_iterator i = m_lpUsers.begin() ; i != m_lpUsers.end() ; ++i) {
-        (*i)->sendChatMottoChanged( in_sUser, in_sMotto );
+        // Tell everybody that somebody changed the motto, including to me.
+        for(std::list<Client *>::const_iterator i = m_lpUsers.begin() ; i != m_lpUsers.end() ; ++i) {
+            (*i)->sendChatMottoChanged( in_sUser, in_sMotto );
+        }
     }
-    m_mutex.unlock();
 
     return this->save( );
 }
@@ -329,12 +329,11 @@ int FTSSrv2::Channel::kick( const Client *in_pFrom, const String & in_sUser )
 
 Client *FTSSrv2::Channel::getUserIfPresent(const String &in_sUsername)
 {
-    m_mutex.lock();
+    Lock l(m_mutex);
     Client *pCli = NULL;
     for(std::list<Client *>::const_iterator i = m_lpUsers.begin() ; i != m_lpUsers.end() ; ++i) {
         pCli = *i;
         if(pCli->getNick().ieq(in_sUsername)) {
-            m_mutex.unlock();
             return pCli;
         }
     }
@@ -360,27 +359,6 @@ FTSSrv2::ChannelManager::~ChannelManager()
 }
 
 static FTSSrv2::ChannelManager *g_pTheCM = NULL;
-#ifndef DSRV_DEFAULT_CHANNEL_NAME
-#  define DSRV_DEFAULT_CHANNEL_NAME "Talk To Survive (main channel)"
-#endif
-#ifndef DSRV_DEFAULT_CHANNEL_MOTTO
-#  define DSRV_DEFAULT_CHANNEL_MOTTO "This is the main channel in Arkana-FTS where everybody meets"
-#endif
-#ifndef DSRV_DEFAULT_CHANNEL_ADMIN
-#  define DSRV_DEFAULT_CHANNEL_ADMIN "Pompei2"
-#endif
-#ifndef DSRV_DEVS_CHANNEL_NAME
-#  define DSRV_DEVS_CHANNEL_NAME "Dev's Channel"
-#endif
-#ifndef DSRV_DEVS_CHANNEL_MOTTO
-#  define DSRV_DEVS_CHANNEL_MOTTO "The channel for the developers of Arkana-FTS and the players that want to know more."
-#endif
-#ifndef DSRV_DEVS_CHANNEL_ADMIN
-#  define DSRV_DEVS_CHANNEL_ADMIN "Pompei2"
-#endif
-#ifndef DSRV_DEFAULT_MOTTO
-#  define DSRV_DEFAULT_MOTTO "Default Motto: Arkana - FTS Rules :)"
-#endif
 
 int FTSSrv2::ChannelManager::init()
 {
@@ -396,36 +374,28 @@ int FTSSrv2::ChannelManager::init()
     if(g_pTheCM->getDefaultChannel() == NULL) {
         // If not, create it with Pompei2 as admin.
         // We do create it manually here because it's a special case.
-        g_pTheCM->m_mutex.lock();
         g_pTheCM->m_lpChannels.push_back(new FTSSrv2::Channel(-1, true,
                                                       DSRV_DEFAULT_CHANNEL_NAME,
                                                       DSRV_DEFAULT_CHANNEL_MOTTO,
                                                       DSRV_DEFAULT_CHANNEL_ADMIN));
 
-        g_pTheCM->m_mutex.unlock();
     } else if(g_pTheCM->getDefaultChannel()->getAdmin() != DSRV_DEFAULT_CHANNEL_ADMIN) {
         // Or if somehow another admin is entered in it, set it to the default admin!
-        g_pTheCM->m_mutex.lock();
         g_pTheCM->getDefaultChannel()->setAdmin(DSRV_DEFAULT_CHANNEL_ADMIN);
-        g_pTheCM->m_mutex.unlock();
     }
 
     // Same for the dev's channel.
     if(g_pTheCM->findChannel(DSRV_DEVS_CHANNEL_NAME) == NULL) {
         // If not, create it with Pompei2 as admin.
         // We do create it manually here because it's a special case.
-        g_pTheCM->m_mutex.lock();
         g_pTheCM->m_lpChannels.push_back(new FTSSrv2::Channel(-1, true,
                                                       DSRV_DEVS_CHANNEL_NAME,
                                                       DSRV_DEVS_CHANNEL_MOTTO,
                                                       DSRV_DEVS_CHANNEL_ADMIN));
 
-        g_pTheCM->m_mutex.unlock();
     } else if(g_pTheCM->findChannel(DSRV_DEVS_CHANNEL_NAME)->getAdmin() != DSRV_DEVS_CHANNEL_ADMIN) {
         // Or if somehow another admin is entered in it, set it to the default admin!
-        g_pTheCM->m_mutex.lock();
         g_pTheCM->findChannel(DSRV_DEVS_CHANNEL_NAME)->setAdmin(DSRV_DEVS_CHANNEL_ADMIN);
-        g_pTheCM->m_mutex.unlock();
     }
 
     return ERR_OK;
@@ -442,7 +412,7 @@ int FTSSrv2::ChannelManager::deinit()
     return ERR_OK;
 }
 
-int FTSSrv2::ChannelManager::loadChannels( void )
+int FTSSrv2::ChannelManager::loadChannels(void)
 {
     MYSQL_RES *pRes = NULL;
     MYSQL_ROW pRow = NULL;
@@ -454,18 +424,15 @@ int FTSSrv2::ChannelManager::loadChannels( void )
                             ",`"+DataBase::getUniqueDB()->TblChansField(DSRV_TBL_CHANS_MOTTO)+"`"
                             ",`"+DataBase::getUniqueDB()->TblChansField(DSRV_TBL_CHANS_ADMIN)+"`"
                      " FROM `"DSRV_TBL_CHANS"`";
-    m_mutex.lock();
 
     if(!DataBase::getUniqueDB()->query(pRes, sQuery)) {
         DataBase::getUniqueDB()->free(pRes);
-        m_mutex.unlock();
         return -1;
     }
 
     // Invalid record ? forget about it!
     if(pRes == NULL || mysql_num_fields(pRes) < 5) {
         DataBase::getUniqueDB()->free(pRes);
-        m_mutex.unlock();
         return -2;
     }
 
@@ -489,14 +456,12 @@ int FTSSrv2::ChannelManager::loadChannels( void )
              " FROM `"DSRV_VIEW_CHANOPS"`";
     if(!DataBase::getUniqueDB()->query(pRes, sQuery)) {
         DataBase::getUniqueDB()->free(pRes);
-        m_mutex.unlock();
         return -3;
     }
 
     // Invalid record ? forget about it!
     if(pRes == NULL || mysql_num_fields(pRes) < 2) {
         DataBase::getUniqueDB()->free(pRes);
-        m_mutex.unlock();
         return -4;
     }
 
@@ -504,9 +469,7 @@ int FTSSrv2::ChannelManager::loadChannels( void )
     // But first just put all assocs. in a list because we need to free the DB.
     std::list<std::pair<FTSSrv2::Channel *, String> > operators;
     while(NULL != (pRow = mysql_fetch_row(pRes))) {
-        m_mutex.unlock();
         FTSSrv2::Channel *pChan = this->findChannel(pRow[1]);
-        m_mutex.lock();
 
         if(!pChan)
             continue;
@@ -520,26 +483,21 @@ int FTSSrv2::ChannelManager::loadChannels( void )
     for(std::list<std::pair<FTSSrv2::Channel *, String> >::iterator i = operators.begin() ; i != operators.end() ; ++i) {
         i->first->op(i->second, true);
     }
-    m_mutex.unlock();
 
     return ERR_OK;
 }
 
 int FTSSrv2::ChannelManager::saveChannels( void )
 {
-    m_mutex.lock();
+    Lock l(m_mutex);
     for( std::list<FTSSrv2::Channel *>::const_iterator i = m_lpChannels.begin() ;
          i != m_lpChannels.end() ; i++ ) {
         (*i)->save( );
     }
 
-    m_mutex.unlock();
     return ERR_OK;
 }
 
-#ifndef DSRV_MAX_CHANS_PER_USER
-#  define DSRV_MAX_CHANS_PER_USER 3
-#endif
 FTSSrv2::Channel *FTSSrv2::ChannelManager::createChannel(const String & in_sName, const Client *in_pCreater, bool in_bPublic)
 {
     // Every user can only create a limited amount of channels!
@@ -547,38 +505,37 @@ FTSSrv2::Channel *FTSSrv2::ChannelManager::createChannel(const String & in_sName
         return NULL;
     }
 
-    m_mutex.lock();
+    Lock l(m_mutex);
     FTSSrv2::Channel *pChannel = new FTSSrv2::Channel(-1, in_bPublic, in_sName,
                                       DSRV_DEFAULT_MOTTO,
                                       in_pCreater->getNick());
 
     m_lpChannels.push_back(pChannel);
     pChannel->save(); // Update the database right now!
-    m_mutex.unlock();
+
     return pChannel;
 }
 
 int FTSSrv2::ChannelManager::removeChannel(FTSSrv2::Channel *out_pChannel, const String &in_sWhoWantsIt)
 {
-    m_mutex.lock();
+    std::unique_ptr<Lock> l(new Lock(m_mutex));
     for(std::list<FTSSrv2::Channel *>::iterator i = m_lpChannels.begin() ; i != m_lpChannels.end() ; ++i) {
         if(*i == out_pChannel) {
             // Found! remove it from DB and manager, if we have the rights!
             if(ERR_OK == out_pChannel->destroyDB(in_sWhoWantsIt)) {
                 m_lpChannels.erase(i);
-                m_mutex.unlock(); // The order here is important, as deleting the channel might kick players, that will be locking the mutex.
+                // The order here is important, as deleting the channel might kick players, that will be locking the mutex.
+                l.reset();
                 SAFE_DELETE(out_pChannel);
                 return ERR_OK;
             } else {
                 // Found, but no right to remove it.
-                m_mutex.unlock();
                 return -2;
             }
         }
     }
 
     // Not found.
-    m_mutex.unlock();
     return -1;
 }
 
@@ -586,7 +543,7 @@ std::list<FTSSrv2::Channel *> FTSSrv2::ChannelManager::getPublicChannels()
 {
     std::list<FTSSrv2::Channel *>lpPubChannels;
 
-    m_mutex.lock();
+    Lock l(m_mutex);
     for( std::list<FTSSrv2::Channel *>::const_iterator i = m_lpChannels.begin() ;
          i != m_lpChannels.end() ; i++ ) {
         if( (*i)->isPublic( ) ) {
@@ -594,7 +551,6 @@ std::list<FTSSrv2::Channel *> FTSSrv2::ChannelManager::getPublicChannels()
         }
     }
 
-    m_mutex.unlock();
     return lpPubChannels;
 }
 
@@ -605,7 +561,7 @@ int FTSSrv2::ChannelManager::joinChannel( FTSSrv2::Channel *out_pChannel, Client
 
     FTSSrv2::Channel *pOldChan = out_pClient->getMyChannel();
 
-    m_mutex.lock();
+    Lock l(m_mutex);
     // Leave the old channel.
     if(pOldChan) {
         pOldChan->quit(out_pClient);
@@ -614,22 +570,19 @@ int FTSSrv2::ChannelManager::joinChannel( FTSSrv2::Channel *out_pChannel, Client
     // Join the new channel.
     out_pChannel->join(out_pClient);
 
-    m_mutex.unlock();
     return ERR_OK;
 }
 
 FTSSrv2::Channel *FTSSrv2::ChannelManager::findChannel(const String & in_sName)
 {
-    m_mutex.lock();
+    Lock l(m_mutex);
     for(std::list<FTSSrv2::Channel *>::const_iterator i = m_lpChannels.begin() ; i != m_lpChannels.end() ; ++i) {
         // "Pompei2's ChanNel" is the same as "pOmpei2's chAnnEl"
         if((*i)->getName().ieq(in_sName)) {
-            m_mutex.unlock();
             return *i;
         }
     }
 
-    m_mutex.unlock();
     return NULL;
 }
 
@@ -637,13 +590,12 @@ uint32_t FTSSrv2::ChannelManager::countUserChannels(const String &in_sUserName)
 {
     uint32_t nChans = 0;
 
-    m_mutex.lock();
+    Lock l(m_mutex);
     for(std::list<FTSSrv2::Channel *>::const_iterator i = m_lpChannels.begin() ; i != m_lpChannels.end() ; ++i) {
         if((*i)->getAdmin().ieq(in_sUserName)) {
             nChans++;
         }
     }
-    m_mutex.unlock();
 
     return nChans;
 }
@@ -652,13 +604,12 @@ std::list<String> FTSSrv2::ChannelManager::getUserChannels(const String &in_sUse
 {
     std::list<String>sChans;
 
-    m_mutex.lock();
+    Lock l(m_mutex);
     for(std::list<FTSSrv2::Channel *>::const_iterator i = m_lpChannels.begin() ; i != m_lpChannels.end() ; ++i) {
         if((*i)->getAdmin().ieq(in_sUserName)) {
             sChans.push_back((*i)->getName());
         }
     }
-    m_mutex.unlock();
 
     return sChans;
 }

@@ -56,7 +56,7 @@ int FTSSrv2::SocketConnectionWaiter::init(uint16_t in_usPort)
         return -3;
     }
 
-    FTSMSGDBG("Beginning to listen on port 0x"+String::nr(in_usPort,-1, 0, std::ios::hex), 1);
+    FTSMSGDBG("Beginning to listen on port 0x"+String::nr(in_usPort, 0, ' ', std::ios::hex), 1);
     return ERR_OK;
 }
 

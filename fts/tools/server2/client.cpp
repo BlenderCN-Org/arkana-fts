@@ -71,8 +71,7 @@ int FTSSrv2::Client::run()
 int FTSSrv2::Client::quit()
 {
     int iRet = ERR_OK;
-
-    m_mutex.lock();
+    Lock l (m_mutex);
 
     // Logout only if needed.
     if(m_bLoggedIn) {
@@ -116,16 +115,14 @@ int FTSSrv2::Client::quit()
 
     FTSSrv2::ClientsManager::getManager()->unregisterClient(this);
 
-    m_mutex.unlock();
     return iRet;
 }
 
 int FTSSrv2::Client::tellToQuit()
 {
     // Closing the connection makes the "quitting"-stone rolling.
-    m_mutex.lock();
+    Lock l(m_mutex);
     m_pConnection->disconnect();
-    m_mutex.unlock();
     return ERR_OK;
 }
 
@@ -377,19 +374,19 @@ bool FTSSrv2::Client::onLogin(const String & in_sNick, const String & in_sMD5)
                                         "\'" + DataBase::getUniqueDB()->escape(sIP) + "\'," +
                                         "\'" + String::nr(DSRV_PROC_CONNECT_INGAME) + "\'");
 
+    Lock l(m_mutex);
+
     if(iRet != ERR_OK) {
         FTSMSG("failed: sql login script returned "+String::nr(iRet), MsgType::Error);
         goto error;
     }
 
     // save some "session data".
-    m_mutex.lock();
     m_sNick = in_sNick;
     m_sPassMD5 = in_sMD5;
     m_bLoggedIn = true;
     dynamic_cast<ServerLogger *>(FTS::Logger::getSingletonPtr())->addPlayer();
     FTSSrv2::ClientsManager::getManager()->registerClient(this);
-    m_mutex.unlock();
 
     FTSMSGDBG("success", 1);
     goto success;
@@ -1360,70 +1357,62 @@ void FTSSrv2::ClientsManager::registerClient(FTSSrv2::Client *in_pClient)
 {
     // We store them only in lowercase because nicknames are case insensitive.
     // So we can search for some guy more easily.
-    m_mutex.lock();
+    Lock l(m_mutex);
     m_mClients[in_pClient->getNick().lower()] = in_pClient;
-    m_mutex.unlock();
 }
 
 void FTSSrv2::ClientsManager::unregisterClient(FTSSrv2::Client *in_pClient)
 {
-    m_mutex.lock();
+    Lock l(m_mutex);
 
     for(std::map<String, FTSSrv2::Client *>::iterator i = m_mClients.begin() ; i != m_mClients.end() ; ++i) {
         if(i->second == in_pClient) {
             m_mClients.erase(i);
-            m_mutex.unlock();
             return ;
         }
     }
 
-    m_mutex.unlock();
     return ;
 }
 
 FTSSrv2::Client *FTSSrv2::ClientsManager::findClient(const String &in_sName)
 {
-    m_mutex.lock();
+    Lock l(m_mutex);
     std::map<String, FTSSrv2::Client *>::iterator i = m_mClients.find(in_sName.lower());
 
     if(i == m_mClients.end()) {
-        m_mutex.unlock();
-        return NULL;
+       return NULL;
     }
 
-    m_mutex.unlock();
     return i->second;
 }
 
 FTSSrv2::Client *FTSSrv2::ClientsManager::findClient(const Connection *in_pConnection)
 {
-    m_mutex.lock();
+    Lock l(m_mutex);
 
     for(std::map<String, FTSSrv2::Client *>::iterator i = m_mClients.begin() ;
         i != m_mClients.end() ; ++i) {
+
         if(i->second->m_pConnection == in_pConnection) {
-            m_mutex.unlock();
             return i->second;
         }
     }
 
-    m_mutex.unlock();
     return NULL;
 }
 
 void FTSSrv2::ClientsManager::deleteClient(const String &in_sName)
 {
-    m_mutex.lock();
+    Lock l(m_mutex);
     std::map<String, FTSSrv2::Client *>::iterator i = m_mClients.find(in_sName.lower());
 
     if(i == m_mClients.end()) {
-        m_mutex.unlock();
         return ;
     }
 
     FTSSrv2::Client *pClient = i->second;
     pClient->tellToQuit();
-    m_mutex.unlock();
     return ;
 }
 

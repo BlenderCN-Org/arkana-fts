@@ -37,11 +37,12 @@ class Mutex {
 protected:
     void *m_pImpl;
 
-    int lock();
-    int unlock();
 public:
     Mutex();
     virtual ~Mutex();
+
+    int lock();
+    int unlock();
 };
 
 class Lock {

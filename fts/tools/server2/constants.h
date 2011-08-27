@@ -104,15 +104,6 @@
 #  endif
 
 // File names.
-#  ifndef DSRV_LOG_DIR
-#    define DSRV_LOG_DIR "/var/log/"
-#  endif
-#  ifndef DSRV_FILE_NPLAYERS
-#    define DSRV_FILE_NPLAYERS "fts_server.nplayers"
-#  endif
-#  ifndef DSRV_FILE_NGAMES
-#    define DSRV_FILE_NGAMES "fts_server.ngames"
-#  endif
 #  ifndef DSRV_LOGFILE_ERR
 #    define DSRV_LOGFILE_ERR "fts_server.err"
 #  endif
@@ -122,18 +113,10 @@
 #  ifndef DSRV_LOGFILE_NETLOG
 #    define DSRV_LOGFILE_NETLOG "fts_server.netlog"
 #  endif
-#  ifndef DSRV_MAX_LOGFILE_BYTES
-#    define DSRV_MAX_LOGFILE_BYTES 10*1024*1024
-#  endif
-
-// Ports that are opened.
-
-#  ifndef D_SERVER_PORT_FIRST
-#    define D_SERVER_PORT_FIRST 0xAF70
-#    define D_SERVER_PORT_LAST  0xAF7F
-#  endif
 
 /// The version of this server.
 #  define D_SERVER_VERSION_STR "0.9.12"
+
+#  include "config.h"
 
 #endif                          /* D_CONSTANTS_H */

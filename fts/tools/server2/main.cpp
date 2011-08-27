@@ -8,6 +8,8 @@
 #include "net/connection.h"
 #include "socket_connection_waiter.h"
 
+#include "constants.h"
+
 #include <list>
 #include <sys/time.h>
 
@@ -19,11 +21,6 @@
 
 /* The name of the lockfile, directory will be home at runtime. */
 #define LOCK_FILE DAEMON_NAME ".lock"
-
-/* Change this to the user under which to run */
-#ifndef DSRV_ROOT_IS_BAD
-#  define DSRV_ROOT_IS_BAD "fts"
-#endif
 
 #define EXIT_SUCCESS 0
 #define EXIT_FAILURE 1
@@ -134,7 +131,7 @@ int main(int argc, char *argv[])
     // Create the lockfile.
     lfp = open(sLockFile.c_str(),O_RDWR|O_CREAT,0640);
     if ( lfp < 0 ) {
-        printf(("unable to create lock file "+sLockFile+" ("+strerror(errno)+")\n").c_str());
+        std::cerr << "unable to create lock file " << sLockFile << " (" << strerror(errno) << ")" << std::endl;
         exit(EXIT_FAILURE);
     }
 
@@ -176,10 +173,10 @@ int main(int argc, char *argv[])
 
     // Create a thread waiting on each port. Including the fts port: 0xAF75 :)
     // DEBUG: the +1 at the end.
-    pthread_t threads[D_SERVER_PORT_LAST + 1 - D_SERVER_PORT_FIRST + 1];
+    pthread_t threads[DSRV_PORT_LAST + 1 - DSRV_PORT_FIRST + 1];
 
-    for(size_t i = D_SERVER_PORT_FIRST; i < D_SERVER_PORT_LAST + 1; i++)
-        pthread_create(&threads[i - D_SERVER_PORT_FIRST], 0, connectionListener, (void *)i);
+    for(size_t i = DSRV_PORT_FIRST; i < DSRV_PORT_LAST + 1; i++)
+        pthread_create(&threads[i - DSRV_PORT_FIRST], 0, connectionListener, (void *)i);
 
     // DEBUG: a test spamming thread.
     pthread_t tSpamThread = 0;
@@ -276,8 +273,8 @@ int main(int argc, char *argv[])
     // Now all is lost, nobody likes fts anymore :( clean up.
 
     FTSMSGDBG("Waiting for every thread to close ...", 1);
-    for(size_t i = D_SERVER_PORT_FIRST; i < D_SERVER_PORT_LAST + 1; i++) {
-        pthread_join(threads[i - D_SERVER_PORT_FIRST], 0);
+    for(size_t i = DSRV_PORT_FIRST; i < DSRV_PORT_LAST + 1; i++) {
+        pthread_join(threads[i - DSRV_PORT_FIRST], 0);
         FTSMSGDBG("Thread on port 0x"+String::nr(i, -1,'0',std::ios::hex)+" successfully closed.", 1);
     }
 
@@ -384,10 +381,10 @@ void help(char *in_pszLine, char *in_pszMe)
         fprintf(stdout, "\n");
         fprintf(stdout, "FILES:\n");
         fprintf(stdout, "All files are located in the current working directory.\n");
-        fprintf(stdout, (String("  ") + dynamic_cast<ServerLogger *>(FTS::Logger::getSingletonPtr())->getLogfilename() + String(" contains a lot of logging messages.\n")).c_str());
-        fprintf(stdout, (String("  ") + dynamic_cast<ServerLogger *>(FTS::Logger::getSingletonPtr())->getErrfilename() + String(" contains all error messages that happened.\n")).c_str());
-        fprintf(stdout, (String("  ") + dynamic_cast<ServerLogger *>(FTS::Logger::getSingletonPtr())->getPlayersfilename() + String(" contains the number of players actually connected.\n")).c_str());
-        fprintf(stdout, (String("  ") + dynamic_cast<ServerLogger *>(FTS::Logger::getSingletonPtr())->getGamesfilename() + String(" contains the number of games actually opened.\n")).c_str());
+        std::cout << "  " << dynamic_cast<ServerLogger *>(FTS::Logger::getSingletonPtr())->getLogfilename() << " contains a lot of logging messages." << std::endl;
+        std::cout << "  " << dynamic_cast<ServerLogger *>(FTS::Logger::getSingletonPtr())->getErrfilename() << " contains all error messages that happened." << std::endl;
+        std::cout << "  " << dynamic_cast<ServerLogger *>(FTS::Logger::getSingletonPtr())->getPlayersfilename() << " contains the number of players actually connected." << std::endl;
+        std::cout << "  " << dynamic_cast<ServerLogger *>(FTS::Logger::getSingletonPtr())->getGamesfilename() << " contains the number of games actually opened." << std::endl;
     }
     srvFlush(stdout);
 }
