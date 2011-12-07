@@ -277,6 +277,7 @@ endif()
 # Add our own CEGUI.
 add_subdirectory(${fts_SOURCE_DIR}/3rdparty/CEGUI)
 list(APPEND FTS_INCLUDES "3rdparty/CEGUI/include" "3rdparty/CEGUI")
+list(APPEND FTS_LIBS "dl")
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     list(APPEND FTS_LIBS "CEGUIOpenGLRendererd"
                          "CEGUIBased"
