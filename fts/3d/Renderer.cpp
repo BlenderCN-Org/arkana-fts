@@ -62,8 +62,6 @@ FTS::Renderer::~Renderer()
  */
 void FTS::Renderer::createSDLWindow(const Resolution& in_res)
 {
-    verifGL("Renderer::createSDLWindow start");
-
     // Flags to pass to SDL_SetVideoMode
     uint32_t iVideoFlags = Renderer::calcSDLVideoFlags(in_res.fs);
 
@@ -72,9 +70,6 @@ void FTS::Renderer::createSDLWindow(const Resolution& in_res)
 
     // And disable vsync, so we can see the exact FPS.
     SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 0);
-
-    //SDL_GL_SetAttribute( SDL_GL_MULTISAMPLEBUFFERS, 1 );
-    //SDL_GL_SetAttribute( SDL_GL_MULTISAMPLESAMPLES, 4 );
 
     // First check, to avoid screen kills.
     if(0 == SDL_VideoModeOK(in_res.w, in_res.h, 32, iVideoFlags)) {
