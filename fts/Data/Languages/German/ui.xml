@@ -15,7 +15,7 @@ Ein Klick auf den Updaten Knopf öffnet den FTS Updater.
 Ein Klick auf Abbrechen ignoriert dieses Update."/>
   <Update_Error value="Fehler beim holen von Versionsinformationen.
 Entweder Sie sind nicht mit dem Internet verbunden oder unser Server ist down."/>
-  <Update_None value="Du hast bereits die aktuellste Version von
+  <Update_None value="Sie haben bereits die aktuelle Version von
 Arkana-FTS. Vielen Dank für's Zocken! ;)"/>
   <Msg_Warn value="Warnung"/>
   <Msg_Err value="Fehler !"/>
@@ -38,7 +38,7 @@ Arkana-FTS. Vielen Dank für's Zocken! ;)"/>
   <Loadscr_Stage_Forests value="Lade die Wälder ..."/>
   <Loadscr_Stage_Starting value="Fertig geladen, warte auf andere Spieler ..."/>
   <Loadscr_Author value="Von {1}"/>
-  <Loadscr_Lastmodif value="(Letzte änderung am {1})"/>
+  <Loadscr_Lastmodif value="(Letzte Änderung am {1})"/>
   <lblTime_fileLst value="Dateiliste erstellen:"/>
   <lblTime_extract value="Dateien entpacken:"/>
   <lblTime_quads value="Lade der Quads:"/>
@@ -51,11 +51,11 @@ Arkana-FTS. Vielen Dank für's Zocken! ;)"/>
   <gameinfo_MapnPlayers value="‣ Diese Karte verlangt mindestens |c111111{1}|d und höchstens |c111111{2}|d Spieler."/>
   <gameinfo_GameHost value="‣ Dieses Spiel wurde von |c111111{1}|d eröffnet."/>
   <gameinfo_GamePlayers value="‣ Die |c111111{1}|d folgenden Spieler sind schon in dem Spiel:"/>
-  <Really_Quit value="Bist du dir sicher, dass Du das Spiel verlassen willst?"/>
+  <Really_Quit value="Sind Sie sicher, dass Sie das Spiel verlassen wollen?"/>
   <Chat_Admin_suffix value="(Admin)"/>
   <Chat_Op_suffix value="(op)"/>
   <Chat_Muted_suffix value="(Ignoriert)"/>
-  <Chat_Join value="Herzlich willkommen im Raum namens |c111111{1}|d,
+  <Chat_Join value="Herzlich willkommen im Raum |c111111{1}|d,
 Das Motto dieses Raumes lautet: |c1B56A0{2}|d"/>
   <Chat_MottoSet value="|c111111{1}|d hat das Motto dieses Raumes geändert: |c1B56A0{2}|d"/>
   <Chat_Kicked value="|c111111{1}|d hat |c111111{2}|d rausgeschmissen !"/>
@@ -74,11 +74,11 @@ Das Motto dieses Raumes lautet: |c1B56A0{2}|d"/>
   <Chat_ChannelRemGood value="Der Raum '{1}' wurde erfolgreich zerstört."/>
   <Chat_Unknown_cmd value="Dieser Befehl existiert nicht! Nutzen Sie /help um eine Liste der Befehle zu bekommen"/>
   <Chat_Help value="|c002277Allgemeine Hilfe:|d
-Die hilfe ist in Kapitel unterteilt, ein Kapitel für jeden Befehl.
+Die Hilfe ist in Kapitel unterteilt, ein Kapitel für jeden Befehl.
 
 |c1B56A0Syntax:|d
           |c111111/help|d |c222222befehl_name|d
-Zeigt das Hilfe-Kapitel zu dem Befehl namens |c222222befehl_name|d an.
+Zeigt das Hilfe-Kapitel zu dem Befehl |c222222befehl_name|d an.
 
 Hier ist die liste der verfügbaren Befehle:
 join:         einem Raum beitreten bzw. erstellen
