@@ -181,6 +181,10 @@ Möglicherweise ist es nicht Ihr Raum ; Sie können nur die Räume löschen, von
   <MusicL value="Lade Musikstücke ..."/>
   <FreeTmp value="Löschen des Caches ..."/>
   <PressEnterToCont value="Drücken Sie eine Taste um fortzufahren"/>
+  <ChronometerStarted value="Chronometer ({1}) gestartet"/>
+  <ChronometerMeasured value="Chronometer ({1}) gemessen {2} seconds"/>
+  <ChronometerMeasuredAdd value="Chronometer ({1}) gemessen {2} seconds ({3})"/>
+  <ChronometerReset value="Chronometer ({1}) reset after {2} seconds"/>
   <NotImpYet value="Dies ist noch nicht (fertig) implementiert ... Bitte haben Sie geduld oder helfen Sie uns dabei :)"/>
   <Info value="Dies ist ein verspätetes Halloween Release von Arkana-FTS: ein Release in dem wir Ihnen unseren Fortschritt zeigen und rumspielen lassen möchten.
 Die beiden haupt-fehlenden Features des letzten Releases sind diesmal funktionsfähig: die Online-Lobby und der Modellbetrachter.
