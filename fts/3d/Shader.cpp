@@ -136,7 +136,7 @@ public:
     {
         verifGL("ShaderIncludeManagerNativeGL::compileShader start");
 
-        // We split up the source into:
+        // We split0 up the source into:
         //  - the version line
         //  - the extension specifications
         //  - the option defines
@@ -158,8 +158,8 @@ private:
 
     static const GLenum SHADER_INCLUDE_ARB = 0x8DAE;
 
-    typedef void (*t_glNamedStringARB)(GLenum type, GLint namelen, const GLchar* name, GLint stringlen, const GLchar* string);
-    typedef void (*t_glDeleteNamedStringARB)(GLint namelen, const GLchar* name);
+    typedef void (APIENTRYP t_glNamedStringARB)(GLenum type, GLint namelen, const GLchar* name, GLint stringlen, const GLchar* string);
+    typedef void (APIENTRYP t_glDeleteNamedStringARB)(GLint namelen, const GLchar* name);
     t_glNamedStringARB glNamedStringARB;
     t_glDeleteNamedStringARB glDeleteNamedStringARB;
 };
