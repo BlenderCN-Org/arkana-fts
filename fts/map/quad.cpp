@@ -24,8 +24,8 @@ using namespace FTS;
 Quad::Quad(void)
 {
     m_bComplex = false;
-    m_pfnRender = NULL;
-    m_pfnRenderUppertile = NULL;
+    m_pfnRender = nullptr;
+    m_pfnRenderUppertile = nullptr;
     m_cBlendmask = '\0';
     m_usX = 0;
     m_usY = 0;
@@ -74,7 +74,7 @@ Quad::~Quad(void)
 int Quad::load(File *out_pFile, float in_fMultiplier,
                 bool in_bMultiTex, bool in_bComplex)
 {
-    if(NULL == out_pFile) {
+    if(nullptr == out_pFile) {
         FTS18N("InvParam", MsgType::Horror, "CQuad::load");
         return -1;
     }
@@ -649,7 +649,6 @@ int Quad::renderComplex_Multitex(float in_fX, float in_fY, float in_fZ, float in
 {
     // LINE NO 1 //
     ///////////////
-    verifGL("Quad::renderComplex_Multitex start");
 
     // Upper left edge.
     glMultiTexCoord2f(GL_TEXTURE0+0, m_fCplxTexCoordLowerTile[0], m_fCplxTexCoordLowerTile[5]);
@@ -1000,7 +999,6 @@ int Quad::renderComplex_Multitex(float in_fX, float in_fY, float in_fZ, float in
     glNormal3fv(m_pfNormals[23].array3f());
     glVertex3f(in_fX + FTS_CQUAD_SIZE * 3.0f, in_fY - FTS_CQUAD_SIZE * 4.0f, in_fZ + m_pfEdges[23]);
 
-    verifGL("Quad::renderComplex_Multitex end");
     return ERR_OK;
 }
 
@@ -1020,7 +1018,6 @@ int Quad::renderComplex(float in_fX, float in_fY, float in_fZ, float in_fMultip)
 {
     // LINE NO 1 //
     ///////////////
-    verifGL("Quad::renderComplex start");
 
     // Upper left edge.
     glTexCoord2f(m_fCplxTexCoordLowerTile[0], m_fCplxTexCoordLowerTile[5]);
@@ -1243,7 +1240,6 @@ int Quad::renderComplex(float in_fX, float in_fY, float in_fZ, float in_fMultip)
     glNormal3fv(m_pfNormals[23].array3f());
     glVertex3f(in_fX + FTS_CQUAD_SIZE * 3.0f, in_fY - FTS_CQUAD_SIZE * 4.0f, in_fZ + m_pfEdges[23]);
 
-    verifGL("Quad::renderComplex end");
     return ERR_OK;
 }
 
@@ -1264,7 +1260,6 @@ int Quad::renderComplexUppertile(float in_fX, float in_fY, float in_fZ, float in
 {
     // LINE NO 1 //
     ///////////////
-    verifGL("Quad::renderComplexUppertile start");
 
     // Upper left edge.
     glTexCoord2f(m_fCplxTexCoordUpperTile[0], m_fCplxTexCoordUpperTile[5]);
@@ -1487,7 +1482,6 @@ int Quad::renderComplexUppertile(float in_fX, float in_fY, float in_fZ, float in
     glNormal3fv(m_pfNormals[23].array3f());
     glVertex3f(in_fX + FTS_CQUAD_SIZE * 3.0f, in_fY - FTS_CQUAD_SIZE * 4.0f, in_fZ + m_pfEdges[23]);
 
-    verifGL("Quad::renderComplexUppertile end");
     return ERR_OK;
 }
 
@@ -1505,8 +1499,6 @@ int Quad::renderComplexUppertile(float in_fX, float in_fY, float in_fZ, float in
  */
 int Quad::renderSimple_Multitex(float in_fX, float in_fY, float in_fZ, float in_fMultip)
 {
-    verifGL("Quad::renderSimple_Multitex start");
-
     // Upper left edge.
     glMultiTexCoord2f(GL_TEXTURE0+0, m_fTexCoordLowerTile[0], m_fTexCoordLowerTile[1]);
     glMultiTexCoord2f(GL_TEXTURE0+1, m_fTexCoordDetail[0], m_fTexCoordDetail[1]);
@@ -1532,7 +1524,6 @@ int Quad::renderSimple_Multitex(float in_fX, float in_fY, float in_fZ, float in_
     glNormal3fv(m_pfNormals[2].array3f());
     glVertex3f(in_fX, in_fY - FTS_QUAD_SIZE, in_fZ + m_pfEdges[2]);
 
-    verifGL("Quad::renderSimple_Multitex end");
     return ERR_OK;
 }
 
@@ -1550,8 +1541,6 @@ int Quad::renderSimple_Multitex(float in_fX, float in_fY, float in_fZ, float in_
  */
 int Quad::renderSimple(float in_fX, float in_fY, float in_fZ, float in_fMultip)
 {
-    verifGL("Quad::renderSimple start");
-
     // Upper left edge.
     glTexCoord2f(m_fTexCoordLowerTile[0], m_fTexCoordLowerTile[1]);
     glNormal3fv(m_pfNormals[0].array3f());
@@ -1569,7 +1558,6 @@ int Quad::renderSimple(float in_fX, float in_fY, float in_fZ, float in_fMultip)
     glNormal3fv(m_pfNormals[2].array3f());
     glVertex3f(in_fX, in_fY - FTS_QUAD_SIZE, in_fZ + m_pfEdges[2]);
 
-    verifGL("Quad::renderSimple end");
     return ERR_OK;
 }
 
@@ -1588,7 +1576,6 @@ int Quad::renderSimple(float in_fX, float in_fY, float in_fZ, float in_fMultip)
  */
 int Quad::renderSimpleUppertile(float in_fX, float in_fY, float in_fZ, float in_fMultip)
 {
-    verifGL("Quad::renderSimpleUppertile start");
 
     // Upper left edge.
     glTexCoord2f(m_fTexCoordUpperTile[0], m_fTexCoordUpperTile[1]);
@@ -1607,13 +1594,11 @@ int Quad::renderSimpleUppertile(float in_fX, float in_fY, float in_fZ, float in_
     glNormal3fv(m_pfNormals[2].array3f());
     glVertex3f(in_fX, in_fY - FTS_QUAD_SIZE, in_fZ + m_pfEdges[2]);
 
-    verifGL("Quad::renderSimpleUppertile end");
     return ERR_OK;
 }
 
 int Quad::drawNormals(float in_fX, float in_fY, float in_fZ)
 {
-    verifGL("Quad::drawNormals start");
     if(m_bComplex) {
         // LINE NO 1 //
         ///////////////
@@ -1789,7 +1774,6 @@ int Quad::drawNormals(float in_fX, float in_fY, float in_fZ)
         glVertex3f(in_fX, in_fY - FTS_QUAD_SIZE, in_fZ + m_pfEdges[2]);
     }
 
-    verifGL("Quad::drawNormals end");
     return ERR_OK;
 }
 
