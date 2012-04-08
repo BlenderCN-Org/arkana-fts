@@ -54,9 +54,9 @@ void FTS::setVersionInfo()
 
 /// Default constructor
 FTS::MainMenuRlv::MainMenuRlv()
-    : m_pRoot(NULL)
+    : m_pRoot(nullptr)
     , m_pModelManager(new ModelManager())
-    , m_pgMenuBG(NULL)
+    , m_pgMenuBG(nullptr)
     , m_pMenuBGInst(0)
 {
     loadSettingsFromConf();
@@ -65,6 +65,7 @@ FTS::MainMenuRlv::MainMenuRlv()
 /// Default destructor
 FTS::MainMenuRlv::~MainMenuRlv()
 {
+    SAFE_DELETE(m_pModelManager);
 }
 
 void FTS::MainMenuRlv::loadSettingsFromConf()
@@ -200,7 +201,6 @@ bool FTS::MainMenuRlv::unload()
     // Unload the menu background image and model.
     SAFE_DELETE(m_pMenuBGInst);
     m_pModelManager->removeModel("Gaia/Fauna/Chicken");
-    SAFE_DELETE(m_pModelManager);
     GraphicManager::getSingleton().destroyGraphic(m_pgMenuBG);
 
     this->unloadCEGUI();
