@@ -37,6 +37,7 @@ Soit vous n'êtes pas connecté à internet soit notre serveur est HS."/>
   <Loadscr_Stage_Precalc value="Précalcule les données du terrain ..."/>
   <Loadscr_Stage_Forests value="Charge les forêts ..."/>
   <Loadscr_Stage_Starting value="Chargement terminé, attends autres joueuers ..."/>
+  <PressEnterToCont value="Appuyez une touche pour continuer"/>
   <Loadscr_Author value="Par {1}"/>
   <Loadscr_Lastmodif value="(Dernière modification {1})"/>
   <lblTime_fileLst value="Liste des fichiers:"/>

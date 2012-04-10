@@ -176,7 +176,6 @@ Probably it isn't your channel ; you can only remove channels that you are admin
   <SoundDrvL value="Loading Sound drivers ..."/>
   <SoundDrvU value="Unloading Sound drivers ..."/>
   <FreeTmp value="Deleting cache ..."/>
-  <PressEnterToCont value="Press any key to continue"/>
   <NotImpYet value="This is not yet implemented (or finished) ... Please have patience or help us implementing it :)"/>
   <NoOnlineWarn value="PLEASE read this:
 It is now possible to create an online account, log in, chat (in different rooms, public or private), open a new game and see a list of all opened games and of course, log out ;)

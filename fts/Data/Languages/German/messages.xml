@@ -169,7 +169,7 @@ Möglicherweise ist es nicht Ihr Raum ; Sie können nur die Räume löschen, von
   <Deinit value="Deinitialisiere:
 "/>
   <EnterRlv value="Betreten des Runlevels:"/>
-  <LeaveRlv value="Verlasse den Runlevels:"/>
+  <LeaveRlv value="Verlassen des Runlevels:"/>
   <GraphDrvL value="Laden des Grafiktreibers ..."/>
   <GraphDrvU value="Entladen des Grafiktreibers ..."/>
   <InputDrvL value="Laden der Eingabetreiber ..."/>
@@ -180,7 +180,6 @@ Möglicherweise ist es nicht Ihr Raum ; Sie können nur die Räume löschen, von
   <SoundDrvU value="Entladen der Soundtreiber ..."/>
   <MusicL value="Lade Musikstücke ..."/>
   <FreeTmp value="Löschen des Caches ..."/>
-  <PressEnterToCont value="Drücken Sie eine Taste um fortzufahren"/>
   <ChronometerStarted value="Chronometer ({1}) gestartet"/>
   <ChronometerMeasured value="Chronometer ({1}) gemessen {2} seconds"/>
   <ChronometerMeasuredAdd value="Chronometer ({1}) gemessen {2} seconds ({3})"/>

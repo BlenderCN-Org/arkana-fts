@@ -176,7 +176,6 @@ Probablement, ce n'est pas votre salle. Vous ne pouvez détruire que les salles 
   <SoundDrvU value="Decharge le pilote de son ..."/>
   <MusicL value="Chargement des mélodies ..."/>
   <FreeTmp value="Efface le cache ..."/>
-  <PressEnterToCont value="Appuyez une touche pour continuer"/>
   <NotImpYet value="Ceci n'est pas encore implémenté (terminé) ... Veuillez avoir de la patience ou nous aider :)"/>
   <Info value="Ceci est une release tardive pour Halloween: une release dans laquelle nous voulons vous montrer le progrès que nous avons fait, et vous laisser tester.
 Les deux principales fonctionnalités manquantes ou incomplètes de la dernière version sont maintenant pleinement opératives: le salon en ligne et l'afficheur de modèles.

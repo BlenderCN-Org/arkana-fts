@@ -178,7 +178,6 @@ Probably it isn't your channel ; you can only remove channels that you are admin
   <SoundDrvU value="Unloading Sound drivers ..."/>
   <MusicL value="Loading musics ..."/>
   <FreeTmp value="Deleting cache ..."/>
-  <PressEnterToCont value="Press any key to continue"/>
   <ChronometerStarted value="Chronometer ({1}) started"/>
   <ChronometerMeasured value="Chronometer ({1}) measured {2} seconds"/>
   <ChronometerMeasuredAdd value="Chronometer ({1}) measured {2} seconds ({3})"/>
@@ -199,4 +198,5 @@ Manuel Reisch (moOshiE, main graphics artist)
 Kenny Thaeter (Story)
 Thibault Beyer (Chitzui, main tester)
 Supinya (My girlfriend, for her patience the days I spend hours working on Arkana-FTS, I love you ที่รัก)"/>
+  <UnitTest value="This is for testing."/>
 </messages>

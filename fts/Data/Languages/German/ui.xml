@@ -34,9 +34,10 @@ Arkana-FTS. Vielen Dank für's Zocken! ;)"/>
   <Loadscr_Stage_TerrLoTi value="Lade die Lowertiles des Terrains ({1}) ..."/>
   <Loadscr_Stage_TerrCompLoTi value="Kompiliere die Lowertiles des Terrains ..."/>
   <Loadscr_Stage_TerrUpTi value="Lade die Uppertiles des Terrains ({1}) ..."/>
-  <Loadscr_Stage_Precalc value="Berechne die Terrain-daten voraus ..."/>
+  <Loadscr_Stage_Precalc value="Berechne die Terrain-Daten voraus ..."/>
   <Loadscr_Stage_Forests value="Lade die Wälder ..."/>
   <Loadscr_Stage_Starting value="Fertig geladen, warte auf andere Spieler ..."/>
+  <PressEnterToCont value="Drücken Sie eine Taste um fortzufahren"/>
   <Loadscr_Author value="Von {1}"/>
   <Loadscr_Lastmodif value="(Letzte Änderung am {1})"/>
   <lblTime_fileLst value="Dateiliste erstellen:"/>
