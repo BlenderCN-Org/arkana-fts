@@ -294,7 +294,7 @@ public:
 
     const char *getLogString() const {
         // Avoid infinite recursion when printing an exception on shutdown.
-        if(Logger::getSingletonPtr()) {
+        if(Logger::getSingletonPtr() == nullptr) {
             m_sFormattedBuffer = m_sMessage + " with " + m_sArg1 +m_sArg2 + m_sArg3 + m_sArg4 + m_sArg5 + m_sArg6 + m_sArg7 + m_sArg8 + m_sArg9;
         } else {
             if(m_iDbgLv) {
