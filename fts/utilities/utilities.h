@@ -15,28 +15,6 @@
 
 namespace FTS {
     class File;
-}
-
-/* ================= */
-/* Memory Allocation */
-/* ================= */
-// char *MyAllocSPrintf(const char *fmt, ...);
-// char *QuiteAllocSPrintf(const char *fmt, ...);
-// char *MyAllocSPrintfV(const char *fmt, va_list ap);
-
-/* =============== */
-/* String Handling */
-/* =============== */
-// int replaceStr(char **out_ppszBase, unsigned long in_ulIndex,
-//                unsigned long in_ulLenght, const char *in_pszNew);
-
-/* ================ */
-/* File Information */
-/* ================ */
-namespace FTS {
-FTS::String getTranslatedString(const FTS::String & in_sString,
-                                 const FTS::String & in_sFile,
-                                 bool *out_bFound = NULL);
 
 /* ==================== */
 /* CONSOLE MANIPULATION */

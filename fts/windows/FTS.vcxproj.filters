@@ -150,9 +150,6 @@
     <ClCompile Include="..\utilities\StreamedDataContainer.cpp">
       <Filter>Utilities</Filter>
     </ClCompile>
-    <ClCompile Include="..\utilities\string_file.cpp">
-      <Filter>Utilities</Filter>
-    </ClCompile>
     <ClCompile Include="..\utilities\threading.cpp">
       <Filter>Utilities</Filter>
     </ClCompile>
@@ -497,6 +494,12 @@
     </ClCompile>
     <ClCompile Include="..\tests\Scripting\DaoVmTest.cpp">
       <Filter>Tests\Scripting</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dLib\dString\dTranslation.cpp">
+      <Filter>dLib\dString</Filter>
+    </ClCompile>
+    <ClCompile Include="..\tests\dLib\dString\dTranslationTest.cpp">
+      <Filter>Tests</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -898,6 +901,9 @@
     </ClInclude>
     <ClInclude Include="..\main\Stackable.h">
       <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="..\dLib\dString\dTranslation.h">
+      <Filter>dLib\dString</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

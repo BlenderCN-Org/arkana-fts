@@ -13,6 +13,7 @@
 #include "game/player.h"
 #include "logging/logger.h"
 #include "utilities/utilities.h"
+#include "dLib/dString/dTranslation.h"
 
 using namespace FTS;
 
@@ -195,14 +196,15 @@ void FTS::ChatMembersListItem::recalcText()
         skillPercentColor(this->getSkillPercent(), fR, fG, fB, fA);
     }
 
+    Translation trans("ui");
     if( m_cState == 1 ) {
-        sText += getTranslatedString("Chat_Op_suffix","ui");
+        sText += trans.get("Chat_Op_suffix");
     } else if( m_cState == 2 ) {
-        sText += getTranslatedString("Chat_Admin_suffix","ui");
+        sText += trans.get("Chat_Admin_suffix");
     }
 
     if(bMuted)
-        sText += getTranslatedString("Chat_Muted_suffix","ui");
+        sText += trans.get("Chat_Muted_suffix");
 
     try {
         this->setText(sText);
@@ -417,20 +419,20 @@ String FTS::ChatMsgListItem::buildText()
     sText += "|c" + String::sfromHex((unsigned char)(m_nickCol.getRed()*255.0f)) +
                     String::sfromHex((unsigned char)(m_nickCol.getGreen()*255.0f)) +
                     String::sfromHex((unsigned char)(m_nickCol.getBlue()*255.0f));
-
+    Translation trans("ui");
     switch(m_eUse) {
     case RecvWhisp:
-        sFormat = getTranslatedString("Chat_RecvWhisp", "ui") + "|d";
+        sFormat = trans.get("Chat_RecvWhisp") + "|d";
         break;
     case SentWhisp:
-        sFormat = getTranslatedString("Chat_SentWhisp", "ui") + "|d";
+        sFormat = trans.get("Chat_SentWhisp") + "|d";
         break;
     case System:
         sFormat = "|d";
         break;
     case Normal:
     default:
-        sFormat = getTranslatedString("Chat_Says", "ui") + "|d";
+        sFormat = trans.get("Chat_Says") + "|d";
         break;
     }
 

@@ -9,6 +9,7 @@
 
 #include "dLib/dArchive/dArchive.h" // To unload the map archive
 #include "dLib/dConf/configuration.h"
+#include "dLib/dString/dTranslation.h"
 #include "graphic/graphic.h" // For the ICP and RB.
 #include "input/input.h" // For the keyboard shortcuts.
 #include "ui/ui.h" // For loadlayout.
@@ -190,8 +191,8 @@ bool GameRlv::cbLeave(const CEGUI::EventArgs &)
 {
     // Open a confirmation dialog if the user really wants to quit.
     ConfirmDlg *pConfDlg = new ConfirmDlg();
-
-    String sTxt = getTranslatedString("Really_Quit", "ui");
+    Translation trans("ui");
+    String sTxt = trans.get("Really_Quit");
     pConfDlg->load(sTxt);
     pConfDlg->registerYesHandler(FTS_SUBS(GameRlv::cbLeaveYes));
     pConfDlg->show();

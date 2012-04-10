@@ -82,6 +82,8 @@
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
       <Profile>false</Profile>
+      <ProgramDatabaseFile>$(IntDir)$(TargetName).pdb</ProgramDatabaseFile>
+      <ProfileGuidedDatabase>$(IntDir)$(TargetName).pgd</ProfileGuidedDatabase>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'">
@@ -112,7 +114,7 @@
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <TargetMachine>MachineX86</TargetMachine>
-      <Profile>true</Profile>
+      <Profile>false</Profile>
       <GenerateDebugInformation>false</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
@@ -153,6 +155,7 @@
     <ClCompile Include="..\dLib\dConf\ArkanaDefaultSettings.cpp" />
     <ClCompile Include="..\dLib\dConf\configuration.cpp" />
     <ClCompile Include="..\dLib\dConf\DefaultOptions.cpp" />
+    <ClCompile Include="..\dLib\dString\dTranslation.cpp" />
     <ClCompile Include="..\graphic\Color.cpp" />
     <ClCompile Include="..\input\Cursor.cpp" />
     <ClCompile Include="..\input\InputManager.cpp" />
@@ -183,6 +186,7 @@
     <ClCompile Include="..\tests\dLib\dFile\dFileArchiveTest.cpp" />
     <ClCompile Include="..\tests\dLib\dString\dPathTest.cpp" />
     <ClCompile Include="..\tests\dLib\dString\dStringTest.cpp" />
+    <ClCompile Include="..\tests\dLib\dString\dTranslationTest.cpp" />
     <ClCompile Include="..\tests\mainNice.cpp" />
     <ClCompile Include="..\tests\Scripting\DaoVmTest.cpp" />
     <ClCompile Include="..\ui\cegui_items\ColorListItem.cpp" />
@@ -195,7 +199,6 @@
     <ClCompile Include="..\utilities\radix.cpp" />
     <ClCompile Include="..\utilities\Singleton.cpp" />
     <ClCompile Include="..\utilities\StreamedDataContainer.cpp" />
-    <ClCompile Include="..\utilities\string_file.cpp" />
     <ClCompile Include="..\utilities\threading.cpp" />
     <ClCompile Include="..\Utilities\utilities.cpp" />
     <ClCompile Include="..\ui\confirm_dialog.cpp" />
@@ -291,6 +294,7 @@
     <ClInclude Include="..\dLib\dConf\ArkanaDefaultSettings.h" />
     <ClInclude Include="..\dLib\dConf\configuration.h" />
     <ClInclude Include="..\dLib\dConf\DefaultOptions.h" />
+    <ClInclude Include="..\dLib\dString\dTranslation.h" />
     <ClInclude Include="..\graphic\Color.h" />
     <ClInclude Include="..\input\InputConstants.h" />
     <ClInclude Include="..\logging\MinimalLogger.h" />

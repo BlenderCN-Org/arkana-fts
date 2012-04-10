@@ -8,12 +8,13 @@
 #include "utilities/utilities.h"
 #include "dLib/dFile/dFile.h"
 #include "dLib/dConf/configuration.h"
+#include "dLib/dString/dTranslation.h"
 #include <ctime>
 
 using namespace FTS;
 
 DefaultLogger::DefaultLogger()
-    : m_pLogFile(NULL)
+    : m_pLogFile(nullptr)
     , m_bLastDbg(false)
     , m_iGDLL(0)
     , m_lastMessageType(MsgType::Raw)
@@ -24,6 +25,7 @@ DefaultLogger::DefaultLogger()
     , m_bSuppressNextDlg(false)
     , m_bSuppressOnlyNextDlg(false)
     , m_bMute(false)
+    , m_translation(nullptr)
 {
 #if WINDOOF
     system(("rmdir /Q /S \"" + Path::userdir("Logfiles").str() + "\"").c_str());
@@ -63,11 +65,13 @@ DefaultLogger::DefaultLogger()
             fprintf(m_pLogFile, "=====================\n\n");
         }
     }
+    m_translation = new Translation("messages");
 }
 
 DefaultLogger::~DefaultLogger()
 {
     SAFE_FCLOSE(m_pLogFile);
+    delete m_translation;
 }
 
 int DefaultLogger::loadConfig()
@@ -176,7 +180,7 @@ String DefaultLogger::formatI18nMessage(const String &in_sMsgID,
         m_bIsInTranslation = true;
 
     // Get the translated string.
-    sErrMsg = getTranslatedString(in_sMsgID, "messages");
+    sErrMsg =  m_translation->get(in_sMsgID);
     if( sErrMsg.empty() ) {
         sErrMsg = "Missing translation for the error message " + in_sMsgID;
     }
@@ -607,18 +611,19 @@ DefaultLoggerDlg::DefaultLoggerDlg(MsgType::Enum in_Gravity, const String &in_sM
         String sTitle = m_pRoot->getText();
 
         /* Set the correct title and text color. */
+        Translation trans("ui");
         switch (in_Gravity) {
         case MsgType::Warning:
             m_pRoot->getChild("dlg_message/Message")->setProperty("TextColours", "tl:FFFF3300 tr:FFFF3300 bl:FFFF6600 br:FFFF6600");
-            sTitle = getTranslatedString("Msg_Warn", "ui");
+            sTitle = trans.get("Msg_Warn");
             break;
         case MsgType::Error:
             m_pRoot->getChild("dlg_message/Message")->setProperty("TextColours", "tl:FFFF0000 tr:FFFF0000 bl:FFFF3333 br:FFFF3333");
-            sTitle = getTranslatedString("Msg_Err", "ui");
+            sTitle = trans.get("Msg_Err");
             break;
         case MsgType::Horror:
             m_pRoot->getChild("dlg_message/Message")->setProperty("TextColours", "tl:FFBB0000 tr:FFBB0000 bl:FFFF0000 br:FFFF0000");
-            sTitle = getTranslatedString("Msg_Horr", "ui");
+            sTitle = trans.get("Msg_Horr");
             break;
         case MsgType::GoodMessage:
             m_pRoot->getChild("dlg_message/Message")->setProperty("TextColours", "tl:FF00BB00 tr:FF00BB00 bl:FF00FF00 br:FF00FF00");

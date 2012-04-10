@@ -18,12 +18,14 @@
 
 #include "dLib/dBrowse/dBrowse.h"
 #include "dLib/dConf/configuration.h"
+#include "dLib/dString/dTranslation.h"
 
 using namespace FTS;
 
 FTS::MenuOptions::MenuOptions(const std::list<String>& in_lDisables)
     : m_pRoot(NULL)
     , m_pConf(nullptr)
+    , m_pTrans(nullptr)
 {
     this->reload(true, in_lDisables);
 }
@@ -31,6 +33,7 @@ FTS::MenuOptions::MenuOptions(const std::list<String>& in_lDisables)
 FTS::MenuOptions::~MenuOptions()
 {
     delete m_pConf;
+    delete m_pTrans;
 }
 
 void FTS::MenuOptions::reload(bool in_bDoLoad, const std::list<String>& in_lDisables)
@@ -39,7 +42,11 @@ void FTS::MenuOptions::reload(bool in_bDoLoad, const std::list<String>& in_lDisa
         delete m_pConf;
     }
     m_pConf = new Configuration("conf.xml", ArkanaDefaultSettings());
-
+    if( m_pTrans != nullptr ) {
+        delete m_pTrans;
+    }
+    m_pTrans = new Translation("ui");
+    
     // Now that the dialog gets closed, we can remove both shortcuts from the system.
     if(m_pRoot) {
         InputManager::getSingleton().delShortcut(String(m_pRoot->getName()) + "1");
@@ -396,9 +403,9 @@ int FTS::MenuOptions::loadVideo()
         // Fill the Texture filter listbox.
         FTSGetConvertWinMacro(CEGUI::Combobox, cb, "dlg_options/btnVideo/cbFilt");
 
-        String sTexFilter1 = getTranslatedString("Opts_Vid_Tex_VLow", "ui");
-        String sTexFilter2 = getTranslatedString("Opts_Vid_Tex_Low", "ui");
-        String sTexFilter3 = getTranslatedString("Opts_Vid_Tex_Mid", "ui");
+        String sTexFilter1 = m_pTrans->get("Opts_Vid_Tex_VLow");
+        String sTexFilter2 = m_pTrans->get("Opts_Vid_Tex_Low");
+        String sTexFilter3 = m_pTrans->get("Opts_Vid_Tex_Mid");
         SimpleListItem *lti = new SimpleListItem(sTexFilter1);
         lti->setUserData((void *)((size_t)1));
         cb->addItem(lti);
@@ -437,9 +444,9 @@ int FTS::MenuOptions::loadVideo()
         // Fill the model details listbox.
         FTSGetConvertWinMacro(CEGUI::Combobox, cb, "dlg_options/btnVideo/cbModDet");
 
-        String sModDet1 = getTranslatedString("Opts_Vid_Mod_Low", "ui");
-        String sModDet2 = getTranslatedString("Opts_Vid_Mod_Mid", "ui");
-        String sModDet3 = getTranslatedString("Opts_Vid_Mod_Hig", "ui");
+        String sModDet1 = m_pTrans->get("Opts_Vid_Mod_Low");
+        String sModDet2 = m_pTrans->get("Opts_Vid_Mod_Mid");
+        String sModDet3 = m_pTrans->get("Opts_Vid_Mod_Hig");
         SimpleListItem *lti = new SimpleListItem(sModDet1);
         lti->setUserData((void *)1);
         cb->addItem(lti);
@@ -509,8 +516,8 @@ int FTS::MenuOptions::loadAudio()
            && m_pConf->getBool("SoundEnabled")
 #endif
           ) {
-            pWM->getWindow("dlg_options/btnAudio/lblMessage")
-               ->setText(getTranslatedString("SND_NoSys", "messages"));
+            Translation trans("messages");
+            pWM->getWindow("dlg_options/btnAudio/lblMessage")->setText(trans.get("SND_NoSys"));
         }
     } catch(CEGUI::Exception & e) {
         FTS18N("CEGUI", MsgType::Error, e.getMessage());
@@ -746,7 +753,7 @@ int FTS::MenuOptions::saveVideo(bool &out_bReloadMenu)
 {
     // The values.
     Resolution res;
-    int tex = 1, mod = 2;
+    int mod = 2;
 
     try {
         String sTmp(m_pVideo->getChild("dlg_options/btnVideo/cbResol")->getText());
@@ -764,7 +771,7 @@ int FTS::MenuOptions::saveVideo(bool &out_bReloadMenu)
 
     try {
         FTSGetConvertWinMacro(CEGUI::Combobox, cb, "dlg_options/btnVideo/cbFilt");
-        tex = (size_t)cb->findItemWithText(cb->getText(), NULL)->getUserData();
+        int tex = (size_t)cb->findItemWithText(cb->getText(), NULL)->getUserData();
     } catch(CEGUI::Exception & e) {
         FTS18N("CEGUI", MsgType::Error, e.getMessage());
     }

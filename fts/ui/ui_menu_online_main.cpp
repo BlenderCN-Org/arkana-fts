@@ -26,6 +26,7 @@
 #include "sound/fts_Snd.h"
 #include "tools/server2/constants.h"
 #include "dLib/dConf/configuration.h"
+#include "dLib/dString/dTranslation.h"
 
 #define D_MAX_SENT_MESSAGES_STORED 100
 
@@ -33,7 +34,7 @@ using namespace FTS;
 
 /// Default constructor.
 FTS::OnlineMenuRlv::OnlineMenuRlv()
-    : m_pRoot(NULL)
+    : m_pRoot(nullptr)
 {
 }
 
@@ -55,7 +56,7 @@ bool FTS::OnlineMenuRlv::load()
     this->loadDefaultCursor();
 
     // Load the Online login menu
-    if((m_pRoot = GUI::getSingleton().loadLayout("menu_online_main", true)) == NULL)
+    if((m_pRoot = GUI::getSingleton().loadLayout("menu_online_main", true)) == nullptr)
         throw ErrorAlreadyShownException();
 
     CEGUI::WindowManager *pWM = CEGUI::WindowManager::getSingletonPtr();
@@ -165,7 +166,7 @@ bool FTS::OnlineMenuRlv::unload()
 
     // Unload the CEGUI layout.
     try {
-        if(m_pRoot != NULL) {
+        if(m_pRoot != nullptr) {
             CEGUI::WindowManager::getSingleton().destroyWindow(m_pRoot);
         }
     } catch(CEGUI::Exception &) {
@@ -289,23 +290,23 @@ bool FTS::OnlineMenuRlv::InterpretCurrMsgCmd::exec()
         pRlv->m_lSentMessages.pop_front();
     }
     pRlv->m_ilSentMessagesPos = pRlv->m_lSentMessages.end();
-
+    Translation trans("ui");
     if(sMessage.nieq("/help",5) && sMessage.len() >= 5) {
         // Maybe the user asked help about a certain topic.
         CParser p;
-        char *pszCmd = NULL;
+        char *pszCmd = nullptr;
         p.loadStr(sMessage);
         p.parse("/help% %r", &pszCmd );
 
-        if(pszCmd == NULL) {
-            sMessage = getTranslatedString("Chat_Help","ui");
+        if(pszCmd == nullptr) {
+            sMessage = trans.get("Chat_Help");
         } else {
-            sMessage = getTranslatedString("Chat_Help_" + String(pszCmd).lower(), "ui");
+            sMessage = trans.get("Chat_Help_" + String(pszCmd).lower());
             SAFE_FREE(pszCmd);
         }
 
         if(sMessage.empty())
-            sMessage = getTranslatedString("Chat_Unknown_cmd", "ui");
+            sMessage = trans.get("Chat_Unknown_cmd");
 
         if(pRlv)
             pRlv->gotSystemMessage(sMessage);
@@ -339,7 +340,7 @@ bool FTS::OnlineMenuRlv::InterpretCurrMsgCmd::exec()
     } else if(sMessage.nieq("/w ",3) && sMessage.len() >= 2) {
         // The user wants to whisp someone, get the name of the player to whisp to.
         CParser p;
-        char *pszPlayer = NULL;
+        char *pszPlayer = nullptr;
 
         // First, we read the player out of the /w player message
         p.loadStr(sMessage.mid(2,0));
@@ -359,16 +360,16 @@ bool FTS::OnlineMenuRlv::InterpretCurrMsgCmd::exec()
 
         String sFormattedMessage;
         if(!sChans.empty()) {
-            String sMessageFmt = getTranslatedString("Chat_ChannelsList", "ui");
-            String sChanPrefix = getTranslatedString("Chat_ChannelsList_ChanPrefix", "ui");
-            String sChanSuffix = getTranslatedString("Chat_ChannelsList_ChanSuffix", "ui");
+            String sMessageFmt = trans.get("Chat_ChannelsList");
+            String sChanPrefix = trans.get("Chat_ChannelsList_ChanPrefix");
+            String sChanSuffix = trans.get("Chat_ChannelsList_ChanSuffix");
             String sChansList = "";
             for(std::list<String>::iterator i = sChans.begin() ; i != sChans.end() ; ++i) {
                 sChansList += sChanPrefix + *i + sChanSuffix;
             }
             sFormattedMessage = sMessageFmt.fmt(sChansList);
         } else {
-            sFormattedMessage = getTranslatedString("Chat_ChannelsListEmpty", "ui");
+            sFormattedMessage = trans.get("Chat_ChannelsListEmpty");
         }
 
         pRlv->gotSystemMessage(sFormattedMessage);
@@ -378,12 +379,12 @@ bool FTS::OnlineMenuRlv::InterpretCurrMsgCmd::exec()
         String sChan = sMessage.mid(9, 0).trim();
         if(ERR_OK == g_pMeHacky->og_chatRemChan(sChan)) {
             // Tell the user about the success.
-            String sFmt = getTranslatedString("Chat_ChannelRemGood", "ui");
+            String sFmt = trans.get("Chat_ChannelRemGood");
             pRlv->gotSystemMessage(sFmt.fmt(sChan));
         }
     } else if(sMessage.nieq("/", 1) && sMessage.len() >= 1) {
         // Say that the command doesn't exist, don't show the command-try to the others.
-        pRlv->gotSystemMessage(getTranslatedString("Chat_Unknown_cmd", "ui"));
+        pRlv->gotSystemMessage(trans.get("Chat_Unknown_cmd"));
     } else {
         g_pMeHacky->og_chatSendMessage(sMessage);
     }
@@ -620,7 +621,7 @@ bool FTS::OnlineMenuRlv::cbListClick(const CEGUI::EventArgs & in_ea)
 {
     const CEGUI::MouseEventArgs *mea = dynamic_cast<const CEGUI::MouseEventArgs *>(&in_ea);
 
-    if(mea == NULL || mea->button != CEGUI::RightButton)
+    if(mea == nullptr || mea->button != CEGUI::RightButton)
         return true;
 
     // Simulate a leftclick, so the item under the mouse gets selected.
@@ -630,7 +631,7 @@ bool FTS::OnlineMenuRlv::cbListClick(const CEGUI::EventArgs & in_ea)
     try {
         // Get the listbox and empty it.
         ChatMembersListItem *cli = this->getSelectedUser();
-        if(cli == NULL)
+        if(cli == nullptr)
             return true;
 
         // Place the popup menu at the left of the users list and the cursor's y pos and open it.
@@ -704,9 +705,9 @@ bool FTS::OnlineMenuRlv::cbListClick(const CEGUI::EventArgs & in_ea)
  *  chat users list.\n
  *
  *  It throws an CEGUI::GenericException if there was an error.\n
- *  Returns NULL if nobody is selected.
+ *  Returns nullptr if nobody is selected.
  *
- * \return A pointer to the currently selected user or NULL if none is selected.
+ * \return A pointer to the currently selected user or nullptr if none is selected.
  *
  * \author Pompei2
  */
@@ -717,12 +718,12 @@ ChatMembersListItem *FTS::OnlineMenuRlv::getSelectedUser()
 
     // Nothing selected ?
     CEGUI::ListboxItem *pLI = pLB->getFirstSelectedItem();
-    if(pLI == NULL)
-        return NULL;
+    if(pLI == nullptr)
+        return nullptr;
 
     // Something is selected!
     ChatMembersListItem *cli = dynamic_cast<ChatMembersListItem *>(pLB->getFirstSelectedItem());
-    if((cli) == NULL) {
+    if((cli) == nullptr) {
         throw(CEGUI::InvalidRequestException("Bad cast: The first listbox item in menu_online_main/lbUsers should be of type ChatMembersListItem"));
     }
     return cli;
@@ -766,7 +767,7 @@ bool FTS::OnlineMenuRlv::cbUserWhisp(const CEGUI::EventArgs &)
     try {
         // Get the user name that was right-clicked on.
         ChatMembersListItem *cli = this->getSelectedUser();
-        if(cli == NULL)
+        if(cli == nullptr)
             return true;
 
         // Add the "/w username " to the editbox.
@@ -797,7 +798,7 @@ bool FTS::OnlineMenuRlv::cbUserMute(const CEGUI::EventArgs &)
     try {
         // Get the user name that was right-clicked on.
         ChatMembersListItem *cli = this->getSelectedUser();
-        if(cli == NULL)
+        if(cli == nullptr)
             return true;
 
         g_pMeHacky->og_mute(cli->getName());
@@ -823,7 +824,7 @@ bool FTS::OnlineMenuRlv::cbUserUnmute(const CEGUI::EventArgs &)
     try {
         // Get the user name that was right-clicked on.
         ChatMembersListItem *cli = this->getSelectedUser();
-        if(cli == NULL)
+        if(cli == nullptr)
             return true;
 
         g_pMeHacky->og_unmute(cli->getName());
@@ -849,7 +850,7 @@ bool FTS::OnlineMenuRlv::cbUserKick(const CEGUI::EventArgs &)
     try {
         // Get the user name that was right-clicked on.
         ChatMembersListItem *cli = this->getSelectedUser();
-        if(cli == NULL)
+        if(cli == nullptr)
             return true;
 
         g_pMeHacky->og_chatKick(cli->getName());
@@ -874,7 +875,7 @@ bool FTS::OnlineMenuRlv::cbUserOp(const CEGUI::EventArgs &)
     try {
         // Get the user name that was right-clicked on.
         ChatMembersListItem *cli = this->getSelectedUser();
-        if(cli == NULL)
+        if(cli == nullptr)
             return true;
 
         g_pMeHacky->og_chatOp(cli->getName());
@@ -899,7 +900,7 @@ bool FTS::OnlineMenuRlv::cbUserDeop(const CEGUI::EventArgs &)
     try {
         // Get the user name that was right-clicked on.
         ChatMembersListItem *cli = this->getSelectedUser();
-        if(cli == NULL)
+        if(cli == nullptr)
             return true;
 
         g_pMeHacky->og_chatDeop(cli->getName());
@@ -932,7 +933,8 @@ int FTS::OnlineMenuRlv::join(const String & in_sChan)
         FTS18N("Ogm_chat_join_miss", MsgType::Error);
 
         // And show that.
-        this->gotSystemMessage(getTranslatedString("Ogm_chat_join_miss","messages"));
+        Translation trans("messages");
+        this->gotSystemMessage(trans.get("Ogm_chat_join_miss"));
         return -1;
     } else {
         // Join the channel.
@@ -987,7 +989,7 @@ int FTS::OnlineMenuRlv::enteringNewChannel(const String &in_sNewChanName)
     this->refreshPlayerList();
 
     // Say hello.
-    String sFmt = getTranslatedString("Chat_Join","ui");
+    String sFmt = getTranslation("Chat_Join");
     String sMessage = sFmt.fmt(in_sNewChanName, sMotto.empty() ? "Error" : sMotto);
     this->gotSystemMessage(sMessage);
     return ERR_OK;
@@ -1039,7 +1041,7 @@ int FTS::OnlineMenuRlv::refreshPlayerList()
  */
 int FTS::OnlineMenuRlv::addPlayer(const String & in_sName)
 {
-    ChatMembersListItem *cli = NULL;
+    ChatMembersListItem *cli = nullptr;
     float fSkillPercent = 0.0f;
     uint8_t cState = 0; // 0 = normal 1 = operator 2 = admin.
 
@@ -1075,7 +1077,7 @@ int FTS::OnlineMenuRlv::addPlayer(const String & in_sName)
             size_t iPos = 0;
             for(iPos = 0 ; iPos < pLB->getItemCount() ; ++iPos) {
                 ChatMembersListItem *pCurrLI = dynamic_cast<ChatMembersListItem *>(pLB->getListboxItemFromIndex(iPos));
-                if(pCurrLI == NULL) {
+                if(pCurrLI == nullptr) {
                     continue;
                 }
 
@@ -1246,7 +1248,7 @@ int FTS::OnlineMenuRlv::mottoChange(const String & in_sFrom, const String & in_s
 {
     // If this has been dynamically changed, say something about it in the chat messages.
     if( !in_sFrom.empty() ) {
-        String sFmt = getTranslatedString("Chat_MottoSet", "ui");
+        String sFmt = getTranslation("Chat_MottoSet");
         this->gotSystemMessage(sFmt.fmt(in_sFrom, in_sMotto));
     }
 
@@ -1288,7 +1290,7 @@ bool FTS::OnlineMenuRlv::handleMessage(Packet &in_pack)
             // The message we got came from the system.
             // That means the server needs to tell us something.
             String sMessageID = in_pack.get_string();
-            String sMessage = getTranslatedString(sMessageID, "ui");
+            String sMessage = getTranslation(sMessageID);
             if(sMessageID == "Chat_Kicked") {
                 String sFrom = in_pack.get_string();
                 String sVictim = in_pack.get_string();
@@ -1329,7 +1331,7 @@ bool FTS::OnlineMenuRlv::handleMessage(Packet &in_pack)
         String sKicker = in_pack.get_string();
         String sOldChan = in_pack.get_string();
         String sNewChan = g_pMeHacky->og_chatGetCurChannel();
-        String sFmt = getTranslatedString("Chat_YouGotKicked", "ui");
+        String sFmt = getTranslation("Chat_YouGotKicked");
         String sMessage = sFmt.fmt(sKicker, sOldChan, sNewChan);
 
         // Do an update of the GUI.
@@ -1344,7 +1346,7 @@ bool FTS::OnlineMenuRlv::handleMessage(Packet &in_pack)
     {
         // Someone has been Op'ed
         String sOped = in_pack.get_string();
-        String sMsg = getTranslatedString("Chat_Oped", "ui").fmt(sOped);
+        String sMsg = getTranslation("Chat_Oped").fmt(sOped);
 
         /// TODO: This could be more optimized,
         ///       but it does it's work quite good for now.
@@ -1357,7 +1359,7 @@ bool FTS::OnlineMenuRlv::handleMessage(Packet &in_pack)
     {
         // Someone has been de-Op'ed
         String sDeoped = in_pack.get_string();
-        String sMsg = getTranslatedString("Chat_Deoped", "ui").fmt(sDeoped);
+        String sMsg = getTranslation("Chat_Deoped").fmt(sDeoped);
 
         /// TODO: Like above, this could be more optimized,
         ///       but it does it's work quite good for now.

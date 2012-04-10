@@ -30,6 +30,7 @@
 #include "game/loadgame_rlv.h"
 #include "graphic/graphic.h"
 #include "dLib/dConf/configuration.h"
+#include "dLib/dString/dTranslation.h"
 
 #include "dLib/dProcess/dProcess.h"
 
@@ -382,9 +383,9 @@ bool FTS::MainMenuRlv::cbUpdate(const CEGUI::EventArgs & in_ea)
         wUpdate->getChild("dlg_Update/Ok")->setEnabled(false);
 
         DataContainer *pNewestVersion = getHTTPFile("arkana-fts.sourceforge.net", "/actual_release", 1000*10);
+        Translation trans("ui");
         if(pNewestVersion == NULL) {
-            wUpdate->getChild("dlg_Update/Desc")->
-                setText(getTranslatedString("Update_Error", "ui"));
+            wUpdate->getChild("dlg_Update/Desc")->setText(trans.get("Update_Error"));
             return true;
         }
 
@@ -395,12 +396,10 @@ bool FTS::MainMenuRlv::cbUpdate(const CEGUI::EventArgs & in_ea)
 
         // Look if we have a new version.
         if(makeFTSVersionUInt32(iVersion[0],iVersion[1],iVersion[2]) > getFTSVersionUInt32()) {
-            wUpdate->getChild("dlg_Update/Desc")->
-                setText(getTranslatedString("Update_Found", "ui"));
+            wUpdate->getChild("dlg_Update/Desc")->setText(trans.get("Update_Found"));
             wUpdate->getChild("dlg_Update/Ok")->setEnabled(true);
         } else {
-            wUpdate->getChild("dlg_Update/Desc")->
-                setText(getTranslatedString("Update_None", "ui"));
+            wUpdate->getChild("dlg_Update/Desc")->setText(trans.get("Update_None"));
         }
     }
     catch(CEGUI::Exception & e) {

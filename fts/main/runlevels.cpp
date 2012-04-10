@@ -12,10 +12,25 @@
 #include "mdlviewer/mdlviewer_main.h"
 #include "graphic/graphic.h"
 #include "3d/Renderer.h" // The default camera.
+#include "dLib/dString/dTranslation.h"
 
 #include <CEGUI.h>
 
 using namespace FTS;
+Runlevel::Runlevel() 
+    : m_pDefCursor(nullptr) 
+{
+    m_translation = new Translation("ui");
+}
+Runlevel::~Runlevel() 
+{
+    SAFE_DELETE(m_translation);
+}
+
+String Runlevel::getTranslation(const String& in_String)
+{
+    return m_translation->get(in_String);
+}
 
 /** This renders the whole CEGUI GUI, with an additional blue dotted frame
  *  around the widget that is currently active (for FTS).

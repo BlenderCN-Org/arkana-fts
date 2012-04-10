@@ -13,6 +13,7 @@
 #include "ui/ui_commands.h"
 #include "logging/logger.h"
 #include "input/input.h"
+#include "dLib/dString/dTranslation.h"
 
 using namespace FTS;
 
@@ -80,7 +81,8 @@ int FTS::ConfirmDlg::loadI18N(const String& in_sMessageID)
     }
 
     /* Load the message string. */
-    m_s18NMessage = getTranslatedString(in_sMessageID, "ui");
+    Translation trans("ui");
+    m_s18NMessage = trans.get(in_sMessageID);
 
     /* Load the dialog and set it's items texts to the just loaded ones. */
     try {

@@ -13,6 +13,7 @@
 #include "graphic/graphic.h"
 #include "logging/logger.h"
 #include "net/connection.h"
+#include "dLib/dString/dTranslation.h"
 
 #define MAX_GAME_ICON_W 32
 #define MAX_GAME_ICON_H 32
@@ -229,7 +230,7 @@ bool FTS::DlgOnlineFindGame::cbGameClicked(const CEGUI::EventArgs &)
 
     // Write the info into the GUI.
     CEGUI::WindowManager &wm = CEGUI::WindowManager::getSingleton();
-
+    Translation trans("ui");
     // Top part: the map infos.
     try {
         wm.getWindow("dlg_onlineFindGame/lblMapName")->setText(m_mapInfo.getName());
@@ -240,13 +241,13 @@ bool FTS::DlgOnlineFindGame::cbGameClicked(const CEGUI::EventArgs &)
         wm.getWindow("dlg_onlineFindGame/lblMapDesc")->show();
     } catch(CEGUI::Exception &) { }
     try {
-        String sFmt = getTranslatedString("gameinfo_MapAuthorAndModif", "ui");
+        String sFmt = trans.get("gameinfo_MapAuthorAndModif");
         String sTxt = sFmt.fmt(m_mapInfo.getAuthor(), m_mapInfo.getLastModif().toStr());
         wm.getWindow("dlg_onlineFindGame/lblMapAuthorAndModif")->setText(sTxt);
         wm.getWindow("dlg_onlineFindGame/lblMapAuthorAndModif")->show();
     } catch(CEGUI::Exception &) { }
     try {
-        String sFmt = getTranslatedString("gameinfo_MapnPlayers", "ui");
+        String sFmt = trans.get("gameinfo_MapnPlayers");
         String sTxt = sFmt.fmt(String::nr(m_mapInfo.getMinPlayers()), String::nr(m_mapInfo.getMaxPlayers()));
         wm.getWindow("dlg_onlineFindGame/lblMapPlayers")->setText(sTxt);
         wm.getWindow("dlg_onlineFindGame/lblMapPlayers")->show();
@@ -265,12 +266,12 @@ bool FTS::DlgOnlineFindGame::cbGameClicked(const CEGUI::EventArgs &)
         wm.getWindow("dlg_onlineFindGame/lblGameName")->show();
     } catch(CEGUI::Exception &) { }
     try {
-        String sFmt = getTranslatedString("gameinfo_GameHost", "ui");
+        String sFmt = trans.get("gameinfo_GameHost");
         wm.getWindow("dlg_onlineFindGame/lblGameHost")->setText(sFmt.fmt(m_sHost));
         wm.getWindow("dlg_onlineFindGame/lblGameHost")->show();
     } catch(CEGUI::Exception &) { }
     try {
-        String sFmt = getTranslatedString("gameinfo_GamePlayers", "ui");
+        String sFmt = trans.get("gameinfo_GamePlayers");
         wm.getWindow("dlg_onlineFindGame/lblGamePlayers")->setText(sFmt.fmt(String::nr(m_nPlayers)));
         wm.getWindow("dlg_onlineFindGame/lblGamePlayers")->show();
     } catch(CEGUI::Exception &) { }

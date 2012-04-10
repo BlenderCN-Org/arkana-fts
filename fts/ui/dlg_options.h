@@ -40,6 +40,7 @@ private:
     AdvVideoDlg *m_pAdvVideoDlg;
 
     Configuration * m_pConf;
+    class Translation* m_pTrans;
 
     /* Functions that load the settings into the widgets. */
     int loadGeneral();

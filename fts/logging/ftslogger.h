@@ -5,6 +5,7 @@
 
 #include "logging/logger.h"
 #include "logging/Chronometer.h"
+#include "dLib/dConf/configuration.h"
 
 namespace FTS {
 
@@ -28,6 +29,8 @@ private:
     bool m_bSuppressOnlyNextDlg;
 
     bool m_bMute;
+
+    class Translation* m_translation;
 
     int createWindow(MsgType::Enum in_Gravity, const String &in_sMessage);
     int doMessage(const String &in_sMsg, const MsgType::Enum& in_Gravity, int in_iDbgLv = 0);

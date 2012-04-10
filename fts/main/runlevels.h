@@ -27,18 +27,18 @@ private:
 
     /// A default cursor.
     _SCursor_ *m_pDefCursor;
-
+    class Translation* m_translation;
 protected:
     /// Private constructor.
-    Runlevel() : m_pDefCursor(NULL) {};
+    Runlevel();
 
     void renderCEGUI();
     int loadDefaultCursor();
     int unloadDefaultCursor();
-
+    String getTranslation(const String& in_String);
 public:
     /// Default destructor.
-    virtual ~Runlevel() {};
+    virtual ~Runlevel();
 
     /** This method needs to be overloaded. It will be called during the loading
      *  of the runlevel.\n

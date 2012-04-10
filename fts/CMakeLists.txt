@@ -67,6 +67,7 @@ set(SOURCES_COMMON
             dLib/dProcess/dProcess.cpp
             dLib/dString/dString.cpp
             dLib/dString/dPath.cpp
+            dLib/dString/dTranslation.cpp
             dLib/dCompressor/dCompressor.cpp
             dLib/dCompressor/minilzo/minilzo.c
             dLib/dCompressor/minilzo_compressor.cpp
@@ -119,6 +120,7 @@ set(SOURCES_COMMON
             tests/Scripting/DaoVmTest.cpp
             tests/dLib/dString/dPathTest.cpp
             tests/dLib/dString/dStringTest.cpp
+            tests/dLib/dString/dTranslationTest.cpp
             ui/cegui_items/progressbar/ArkanaProgressBarWR.cpp
             ui/cegui_items/progressbar/ArkanaProgressBarWRProperties.cpp
             ui/cegui_items/ArkanaResourceProvider.cpp
@@ -148,7 +150,6 @@ set(SOURCES_COMMON
             utilities/console.cpp
             utilities/fps_calculator.cpp
             utilities/radix.cpp
-            utilities/string_file.cpp
             utilities/parse.cpp
             utilities/utilities.cpp
             utilities/threading.cpp

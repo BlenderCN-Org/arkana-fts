@@ -16,6 +16,7 @@
 #include "utilities/utilities.h"
 #include "dLib/dBrowse/dBrowse.h"
 #include "dLib/dFile/dFile.h"
+#include "dLib/dString/dTranslation.h"
 #include "input/input.h"
 
 using namespace FTS;
@@ -148,10 +149,11 @@ int FTS::FileDlg::loadOpenDlg(const String & in_sFilter, const String & in_sRoot
         m_sRoot = in_sRoot;
 
     // Load all language settings.
-    String s18NTitle = getTranslatedString(in_s18NTitle, "ui");
-    String s18NText = getTranslatedString(in_s18NText, "ui");
-    String s18NOk = getTranslatedString(in_s18NOk, "ui");
-    String s18NCancel = getTranslatedString(in_s18NCancel, "ui");
+    Translation trans("ui");
+    String s18NTitle = trans.get(in_s18NTitle);
+    String s18NText = trans.get(in_s18NText);
+    String s18NOk = trans.get(in_s18NOk);
+    String s18NCancel = trans.get(in_s18NCancel);
 
     // Load the dialog and set it's items texts to the just loaded ones.
     try {
@@ -281,10 +283,11 @@ int FTS::FileDlg::loadSaveDlg(const String & in_sFilter,
         m_sRoot = in_sRoot;
 
     // Load all language settings.
-    String s18NTitle = getTranslatedString(in_s18NTitle, "ui");
-    String s18NText = getTranslatedString(in_s18NText, "ui");
-    String s18NOk = getTranslatedString(in_s18NOk, "ui");
-    String s18NCancel = getTranslatedString(in_s18NCancel, "ui");
+    Translation trans("ui");
+    String s18NTitle = trans.get(in_s18NTitle);
+    String s18NText = trans.get(in_s18NText);
+    String s18NOk = trans.get(in_s18NOk);
+    String s18NCancel = trans.get(in_s18NCancel);
 
     // Load the dialog and set it's items texts to the just loaded ones.
     try {

@@ -34,12 +34,12 @@ using namespace FTS;
 LoadGameRlv::LoadGameRlv(const Path &in_sMapFile, uint8_t in_nPlayers)
     : m_loadState(new StateLoadBeginning())
     , m_fPercentDone(0.0f)
-    , m_pRootWindow(NULL)
+    , m_pRootWindow(nullptr)
     , m_pGame(new GameRlv)
     , m_sFile(in_sMapFile)
     , m_nPlayers(in_nPlayers)
     , m_uiBeginTime(0)
-    , m_pTerrainLoadingInfo(NULL)
+    , m_pTerrainLoadingInfo(nullptr)
     , m_bWaiting(false)
 {
 }
@@ -127,7 +127,7 @@ bool LoadGameRlv::unload()
     }
 
     try {
-        if(m_pRootWindow != NULL)
+        if(m_pRootWindow != nullptr)
             CEGUI::WindowManager::getSingleton().destroyWindow(m_pRootWindow);
 
         // Set back the tooltip.
@@ -151,15 +151,15 @@ bool LoadGameRlv::unload()
  */
 void LoadGameRlv::setupLoadscreenPlayers()
 {
-    CEGUI::WindowManager *pWM = NULL;
-    CEGUI::Window *wContainer = NULL;
+    CEGUI::WindowManager *pWM = nullptr;
+    CEGUI::Window *wContainer = nullptr;
 
     float fCurrY = 0.0f;   // The y position of the current player's progressbar.
     float fHeight = 34.0f; // The height of one element (Label and progressbar).
 
     try {
         pWM = CEGUI::WindowManager::getSingletonPtr();
-        if(pWM == NULL)
+        if(pWM == nullptr)
             return;
 
         wContainer = pWM->getWindow("loadscreen/progs");
@@ -173,7 +173,7 @@ void LoadGameRlv::setupLoadscreenPlayers()
     }
 
     for(int i = 0 ; i < m_nPlayers ; i++) {
-        String sPlayer = getTranslatedString("General_Player", "ui");
+        String sPlayer = getTranslation("General_Player");
         String sPlayerName = String("{1} {2}").fmt(sPlayer, String::nr(i));
         String sProgressName = "loadscreen/progs/pg" + sPlayerName;
         String sLabelName = "loadscreen/progs/lbl" + sPlayerName;
@@ -212,11 +212,11 @@ void LoadGameRlv::setupLoadscreenPlayers()
  */
 void LoadGameRlv::setupLoadscreenDetails(MapInfo *in_pDetails)
 {
-    if(in_pDetails == NULL)
+    if(in_pDetails == nullptr)
         return ;
 
     CEGUI::WindowManager *pWM = CEGUI::WindowManager::getSingletonPtr();
-    if(pWM == NULL) {
+    if(pWM == nullptr) {
         return ;
     }
 
@@ -231,7 +231,7 @@ void LoadGameRlv::setupLoadscreenDetails(MapInfo *in_pDetails)
     // Set the Author of the map.
     try {
         if(pWM->isWindowPresent("loadscreen/lblAuthor")) {
-            String sFmt = getTranslatedString("Loadscr_Author", "ui");
+            String sFmt = getTranslation("Loadscr_Author");
             String sAuthor = sFmt.fmt(in_pDetails->getAuthor());
             pWM->getWindow("loadscreen/lblAuthor")->setText(sAuthor);
         }
@@ -240,7 +240,7 @@ void LoadGameRlv::setupLoadscreenDetails(MapInfo *in_pDetails)
     // Set the map's last modification date.
     try {
         if(pWM->isWindowPresent("loadscreen/lblModif")) {
-            String sFmt = getTranslatedString("Loadscr_Lastmodif", "ui");
+            String sFmt = getTranslation("Loadscr_Lastmodif");
             String sModif = sFmt.fmt(in_pDetails->getLastModif().toStr());
             pWM->getWindow("loadscreen/lblModif")->setText(sModif);
         }
@@ -358,7 +358,7 @@ bool LoadGameRlv::cbAnyKeyPressed(const CEGUI::EventArgs &)
 
         // Enter the game as soon as a key is pressed.
         RunlevelManager::getSingleton().prepareRunlevelEntrance(m_pGame);
-        m_pGame = NULL;
+        m_pGame = nullptr;
         m_bWaiting = false;
     }
 
@@ -379,7 +379,7 @@ void LoadGameRlv::finishStage(const String &in_sProgress, const String &in_sStat
         try {
             CEGUI::String sWin = ("loadscreen/" + in_sStat);
             CEGUI::Window *pWin=CEGUI::WindowManager::getSingleton().getWindow(sWin);
-            String sTxt = getTranslatedString(in_sStat, "ui");
+            String sTxt = getTranslation(in_sStat);
             pWin->setText(String("{1} {2} s").fmt(sTxt, String::nr(dSecElapsed, 2)));
             pWin->show();
         } catch(...) {}
@@ -397,7 +397,7 @@ void FTS::LoadGameRlv::StateLoadBeginning::doLoad( LoadGameRlv * context )
     // Do nothing in this stage, only update the screen.
 
     // This stage is done, show the user what will be done in the next one.
-    context->finishStage(getTranslatedString("Loadscr_Stage_GetFL","ui"));
+    context->finishStage(context->getTranslation("Loadscr_Stage_GetFL"));
     context->setState(new StateLoadMapInfo());
 }
 
@@ -407,7 +407,7 @@ void FTS::LoadGameRlv::StateLoadMapInfo::doLoad( LoadGameRlv * context )
     context->setupLoadscreenDetails(context->m_pGame->getMap()->getInfo());
 
     // This stage is done, show the user what will be done in the next one.
-    String sTxt = getTranslatedString("Loadscr_Stage_TerrInfo", "ui");
+    String sTxt = context->getTranslation("Loadscr_Stage_TerrInfo");
     context->finishStage(sTxt);
     context->setState(new StateLoadTerrainInfo());
 }
@@ -427,7 +427,7 @@ void FTS::LoadGameRlv::StateLoadTerrainInfo::doLoad( LoadGameRlv * context )
     // This stage is done, show the user what will be done in the next one.
     int nQuads = context->m_pGame->getMap()->m_pTerrain->getW() *
         context->m_pGame->getMap()->m_pTerrain->getH();
-    String sFmt =getTranslatedString("Loadscr_Stage_TerrQuads", "ui");
+    String sFmt =context->getTranslation("Loadscr_Stage_TerrQuads");
     context->finishStage(sFmt.fmt(String::nr(nQuads)));
     context->setState(new StateLoadTerrainQuads());
 
@@ -445,7 +445,7 @@ void FTS::LoadGameRlv::StateLoadTerrainQuads::doLoad( LoadGameRlv * context )
     // This stage is done, show the user what will be done in the next one.
     int nTiles = (context->m_pGame->getMap()->m_pTerrain->getW()+1) *
         (context->m_pGame->getMap()->m_pTerrain->getH()+1);
-    String sFmt = getTranslatedString("Loadscr_Stage_TerrLoTi", "ui");
+    String sFmt = context->getTranslation("Loadscr_Stage_TerrLoTi");
     context->finishStage(sFmt.fmt(String::nr(nTiles)), "lblTime_quads");
     context->setState(new StateLoadTerrainLoadLowerTiles());
 
@@ -461,7 +461,7 @@ void FTS::LoadGameRlv::StateLoadTerrainLoadLowerTiles::doLoad( LoadGameRlv * con
     }
 
     // This stage is done, show the user what will be done in the next one.
-    String sTxt = getTranslatedString("Loadscr_Stage_TerrCompLoTi", "ui");
+    String sTxt = context->getTranslation("Loadscr_Stage_TerrCompLoTi");
     context->finishStage(sTxt, "lblTime_lowertiles");
     context->setState(new StateLoadTerrainCompileLowerTileset());
 }
@@ -478,7 +478,7 @@ void FTS::LoadGameRlv::StateLoadTerrainCompileLowerTileset::doLoad( LoadGameRlv 
     // This stage is done, show the user what will be done in the next one.
     int nTiles = (context->m_pGame->getMap()->m_pTerrain->getW()+1) *
         (context->m_pGame->getMap()->m_pTerrain->getH()+1);
-    String sFmt = getTranslatedString("Loadscr_Stage_TerrUpTi", "ui");
+    String sFmt = context->getTranslation("Loadscr_Stage_TerrUpTi");
     context->finishStage(sFmt.fmt(String::nr(nTiles)), "lblTime_complowtil");
     context->setState(new StateLoadTerrainUpperTiles());
 }
@@ -493,7 +493,7 @@ void FTS::LoadGameRlv::StateLoadTerrainUpperTiles::doLoad( LoadGameRlv * context
     }
 
     // This stage is done, show the user what will be done in the next one.
-    String sTxt = getTranslatedString("Loadscr_Stage_Precalc", "ui");
+    String sTxt = context->getTranslation("Loadscr_Stage_Precalc");
     context->finishStage(sTxt, "lblTime_uppertiles");
     context->setState(new StateLoadTerrainPrecalc());
 }
@@ -506,7 +506,7 @@ void FTS::LoadGameRlv::StateLoadTerrainPrecalc::doLoad( LoadGameRlv * context )
     pT->precalcNormals();
 
     // This stage is done, show the user what will be done in the next one.
-    String sTxt = getTranslatedString("Loadscr_Stage_Forests", "ui");
+    String sTxt = context->getTranslation("Loadscr_Stage_Forests");
     context->finishStage(sTxt, "lblTime_precalc");
     context->setState(new StateLoadForests());
 }
@@ -536,9 +536,9 @@ void FTS::LoadGameRlv::StateLoadScripts::doLoad( LoadGameRlv * context )
 void FTS::LoadGameRlv::StateLoadFinalize::doLoad( LoadGameRlv * context )
 {
     // This stage is done, show the user what will be done in the next one.
-    String sTxt = getTranslatedString("Loadscr_Stage_Starting", "ui");
+    String sTxt = context->getTranslation("Loadscr_Stage_Starting");
     if(context->m_pGame->getMap()->getInfo()->getPressBtn()) {
-        sTxt += " " + getTranslatedString("PressEnterToCont", "messages");
+        sTxt += " " + context->getTranslation("PressEnterToCont");
 
         // Wait for a button to be pressed? The register a callback.
         InputManager *pMgr = InputManager::getSingletonPtr();

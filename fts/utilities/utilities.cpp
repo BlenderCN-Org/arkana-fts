@@ -17,6 +17,7 @@
 #endif
 
 #include "logging/logger.h"
+#include "dLib/dString/dTranslation.h"
 #include "tools/server2/checksum/md5.h"
 #include "tools/server2/checksum/sha2.h"
 
@@ -165,8 +166,10 @@ String FTS::DateTime::toStr() const
 
     // Add the year again, but don't use a negative number, prefer using a suffix.
     s += String::nr(std::abs(this->getYear()));
-    if(this->getYear()<0)
-        s += getTranslatedString("General_ac", "ui");
+    if(this->getYear()<0) {
+        Translation trans("ui");
+        s += trans.get("General_ac");
+    }
 
     return s;
 }
