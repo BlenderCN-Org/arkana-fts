@@ -164,7 +164,10 @@ void Configuration::parse ( CEGUITinyXML::TiXmlDocument& doc )
 
 String Configuration::get ( String in_optName )
 {
-    return m_opts[in_optName];
+    if(m_opts.find(in_optName) != m_opts.end()){
+        return m_opts[in_optName];
+    }
+    return "";
 }
 
 bool Configuration::getBool ( String in_optName )

@@ -31,7 +31,7 @@ namespace FTS {
             void set(String in_optName, float value);
             void set(String in_optName, bool value);
         private:
-	    void parse(CEGUITinyXML::TiXmlDocument& doc);
+            void parse(CEGUITinyXML::TiXmlDocument& doc);
             Path m_confFileName;
             Options m_opts;
             Options m_defaults;
