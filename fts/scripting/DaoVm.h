@@ -59,7 +59,6 @@ private:
     bool m_regExFeature;
     bool needsPrintln(const String& statement );
     void loadInternalScripts();
-    //std::stack<DaoNameSpace*> m_nsStack;
     std::list<DaoNameSpace*> m_nsStack;
     std::stack<DaoVmProcess*> m_vmpStack;
 };

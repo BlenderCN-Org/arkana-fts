@@ -520,6 +520,8 @@ int Terrain::draw(unsigned int in_uiTicks)
         }
     }
     glEnd();
+    // FIXME Somehow on quads draw w/ x=0,y=0 an open gl error invalid operation occurs.
+    verifGL("Terrain::draw 1");
 
     // If no multitexturing is enabled, we still need to see the uppertiles,
     // So we just make a second render pass.
