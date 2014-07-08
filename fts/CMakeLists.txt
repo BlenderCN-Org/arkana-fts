@@ -121,6 +121,8 @@ set(SOURCES_COMMON
             tests/dLib/dString/dPathTest.cpp
             tests/dLib/dString/dStringTest.cpp
             tests/dLib/dString/dTranslationTest.cpp
+            tests/Configuration/Settings.cpp
+            tests/Configuration/FTSConfiguration.cpp
             ui/cegui_items/progressbar/ArkanaProgressBarWR.cpp
             ui/cegui_items/progressbar/ArkanaProgressBarWRProperties.cpp
             ui/cegui_items/ArkanaResourceProvider.cpp

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<conf.xml>
+    <Anisotropic value="False" />
+    <BPP value="32" />
+    <ClearChatbox value="True" />
+    <ComplexQuads value="True" />
+    <DebugLevel value="1" />
+    <DefaultChannel value="Talk To Survive (main channel)" />
+    <Fullscreen value="False" />
+    <HRes value="1024" />
+    <KbdScrollSpeed value="50" />
+    <Language value="German" />
+    <LastLogin value="" />
+    <MasterServerName value="arkana-fts.servegame.org" />
+    <MasterServerPort value="4711" />
+    <MaxShaderQuality value="Best" />
+    <MenuBGFile value="HelloWorld" />
+    <MenuBGMove value="0" />
+    <MenuMouseWarp value="True" />
+    <ModelDetails value="2" />
+    <ModelRenderTechnique value="Shader" />
+    <MouseScrollSpeed value="75" />
+    <MultiTexturing value="True" />
+    <SoundEnabled value="True" />
+    <SoundVolumeMusic value="80" />
+    <SoundVolumeSFXAction value="100" />
+    <SoundVolumeSFXAttention value="100" />
+    <SoundVolumeSFXEnvironment value="100" />
+    <SoundVolumeSFXMagic value="100" />
+    <SoundVolumeSFXUnitReaction value="100" />
+    <TextureFilter value="2" />
+    <VRes value="768" />
+</conf.xml>
