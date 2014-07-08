@@ -94,6 +94,9 @@
     <Filter Include="Tests\Scripting">
       <UniqueIdentifier>{04af23a0-612a-4653-addf-c7ff8b3b5497}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Tests\Configuration">
+      <UniqueIdentifier>{ba0df10c-0e5c-496c-93bd-8100fefa84e8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\main\Exception.cpp">
@@ -501,6 +504,12 @@
     <ClCompile Include="..\tests\dLib\dString\dTranslationTest.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
+    <ClCompile Include="..\tests\Configuration\FTSConfiguration.cpp">
+      <Filter>Tests\Configuration</Filter>
+    </ClCompile>
+    <ClCompile Include="..\tests\Configuration\Settings.cpp">
+      <Filter>Tests\Configuration</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\main\defines.h">
@@ -904,6 +913,9 @@
     </ClInclude>
     <ClInclude Include="..\dLib\dString\dTranslation.h">
       <Filter>dLib\dString</Filter>
+    </ClInclude>
+    <ClInclude Include="..\tests\Configuration\Settings.h">
+      <Filter>Tests\Configuration</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

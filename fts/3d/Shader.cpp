@@ -19,7 +19,7 @@ using namespace FTS;
 
 const String FTS::ShaderManager::DefaultVertexShader = "Default.vert";
 const String FTS::ShaderManager::DefaultFragmentShader = "Default.frag";
-const String FTS::ShaderManager::DefaultGeometryShader = String::EMPTY;
+const String FTS::ShaderManager::DefaultGeometryShader = "";
 extern const char* sErrorVert;
 extern const char* sErrorFrag;
 

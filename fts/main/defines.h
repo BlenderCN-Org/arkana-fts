@@ -85,7 +85,7 @@ typedef unsigned __int64	uint64_t;
 #  define FTS_IS_DIR_SEPARATOR(ch) ((ch) == FTS_DIR_SEPARATOR[0])
 
     // The Dir containing all the data. TODO: Make configurable at compile-time.
-#  define DATA "Data"FTS_DIR_SEPARATOR
+#  define DATA "Data" FTS_DIR_SEPARATOR
 
 //#define FTS_WINDOW_TITLE "FTS Version "FTS_VERSION_STRING" by Pompei2"
 #  define FTS_WINDOW_TITLE "FTS by Pompei2"

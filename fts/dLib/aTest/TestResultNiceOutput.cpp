@@ -5,6 +5,7 @@
 #include <iostream>
 #include <iomanip>
 #include <numeric>
+#include <algorithm>
 
 TestResultNiceOutput::TestResultNiceOutput(std::ostream& out,
                                            bool bDelayFailureReport,

@@ -100,6 +100,10 @@
 #if defined(_MSC_VER) && (_MSC_VER <= 1200) && !defined(_STLPORT_VERSION)
 #    define ceguimin	std::_cpp_min
 #    define ceguimax	std::_cpp_max
+#elif defined(_MSC_VER) && (_MSC_VER > 1600) && !defined(_STLPORT_VERSION)
+#    include <algorithm>
+#    define ceguimin	std::min
+#    define ceguimax	std::max
 #else
 #    define ceguimin	std::min
 #    define ceguimax	std::max

@@ -2,7 +2,10 @@
 
 #if WINDOOF
 #  include <direct.h>
+#else
+#  include <unistd.h>
 #endif
+
 
 using namespace FTS;
 

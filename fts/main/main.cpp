@@ -122,7 +122,7 @@ int main(int argc, char *argv[])
 
     if(!FileUtils::dirExists(DATA)) {
         std::cout << "FTS not running in the correct directory: " << std::endl
-                  << "no data ("DATA") directory found !" << std::endl
+                  << "no data (" DATA ") directory found !" << std::endl
                   << std::endl
                   << "You are most probably a developer using Visual C++ but " << std::endl
                   << "you forgot to change the project's working directory." << std::endl
