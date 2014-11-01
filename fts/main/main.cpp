@@ -118,6 +118,14 @@ int main(int argc, char *argv[])
 #endif
         return failures;
     }
+
+    if ( argc == 2 && std::string(argv[1]) == "run-test-only" )
+    {
+#if WINDOOF
+        system( "pause" );
+#endif
+        return 0;
+    }
 #endif
 
     if(!FileUtils::dirExists(DATA)) {
