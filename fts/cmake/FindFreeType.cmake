@@ -15,23 +15,23 @@
 
 set(FreeType_FOUND "NO")
 
-find_path(FreeType_INCLUDE_DIR freetype/config/ftheader.h
-#                                /include/freetype2/freetype
-                               /include/freetype2
-#                                /include/freetype
-                               /include
-#                                /usr/include/freetype2/freetype
-                               /usr/include/freetype2
-#                                /usr/include/freetype
-                               /usr/include
-#                                /usr/local/include/freetype2/freetype
+find_path(FreeType_INCLUDE_DIR config/ftheader.h
+                                /include/freetype2/freetype
+                                /include/freetype2
+                                /include/freetype
+#                                /include
+                                /usr/include/freetype2/freetype
+                                /usr/include/freetype2
+                                /usr/include/freetype
+#                               /usr/include
+                                /usr/local/include/freetype2/freetype
                                /usr/local/include/freetype2
-#                                /usr/local/include/freetype
-                               /usr/local/include
-#                                /usr/opt/include/freetype2/freetype
+                                /usr/local/include/freetype
+#                               /usr/local/include
+                                /usr/opt/include/freetype2/freetype
                                /usr/opt/include/freetype2
-#                                /usr/opt/include/freetype
-                               /usr/opt/include
+                                /usr/opt/include/freetype
+#                               /usr/opt/include
          )
 
 find_library(FreeType_LIBRARY NAMES freetype
@@ -39,6 +39,7 @@ find_library(FreeType_LIBRARY NAMES freetype
                               PATHS /lib
                                     /lib64
                                     /usr/lib
+                                    /usr/lib32
                                     /usr/lib64
                                     /usr/local/lib
                                     /usr/local/lib64
