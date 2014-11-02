@@ -3,6 +3,7 @@
 #include "main.h"
 
 #include <list>
+#include <chrono>
 
 namespace FTS {
 
@@ -10,26 +11,30 @@ class Clock
 {
 public:
     Clock();
-    ~Clock();
+    virtual ~Clock();
 
     virtual void tick();
 
+    /*! Returns the time difference in seconds since the last call of tick().
+    */
     double getDeltaT() const;
+
+    /*! Returns the time in seconds since program start.
+    */
     double getCurrentTime() const;
+    
+    /*! Returns the ticks of the current second.
+    */
     double getTPS() const;
 
 protected:
-    double m_dStartTime;
-    double m_dLastTick;
-    double m_dCurrentTime;
+    std::chrono::steady_clock::time_point m_dStartTime;
+    std::chrono::steady_clock::time_point m_dLastTick;
+    std::chrono::steady_clock::time_point m_dCurrentTime;
 
-    std::list<double> m_lastTicks;
+    std::list<std::chrono::steady_clock::time_point> m_lastTicks;
 
 private:
-    uint32_t getClockTicks();
-#if !WINDOOF
-    struct timeval g_tvStart;
-#endif
 };
 
 }; // namespace FTS
