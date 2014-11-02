@@ -5,6 +5,8 @@
  * \brief This file defines everything about the fts loading runlevel.
  **/
 
+#include <chrono>
+
 #include <CEGUI.h>
 
 #include "main/load_fts_rlv.h"
@@ -188,7 +190,7 @@ void FTS::LoadFTSRlv::render2D(const Clock&)
  */
 bool FTS::LoadFTSRlv::update(const Clock&)
 {
-    uint32_t uiBegin = dGetTicks();
+    auto timeBegin = std::chrono::steady_clock::now();
     switch(m_eNextTodo) {
     case LoadBeginning:
         // Return to the game.
@@ -244,9 +246,9 @@ bool FTS::LoadFTSRlv::update(const Clock&)
 
     // If the loading was faster then 200 ms, wait the rest of time so the
     // user sees the screen for 200 ms.
-    uint32_t uiTimeUsed = dGetTicks() - uiBegin;
-    if(uiTimeUsed < 200)
-        dSleep(200 - uiTimeUsed);
+    auto TimeUsed = std::chrono::duration_cast<std::chrono::milliseconds>( std::chrono::steady_clock::now() - timeBegin ).count();
+    if( TimeUsed < 200)
+        dSleep(static_cast<uint32_t>( 200 - TimeUsed) );
 
     return true;
 }

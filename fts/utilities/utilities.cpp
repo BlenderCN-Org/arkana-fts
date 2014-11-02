@@ -5,6 +5,9 @@
  * \brief This file implements general functions.
  **/
 
+#include <thread>
+#include <chrono>
+
 #include "utilities.h"
 
 /// \TODO: This is a really bad fix, but for now it does. Have no other idea
@@ -32,23 +35,7 @@ using namespace FTS;
  */
 void FTS::dSleep(unsigned long in_ulMilliseconds)
 {
-#if WINDOOF
-    Sleep(in_ulMilliseconds);
-#else
-    timespec ts;
-    timespec rem;
-
-    ts.tv_sec = in_ulMilliseconds / 1000;
-    ts.tv_nsec = (in_ulMilliseconds - ts.tv_sec*1000) * 1000000;
-
-    int iRet = 0;
-    errno = 0;
-    do {
-        iRet = nanosleep(&ts, &rem);
-        ts.tv_sec = rem.tv_sec;
-        ts.tv_nsec = rem.tv_nsec;
-    } while(iRet != 0 && errno == EINTR);
-#endif
+    std::this_thread::sleep_for( std::chrono::milliseconds( in_ulMilliseconds ) );
 }
 
 uint32_t FTS::dGetTicks()
