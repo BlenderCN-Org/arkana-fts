@@ -192,6 +192,7 @@
     <ClCompile Include="..\tests\dLib\dString\dStringTest.cpp" />
     <ClCompile Include="..\tests\dLib\dString\dTranslationTest.cpp" />
     <ClCompile Include="..\tests\mainNice.cpp" />
+    <ClCompile Include="..\tests\main\ClockTest.cpp" />
     <ClCompile Include="..\tests\Scripting\DaoVmTest.cpp" />
     <ClCompile Include="..\ui\cegui_items\ColorListItem.cpp" />
     <ClCompile Include="..\ui\ScriptConsole.cpp" />

@@ -510,6 +510,9 @@
     <ClCompile Include="..\tests\Configuration\Settings.cpp">
       <Filter>Tests\Configuration</Filter>
     </ClCompile>
+    <ClCompile Include="..\tests\main\ClockTest.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\main\defines.h">

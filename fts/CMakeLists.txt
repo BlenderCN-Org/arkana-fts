@@ -123,6 +123,7 @@ set(SOURCES_COMMON
             tests/dLib/dString/dTranslationTest.cpp
             tests/Configuration/Settings.cpp
             tests/Configuration/FTSConfiguration.cpp
+			tests/main/ClockTest.cpp
             ui/cegui_items/progressbar/ArkanaProgressBarWR.cpp
             ui/cegui_items/progressbar/ArkanaProgressBarWRProperties.cpp
             ui/cegui_items/ArkanaResourceProvider.cpp
@@ -259,6 +260,7 @@ else()
     list(APPEND FTS_LIBS ${FreeType_LIBRARIES})
 endif()
 
+#
 # In debug mode, look for the google perf tools. #
 ##################################################
 # Does crash before entering main on my 64bit machine ...
