@@ -5,19 +5,7 @@
  * \brief This file implements general functions.
  **/
 
-#include <thread>
-#include <chrono>
-
 #include "utilities.h"
-
-/// \TODO: This is a really bad fix, but for now it does. Have no other idea
-///        right now. Maybe in the cmake file we need to differ preinstalled
-///        SDL and the SDL that we ship.
-#if WINDOOF
-#include <SDL_timer.h>
-#else
-#include <SDL/SDL_timer.h>
-#endif
 
 #include "logging/logger.h"
 #include "dLib/dString/dTranslation.h"
@@ -25,23 +13,6 @@
 #include "tools/server2/checksum/sha2.h"
 
 using namespace FTS;
-
-/// Sleeps the thread for a certain amount of time.
-/** This function only returns after a certain amount of milliseconds.
- *
- * \param in_ulMilliseconds The amount of msec to sleep.
- *
- * \author Pompei2
- */
-void FTS::dSleep(unsigned long in_ulMilliseconds)
-{
-    std::this_thread::sleep_for( std::chrono::milliseconds( in_ulMilliseconds ) );
-}
-
-uint32_t FTS::dGetTicks()
-{
-    return SDL_GetTicks();
-}
 
 DateTime FTS::DateTime::EMPTY;
 

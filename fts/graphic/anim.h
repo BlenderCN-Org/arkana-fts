@@ -1,6 +1,8 @@
 #ifndef D_ANIM_H
 #define D_ANIM_H
 
+#include <chrono>
+
 #include "main.h"
 
 #include "dLib/dString/dPath.h"
@@ -14,14 +16,14 @@ private:
     /** This is an array of all the pictures. */
     Graphic **m_pGraphs;
     /** The time we first drew the animation. */
-    uint64_t m_iStart;
+    std::chrono::time_point<std::chrono::system_clock> m_timeStart;
     /** The total time the animation should take. */
     uint64_t m_iLenght;
-    /** The number of frames the animation gots. */
+    /** The number of frames the animation got. */
     uint64_t m_nFrames;
     /** If we already started the anim or not (to set start). */
     bool m_bStarted;
-    /** This is wether the animation should loop or stop. */
+    /** This is whether the animation should loop or stop. */
     bool m_bLoop;
     /** The name of the file where it's take from */
     Path m_sFile;
@@ -51,7 +53,7 @@ public:
                int in_iSubX = 0, int in_iXubY = 0, int in_iSubW = 0, int in_iSubH = 0,
                float in_fRotate = 0.0f, float in_fZoomX = 1.0f, float in_fZoomY = 1.0f,
                float in_fR = 0.0f, float in_fg = 0.0f, float in_fb = 0.0f, float in_fa = 0.0f);
-    void rewind() { m_bStarted = false; m_iStart = 0; };
+    void rewind() { m_bStarted = false; m_timeStart = std::chrono::time_point<std::chrono::system_clock>(); };
     uint64_t getCurrPic();
 };
 

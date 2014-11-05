@@ -6,6 +6,7 @@
  **/
 
 #include <chrono>
+#include <thread>
 
 #include <CEGUI.h>
 
@@ -126,6 +127,8 @@ bool FTS::LoadFTSRlv::load()
 #else
     GraphicManager::getSingleton().getOrLoadGraphic(m_sLogoFile);
 #endif
+
+    Logger::getSingletonPtr()->doneConsoleMessage();
 
     // The rest will be loaded in the tick method.
     return true;
@@ -248,7 +251,7 @@ bool FTS::LoadFTSRlv::update(const Clock&)
     // user sees the screen for 200 ms.
     auto TimeUsed = std::chrono::duration_cast<std::chrono::milliseconds>( std::chrono::steady_clock::now() - timeBegin ).count();
     if( TimeUsed < 200)
-        dSleep(static_cast<uint32_t>( 200 - TimeUsed) );
+        std::this_thread::sleep_for( std::chrono::milliseconds( 200 - TimeUsed ) );
 
     return true;
 }

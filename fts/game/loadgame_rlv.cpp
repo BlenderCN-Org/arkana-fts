@@ -370,9 +370,6 @@ void LoadGameRlv::finishStage(const String &in_sProgress, const String &in_sStat
     static Chronometer chron;
     double dSecElapsed = chron.reset();
 
-#ifdef SLEEPTEST
-    dSleep(SLEEPTESTTIME);
-#endif
     this->addToProgress(1.0f, in_sProgress);
 
     if(!in_sStat.empty()) {

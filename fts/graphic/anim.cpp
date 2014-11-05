@@ -1,9 +1,7 @@
-#include <SDL_timer.h>
 
 #include "anim.h"
 #include "graphic.h"
 #include "logging/logger.h"
-#include "utilities/utilities.h"
 #include "dLib/dConf/configuration.h"
 #include "dLib/dArchive/dArchive.h"
 
@@ -11,7 +9,6 @@ using namespace FTS;
 
 FTS::Anim::Anim(const Path &in_sFile, bool in_bShow)
     : m_pGraphs(NULL)
-    , m_iStart(0)
     , m_iLenght(0)
     , m_nFrames(0)
     , m_bStarted(false)
@@ -20,6 +17,7 @@ FTS::Anim::Anim(const Path &in_sFile, bool in_bShow)
     , m_bLoaded(false)
     , m_bShow(true)
 {
+    m_timeStart = std::chrono::steady_clock::now();
     if(!in_sFile) {
         FTS18N("InvParam", MsgType::Horror, "Anim::Anim");
         return;
@@ -103,7 +101,7 @@ int FTS::Anim::drawEx(int in_iX, int in_iY,
         return ERR_OK;
 
     if(!m_bStarted) {
-        m_iStart = dGetTicks();
+        m_timeStart = std::chrono::steady_clock::now();
         m_bStarted = true;
     }
 
@@ -123,10 +121,10 @@ int FTS::Anim::draw(int in_iX, int in_iY)
         return ERR_OK;
 
     if(!m_bStarted) {
-        m_iStart = dGetTicks();
+        m_timeStart = std::chrono::steady_clock::now();
         m_bStarted = true;
     }
-
+    
     m_pGraphs[this->getCurrPic()]->draw(in_iX, in_iY);
 
     return ERR_OK;
@@ -137,8 +135,8 @@ uint64_t FTS::Anim::getCurrPic()
     uint64_t currpic = 0;
 
     double fFPS = (double)m_nFrames / (double)m_iLenght;
-
-    currpic = (uint64_t)((double)(dGetTicks( ) - m_iStart) * fFPS);
+    auto timeDiff = std::chrono::duration_cast< std::chrono::milliseconds >( std::chrono::steady_clock::now() - m_timeStart ).count();
+    currpic = (uint64_t)(timeDiff * fFPS);
 
     if(m_bLoop)
         return currpic < m_nFrames ? currpic : currpic % m_nFrames;
