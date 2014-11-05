@@ -1390,7 +1390,11 @@ int InputManager::registerDefaultMenuShortcuts(bool in_bWithCamera)
 //     }
 
     this->add("polygonmode", Key::F11, new NextPolyModeCmd);
+#if defined(DEBUG) && defined(WINDOOF) // In VS Debugger F12 results in a break.
+    this->add("nextGuiInfo", Key::F8, new NextGUIInfoCmd);
+#else
     this->add("nextGuiInfo", Key::F12, new NextGUIInfoCmd);
+#endif
 
     // Now GUI-keys to handle widgets.
     this->add("pushActiveButton", Key::Space, new ClickButtonCmd);
