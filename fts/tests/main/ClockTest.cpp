@@ -68,14 +68,10 @@ TEST_INSUITE( ClockTests, deltaT )
 TEST_INSUITE( ClockTests, fixDuration )
 {
     Clock c;
-    auto start = std::chrono::steady_clock::now();
-    auto end = std::chrono::steady_clock::now();
-    while ( std::chrono::duration_cast< std::chrono::milliseconds >( end - start ).count() < 105 )
+
+    for ( int i = 0; i < 10; ++i )
     {
         std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
-
-        end = std::chrono::steady_clock::now();
-
         c.tick();
     }
 
