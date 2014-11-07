@@ -5,7 +5,7 @@
  * \brief This file implements util functions for the console.
  **/
 
-#include "utilities/utilities.h"
+#include "utilities/console.h"
 #include "ui/ui.h"
 #include "dLib/dConf/configuration.h"
 

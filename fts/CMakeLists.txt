@@ -156,6 +156,7 @@ set(SOURCES_COMMON
             utilities/parse.cpp
             utilities/utilities.cpp
             utilities/threading.cpp
+            utilities/DateTime.cpp
             scripting/dao_snd.cpp
             scripting/dao_snd2.cpp
             scripting/dao_snd3.cpp

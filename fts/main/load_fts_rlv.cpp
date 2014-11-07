@@ -14,7 +14,7 @@
 
 #include "main/version.h" // For the version info.
 #include "logging/ftslogger.h"
-#include "utilities/utilities.h" // For dirExists.
+#include "utilities/console.h" 
 #include "utilities/fps_calculator.h" // To init the FPSCalculator.
 #include "graphic/graphic.h" // To draw the loading picture.
 #include "graphic/cegui_ftsimg_codec.h" // To create/init the image codec.

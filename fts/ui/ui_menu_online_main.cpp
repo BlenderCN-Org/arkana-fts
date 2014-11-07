@@ -20,6 +20,7 @@
 #include "ui/dlg_options.h"
 #include "game/player.h"
 #include "logging/logger.h"
+#include "utilities/parse.h"
 #include "utilities/utilities.h"
 #include "main/runlevels.h"
 #include "net/connection.h"

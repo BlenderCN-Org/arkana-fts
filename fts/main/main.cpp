@@ -4,7 +4,7 @@
 #include "logging/ftslogger.h"
 #include "game/player.h"
 #include "graphic/graphic.h"
-#include "utilities/utilities.h"
+#include "utilities/console.h"
 #include "main/runlevels.h"
 #include "main/load_fts_rlv.h"
 #include "main/Clock.h"
@@ -24,9 +24,6 @@
 #include <CEGUI.h>
 #include <SDL.h>
 
-#if WINDOOF
-#  include <windows.h> // For the LANGID etc.
-#endif
 #include <time.h>
 
 using namespace FTS;
@@ -163,6 +160,7 @@ int main(int argc, char *argv[])
 
     // MAKE TESTS HERE
 #ifdef DEBUG
+
 #define SIZEOF_TEST(type) FTSMSG("sizeof({1}) = {2}\n", MsgType::MessageNoMB, # type, String::nr(sizeof(type)))
     SIZEOF_TEST(int8_t);
     SIZEOF_TEST(uint8_t);
@@ -240,13 +238,7 @@ int main(int argc, char *argv[])
         std::cout << "Uncaught exception: " << ex.what() << std::endl;
         std::ofstream fCritLog("CriticalError.txt");
         fCritLog << ex.what();
-#if WINDOOF
         ForegroundConsole(true);
-        // Removed because it will lockup the computer if Arkana runs in
-        // fullscreen mode, making a bad situation worse...
-        //std::cout << "Press any key to quit now..." << std::endl;
-        //system("pause");
-#endif
         return 1;
     }
 

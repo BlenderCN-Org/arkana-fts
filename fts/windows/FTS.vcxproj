@@ -199,6 +199,7 @@
     <ClCompile Include="..\utilities\command.cpp" />
     <ClCompile Include="..\Utilities\console.cpp" />
     <ClCompile Include="..\utilities\DataContainer.cpp" />
+    <ClCompile Include="..\utilities\DateTime.cpp" />
     <ClCompile Include="..\utilities\fps_calculator.cpp" />
     <ClCompile Include="..\utilities\parse.cpp" />
     <ClCompile Include="..\utilities\radix.cpp" />
@@ -332,8 +333,12 @@
     <ClInclude Include="..\ui\cegui_items\ColorListItem.h" />
     <ClInclude Include="..\ui\ScriptConsole.h" />
     <ClInclude Include="..\utilities\command.h" />
+    <ClInclude Include="..\utilities\console.h" />
     <ClInclude Include="..\utilities\DataContainer.h" />
+    <ClInclude Include="..\utilities\DateTime.h" />
     <ClInclude Include="..\utilities\fps_calculator.h" />
+    <ClInclude Include="..\utilities\parse.h" />
+    <ClInclude Include="..\utilities\radix.h" />
     <ClInclude Include="..\utilities\Singleton.h" />
     <ClInclude Include="..\utilities\StreamedDataContainer.h" />
     <ClInclude Include="..\utilities\threading.h" />

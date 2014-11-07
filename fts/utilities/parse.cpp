@@ -5,8 +5,9 @@
  * \brief This file implements functions to parse files.
  **/
 
-#include "utilities/utilities.h"
+#include "parse.h"
 #include "logging/logger.h"
+#include "DateTime.h"
 
 #include "dLib/dFile/dFile.h"
 
@@ -43,7 +44,7 @@ CParser::~CParser(void)
  * \param in_sFileName The name of the file to open for parsing, if none specified,
  *                     the one chosen in the constructor will be taken.
  *
- * \return If successfull: ERR_OK.
+ * \return If successful: ERR_OK.
  * \return If failed:      Error code < 0
  *
  * \note This completely loads the file into memory.
@@ -70,7 +71,7 @@ int CParser::load(const String & in_sFileName)
  *
  * \param in_sString The string to parse.
  *
- * \return If successfull: ERR_OK.
+ * \return If successful: ERR_OK.
  * \return If failed:      Error code < 0
  *
  * \author Pompei2
@@ -108,7 +109,7 @@ int CParser::load(const FTS::File &in_f)
 /// Close a parse class.
 /** This function frees the memory allocated by the load function.
  *
- * \return If successfull: ERR_OK.
+ * \return If successful: ERR_OK.
  * \return If failed:      Error code < 0
  *
  * \author Pompei2
@@ -128,7 +129,7 @@ int CParser::unload(void)
 }
 
 /// Return the current position.
-/** This function returns the current position of the cursor, in charachters.
+/** This function returns the current position of the cursor, in characters.
  *
  * \return the current position of the cursor
  *
@@ -164,9 +165,9 @@ String CParser::getFile(void) const
 }
 
 /// Check if i am EOF.
-/** This function returns true if the end of file was reached or an error occured.
+/** This function returns true if the end of file was reached or an error occurred.
  *
- * \return true if the end of file was reached or an error occured, false else.
+ * \return true if the end of file was reached or an error occurred, false else.
  *
  * \author Pompei2
  */
@@ -202,9 +203,9 @@ const char *CParser::getCursor(void)
 
 /// Skips the current line.
 /** This function skips the current line you are parsing, and puts the cursor at the
- *  beginning of the next line (after the linebreak, in front of the first charachter).
+ *  beginning of the next line (after the linebreak, in front of the first character).
  *
- * \return The number of charachters that were skipped.
+ * \return The number of characters that were skipped.
  *
  * \author Pompei2
  */
@@ -234,12 +235,12 @@ size_t CParser::skipLine(void)
 }
 
 /// Skip all possible spaces at the current position.
-/** This function skips all kind of spacing charachters at the current position
+/** This function skips all kind of spacing characters at the current position
  *  and puts the cursor in front of the next nonspace character.
  *
- * \return The number of charachters that were skipped.
+ * \return The number of characters that were skipped.
  *
- * \note The possible spacing charachters are the following (like in isspace):
+ * \note The possible spacing characters are the following (like in isspace):
  *        - space   ' '
  *        - tab     '\\t'
  *        - newline '\\n'
@@ -271,7 +272,7 @@ size_t CParser::skipSpaces(void)
 /** This function skips all comments and spaces at the current position
  *  and puts the cursor at front of the next nonspace/comment character.
  *
- * \return The number of charachters that were skipped.
+ * \return The number of characters that were skipped.
  *
  * \note Comments begin with a # and end at the end of line.\n
  *
@@ -363,10 +364,10 @@ int CParser::jumpToLineBeginning(const String & in_sBegin)
  *
  * \note If there was a problem or there is no line beginning with that string,
  *       the cursor's position is not changed.\n
- *       A label is a string that can contain alphanumeric charachters and a '_'.
+ *       A label is a string that can contain alphanumeric characters and a '_'.
  *       I can't explain it that good :) take a look at this example:\n
  *
- *       If you want a line beginning with "FTS", lines beginnning with "FTS_Blub"
+ *       If you want a line beginning with "FTS", lines beginning with "FTS_Blub"
  *       or "FTSxyz" are ignored, but lines like "FTS-bla" or "FTS bla" or even "FTS?Bla"
  *       are accepted.
  *
@@ -393,10 +394,10 @@ int CParser::jumpToLineBeginningLabel(const String & in_sBegin)
                 goto skipline;
         }
 
-        // Check if the next charachter contains a label-included char,
+        // Check if the next character contains a label-included char,
         // it's not the correct line.
         // For example, if you want a line beginning with "FTS",
-        // this ignors lines beginnning with "FTS_Blub" or "FTSxyz",
+        // this ignores lines beginning with "FTS_Blub" or "FTSxyz",
         // but accepts lines like "FTS-bla" or "FTS bla" or even "FTS?Bla"
         if(isalnum((unsigned char)p[i]) || p[i] == '_')
             goto skipline;
@@ -432,13 +433,13 @@ int CParser::jumpToLineBeginningLabel(const String & in_sBegin)
  *
  * \return the number of CHARACTERS read. In case of error, it *should* return -1.
  *
- * \note If there was an error, the pointer is at the place the error occured, but this
+ * \note If there was an error, the pointer is at the place the error occurred, but this
  *       class is in the same state as when it comes to the end of the file !\n
  *       Currently, the possible special characters are (as you see all preceded by a %):
  *         - %# is any number of newlines and comments, until the next
  *                char that is not a comment neither a newline.
- *         - %n Parses until the newline charachter '\n' and places the cursor behind it.
- *         - %  (%[space], '% ') is any number of spacing charachters as recognized by the isspace
+ *         - %n Parses until the newline character '\n' and places the cursor behind it.
+ *         - %  (%[space], '% ') is any number of spacing characters as recognized by the isspace
  *                function.
  *         - %% parses a simple % sign.
  *         - %d is a number
@@ -454,10 +455,10 @@ int CParser::jumpToLineBeginningLabel(const String & in_sBegin)
  *         - %t is a date or a time or both, in the format: (yyyy-mm-dd hh:mm:ss:mmmm).
  *         - %Xd where X is a number from 2 to 9 is a ensemble of X integers like (1,12,3) when X is 3
  *         - %Xf where X is a number from 2 to 9 is a ensemble of X floats like (1.2,4,5.678) when X is 3
- *         - %^X where X is any charachter you want. This parses everything until (including)
- *               the charachter X or the end of the line.
- *         - %*X where X is any charachter you want. This parses everything until (including)
- *               the charachter X.
+ *         - %^X where X is any character you want. This parses everything until (including)
+ *               the character X or the end of the line.
+ *         - %*X where X is any character you want. This parses everything until (including)
+ *               the character X.
  *
  * Example: \n
  *       test.txt:\code

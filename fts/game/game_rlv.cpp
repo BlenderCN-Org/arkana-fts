@@ -85,7 +85,7 @@ bool GameRlv::load()
 
     InputManager *pMgr = InputManager::getSingletonPtr();
     if(pMgr) {
-        pMgr->registerDefaultMenuShortcuts(false);
+        pMgr->registerDefaultMenuShortcuts(/*false*/); // Temporary enable the camera moves to have something to do in the map :)
         pMgr->add("Game/leave", Key::Escape,
                   new CallbackCommand(FTS_SUBS(GameRlv::cbLeave)));
 #ifdef DEBUG

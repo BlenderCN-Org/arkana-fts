@@ -5,7 +5,7 @@
 #include "ui/ui.h"
 #include "ui/ui_commands.h"
 #include "input/input.h"
-#include "utilities/utilities.h"
+#include "utilities/console.h"
 #include "dLib/dFile/dFile.h"
 #include "dLib/dConf/configuration.h"
 #include "dLib/dString/dTranslation.h"

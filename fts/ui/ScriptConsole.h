@@ -4,7 +4,8 @@
  * \brief This is the Script console interface file.
  **/
 
-#pragma once
+#ifndef FTS_SCRIPTINGCONSOLE_H
+#define FTS_SCRIPTINGCONSOLE_H
 
 #include "utilities/command.h"
 #include "input/InputConstants.h"
@@ -82,3 +83,5 @@ namespace FTS {
 
     };
 }
+
+#endif

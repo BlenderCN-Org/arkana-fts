@@ -7,7 +7,7 @@
 #include "input/input.h" // For the cursor loading.
 #include "game/player.h"
 #include "logging/logger.h"
-#include "utilities/utilities.h"
+#include "utilities/console.h"
 #include "map/map.h"
 #include "mdlviewer/mdlviewer_main.h"
 #include "graphic/graphic.h"
