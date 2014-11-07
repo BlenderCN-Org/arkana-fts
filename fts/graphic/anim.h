@@ -10,13 +10,16 @@
 
 namespace FTS {
     class Graphic;
+    // As long as VC doesn't support steady clock for its own, since the now() returns a system_clock, we us the system clock. Otherwise type conflicts exists on operation of different types.
+    //using sys_timer = std::chrono::steady_clock;
+    using sys_timer = std::chrono::system_clock;
 
 class Anim {
 private:
     /** This is an array of all the pictures. */
     Graphic **m_pGraphs;
     /** The time we first drew the animation. */
-    std::chrono::time_point<std::chrono::system_clock> m_timeStart;
+    std::chrono::time_point<sys_timer> m_timeStart;
     /** The total time the animation should take. */
     uint64_t m_iLenght;
     /** The number of frames the animation got. */
@@ -53,7 +56,7 @@ public:
                int in_iSubX = 0, int in_iXubY = 0, int in_iSubW = 0, int in_iSubH = 0,
                float in_fRotate = 0.0f, float in_fZoomX = 1.0f, float in_fZoomY = 1.0f,
                float in_fR = 0.0f, float in_fg = 0.0f, float in_fb = 0.0f, float in_fa = 0.0f);
-    void rewind() { m_bStarted = false; m_timeStart = std::chrono::time_point<std::chrono::system_clock>(); };
+    void rewind() { m_bStarted = false; m_timeStart = std::chrono::time_point<sys_timer>(); };
     uint64_t getCurrPic();
 };
 

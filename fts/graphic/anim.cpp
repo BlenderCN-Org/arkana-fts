@@ -17,7 +17,7 @@ FTS::Anim::Anim(const Path &in_sFile, bool in_bShow)
     , m_bLoaded(false)
     , m_bShow(true)
 {
-    m_timeStart = std::chrono::steady_clock::now();
+    m_timeStart = sys_timer::now();
     if(!in_sFile) {
         FTS18N("InvParam", MsgType::Horror, "Anim::Anim");
         return;
@@ -101,7 +101,7 @@ int FTS::Anim::drawEx(int in_iX, int in_iY,
         return ERR_OK;
 
     if(!m_bStarted) {
-        m_timeStart = std::chrono::steady_clock::now();
+        m_timeStart = sys_timer::now();
         m_bStarted = true;
     }
 
@@ -121,7 +121,7 @@ int FTS::Anim::draw(int in_iX, int in_iY)
         return ERR_OK;
 
     if(!m_bStarted) {
-        m_timeStart = std::chrono::steady_clock::now();
+        m_timeStart = sys_timer::now();
         m_bStarted = true;
     }
     
@@ -135,7 +135,7 @@ uint64_t FTS::Anim::getCurrPic()
     uint64_t currpic = 0;
 
     double fFPS = (double)m_nFrames / (double)m_iLenght;
-    auto timeDiff = std::chrono::duration_cast< std::chrono::milliseconds >( std::chrono::steady_clock::now() - m_timeStart ).count();
+    auto timeDiff = std::chrono::duration_cast< std::chrono::milliseconds >( sys_timer::now() - m_timeStart ).count();
     currpic = (uint64_t)(timeDiff * fFPS);
 
     if(m_bLoop)
