@@ -6,7 +6,6 @@
 #include "InputConstants.h"
 
 #include "dLib/dString/dString.h"
-#include "utilities/threading.h"
 #include "utilities/command.h"
 #include "utilities/Singleton.h"
 #include "main/Updateable.h"

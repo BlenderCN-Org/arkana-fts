@@ -9,8 +9,6 @@
 #include "game/player.h"
 #include "graphic/anim.h" // For the cursor. To be removed.
 #include "logging/logger.h"
-#include "utilities/threading.h"
-#include "utilities/utilities.h"
 #include "main/runlevels.h"
 #include "main/Clock.h"
 

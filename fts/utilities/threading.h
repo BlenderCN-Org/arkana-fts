@@ -7,25 +7,12 @@
 
 #ifndef D_THREADING_H
 #define D_THREADING_H
+#include <mutex>
 
 #ifdef D_COMPILES_SERVER
 #  include "server.h"
 #else
 #  include "main.h"
-#endif
-
-#if WINDOOF
-/// TODO: implement a real thread function that is multi os.
-#  define D_THREADFCT void
-#  define D_THREADRET
-#  define d_threadStart( fct, arg ) { beginthread( (fct), 0, (arg) ); }
-
-#else
-/// TODO: implement a real thread function that is multi os.
-#  include <pthread.h>
-#  define D_THREADFCT void *
-#  define D_THREADRET NULL
-#  define d_threadStart( fct, arg ) { pthread_t _a_b_thread1_c_; pthread_create( &_a_b_thread1_c_, NULL, (fct), (arg) ); }
 #endif
 
 namespace FTS {
@@ -34,8 +21,7 @@ class Lock;
 
 class Mutex {
     friend class Lock;
-protected:
-    void *m_pImpl;
+    std::mutex m_mtx;
 
 public:
     Mutex();

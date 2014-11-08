@@ -9,10 +9,6 @@
 
 #include "logging/logger.h"
 
-#ifndef D_NONET
-#  include "net/connection.h"
-#endif
-
 #ifndef D_FILE_NO_ARCHMAP
 # include "dLib/dArchive/dArchive.h"
 std::map<FTS::String, FTS::Archive*> FTS::File::m_lArchivesToLook;

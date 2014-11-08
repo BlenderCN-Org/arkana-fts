@@ -5,8 +5,6 @@
 #include "logging/logger.h"
 #include "graphic/anim.h"
 #include "graphic/graphic.h"
-#include "utilities/utilities.h"
-#include "utilities/threading.h"
 #include "main/runlevels.h"
 #include "dLib/dConf/configuration.h"
 
