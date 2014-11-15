@@ -110,17 +110,13 @@ int main(int argc, char *argv[])
     const char* test_argv[] = {"./tests", "fts", "-tDaoVm", "-Shaders"};
     int failures = run_tests(sizeof(test_argv)/sizeof(test_argv[0]), test_argv);
     if(failures > 0) {
-#if WINDOOF
-        system("pause");
-#endif
+        Console::Pause();
         return failures;
     }
 
     if ( argc == 2 && std::string(argv[1]) == "run-test-only" )
     {
-#if WINDOOF
-        system( "pause" );
-#endif
+        Console::Pause();
         return 0;
     }
 #endif
@@ -142,7 +138,7 @@ int main(int argc, char *argv[])
     // If we do this, we get problems with SDL unicode keys.
     //      setlocale( LC_ALL, globals->pLocalAcc->getOptString( _S("Language"), _S("English") ).c_str( ) );
     setlocale(LC_NUMERIC, "C");
-    EnableUTF8Console();
+    Console::EnableUTF8();
     fputs("\x00\xe9", stdout);
 
     srand((unsigned)time(NULL));
@@ -238,7 +234,7 @@ int main(int argc, char *argv[])
         std::cout << "Uncaught exception: " << ex.what() << std::endl;
         std::ofstream fCritLog("CriticalError.txt");
         fCritLog << ex.what();
-        ForegroundConsole(true);
+        Console::Foreground(true);
         return 1;
     }
 
@@ -248,7 +244,7 @@ int main(int argc, char *argv[])
 // General FTS deinitialization function
 int cleanFTS(void)
 {
-    ForegroundConsole(true);
+    Console::Foreground(true);
     FTS18N("Deinit");
 
     DefaultLogger *pLog = dynamic_cast<DefaultLogger *>(Logger::getSingletonPtr());
@@ -384,7 +380,7 @@ void exitfunc(void)
 #  if WINDOOF
     // Give the user a chance to see what's up, in debug mode.
     std::cout << "We're done, press any key to quit. This is only shown in debug mode ..." << std::endl;
-    system("pause");
+    Console::Pause();
 #  endif /* WINDOOF */
 #endif /* DEBUG defined */
 }

@@ -9,45 +9,50 @@
 #define FTS_CONSOLE_H
 
 namespace FTS {
-
-    /* ==================== */
-    /* CONSOLE MANIPULATION */
-    /* ==================== */
-    typedef enum
+    class Console
     {
-        D_BLACK = 0,                /* Dark colors. */
-        D_DARKRED,
-        D_DARKGREEN,
-        D_DARKYELLOW,
-        D_DARKBLUE,
-        D_DARKMAGENTA,
-        D_DARKCYAN,
-        D_LIGHTGRAY,                /* Bright colors. */
-        D_GRAY,
-        D_RED,
-        D_GREEN,
-        D_YELLOW,
-        D_BLUE,
-        D_MAGENTA,
-        D_CYAN,
-        D_WHITE
-    } D_COLOR;
+    public:
 
-    typedef enum
-    {
-        D_NORMAL = 0,
-        D_BOLD,
-        D_ULINE,
-        D_BLINK,
-        D_REVERSE,
-        D_INVIS,
-        D_CHANGEBG,
-        D_CHANGEFG
-    } D_CONSOLEATTRIBUTE;
+        /* ==================== */
+        /* CONSOLE MANIPULATION */
+        /* ==================== */
+        enum class COLOR
+        {
+            BLACK = 0,                /* Dark colors. */
+            DARKRED,
+            DARKGREEN,
+            DARKYELLOW,
+            DARKBLUE,
+            DARKMAGENTA,
+            DARKCYAN,
+            LIGHTGRAY,                /* Bright colors. */
+            GRAY,
+            RED,
+            GREEN,
+            YELLOW,
+            BLUE,
+            MAGENTA,
+            CYAN,
+            WHITE
+        };
 
-    int ConsAttr( D_CONSOLEATTRIBUTE in_Action, ... );
-    int ForegroundConsole( bool bFore );
-    int EnableUTF8Console();
+        enum class ATTRIBUTE
+        {
+            NORMAL = 0,
+            BOLD,
+            ULINE,
+            BLINK,
+            REVERSE,
+            INVIS,
+            CHANGEBG,
+            CHANGEFG
+        };
+
+        static int Attr( ATTRIBUTE in_Action, COLOR in_Color = COLOR::WHITE);
+        static int Foreground( bool bFore );
+        static void EnableUTF8();
+        static void Pause();
+    };
 }
 
 #endif

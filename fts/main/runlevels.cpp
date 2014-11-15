@@ -214,9 +214,9 @@ FTS::Runlevel *FTS::RunlevelManager::realEnterRunlevel()
     try {
         // Say that we prepare to enter a runlevel.
         FTS18NDBG("EnterRlv", 1);
-        ConsAttr(D_CHANGEFG, D_BLUE);
+        Console::Attr(Console::ATTRIBUTE::CHANGEFG, Console::COLOR::BLUE);
         FTSMSG(m_pRunlevelToEnter->getName(), MsgType::Raw);
-        ConsAttr(D_NORMAL);
+        Console::Attr(Console::ATTRIBUTE::NORMAL);
         FTSMSG("  ...\n", MsgType::Raw);
 
         // Unfortunately, we need to unload the current runlevel even

@@ -98,7 +98,7 @@ bool FTS::LoadFTSRlv::load()
     FTS18NDBG("SoundDrvL", 1);
     ISndSys::createSoundSys();
     Logger::getSingletonPtr()->doneConsoleMessage();
-    ForegroundConsole(true);
+    Console::Foreground(true);
 
     //////////////////////////////////////////////
     // Beginning of the graphics initialization //
@@ -197,7 +197,7 @@ bool FTS::LoadFTSRlv::update(const Clock&)
     switch(m_eNextTodo) {
     case LoadBeginning:
         // Return to the game.
-        ForegroundConsole(false);
+        Console::Foreground(false);
         m_eNextTodo = LoadCEGUI;
         break;
     case LoadCEGUI:

@@ -393,15 +393,15 @@ int DefaultLogger::doMessage(const String &in_sMsg, const MsgType::Enum& in_Grav
     case MsgType::Warning:
     case MsgType::WarningNoMB:
         sMessage = "FTS: Warning: ";
-        ConsAttr(D_CHANGEFG, D_BLUE);
+        Console::Attr(Console::ATTRIBUTE::CHANGEFG, Console::COLOR::BLUE);
         break;
     case MsgType::Error:
         sMessage = "FTS: Error: ";
-        ConsAttr(D_CHANGEFG, D_RED);
+        Console::Attr( Console::ATTRIBUTE::CHANGEFG, Console::COLOR::RED );
         break;
     case MsgType::Horror:
         sMessage = "FTS: HORROR: ";
-        ConsAttr(D_CHANGEFG, D_DARKRED);
+        Console::Attr( Console::ATTRIBUTE::CHANGEFG, Console::COLOR::DARKRED );
         break;
     case MsgType::Raw:
         if(in_iDbgLv > 1) {
@@ -412,7 +412,7 @@ int DefaultLogger::doMessage(const String &in_sMsg, const MsgType::Enum& in_Grav
         }
         break;
     case MsgType::GoodMessage:
-        ConsAttr(D_CHANGEFG, D_DARKGREEN);
+        Console::Attr( Console::ATTRIBUTE::CHANGEFG, Console::COLOR::DARKGREEN );
         break;
     case MsgType::Message:
     case MsgType::MessageNoMB:
@@ -505,7 +505,7 @@ int DefaultLogger::doMessage(const String &in_sMsg, const MsgType::Enum& in_Grav
             fflush(stdout);
         }
         m_bLastDbg = (in_Gravity == MsgType::Raw) && (in_iDbgLv == 1);
-        ConsAttr(D_NORMAL);
+        Console::Attr( Console::ATTRIBUTE::NORMAL );
         m_lastMessageTime.reset();
     }
 
@@ -521,10 +521,10 @@ int DefaultLogger::doneConsoleMessage()
         return -2;
 
     if(!m_bMute) {
-        ConsAttr(D_CHANGEFG, D_DARKGREEN);
+        Console::Attr( Console::ATTRIBUTE::CHANGEFG, Console::COLOR::DARKGREEN );
         printf("Done");
         fflush(stdout);
-        ConsAttr(D_NORMAL);
+        Console::Attr( Console::ATTRIBUTE::NORMAL );
         putchar('\n');
     }
 
@@ -541,10 +541,10 @@ int DefaultLogger::failConsoleMessage()
         return -2;
 
     if(!m_bMute) {
-        ConsAttr(D_CHANGEFG, D_DARKRED);
+        Console::Attr( Console::ATTRIBUTE::CHANGEFG, Console::COLOR::DARKRED );
         printf("Failed");
         fflush(stdout);
-        ConsAttr(D_NORMAL);
+        Console::Attr( Console::ATTRIBUTE::NORMAL );
         putchar('\n');
     }
 
