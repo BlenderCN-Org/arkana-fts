@@ -1,8 +1,13 @@
 #include "server_log.h"
 #include "db.h"
 #include "constants.h"
+#if defined(_MSC_VER)
+#include <mysql.h>
+#include <errmsg.h>
+#else
+#include <mysql/mysql.h>
 #include <mysql/errmsg.h>
-
+#endif
 using namespace FTS;
 using namespace FTSSrv2;
 
@@ -126,9 +131,22 @@ bool FTSSrv2::DataBase::query(MYSQL_RES *&out_pRes, const FTS::String & in_sStr)
     return this->query(out_pRes, in_sStr.c_str(), NULL);
 }
 
-FTS::String FTSSrv2::DataBase::escape(const FTS::String & in_sStr)
+/// Returns the MySQL escaped version of this string.
+/// this creates a string that is a copy of this one, but escaped for mysql commands.
+///
+/// \param in_sStr The string to escape.
+///
+/// \return The MySQL escaped copy of this string.
+FTS::String FTSSrv2::DataBase::escape( const FTS::String & in_sStr )
 {
-    return in_sStr.mysqlEscaped(m_pSQL);
+    char *buf = new char[in_sStr.len() * 2 + 1];
+    int iLen = mysql_real_escape_string( m_pSQL, buf, in_sStr.c_str(), in_sStr.len() );
+
+    String sRet( buf, 0, iLen );
+    delete[] buf;
+
+    return sRet;
+
 }
 
 int FTSSrv2::DataBase::storedFunctionInt(const FTS::String & in_sFunc, const FTS::String & in_sArgs)
@@ -176,7 +194,7 @@ bool FTSSrv2::DataBase::query(MYSQL_RES *&out_pRes, const char *in_pszQuery, ...
 
     // If the result has to be freed, this mutex only gets unlocked when calling free.
     m_mutex.lock();
-
+    FTSMSGDBG( "SQL Query : " + String(pszQuery), 1 );
     // Execute the query.
     if(0 != mysql_query(m_pSQL, pszQuery)) {
         FTSMSG("[ERROR] MySQL query\nQuery string: "+String(pszQuery)+"\nError: "+this->getError(), MsgType::Error);

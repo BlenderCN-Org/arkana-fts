@@ -869,19 +869,6 @@ bool String::matchesPattern(const String& in_sPat) const
     return this->matchesPattern(in_sPat.c_str());
 }
 
-#ifdef D_STRING_MYSQL
-String String::mysqlEscaped( MYSQL *in_pSQL ) const
-{
-    char *buf = new char[this->len()*2+1];
-    int iLen = mysql_real_escape_string(in_pSQL, buf, this->c_str(), this->len());
-
-    String sRet(buf, iLen);
-    delete [] buf;
-
-    return sRet;
-}
-#endif
-
 String& String::operator =(const char *in_pszString)
 {
     // Protect against self-assignment.

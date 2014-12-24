@@ -1,11 +1,16 @@
 #ifndef D_DB_H
 #  define D_DB_H
 
-#  include "server.h"
 #  include "utilities/threading.h"
 #  include "dLib/dString/dString.h"
 
 #include <list>
+#if defined(_MSC_VER)
+#  include <winsock.h>
+#  include <mysql.h>
+#else
+#  include <mysql/mysql.h>
+#endif
 
 namespace FTSSrv2 {
 
