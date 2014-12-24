@@ -35,14 +35,17 @@ if( MSVC )
 # Set lib path suffixes
 # dist = for mysql binary distributions
 # build = for custom built tree
-	if( CMAKE_BUILD_TYPE STREQUAL Debug )
-		set(libsuffixDist debug)
-	endif()
 	find_library(MYSQL_LIBRARIES NAMES mysqlclient
 		PATHS
-		$ENV{MYSQL_DIR}/lib/${libsuffixDist}
-		${ProgramPath}/MySQL/*/lib/${libsuffixDist}
-		$ENV{SystemDrive}/MySQL/*/lib/${libsuffixDist}
+		$ENV{MYSQL_DIR}/lib
+		${ProgramPath}/MySQL/*/lib
+		$ENV{SystemDrive}/MySQL/*/lib
+	)
+	
+	find_path( MYSQL_LIBRARIES_DIR mysqlclient.lib
+		$ENV{MYSQL_DIR}/lib
+		${ProgramPath}/MySQL/*/lib
+		$ENV{SystemDrive}/MySQL/*/lib
 	)
 else(MSVC)
 	find_library(MYSQL_LIBRARIES NAMES mysqlclient_r
@@ -55,6 +58,6 @@ else(MSVC)
 endif(MSVC)
 
 include(FindPackageHandleStandardArgs)
-FIND_PACKAGE_HANDLE_STANDARD_ARGS(MYSQL DEFAULT_MSG MYSQL_LIBRARIES MYSQL_INCLUDE_DIR)
+FIND_PACKAGE_HANDLE_STANDARD_ARGS(MYSQL DEFAULT_MSG MYSQL_LIBRARIES MYSQL_LIBRARIES_DIR MYSQL_INCLUDE_DIR)
 
-mark_as_advanced(MYSQL_INCLUDE_DIR MYSQL_LIBRARIES)
+mark_as_advanced(MYSQL_INCLUDE_DIR MYSQL_LIBRARIES MYSQL_LIBRARIES_DIR)
