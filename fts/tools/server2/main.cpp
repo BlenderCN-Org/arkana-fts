@@ -1,4 +1,3 @@
-#include "server.h"
 #include "server_log.h"
 #include "db.h"
 #include "client.h"
@@ -7,14 +6,22 @@
 #include "utilities/threading.h"
 #include "net/connection.h"
 #include "socket_connection_waiter.h"
+#include "utilities/GetOpt.h"
 
 #include "constants.h"
 
-#include <list>
-#include <sys/time.h>
+#include "server.h" // Move here to avoid including problems w/ main.h in net/connection.h 
 
-#include <pwd.h>
+#if defined(WINDOOF)
+#pragma comment(lib, "Ws2_32.lib")
+#endif
+
+#include <list>
+#include <chrono>
+#include <thread>
+
 #include <signal.h>
+//#include <pwd.h>
 
 /* Change this to whatever your daemon is called */
 #define DAEMON_NAME "fts-server"
@@ -26,8 +33,9 @@
 #define EXIT_FAILURE 1
 
 bool g_bExit = false;
+bool stopSpamThread = false;
 
-void *connectionListener(void *in_iPort);
+void connectionListener(void *in_iPort);
 void help(char *in_pszLine, char *in_pszMe);
 static void daemonize(const char *lockfile, const char *dir);
 static void trytokill(const char *lockfile);
@@ -35,7 +43,7 @@ static void trytokill(const char *lockfile);
 using namespace FTSSrv2;
 using namespace FTS;
 
-void *testSpammer(void *args)
+void testSpammer(void *args)
 {
     Channel *pChan = (Channel *)args;
 
@@ -47,24 +55,32 @@ void *testSpammer(void *args)
     p.append(String("Test_Spammer"));
     p.append(String("spam0r messag0r"));
 
-    struct timespec ts;
-    ts.tv_sec = 0;
-    ts.tv_nsec = 100000000; // 100 000 000 = 0.1 sec
-
     // wait for connections or quit.
-    while(!g_bExit) {
-        nanosleep(&ts, NULL);
+    while(!g_bExit && !stopSpamThread) {
+        std::this_thread::sleep_for( std::chrono::microseconds ( 100 ) );
         pChan->sendPacketToAll(&p);
     }
 
-    return NULL;
 }
+
 
 int main(int argc, char *argv[])
 {
     bool bDaemon = false, bVerbose = false;
-    char *logdir = strdup(DSRV_LOG_DIR);
+    String logdir(DSRV_LOG_DIR);
     int opt = -1;
+
+#if defined(WINDOOF)
+    //----------------------
+    // Initialize Winsock.
+    WSADATA wsaData;
+    int iResult = WSAStartup( MAKEWORD( 2, 2 ), &wsaData );
+    if ( iResult != NO_ERROR )
+    {
+        fprintf(stdout, "WSAStartup failed with error: %ld\n", iResult );
+        return 1;
+    }
+#endif
 
 #ifdef SIGPIPE
     signal(SIGPIPE, SIG_IGN); /* Ignore broken pipe */
@@ -72,14 +88,14 @@ int main(int argc, char *argv[])
 
     String sHome = getenv("HOME");
     bool bJustKill = false;
-    while((opt = getopt(argc, argv, "H:l:vdkh")) != -1) {
+    GetOpt getopt( argc, argv, "H:l:vdkh" );
+    while((opt = getopt()) != -1) {
         switch(opt) {
         case 'H':
-            sHome = String(optarg);
+            sHome = String(getopt.get());
             break;
         case 'l':
-            free(logdir);
-            logdir = strdup(optarg);
+            logdir = String(getopt.get());
             break;
         case 'v':
             bVerbose = true;
@@ -125,8 +141,7 @@ int main(int argc, char *argv[])
                " server using the -k switch or delete the lockfile if"
                " you are sure the server is not running.\n");
         exit(EXIT_FAILURE);
-    } else
-        close(lfp);
+    } 
 
     // Create the lockfile.
     lfp = open(sLockFile.c_str(),O_RDWR|O_CREAT,0640);
@@ -134,11 +149,11 @@ int main(int argc, char *argv[])
         std::cerr << "unable to create lock file " << sLockFile << " (" << strerror(errno) << ")" << std::endl;
         exit(EXIT_FAILURE);
     }
+    close( lfp );
 
     // Logging and daemonizing.
     // ========================
     new FTSSrv2::ServerLogger(logdir, bVerbose);
-    free(logdir);
 
     // Daemonize if wanted.
     if(bDaemon)
@@ -173,13 +188,13 @@ int main(int argc, char *argv[])
 
     // Create a thread waiting on each port. Including the fts port: 0xAF75 :)
     // DEBUG: the +1 at the end.
-    pthread_t threads[DSRV_PORT_LAST + 1 - DSRV_PORT_FIRST + 1];
+    std::thread threads[DSRV_PORT_LAST + 1 - DSRV_PORT_FIRST + 1];
 
     for(size_t i = DSRV_PORT_FIRST; i < DSRV_PORT_LAST + 1; i++)
-        pthread_create(&threads[i - DSRV_PORT_FIRST], 0, connectionListener, (void *)i);
+        threads[i - DSRV_PORT_FIRST] = std::thread(connectionListener, (void *)i) ;
 
     // DEBUG: a test spamming thread.
-    pthread_t tSpamThread = 0;
+    std::thread tSpamThread;
 
     // wait for user input.
     char line[1024];
@@ -189,7 +204,7 @@ int main(int argc, char *argv[])
     while(!g_bExit) {
         // Don't read stdin if being a daemon.
         if(bDaemon) {
-            usleep(10);
+            std::this_thread::sleep_for( std::chrono::microseconds(10));
             continue;
         }
 
@@ -239,17 +254,16 @@ int main(int argc, char *argv[])
         } else if(!strcmp(cmd, "spam")) {
             char arg[8] = {0, 0, 0, 0, 0, 0, 0, 0};
             sscanf(line, "spam%7s", arg);
-            if(!strcmp(arg, "start") && tSpamThread == 0) {
-                if(pthread_create(&tSpamThread, 0, testSpammer, (void *)ChannelManager::getManager()->getDefaultChannel()) == 0)
+            if(!strcmp(arg, "start") && !tSpamThread.joinable()) {
+                tSpamThread = std::thread( testSpammer, ( void * ) ChannelManager::getManager()->getDefaultChannel() );
+                if(tSpamThread.joinable())
                     FTSMSGDBG("Spam bot started.", 1);
                 else
                     FTSMSG("Spam bot could not be started ("+String(strerror(errno))+").", MsgType::Error);
-            } else if(!strcmp(arg, "stop") && tSpamThread != 0) {
-                if(pthread_cancel(tSpamThread) == 0) {
-                    FTSMSGDBG("Spam bot stopped.", 1);
-                    tSpamThread = 0;
-                } else
-                    FTSMSG("Spam bot could not be stopped ("+String(strerror(errno))+").", MsgType::Error);
+            } else if(!strcmp(arg, "stop") && tSpamThread.joinable() ) {
+                stopSpamThread = true;
+                tSpamThread.join();
+                FTSMSGDBG( "Spam bot stopped.", 1 );
             }
         } else if(!strcmp(cmd, "verbose")) {
             char arg[6] = {0, 0, 0, 0, 0, 0};
@@ -274,7 +288,7 @@ int main(int argc, char *argv[])
 
     FTSMSGDBG("Waiting for every thread to close ...", 1);
     for(size_t i = DSRV_PORT_FIRST; i < DSRV_PORT_LAST + 1; i++) {
-        pthread_join(threads[i - DSRV_PORT_FIRST], 0);
+        threads[i - DSRV_PORT_FIRST].join();
         FTSMSGDBG("Thread on port 0x"+String::nr(i, -1,'0',std::ios::hex)+" successfully closed.", 1);
     }
 
@@ -297,6 +311,7 @@ int main(int argc, char *argv[])
         FTSMSG("Error removing the lockfile "+sLockFile+
                ". If the file still exists, you should try to remove "
                "it by hand, so the server will start next time.\n", MsgType::Error);
+        FTSMSG( "The Error Text is " + String( strerror( errno ) ), MsgType::Error );
     }
 
     FTSMSGDBG("Everything done, bye\n", 1);
@@ -390,12 +405,12 @@ void help(char *in_pszLine, char *in_pszMe)
 }
 
 // This sets up everything to listen on a certain port, and then goes listen.
-void *connectionListener(void *in_iPort)
+void connectionListener(void *in_iPort)
 {
     ConnectionWaiter *pWaiter = new SocketConnectionWaiter;
 
     if(ERR_OK != pWaiter->init((uint16_t)((size_t)in_iPort)))
-        return (void *)0;
+        return ;
 
     // wait for connections unless we need to quit.
     while(!g_bExit) {
@@ -403,27 +418,29 @@ void *connectionListener(void *in_iPort)
         // Wait for a connection&packet for 1000 ms, if none is got,
         // wait a bit to avoid megaload of cpu. 100 microsec = 0.1 millisec.
         pWaiter->waitForThenDoConnection(1000);
-        usleep(100);
+        std::this_thread::sleep_for( std::chrono::microseconds(100) );
     }
 
     SAFE_DELETE(pWaiter);
 
-    pthread_exit((void *)0);
 }
 
 static void child_handler(int signum)
 {
+#if !defined(WINDOOF)
     switch(signum) {
     case SIGALRM: exit(EXIT_FAILURE); break;
     case SIGUSR1: exit(EXIT_SUCCESS); break;
     case SIGUSR2: g_bExit = true; break;
     case SIGCHLD: exit(EXIT_FAILURE); break;
     }
+#endif
 }
 
 // From: http://www-theorie.physik.unizh.ch/~dpotter/howto/daemonize
 static void daemonize( const char *lockfile, const char *dir )
 {
+#if !defined(WINDOOF)
     pid_t pid, sid, parent;
 
     /* already a daemon */
@@ -507,10 +524,12 @@ static void daemonize( const char *lockfile, const char *dir )
 
     /* Tell the parent process that we are A-okay */
     kill( parent, SIGUSR1 );
+#endif
 }
 
 static void trytokill(const char *lockfile)
 {
+#if !defined(WINDOOF)
     if(lockfile == NULL || lockfile[0] == '\0')
         return;
 
@@ -535,7 +554,7 @@ static void trytokill(const char *lockfile)
     }
     fclose(pFile);
 
-    printf("The server (PID: %d) is shuttung down, waiting for it to be done ... \n", pid);
+    printf("The server (PID: %d) is shutting down, waiting for it to be done ... \n", pid);
     fflush(stdout);
 
     // Tell the server to quit.
@@ -566,9 +585,10 @@ static void trytokill(const char *lockfile)
     // Give the server some time ...
     sleep(5);
 
-    printf("If you see any numbers below, the server is still running ! Maybe you just need to give it more time, check ps | grep "DAEMON_NAME" in a few seconds again.\n");
+    printf("If you see any numbers below, the server is still running ! Maybe you just need to give it more time, check ps | grep " DAEMON_NAME " in a few seconds again.\n");
 //    system(("cat "+String(lockfile)+" 2> /dev/null").c_str());
 //    system("ps -C "DAEMON_NAME" -o pid,cmd=");
-    system("ps | grep "DAEMON_NAME);
+    system("ps | grep " DAEMON_NAME );
     printf("\nIf you didn't see any number one line above, the server has quit successfully.\n");
+#endif
 }

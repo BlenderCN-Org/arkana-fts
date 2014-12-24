@@ -6,6 +6,8 @@
  *        that gets sent over a connection.
  **/
 
+#include <algorithm>
+
 #include "net/packet.h"
 
 #ifndef D_COMPILES_SERVER

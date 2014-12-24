@@ -3,7 +3,6 @@
 #include <time.h>
 #include <errno.h>
 #include <string.h>
-#include <pthread.h>
 #include <fstream>
 
 using namespace FTS;
@@ -281,7 +280,7 @@ void FTSSrv2::ServerLogger::netlog(const FTS::String &s)
 {
     m_mutex.lock();
     FTS::String sFile = m_sNetLogFile;
-#if DEBUG
+#if defined(DEBUG)
     bool bDaemon = m_bDaemon, bVerbose = m_bVerbose;
 #endif
     m_mutex.unlock();
@@ -289,7 +288,7 @@ void FTSSrv2::ServerLogger::netlog(const FTS::String &s)
     FTS::String sMsg = this->timeString() + ": " + s + "\n";
     this->logToFile(sMsg + "\n", sFile);
 
-#if DEBUG
+#if defined(DEBUG)
     if(bVerbose && !bDaemon) {
         fprintf(stdout, "Netlog: %s", sMsg.c_str());
         srvFlush(stdout);

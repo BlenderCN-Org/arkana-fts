@@ -7,12 +7,25 @@
  **/
 
 #ifdef D_COMPILES_SERVER
+#include <thread>
+#include <chrono>
 
 #include "client.h"
 #include "socket_connection_waiter.h"
 #include "net/packet.h"
 #include "server_log.h"
 #include "db.h"
+
+#if defined(WINDOOF)
+using socklen_t = int;
+
+inline void close( SOCKET s )
+{
+    closesocket( s );
+    return;
+}
+
+#endif
 
 using namespace FTS;
 using namespace FTSSrv2;
@@ -92,21 +105,35 @@ bool FTSSrv2::SocketConnectionWaiter::waitForThenDoConnection(uint64_t in_ulMaxW
             Client *pCli = ClientsManager::getManager()->createClient(pCon);
 
             // And start a new thread for him.
-            pthread_t thr;
-            pthread_create(&thr, 0, Client::starter, pCli);
-
+            auto thr = std::thread( Client::starter, pCli );
+            thr.detach();
             return true;
 
         } else if(errno == EAGAIN || errno == EWOULDBLOCK) {
             // yoyo, wait a bit to avoid megaload of cpu. 1000 microsec = 1 millisec.
-            usleep(1000);
+            std::this_thread::sleep_for( std::chrono::milliseconds(1) );
             continue;
         } else {
+#if defined(WINDOOF)
+            if ( connectSocket == INVALID_SOCKET)
+            {
+                auto err = WSAGetLastError();
+                if ( err == WSAEWOULDBLOCK )
+                {
+                    // yoyo, wait a bit to avoid megaload of cpu. 1000 microsec = 1 millisec.
+                    std::this_thread::sleep_for( std::chrono::milliseconds( 1 ) );
+                    continue;
+                }
+                
+                FTSMSG( "[ERROR] socket accept: " + String::nr( err ), MsgType::Error );
+            }
+
+#endif
             // Some error ... but continue waiting for a connection.
             FTSMSG("[ERROR] socket accept: "+String(strerror(errno)), MsgType::Error);
             srvFlush(stderr);
             // yoyo, wait a bit to avoid megaload of cpu. 1000 microsec = 1 millisec.
-            usleep(1000);
+            std::this_thread::sleep_for( std::chrono::milliseconds( 1 ) );
             continue;
         }
     }

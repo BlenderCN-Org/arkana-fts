@@ -20,8 +20,10 @@
 #include <list>
 
 // windows compatibility.
-#define SOCKET int
-#define SOCKADDR_IN sockaddr_in
+#if !defined(WINDOOF)
+using SOCKET = int;
+#endif
+using SOCKADDR_IN = sockaddr_in;
 
 #ifndef SOCKET_ERROR
 #  define SOCKET_ERROR -1
@@ -40,10 +42,6 @@
 #define FTSC_ERR_RECEIVE       -5; ///< Socket error on recv
 #define FTSC_ERR_WRONG_RSP     -6; ///< Response doesn't match the request
 #define FTSC_ERR_WRONG_REQ     -7; ///< Invalid request
-
-#ifndef SOCKET_ERROR
-#  define SOCKET_ERROR -1
-#endif
 
 namespace FTS {
     class RawDataContainer;

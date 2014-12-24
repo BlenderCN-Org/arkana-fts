@@ -1,3 +1,7 @@
+
+#include <thread>
+#include <chrono>
+
 #include "client.h"
 #include "server.h"
 #include "db.h"
@@ -48,7 +52,7 @@ int FTSSrv2::Client::run()
         Packet *pPack = m_pConnection->waitForThenGetPacket(false, 500);
 
         if(!pPack) {
-            usleep(100);
+            std::this_thread::sleep_for( std::chrono::microseconds( 100 ) );
             continue;
         }
 
@@ -63,7 +67,6 @@ int FTSSrv2::Client::run()
     this->quit();
 
     delete this;
-    pthread_exit((void *)ERR_OK);
     return 0;
 }
 

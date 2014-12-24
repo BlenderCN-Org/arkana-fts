@@ -1,17 +1,17 @@
 #ifndef D_CLIENT_H
 #  define D_CLIENT_H
 
-#  include "server.h"
-#  include "utilities/threading.h"
-#  include "net/connection.h"
 #  include <list>
 #  include <map>
 
+#  include "utilities/threading.h"
+#  include "net/connection.h"
+
 namespace FTS {
     class Packet;
+    class Connection;
 }
 
-struct SOCKADDR_IN;
 
 namespace FTSSrv2 {
     class Game;
@@ -19,7 +19,7 @@ namespace FTSSrv2 {
 
 class Client {
 private:
-    bool m_bLoggedIn;           ///< Wether the user is logged in or not.
+    bool m_bLoggedIn;           ///< Whether the user is logged in or not.
     FTS::String m_sNick;            ///< The nickname of the user that is logged on.
     FTS::String m_sPassMD5;         ///< The MD5 encoded password of the user that is logged on.
 
@@ -53,7 +53,6 @@ public:
 
     int getID() const;
     static int getIDByNick(const FTS::String &in_sNick);
-//     static FTS::String getIPByNick(const FTS::String &in_sNick);
 
     int sendPacket(FTS::Packet *in_pPacket);
     int sendChatJoins(const FTS::String &in_sPlayer);

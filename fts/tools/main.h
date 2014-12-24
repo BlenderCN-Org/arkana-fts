@@ -34,12 +34,6 @@
 #  include <windows.h>
 #  define _USE_MATH_DEFINES // needed for math constants like M_PI
 
-// Gotta work this around with a function cuz a define would be too risked.
-inline void close(SOCKET s)
-{
-    closesocket(s);
-    return;
-}
 #else
 #  include <unistd.h>
 #  include <pthread.h>

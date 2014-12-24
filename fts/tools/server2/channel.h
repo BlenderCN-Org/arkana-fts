@@ -1,7 +1,6 @@
 #ifndef D_CHANNEL_H
 #define D_CHANNEL_H
 
-#include "server.h"
 #include "utilities/threading.h"
 #include "dLib/dString/dString.h"
 

@@ -4,6 +4,15 @@
 #include <stdarg.h>
 
 #ifdef D_COMPILES_SERVER
+#if defined(_MSC_VER)
+//#  include <winsock.h>
+//#  include <mysql.h>
+
+#  include <fcntl.h>
+#  include <io.h>
+//#  define open _open
+//#  define close _close
+#else
 #  include <mysql/mysql.h>
 #  include <pthread.h>
 
@@ -20,7 +29,7 @@
 #  include <fcntl.h>
 #  include <errno.h>
 #  include <malloc.h>
-
+#endif
 #  include "dLib/dString/dString.h"
 
 #  include "../toolcompat.h"
