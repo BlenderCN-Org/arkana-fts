@@ -6,10 +6,7 @@ project(fts_server)
 
 # Setup the make environement. #
 ################################
-cmake_minimum_required(VERSION 2.4)
-if(POLICY CMP0005)
-  cmake_policy(SET CMP0005 OLD)
-endif(POLICY CMP0005)
+cmake_minimum_required(VERSION 3.0)
 
 
 # Setup the cmake directory containing numerous cmake scripts and macros.
@@ -51,6 +48,7 @@ set(SOURCES main.cpp channel.cpp client.cpp db.cpp db_build.cpp dummy_types.cpp
             ../../utilities/threading.cpp
             ../../utilities/DataContainer.cpp
             ../../utilities/Singleton.cpp
+            ../../utilities/GetOpt.cpp
             ../../logging/logger.cpp
             ../../logging/Chronometer.cpp
             ../../main/Clock.cpp
@@ -58,19 +56,24 @@ set(SOURCES main.cpp channel.cpp client.cpp db.cpp db_build.cpp dummy_types.cpp
    )
 
 # Debug or release ?
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    message(STATUS "Configuring for debug")
-    add_definitions(-DDEBUG=1)
-else()
-    message(STATUS "Configuring for release")
+if( NOT MSCV)
+    if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+        message(STATUS "Configuring for debug")
+        add_definitions(-DDEBUG=1)
+    else()
+        message(STATUS "Configuring for release")
+    endif()
 endif()
-
 # The configuration settings.
 set(RUN_AS_USER "fts" CACHE STRING "The user as which to run the server, in case root starts it.")
 #set(USE_ANTIFLOOD True cache STRING "Use a flood-protection?")
 
 set(LOG_MAX_LOGFILE_KBYTES 10240 CACHE STRING "Maximum lenght of a logfile, in kb, before a new one is used.")
-set(LOG_DIR "/var/log" CACHE PATH "Where to write the logfiles?")
+if(MSVC)
+    set(LOG_DIR "$ENV{LOCALAPPDATA}/fts/log" CACHE PATH "Where to write the logfiles?")
+else()
+    set(LOG_DIR "/var/log" CACHE PATH "Where to write the logfiles?")
+endif()
 set(LOG_PLAYERCOUNT_FILE "nplayers.txt" CACHE FILEPATH "File to write the amount of players currently online to.")
 set(LOG_GAMECOUNT_FILE "ngames.txt" CACHE FILEPATH "File to write the amount of games currently being played to.")
 
@@ -102,8 +105,7 @@ include_directories(${fts_server_SOURCE_DIR}/../..
                    )
 
 # Add necessary defines:
-add_definitions(-DD_STRING_MYSQL
-                -DD_DSTRING
+add_definitions(-DD_DSTRING
                 -DD_COMPILES_SERVER
                 -DD_NOCEGUI
                 -DD_OWN_ENDIAN
@@ -114,19 +116,22 @@ if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -Wall")
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -std=c++0x -Wall -pg")
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -std=c++0x -Wall")
+    # And show the flags.
+    if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+        message(STATUS "CXX Flags (Debug) are: ${CMAKE_CXX_FLAGS_DEBUG}")
+    else()
+        message(STATUS "CXX Flags (Release) are: ${CMAKE_CXX_FLAGS_RELEASE}")
+    endif()
 elseif(MSVC)
+	link_directories( ${MYSQL_LIBRARIES_DIR}  )	
+	set( MYSQL_LIBRARIES "libmysql.lib;mysqlclient.lib" )
 endif()
 
-# And show the flags.
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    message(STATUS "CXX Flags (Debug) are: ${CMAKE_CXX_FLAGS_DEBUG}")
-else()
-    message(STATUS "CXX Flags (Release) are: ${CMAKE_CXX_FLAGS_RELEASE}")
-endif()
 
 # The compiling process. #
 ##########################
+
 add_executable(fts-server ${SOURCES})
-target_link_libraries(fts-server ${MYSQL_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(fts-server ${MYSQL_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} )
 
 install(TARGETS fts-server DESTINATION bin)
