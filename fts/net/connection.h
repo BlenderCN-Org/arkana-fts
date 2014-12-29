@@ -20,7 +20,7 @@
 #include <list>
 
 // windows compatibility.
-#if !defined(WINDOOF)
+#if !WINDOOF
 using SOCKET = int;
 #endif
 using SOCKADDR_IN = sockaddr_in;
