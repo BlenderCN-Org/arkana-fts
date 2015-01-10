@@ -12,7 +12,7 @@
 
 #include "server.h" // Move here to avoid including problems w/ main.h in net/connection.h 
 
-#if defined(WINDOOF)
+#if WINDOOF
 #pragma comment(lib, "Ws2_32.lib")
 #endif
 
@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
     String logdir(DSRV_LOG_DIR);
     int opt = -1;
 
-#if defined(WINDOOF)
+#if WINDOOF
     //----------------------
     // Initialize Winsock.
     WSADATA wsaData;
@@ -427,7 +427,7 @@ void connectionListener(void *in_iPort)
 
 static void child_handler(int signum)
 {
-#if !defined(WINDOOF)
+#if !WINDOOF
     switch(signum) {
     case SIGALRM: exit(EXIT_FAILURE); break;
     case SIGUSR1: exit(EXIT_SUCCESS); break;
@@ -440,7 +440,7 @@ static void child_handler(int signum)
 // From: http://www-theorie.physik.unizh.ch/~dpotter/howto/daemonize
 static void daemonize( const char *lockfile, const char *dir )
 {
-#if !defined(WINDOOF)
+#if !WINDOOF
     pid_t pid, sid, parent;
 
     /* already a daemon */
@@ -529,7 +529,7 @@ static void daemonize( const char *lockfile, const char *dir )
 
 static void trytokill(const char *lockfile)
 {
-#if !defined(WINDOOF)
+#if !WINDOOF
     if(lockfile == NULL || lockfile[0] == '\0')
         return;
 

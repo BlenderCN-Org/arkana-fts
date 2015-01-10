@@ -16,7 +16,7 @@
 #include "server_log.h"
 #include "db.h"
 
-#if defined(WINDOOF)
+#if WINDOOF
 using socklen_t = int;
 
 inline void close( SOCKET s )
@@ -114,7 +114,7 @@ bool FTSSrv2::SocketConnectionWaiter::waitForThenDoConnection(uint64_t in_ulMaxW
             std::this_thread::sleep_for( std::chrono::milliseconds(1) );
             continue;
         } else {
-#if defined(WINDOOF)
+#if WINDOOF
             if ( connectSocket == INVALID_SOCKET)
             {
                 auto err = WSAGetLastError();
