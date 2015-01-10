@@ -50,11 +50,19 @@ if( MSVC )
 else(MSVC)
 	find_library(MYSQL_LIBRARIES NAMES mysqlclient_r
 		PATHS
+		/usr/lib
 		/usr/lib/mysql
 		/usr/lib64/mysql
 		/usr/local/lib/mysql
 		/usr/local/lib64/mysql
-    )
+	)
+	find_path(MYSQL_LIBRARIES_DIR libmysqlclient_r.so
+		/usr/lib
+		/usr/lib/mysql
+		/usr/lib64/mysql
+		/usr/local/lib/mysql
+		/usr/local/lib64/mysql
+        )
 endif(MSVC)
 
 include(FindPackageHandleStandardArgs)
