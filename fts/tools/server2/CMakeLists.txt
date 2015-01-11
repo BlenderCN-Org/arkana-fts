@@ -111,6 +111,12 @@ add_definitions(-DD_DSTRING
                 -DD_OWN_ENDIAN
                 -DSDL_BYTEORDER=SDL_LIL_ENDIAN)
 
+if(MSVC)
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS
+                    -D_WINSOCK_DEPRECATED_NO_WARNINGS
+    )
+endif(MSVC)
+
 # Compiler-dependent and build-dependend flags:
 if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -Wall")
@@ -123,8 +129,8 @@ if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
         message(STATUS "CXX Flags (Release) are: ${CMAKE_CXX_FLAGS_RELEASE}")
     endif()
 elseif(MSVC)
-	link_directories( ${MYSQL_LIBRARIES_DIR}  )	
-	set( MYSQL_LIBRARIES "libmysql.lib;mysqlclient.lib" )
+    link_directories( ${MYSQL_LIBRARIES_DIR}  )	
+    set( MYSQL_LIBRARIES "libmysql.lib;mysqlclient.lib" )
 endif()
 
 
