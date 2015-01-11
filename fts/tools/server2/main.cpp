@@ -21,7 +21,9 @@
 #include <thread>
 
 #include <signal.h>
-//#include <pwd.h>
+#if !WINDOOF
+#include <pwd.h>
+#endif
 
 /* Change this to whatever your daemon is called */
 #define DAEMON_NAME "fts-server"
