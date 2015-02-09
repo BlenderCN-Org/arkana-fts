@@ -38,10 +38,11 @@ bool g_bExit = false;
 bool stopSpamThread = false;
 
 void connectionListener(void *in_iPort);
-void help(char *in_pszLine, char *in_pszMe);
-static void daemonize(const char *lockfile, const char *dir);
+void help( const std::string& in_pszLine, char *in_pszMe );
+static void daemonize( const char *lockfile, const char *dir );
 static void trytokill(const char *lockfile);
 
+using namespace std;
 using namespace FTSSrv2;
 using namespace FTS;
 
@@ -110,14 +111,16 @@ int main(int argc, char *argv[])
             break;
         case 'h':
         default:
-            fprintf(stdout, "usage: %s [-H HOMEDIR] [-l LOGDIR] [-v] [-h]\n", argv[0]);
-            fprintf(stdout, "      -H HOMEDIR assume the home directory to be HOMEDIR.\n"
-                            "                  The lockfile will be written there.\n");
-            fprintf(stdout, "      -l LOGDIR  sets the directory to write logfiles\n");
-            fprintf(stdout, "      -v         activates verbose mode\n");
-            fprintf(stdout, "      -d         start as a daemon (not interactive) (EXPERIMENTAL)\n");
-            fprintf(stdout, "      -k         shut down the active daemon (TODO)\n");
-            fprintf(stdout, "      -h         shows this help message\n");
+            std::cout << "usage: " << " [-H HOMEDIR] [-l LOGDIR] [-v] [-h]\n" ;
+            std::cout << "      -H HOMEDIR assume the home directory to be HOMEDIR.\n"
+                      << "                  The lockfile will be written there.\n";
+            std::cout << "      -l LOGDIR  sets the directory to write logfiles\n";
+            std::cout << "      -v         activates verbose mode\n";
+#if !WINDOOF
+            std::cout << "      -d         start as a daemon (not interactive) (EXPERIMENTAL)\n";
+#endif
+            std::cout << "      -k         shut down the active daemon (TODO)\n";
+            std::cout << "      -h         shows this help message\n";
             exit(EXIT_SUCCESS);
             break;
         }
@@ -138,10 +141,10 @@ int main(int argc, char *argv[])
     lfp = open(sLockFile.c_str(),O_RDONLY);
 
     if(lfp >= 0) {
-        printf("A lockfile already exists, this usually means that"
+        std::cout << "A lockfile already exists, this usually means that"
                " the server is already started. Please first stop the"
                " server using the -k switch or delete the lockfile if"
-               " you are sure the server is not running.\n");
+               " you are sure the server is not running.\n";
         exit(EXIT_FAILURE);
     } 
 
@@ -323,81 +326,76 @@ int main(int argc, char *argv[])
 }
 
 // Display some help.
-void help(char *in_pszLine, char *in_pszMe)
+void help(const string& topic, char *in_pszMe)
 {
-    char topic[1024];
 
-    memset(topic, '\0', sizeof(topic));
-
-    sscanf(in_pszLine, "help%1023s", topic);
-
-    if(!strcmp(topic, "help")) {
-        fprintf(stdout, "Just type help once, It won't help to type help more often :p");
-    } else if(!strcmp(topic, "exit")) {
-        fprintf(stdout, "SYNTAX:\n");
-        fprintf(stdout, "\texit\n");
-        fprintf(stdout, "\n");
-        fprintf(stdout, "DESC:\n");
-        fprintf(stdout, "\tThis will close the connection to all clients and shutdown the server.\n");
-        fprintf(stdout, "Normally, every client should get a warning message that the server has been shutdown.\n");
-        fprintf(stdout, "\n");
-    } else if(!strcmp(topic, "nplayers")) {
-        fprintf(stdout, "SYNTAX:\n");
-        fprintf(stdout, "\tnplayers\n");
-        fprintf(stdout, "\n");
-        fprintf(stdout, "DESC:\n");
-        fprintf(stdout, "\tThis just prints out how much players are actually connected.\n");
-        fprintf(stdout, "The players that are connected, but not logged in are also counted here.\n");
-        fprintf(stdout, "You can always see this in the file " DSRV_FILE_NPLAYERS".\n");
-        fprintf(stdout, "\n");
-    } else if(!strcmp(topic, "ngames")) {
-        fprintf(stdout, "SYNTAX:\n");
-        fprintf(stdout, "\tngames\n");
-        fprintf(stdout, "\n");
-        fprintf(stdout, "DESC:\n");
-        fprintf(stdout, "\tThis just prints out how much games are actually opened.\n");
-        fprintf(stdout, "The players that are opened, but not started yet are also counted here.\n");
-        fprintf(stdout, "You can always see this in the file " DSRV_FILE_NGAMES".\n");
-        fprintf(stdout, "\n");
-    } else if(!strcmp(topic, "version")) {
-        fprintf(stdout, "SYNTAX:\n");
-        fprintf(stdout, "\tversion\n");
-        fprintf(stdout, "\n");
-        fprintf(stdout, "DESC:\n");
-        fprintf(stdout, "\tThis just prints out the version of the server.\n");
-    } else if(!strcmp(topic, "spam")) {
-        fprintf(stdout, "SYNTAX:\n");
-        fprintf(stdout, "\tspam [start|stop]\n");
-        fprintf(stdout, "\n");
-        fprintf(stdout, "DESC:\n");
-        fprintf(stdout, "\tThis starts or stops a spam bot, depending on the argument.\n");
-        fprintf(stdout, "The spam bot will send a spam message 10 times a second in the\n");
-        fprintf(stdout, "main channel, but he won't appear in the players list and won't\n");
-        fprintf(stdout, "answer to any message, he just spams messages in the channel.\n");
-        fprintf(stdout, "\n");
-    } else if(!strcmp(topic, "verbose")) {
-        fprintf(stdout, "SYNTAX:\n");
-        fprintf(stdout, "\tverbose [on|off]\n");
-        fprintf(stdout, "\n");
-        fprintf(stdout, "DESC:\n");
-        fprintf(stdout, "\tThis changes the verbosity mode of the server.\n");
-        fprintf(stdout, "If verbosity is off, the server only tells you about the errors\n");
-        fprintf(stdout, "and loggs all the rest into the logfile. If verbosity is on,\n");
-        fprintf(stdout, "the server tells you everything that happens too.\n");
-        fprintf(stdout, "If no argument is given, it prints the current verbosity state.\n");
-        fprintf(stdout, "\n");
+    if(topic == "help") {
+        std::cout << "Just type help once, It won't help to type help more often :p\n";
+    } else if(topic == "exit") {
+        std::cout << "SYNTAX:\n";
+        std::cout << "\texit\n";
+        std::cout << "\n";
+        std::cout << "DESC:\n";
+        std::cout << "\tThis will close the connection to all clients and shutdown the server.\n";
+        std::cout << "Normally, every client should get a warning message that the server has been shutdown.\n";
+        std::cout << "\n";
+    } else if(topic == "nplayers") {
+        std::cout << "SYNTAX:\n";
+        std::cout << "\tnplayers\n";
+        std::cout << "\n";
+        std::cout << "DESC:\n";
+        std::cout << "\tThis just prints out how much players are actually connected.\n";
+        std::cout << "The players that are connected, but not logged in are also counted here.\n";
+        std::cout << "You can always see this in the file " DSRV_FILE_NPLAYERS".\n";
+        std::cout << "\n";
+    } else if(topic == "ngames") {
+        std::cout << "SYNTAX:\n";
+        std::cout << "\tngames\n";
+        std::cout << "\n";
+        std::cout << "DESC:\n";
+        std::cout << "\tThis just prints out how much games are actually opened.\n";
+        std::cout << "The players that are opened, but not started yet are also counted here.\n";
+        std::cout << "You can always see this in the file " DSRV_FILE_NGAMES".\n";
+        std::cout << "\n";
+    } else if(topic == "version") {
+        std::cout << "SYNTAX:\n";
+        std::cout << "\tversion\n";
+        std::cout << "\n";
+        std::cout << "DESC:\n";
+        std::cout << "\tThis just prints out the version of the server.\n";
+    } else if(topic == "spam") {
+        std::cout << "SYNTAX:\n";
+        std::cout << "\tspam [start|stop]\n";
+        std::cout << "\n";
+        std::cout << "DESC:\n";
+        std::cout << "\tThis starts or stops a spam bot, depending on the argument.\n";
+        std::cout << "The spam bot will send a spam message 10 times a second in the\n";
+        std::cout << "main channel, but he won't appear in the players list and won't\n";
+        std::cout << "answer to any message, he just spams messages in the channel.\n";
+        std::cout << "\n";
+    } else if(topic == "verbose") {
+        std::cout << "SYNTAX:\n";
+        std::cout << "\tverbose [on|off]\n";
+        std::cout << "\n";
+        std::cout << "DESC:\n";
+        std::cout << "\tThis changes the verbosity mode of the server.\n";
+        std::cout << "If verbosity is off, the server only tells you about the errors\n";
+        std::cout << "and loggs all the rest into the logfile. If verbosity is on,\n";
+        std::cout << "the server tells you everything that happens too.\n";
+        std::cout << "If no argument is given, it prints the current verbosity state.\n";
+        std::cout << "\n";
     } else {
-        fprintf(stdout, "Type: help [command], where command is one of the followings:\n");
-        fprintf(stdout, "\n");
-        fprintf(stdout, "  exit     shuts down this server.\n");
-        fprintf(stdout, "  version  see the server-version.\n");
-        fprintf(stdout, "  nplayers see the number of players.\n");
-        fprintf(stdout, "  ngames   see the number of games.\n");
-        fprintf(stdout, "  spam     start/stop a spam bot in the main channel.\n");
-        fprintf(stdout, "  verbose  let me talk much or not.\n");
-        fprintf(stdout, "\n");
-        fprintf(stdout, "FILES:\n");
-        fprintf(stdout, "All files are located in the current working directory.\n");
+        std::cout << "Type: help [command], where command is one of the followings:\n";
+        std::cout << "\n";
+        std::cout << "  exit     shuts down this server.\n";
+        std::cout << "  version  see the server-version.\n";
+        std::cout << "  nplayers see the number of players.\n";
+        std::cout << "  ngames   see the number of games.\n";
+        std::cout << "  spam     start/stop a spam bot in the main channel.\n";
+        std::cout << "  verbose  let me talk much or not.\n";
+        std::cout << "\n";
+        std::cout << "FILES:\n";
+        std::cout << "All files are located in the current working directory.\n";
         std::cout << "  " << dynamic_cast<ServerLogger *>(FTS::Logger::getSingletonPtr())->getLogfilename() << " contains a lot of logging messages." << std::endl;
         std::cout << "  " << dynamic_cast<ServerLogger *>(FTS::Logger::getSingletonPtr())->getErrfilename() << " contains all error messages that happened." << std::endl;
         std::cout << "  " << dynamic_cast<ServerLogger *>(FTS::Logger::getSingletonPtr())->getPlayersfilename() << " contains the number of players actually connected." << std::endl;
