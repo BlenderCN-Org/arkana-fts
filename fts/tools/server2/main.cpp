@@ -19,7 +19,7 @@
 #include <list>
 #include <chrono>
 #include <thread>
-
+#include <algorithm>
 #include <signal.h>
 #if !WINDOOF
 #include <pwd.h>
@@ -66,6 +66,15 @@ void testSpammer(void *args)
 
 }
 
+std::string getNextToken( stringstream& sb, char delimiter = ' ' )
+{
+    string token;
+    do {
+        getline( sb, token, delimiter );
+    } while( token.empty() && !sb.eof() );
+
+    return token;
+}
 
 int main(int argc, char *argv[])
 {
@@ -201,10 +210,6 @@ int main(int argc, char *argv[])
     // DEBUG: a test spamming thread.
     std::thread tSpamThread;
 
-    // wait for user input.
-    char line[1024];
-    char cmd[1024];
-
     // Here we access directly to it, because we just read it, so there's no danger (I hope)
     while(!g_bExit) {
         // Don't read stdin if being a daemon.
@@ -213,79 +218,64 @@ int main(int argc, char *argv[])
             continue;
         }
 
-        memset(line, '\0', sizeof(line));
-        memset(cmd, '\0', sizeof(cmd));
-
         srvFlush(stdout);
 
-        if(NULL == fgets(line, sizeof(line) - 1, stdin)) {
-            FTSMSG("w00t did you enter ? Something wrong, that's sure! Ignoring this...", MsgType::Error);
-            continue;
-        }
+        string s;
+        getline( cin, s );
+        auto linebuf = s.erase( 0, s.find_first_not_of( " \t\n" ) );
+        stringstream sb( linebuf );
+        string cmd;
 
-        int l = strlen(line);
-
-        if(l == 0)
-            continue;
-        if(line[--l] == '\n') {
-            if(l == 0)
-                continue;
-            line[l] = '\0';
-        } else if(l == sizeof(line) - 2) {
-            FTSMSG("Man, I don't accept lines longer then 1022 chars.", MsgType::Error);
-            while((l = getchar()) != '\n' && l != EOF)
-                /* void */ ;
-            continue;
-        }
-        // Now here the line is well formatted (no trailing \n, but a trailing \0).
-
-        // get the command outta here.
-        sscanf(line, "%s", cmd);
-
-        // Parse it !
-        if(!strcmp(cmd, "help")) {
-            help(line, argv[0]);
-        } else if(!strcmp(cmd, "exit")) {
-            g_bExit = true;
-            break;
-        } else if(!strcmp(cmd, "nplayers")) {
-            size_t nPlayers = dynamic_cast<ServerLogger *>(FTS::Logger::getSingletonPtr())->getPlayerCount();
-            FTSMSGDBG("Number of players that are logged in: "+String::nr(nPlayers), 1);
-        } else if(!strcmp(cmd, "ngames")) {
-            size_t nGames = dynamic_cast<ServerLogger *>(FTS::Logger::getSingletonPtr())->getGameCount();
-            FTSMSGDBG("Number of games that are opened: "+String::nr(nGames), 1);
-        } else if(!strcmp(cmd, "version")) {
-            FTSMSGDBG("The version of the server is " D_SERVER_VERSION_STR, 1);
-        } else if(!strcmp(cmd, "spam")) {
-            char arg[8] = {0, 0, 0, 0, 0, 0, 0, 0};
-            sscanf(line, "spam%7s", arg);
-            if(!strcmp(arg, "start") && !tSpamThread.joinable()) {
-                tSpamThread = std::thread( testSpammer, ( void * ) ChannelManager::getManager()->getDefaultChannel() );
-                if(tSpamThread.joinable())
-                    FTSMSGDBG("Spam bot started.", 1);
-                else
-                    FTSMSG("Spam bot could not be started ("+String(strerror(errno))+").", MsgType::Error);
-            } else if(!strcmp(arg, "stop") && tSpamThread.joinable() ) {
-                stopSpamThread = true;
-                tSpamThread.join();
-                FTSMSGDBG( "Spam bot stopped.", 1 );
-            }
-        } else if(!strcmp(cmd, "verbose")) {
-            char arg[6] = {0, 0, 0, 0, 0, 0};
-            sscanf(line, "verbose%5s", arg);
-            if(!strcmp(arg, "on")) {
-                bool bOld = dynamic_cast<ServerLogger *>(FTS::Logger::getSingletonPtr())->setVerbose(true);
-                FTSMSGDBG("Verbose mode was "+String(bOld ? "on" : "off")+", now it is on.", 1);
-            } else if(!strcmp(arg, "off")) {
-                bool bOld = dynamic_cast<ServerLogger *>(FTS::Logger::getSingletonPtr())->setVerbose(false);
-                FTSMSGDBG("Verbose mode was "+String(bOld ? "on" : "off")+", now it is off.", 1);
-                FTSMSG("Verbose mode was "+String(bOld ? "on" : "off")+", now it is off.", MsgType::Message);
+        while ( getline( sb, cmd, ' ' ) )
+        {
+            std::transform( cmd.begin(), cmd.end(), cmd.begin(), ::tolower ); // Thanks to SO
+            // Parse it !
+            if( cmd == "help"  ) {
+                auto arg = getNextToken( sb );
+                std::transform( arg.begin(), arg.end(), arg.begin(), ::tolower ); // Thanks to SO
+                help( arg, argv[0] );
+            } else if( cmd == "exit" ) {
+                g_bExit = true;
+                break;
+            } else if( cmd == "nplayers" ) {
+                size_t nPlayers = dynamic_cast< ServerLogger * >(FTS::Logger::getSingletonPtr())->getPlayerCount();
+                FTSMSGDBG( "Number of players that are logged in: " + String::nr( nPlayers ), 1 );
+            } else if( cmd == "ngames" ) {
+                size_t nGames = dynamic_cast< ServerLogger * >(FTS::Logger::getSingletonPtr())->getGameCount();
+                FTSMSGDBG( "Number of games that are opened: " + String::nr( nGames ), 1 );
+            } else if( cmd == "version" ) {
+                FTSMSGDBG( "The version of the server is " D_SERVER_VERSION_STR, 1 );
+            } else if( cmd == "spam" ) {
+                auto arg = getNextToken( sb );
+                std::transform( arg.begin(), arg.end(), arg.begin(), ::tolower ); // Thanks to SO
+                if( (arg == "start") && !tSpamThread.joinable() ) {
+                    tSpamThread = std::thread( testSpammer, ( void * ) ChannelManager::getManager()->getDefaultChannel() );
+                    if( tSpamThread.joinable() )
+                        FTSMSGDBG( "Spam bot started.", 1 );
+                    else
+                        FTSMSG( "Spam bot could not be started (" + String( strerror( errno ) ) + ").", MsgType::Error );
+                } else if( ( arg == "stop" ) && tSpamThread.joinable() ) {
+                    stopSpamThread = true;
+                    tSpamThread.join();
+                    FTSMSGDBG( "Spam bot stopped.", 1 );
+                }
+            } else if( cmd == "verbose" ) {
+                auto arg = getNextToken( sb );
+                std::transform( arg.begin(), arg.end(), arg.begin(), ::tolower ); // Thanks to SO
+                if( arg == "on" ) {
+                    bool bOld = dynamic_cast< ServerLogger * >(FTS::Logger::getSingletonPtr())->setVerbose( true );
+                    FTSMSGDBG( "Verbose mode was " + String( bOld ? "on" : "off" ) + ", now it is on.", 1 );
+                } else if( arg == "off" ) {
+                    bool bOld = dynamic_cast< ServerLogger * >(FTS::Logger::getSingletonPtr())->setVerbose( false );
+                    FTSMSGDBG( "Verbose mode was " + String( bOld ? "on" : "off" ) + ", now it is off.", 1 );
+                    FTSMSG( "Verbose mode was " + String( bOld ? "on" : "off" ) + ", now it is off.", MsgType::Message );
+                } else {
+                    bool b = dynamic_cast< ServerLogger * >(FTS::Logger::getSingletonPtr())->getVerbose();
+                    FTSMSG( "Verbose mode is currently " + String( b ? "on" : "off" ), MsgType::Message );
+                }
             } else {
-                bool b = dynamic_cast<ServerLogger *>(FTS::Logger::getSingletonPtr())->getVerbose();
-                FTSMSG("Verbose mode is currently "+String(b ? "on" : "off"), MsgType::Message);
+                FTSMSG( "Unknown command '" + String( cmd ) + "', u n00b, try typing 'help' to get some help.", MsgType::Error );
             }
-        } else {
-            FTSMSG("Unknown command '"+String(cmd)+"', u n00b, try typing 'help' to get some help.", MsgType::Error);
         }
     }
 
