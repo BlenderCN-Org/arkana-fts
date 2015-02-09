@@ -397,10 +397,11 @@ void help(const string& topic, char *in_pszMe)
 // This sets up everything to listen on a certain port, and then goes listen.
 void connectionListener(void *in_iPort)
 {
-    ConnectionWaiter *pWaiter = new SocketConnectionWaiter;
+    std::unique_ptr<ConnectionWaiter> pWaiter( new SocketConnectionWaiter );
 
     if(ERR_OK != pWaiter->init((uint16_t)((size_t)in_iPort)))
         return ;
+
 
     // wait for connections unless we need to quit.
     while(!g_bExit) {
@@ -410,8 +411,6 @@ void connectionListener(void *in_iPort)
         pWaiter->waitForThenDoConnection(1000);
         std::this_thread::sleep_for( std::chrono::microseconds(100) );
     }
-
-    SAFE_DELETE(pWaiter);
 
 }
 
