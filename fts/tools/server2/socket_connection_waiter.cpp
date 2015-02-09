@@ -41,6 +41,7 @@ FTSSrv2::SocketConnectionWaiter::~SocketConnectionWaiter()
 
 int FTSSrv2::SocketConnectionWaiter::init(uint16_t in_usPort)
 {
+    m_port = in_usPort;
     SOCKADDR_IN serverAddress;
 
     // Choose our options.
@@ -100,10 +101,13 @@ bool FTSSrv2::SocketConnectionWaiter::waitForThenDoConnection(uint64_t in_ulMaxW
 
         // Yeah, we got someone !
         if((connectSocket = accept(m_listenSocket, (sockaddr *) & clientAddress, &iClientAddressSize)) != -1) {
+
+            FTSMSGDBG( "Accept connection on port 0x" + String::nr( ( int ) m_port, 0, ' ', std::ios::hex ), 1 );
+
             // Build up a class that will work this connection.
             TraditionalConnection *pCon = new TraditionalConnection(connectSocket, clientAddress);
             Client *pCli = ClientsManager::getManager()->createClient(pCon);
-
+            
             // And start a new thread for him.
             auto thr = std::thread( Client::starter, pCli );
             thr.detach();

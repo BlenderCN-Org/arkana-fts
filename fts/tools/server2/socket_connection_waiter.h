@@ -30,6 +30,7 @@ public:
 protected:
     SOCKET m_listenSocket;       ///< The socket that has been prepared for listening.
     FTS::Mutex m_mutex;           ///< Mutex for the connections list.
+    unsigned short m_port;      ///< For debugging hold the port no we listening.
 };
 
 } // namespace FTSSrv2
