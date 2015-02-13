@@ -78,6 +78,13 @@ std::string getNextToken( stringstream& sb, char delimiter = ' ' )
 
 int main(int argc, char *argv[])
 {
+#ifdef _DEBUG && WINDOOF
+    int flag = _CrtSetDbgFlag( _CRTDBG_REPORT_FLAG );
+    flag |= _CRTDBG_LEAK_CHECK_DF; // Turn on leak-checking bit
+    _CrtSetDbgFlag( flag );
+    //_CrtSetBreakAlloc( 5382 ); // Comment or un-comment on need basis
+#endif
+
     bool bDaemon = false, bVerbose = false;
     String logdir(DSRV_LOG_DIR);
     int opt = -1;

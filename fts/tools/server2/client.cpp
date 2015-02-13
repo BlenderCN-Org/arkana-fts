@@ -24,6 +24,7 @@ FTSSrv2::Client::Client(Connection *in_pConnection)
 
 FTSSrv2::Client::~Client()
 {
+    delete m_pConnection;
 }
 
 int FTSSrv2::Client::getID() const
@@ -57,7 +58,9 @@ int FTSSrv2::Client::run()
         }
 
         // False returned means the connection shall be closed.
-        if(!this->workPacket(pPack)) {
+        auto rc = this->workPacket( pPack );
+        delete pPack;
+        if(!rc) {
             m_pConnection->disconnect();
             break;
         }
@@ -194,9 +197,9 @@ bool FTSSrv2::Client::workPacket(Packet *in_pPacket)
 
         // When there was an error, send back the error message and quit.
         if(iRet != ERR_OK) {
-            Packet *pPack = new Packet(req);
-            pPack->append(iRet);
-            m_pConnection->send(pPack);
+            Packet Pack(req);
+            Pack.append(iRet);
+            m_pConnection->send(&Pack);
             return true;
         }
     }
@@ -306,58 +309,53 @@ int FTSSrv2::Client::sendPacket(Packet *in_pPacket)
 
 int FTSSrv2::Client::sendChatJoins( const String & in_sPlayer )
 {
-    Packet *p = new Packet(DSRV_MSG_CHAT_JOINS);
+    Packet p(DSRV_MSG_CHAT_JOINS);
 
-    p->append(in_sPlayer);
-    this->sendPacket(p);
+    p.append(in_sPlayer);
+    this->sendPacket(&p);
 
-    SAFE_DELETE(p);
     return ERR_OK;
 }
 
 int FTSSrv2::Client::sendChatQuits( const String & in_sPlayer )
 {
-    Packet *p = new Packet(DSRV_MSG_CHAT_QUITS);
+    Packet p(DSRV_MSG_CHAT_QUITS);
 
-    p->append(in_sPlayer);
-    this->sendPacket(p);
+    p.append(in_sPlayer);
+    this->sendPacket(&p);
 
-    SAFE_DELETE(p);
     return ERR_OK;
 }
 
 int FTSSrv2::Client::sendChatOped( const String & in_sPlayer )
 {
-    Packet *p = new Packet(DSRV_MSG_CHAT_OPED);
+    Packet p(DSRV_MSG_CHAT_OPED);
 
-    p->append(in_sPlayer);
-    this->sendPacket(p);
+    p.append(in_sPlayer);
+    this->sendPacket(&p);
 
-    SAFE_DELETE(p);
     return ERR_OK;
 }
 
 int FTSSrv2::Client::sendChatDeOped( const String & in_sPlayer )
 {
-    Packet *p = new Packet(DSRV_MSG_CHAT_DEOPED);
+    Packet p(DSRV_MSG_CHAT_DEOPED);
 
-    p->append(in_sPlayer);
-    this->sendPacket(p);
+    p.append(in_sPlayer);
+    this->sendPacket(&p);
 
-    SAFE_DELETE(p);
     return ERR_OK;
 }
 
 int FTSSrv2::Client::sendChatMottoChanged(const String & in_sFrom, const String & in_sMotto)
 {
-    Packet *p = new Packet(DSRV_MSG_CHAT_MOTTO_CHANGED);
+    Packet p(DSRV_MSG_CHAT_MOTTO_CHANGED);
 
-    p->append(in_sFrom);
-    p->append(in_sMotto);
+    p.append(in_sFrom);
+    p.append(in_sMotto);
 
-    this->sendPacket(p);
+    this->sendPacket(&p);
 
-    SAFE_DELETE(p);
     return ERR_OK;
 }
 

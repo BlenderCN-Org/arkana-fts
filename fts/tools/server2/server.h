@@ -5,13 +5,17 @@
 
 #ifdef D_COMPILES_SERVER
 #if defined(_MSC_VER)
-//#  include <winsock.h>
-//#  include <mysql.h>
 
 #  include <fcntl.h>
 #  include <io.h>
-//#  define open _open
-//#  define close _close
+
+#ifdef _DEBUG
+#ifndef DBG_NEW
+#define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
+#define new DBG_NEW
+#endif
+#endif  // _DEBUG
+
 #else
 #  include <mysql/mysql.h>
 #  include <pthread.h>

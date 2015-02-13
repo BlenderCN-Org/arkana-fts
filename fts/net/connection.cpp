@@ -620,15 +620,6 @@ Packet *FTS::TraditionalConnection::getPacket(bool in_bUseQueue, uint64_t in_ulM
         return NULL;
     }
 
-#if 0
-    int8_t buf2[1024];
-    this->get_lowlevel(buf2, 200, (uint64_t)lMaxWaitMillisecLeft);
-    if(timeout.measure()*1000.0 > in_ulMaxWaitMillisec) {
-        netlog("Dropping due to timeout (allowed "+String::nr(in_ulMaxWaitMillisec)+" ms)!");
-        return NULL;
-    }
-#endif
-
     // First, ignore everything until the "FTSS" identifier.
     int8_t buf;
 
@@ -699,8 +690,10 @@ Packet *FTS::TraditionalConnection::getPacket(bool in_bUseQueue, uint64_t in_ulM
 #if defined(DEBUG) && NETLOG
     g_netlogcmt = NULL;
 #endif
-    if(serr != ERR_OK)
+    if( serr != ERR_OK ) {
+        SAFE_DELETE( p );
         return NULL;
+    }
 
     // Now, prepare to get the packet's data.
     if( p->getPayloadLen() <= 0 ) {
@@ -719,8 +712,10 @@ Packet *FTS::TraditionalConnection::getPacket(bool in_bUseQueue, uint64_t in_ulM
 #if defined(DEBUG) && NETLOG
     g_netlogcmt = NULL;
 #endif
-    if(serr != ERR_OK)
+    if(serr != ERR_OK) {
+        SAFE_DELETE( p );
         return NULL;
+    }
 
     // All is good, check the package ID.
     if(p->isValid()) {
