@@ -12,9 +12,8 @@
 
 #include "client.h"
 #include "socket_connection_waiter.h"
-#include "net/packet.h"
-#include "server_log.h"
-#include "db.h"
+//#include "net/packet.h"
+//#include "server_log.h"
 
 #if WINDOOF
 using socklen_t = int;
@@ -86,17 +85,12 @@ bool FTSSrv2::SocketConnectionWaiter::waitForThenDoConnection(uint64_t in_ulMaxW
     socklen_t iClientAddressSize = sizeof(clientAddress);
     SOCKET connectSocket;
 
-    int64_t lMaxWaitMillisecLeft = in_ulMaxWaitMillisec;
-    uint32_t uiLastTick = dGetTicks();
-
+    auto startTime = std::chrono::steady_clock::now();
     // wait for connections a certain amount of time or infinitely.
     while(true) {
-        uint32_t uiNow = dGetTicks();
-        lMaxWaitMillisecLeft -= (uiNow - uiLastTick);
-        uiLastTick = uiNow;
-
         // Nothing correct got in time, bye.
-        if(lMaxWaitMillisecLeft <= 0)
+        auto nowTime = std::chrono::steady_clock::now();
+        if( std::chrono::duration_cast< std::chrono::milliseconds >(startTime - nowTime).count() >= in_ulMaxWaitMillisec )
             return false;
 
         // Yeah, we got someone !
