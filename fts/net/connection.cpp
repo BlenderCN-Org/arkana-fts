@@ -40,6 +40,10 @@ using namespace FTS;
 
 /// TODO: Add better logging of what travels trough the net maybe ?
 #define NETLOG 0
+#if 0//defined(DEBUG) && !defined(D_COMPILES_SERVER)
+#define D_DEBUG_QUEUE
+#define D_DEBUG_CON
+#endif
 #if NETLOG && defined(DEBUG)
 static String g_netlogcmt;
 void netlog(const String &in_s)
@@ -158,7 +162,7 @@ void FTS::Connection::queuePacket(Packet *in_pPacket)
     // Don't make the queue too big.
     while(m_lpPacketQueue.size() > FTSC_MAX_QUEUE_LEN) {
         Packet *pPack = m_lpPacketQueue.front();
-#ifdef DEBUG
+#ifdef D_DEBUG_QUEUE
         FTSMSGDBG("Queue full, dropping packet with ID 0x{1}, payload len: {2}",4,
                   String::nr(pPack->getType(), -1, ' ', std::ios::hex), String::nr(pPack->getPayloadLen()));
 #endif
@@ -166,7 +170,7 @@ void FTS::Connection::queuePacket(Packet *in_pPacket)
         SAFE_DELETE(pPack);
     }
 
-#ifdef DEBUG
+#ifdef D_DEBUG_QUEUE
     FTSMSGDBG("Queued packet with ID 0x{1}, payload len: {2}", 4,
               String::nr(in_pPacket->getType(),-1,' ',std::ios::hex), String::nr(in_pPacket->getPayloadLen()));
     String s = "Queue is now: (len:"+String::nr(m_lpPacketQueue.size())+")";
@@ -257,12 +261,13 @@ void FTS::TraditionalConnection::disconnect()
         close(m_sock);
         m_bConnected = false;
     }
-
     // We need to check empty the queue ourselves.
     if(!m_lpPacketQueue.empty()) {
-        for(std::list<Packet *>::iterator i = m_lpPacketQueue.begin() ; i != m_lpPacketQueue.end() ; i++) {
+#if defined(DEBUG)
+        FTSMSGDBG( "There are still {1} packets in the queue left.", 1, String::nr( m_lpPacketQueue.size() ) );
+#endif
+        for( std::list<Packet *>::iterator i = m_lpPacketQueue.begin(); i != m_lpPacketQueue.end(); i++ ) {
             Packet *p = *i;
-
             SAFE_DELETE(p);
         }
     }
