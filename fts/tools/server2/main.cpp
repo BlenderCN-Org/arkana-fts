@@ -16,6 +16,7 @@
 #pragma comment(lib, "Ws2_32.lib")
 #endif
 
+#include <vector>
 #include <list>
 #include <chrono>
 #include <thread>
@@ -209,10 +210,10 @@ int main(int argc, char *argv[])
 
     // Create a thread waiting on each port. Including the fts port: 0xAF75 :)
     // DEBUG: the +1 at the end.
-    std::thread threads[DSRV_PORT_LAST + 1 - DSRV_PORT_FIRST + 1];
+    std::vector<std::thread> threads;
 
     for(size_t i = DSRV_PORT_FIRST; i < DSRV_PORT_LAST + 1; i++)
-        threads[i - DSRV_PORT_FIRST] = std::thread(connectionListener, (void *)i) ;
+        threads.push_back( std::thread(connectionListener, (void *)i) );
 
     // DEBUG: a test spamming thread.
     std::thread tSpamThread;
@@ -289,9 +290,10 @@ int main(int argc, char *argv[])
     // Now all is lost, nobody likes fts anymore :( clean up.
 
     FTSMSGDBG("Waiting for every thread to close ...", 1);
-    for(size_t i = DSRV_PORT_FIRST; i < DSRV_PORT_LAST + 1; i++) {
-        threads[i - DSRV_PORT_FIRST].join();
-        FTSMSGDBG("Thread on port 0x"+String::nr(i, -1,'0',std::ios::hex)+" successfully closed.", 1);
+    int i = 0;
+    for( auto& thread : threads ) {
+        thread.join();
+        FTSMSGDBG( "Thread on port 0x" + String::nr( DSRV_PORT_FIRST + i++, -1, '0', std::ios::hex ) + " successfully closed.", 1 );
     }
 
     // Shutdown all connectons to all clients that still exist.
