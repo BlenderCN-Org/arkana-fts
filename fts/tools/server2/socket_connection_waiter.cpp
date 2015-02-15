@@ -12,8 +12,7 @@
 
 #include "client.h"
 #include "socket_connection_waiter.h"
-//#include "net/packet.h"
-//#include "server_log.h"
+#include "server_log.h"
 
 #if WINDOOF
 using socklen_t = int;
@@ -81,10 +80,6 @@ int FTSSrv2::SocketConnectionWaiter::deinit()
 
 bool FTSSrv2::SocketConnectionWaiter::waitForThenDoConnection(uint64_t in_ulMaxWaitMillisec)
 {
-    SOCKADDR_IN clientAddress;
-    socklen_t iClientAddressSize = sizeof(clientAddress);
-    SOCKET connectSocket;
-
     auto startTime = std::chrono::steady_clock::now();
     // wait for connections a certain amount of time or infinitely.
     while(true) {
@@ -93,8 +88,11 @@ bool FTSSrv2::SocketConnectionWaiter::waitForThenDoConnection(uint64_t in_ulMaxW
         if( std::chrono::duration_cast< std::chrono::milliseconds >(startTime - nowTime).count() >= in_ulMaxWaitMillisec )
             return false;
 
-        // Yeah, we got someone !
-        if((connectSocket = accept(m_listenSocket, (sockaddr *) & clientAddress, &iClientAddressSize)) != -1) {
+        SOCKADDR_IN clientAddress;
+        socklen_t iClientAddressSize = sizeof( clientAddress );
+        SOCKET connectSocket;
+        if( (connectSocket = accept( m_listenSocket, ( sockaddr * ) & clientAddress, &iClientAddressSize )) != -1 ) {
+            // Yeah, we got someone !
 
             FTSMSGDBG( "Accept connection on port 0x" + String::nr( ( int ) m_port, 0, ' ', std::ios::hex ), 1 );
 

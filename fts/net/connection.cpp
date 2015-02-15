@@ -6,6 +6,8 @@
  *        connection that can send packets.
  **/
 
+#include <algorithm>
+
 #include "net/connection.h"
 #include "net/packet.h"
 
@@ -38,26 +40,19 @@ inline void close(SOCKET s)
 
 using namespace FTS;
 
-/// TODO: Add better logging of what travels trough the net maybe ?
-#define NETLOG 0
 #if 0//defined(DEBUG) && !defined(D_COMPILES_SERVER)
 #define D_DEBUG_QUEUE
 #define D_DEBUG_CON
 #endif
+/// TODO: Add better logging of what travels trough the net maybe ?
+#define NETLOG 0
 #if NETLOG && defined(DEBUG)
-static String g_netlogcmt;
 void netlog(const String &in_s)
 {
 #ifndef D_COMPILES_SERVER
-    if(g_netlogcmt.isEmpty())
         FTSMSGDBG(in_s+"\n", 5);
-    else
-        FTSMSGDBG("("+g_netlogcmt+") - "+in_s+"\n", 5);
 #else /* D_COMPILES_SERVER */
-    if(g_netlogcmt.isEmpty())
         CSLog::netlog(in_s + "\n");
-    else
-        CSLog::netlog("(" + g_netlogcmt + ") - " + in_s + "\n");
 #endif /* D_COMPILES_SERVER */
 }
 
@@ -88,57 +83,53 @@ void netlog2(const String &in_s, uint32_t in_uiLen, const char *in_pBuf)
  *  returns it to the caller. If there is no message in the queue or no message with
  *  the request id being \a in_req, it just returns NULL.
  *
- * \return If successfull:    A pointer to the packet.
+ * \return If successful:    A pointer to the packet.
  * \return If queue is empty or no request was found: NULL
  *
  * \note The user has to free the returned value !
  *
  * \author Pompei2
  */
-Packet *FTS::Connection::getFirstPacketFromQueue(master_request_t in_req)
+Packet *FTS::Connection::getFirstPacketFromQueue( master_request_t in_req )
 {
-    Lock l(m_mutex);
+    Lock l( m_mutex );
 
-    if(m_lpPacketQueue.empty()) {
-        return NULL;
+    if( m_lpPacketQueue.empty() ) {
+        return nullptr;
     }
 
-    Packet *p = NULL;
+    // If we found none with that req_id, return NULL.
+    Packet *p = nullptr;
 
     // Just get the first one ?
-    if(in_req == DSRV_MSG_NONE) {
+    if( in_req == DSRV_MSG_NONE ) {
         // Just get the first packet of the queue.
         p = m_lpPacketQueue.front();
         m_lpPacketQueue.pop_front();
     } else {
         // Search the list for the first packet with the corresponding request id.
-        for(std::list<Packet *>::iterator i = m_lpPacketQueue.begin() ; i != m_lpPacketQueue.end() ; i++) {
+        auto i = std::find_if( std::begin( m_lpPacketQueue ), std::end( m_lpPacketQueue ), [in_req] ( Packet* packet ) {
+            return (( fts_packet_hdr_t * ) packet->m_pData)->req_id == in_req ? true : false;
+        } );
+
+        if( i != std::end( m_lpPacketQueue ) ) {
+            m_lpPacketQueue.erase( i );
             p = *i;
-            // If it is the packet we want, remove it from the list and return it.
-            if(((fts_packet_hdr_t *)p->m_pData)->req_id == in_req) {
-                m_lpPacketQueue.erase(i);
-                break;
-            }
-
-            p = NULL;
-        }
-
-        // If we found none with that req_id, return NULL.
-        if(p == NULL) {
-            return NULL;
         }
     }
 
-#ifdef DEBUG
-    FTSMSGDBG("Recv packet from queue with ID 0x{1}, payload len: {2}", 4,
-              String::nr(p->getType(), -1, ' ', std::ios::hex), String::nr(p->getPayloadLen()));
-    String s = "Queue is now: (len:"+String::nr(m_lpPacketQueue.size())+")";
-    for(std::list<Packet *>::iterator i = m_lpPacketQueue.begin() ; i != m_lpPacketQueue.end() ; i++) {
-        Packet *pPack = *i;
-        s += "(0x" + String::nr(pPack->getType(), -1, ' ', std::ios::hex) + "," + String::nr(pPack->getPayloadLen()) + ")";
+#ifdef D_DEBUG_CON
+    if( p != nullptr ) {
+        FTSMSGDBG("Recv packet from queue with ID 0x{1}, payload len: {2}", 4,
+                   String::nr(p->getType(), -1, ' ', std::ios::hex), String::nr(p->getPayloadLen()));
+        String s = "Queue is now: (len:"+String::nr(m_lpPacketQueue.size())+")";
+        for(std::list<Packet *>::iterator i = m_lpPacketQueue.begin() ; i != m_lpPacketQueue.end() ; i++) {
+            Packet *pPack = *i;
+            s += "(0x" + String::nr(pPack->getType(), -1, ' ', std::ios::hex) + "," + String::nr(pPack->getPayloadLen()) + ")";
+        }
+        s += "End.";
+        FTSMSGDBG(s, 4);
     }
-    s += "End.";
-    FTSMSGDBG(s, 4);
 #endif
 
     return p;
@@ -194,7 +185,7 @@ void FTS::Connection::queuePacket(Packet *in_pPacket)
  * \param in_nTimeout The maximum number of milliseconds (1/1000 seconds)
  *                    to wait for a connection.
  *
- * \author Klaus Beyer (kabey)
+ * \author Klaus Beyer 
  *
  * \note modified by Pompei2
  */
@@ -206,9 +197,9 @@ FTS::TraditionalConnection::TraditionalConnection(const String &in_sName, uint16
     connectByName(in_sName, in_usPort, in_ulTimeoutInMillisec);
 }
 
-/*! ctor. Uses a existing connection described by the 2 parameter.
+/*! ctor. Uses an existing connection described by the 2nd parameter.
  *
- * \author Klaus.Beyer (kabey)
+ * \author Klaus.Beyer 
  *
  * \param[in] in_sock the socket to use for the connection
  * \param[in] in_sa   address of counterpart to which the connection goes.
@@ -266,8 +257,7 @@ void FTS::TraditionalConnection::disconnect()
 #if defined(DEBUG)
         FTSMSGDBG( "There are still {1} packets in the queue left.", 1, String::nr( m_lpPacketQueue.size() ) );
 #endif
-        for( std::list<Packet *>::iterator i = m_lpPacketQueue.begin(); i != m_lpPacketQueue.end(); i++ ) {
-            Packet *p = *i;
+        for( auto p : m_lpPacketQueue ) {
             SAFE_DELETE(p);
         }
     }
@@ -290,7 +280,7 @@ String FTS::TraditionalConnection::getCounterpartIP() const
 /** This resolves the name to an IPv4 address and then connects to it.
  *  If we are already connected, it first closes the old connection.
  *
- * \param in_sName    The name of the computer to conenct to.
+ * \param in_sName    The name of the computer to connect to.
  * \param in_iPort    The port you want to use for the connection.
  * \param in_nTimeout The number of milliseconds to try to connect before displaying an error.
  *
@@ -308,43 +298,39 @@ int FTS::TraditionalConnection::connectByName(String in_sName, uint16_t in_usPor
     hostent *serverInfo = NULL;
     int iRet = -1;
 
-    { Lock l(m_mutex);
+    Lock l( m_mutex );
 
-        // Setup the connection socket.
+    // Setup the connection socket.
 #if WINDOOF
-        if((m_sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) == INVALID_SOCKET) {
+    if( (m_sock = socket( AF_INET, SOCK_STREAM, IPPROTO_TCP )) == INVALID_SOCKET ) {
 #else
-        if((m_sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0) {
+    if((m_sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0) {
 #endif
-            FTS18N("Net_TCPIP_mksock", MsgType::Error, strerror(errno), String::nr(errno));
-            return -1;
-        }
+        FTS18N( "Net_TCPIP_mksock", MsgType::Error, strerror( errno ), String::nr( errno ) );
+        return -1;
+    }
 
-        // Get some information we need to connect to the server.
-        if(NULL == (serverInfo = gethostbyname(in_sName.c_str()))) {
-            switch (h_errno) {
+    // Get some information we need to connect to the server.
+    if( NULL == (serverInfo = gethostbyname( in_sName.c_str() )) ) {
+        switch( h_errno ) {
             case -1:
-                FTS18N("Net_TCPIP_hostname",MsgType::Error,in_sName,strerror(errno),String::nr(errno));
+                FTS18N( "Net_TCPIP_hostname", MsgType::Error, in_sName, strerror( errno ), String::nr( errno ) );
                 break;
             default:
-                FTS18N("Net_TCPIP_hostname",MsgType::Error,in_sName,"Unknown hostname",String::nr(h_errno));
+                FTS18N( "Net_TCPIP_hostname", MsgType::Error, in_sName, "Unknown hostname", String::nr( h_errno ) );
                 break;
-            }
-            close(m_sock);
-            return -2;
         }
-
-        // Prepare to connect.
-        m_saCounterpart.sin_family = serverInfo->h_addrtype;
-        memcpy((char *)&m_saCounterpart.sin_addr.s_addr,
-               serverInfo->h_addr_list[0], serverInfo->h_length);
-        m_saCounterpart.sin_port = htons(in_usPort);
+        close( m_sock );
+        return -2;
     }
+
+    // Prepare to connect.
+    m_saCounterpart.sin_family = serverInfo->h_addrtype;
+    memcpy( (char *) &m_saCounterpart.sin_addr.s_addr, serverInfo->h_addr_list[0], serverInfo->h_length );
+    m_saCounterpart.sin_port = htons( in_usPort );
 
     // Set the socket non-blocking so we can cancel it if it can't connect.
     this->setSocketBlocking(m_sock, false);
-
-    Lock l(m_mutex);
 
     Chronometer chron;
 
@@ -356,33 +342,30 @@ int FTS::TraditionalConnection::connectByName(String in_sName, uint16_t in_usPor
         if(iRet == 0) {
             m_bConnected = true;
             return ERR_OK;
-
-            // Already connected.
 #if WINDOOF
         } else if(WSAGetLastError() == WSAEISCONN) {
 #else
         } else if(errno == EISCONN) {
 #endif
+            // Already connected.
             m_bConnected = true;
             return ERR_OK;
 
-            // Need to wait for the socket to be available.
 #if WINDOOF
 #else
         } else if(errno == EINPROGRESS) {
+            // Need to wait for the socket to be available.
             int serr = 0;
-//             do {
-                pollfd pfd;
-                pfd.fd = m_sock;
-                pfd.events = 0 | POLLOUT;
-                pfd.revents = 0;
+            pollfd pfd;
+            pfd.fd = m_sock;
+            pfd.events = 0 | POLLOUT;
+            pfd.revents = 0;
 
-                // Wait an amount of time or wait infinitely
-                if(in_ulTimeoutInMillisec == ((uint64_t)(-1)))
-                    serr = ::poll( &pfd, 1, -1 );
-                else
-                    serr = ::poll( &pfd, 1, (int)(in_ulTimeoutInMillisec) );
-//             } while( serr == SOCKET_ERROR && errno == EINTR && in_ulTimeoutInMillisec == ((uint64_t)(-1)));
+            // Wait an amount of time or wait infinitely
+            if(in_ulTimeoutInMillisec == ((uint64_t)(-1)))
+                serr = ::poll( &pfd, 1, -1 );
+            else
+                serr = ::poll( &pfd, 1, (int)(in_ulTimeoutInMillisec) );
             if(serr == SOCKET_ERROR) {
                 FTS18N("Net_TCPIP_select", MsgType::Error, strerror(errno), String::nr(errno));
                 close(m_sock);
@@ -403,7 +386,7 @@ int FTS::TraditionalConnection::connectByName(String in_sName, uint16_t in_usPor
             }
 #endif
 
-            // There was another error then the retry/in proggress/busy error.
+            // There was another error then the retry/in progress/busy error.
 #if WINDOOF
         } else if(WSAGetLastError() != WSAEWOULDBLOCK &&
                   WSAGetLastError() != WSAEALREADY &&
@@ -424,7 +407,6 @@ int FTS::TraditionalConnection::connectByName(String in_sName, uint16_t in_usPor
         // Retry as long as we have time to.
     } while(chron.measure() < ((double)in_ulTimeoutInMillisec)/1000.0);
 
-    //     close( m_sock );
 #if WINDOOF
     FTS18N( "Net_TCPIP_connect_to", MsgType::Error, in_sName, String::nr(in_usPort), "Timed out (maybe the counterpart is down)", String::nr(WSAGetLastError( )) );
 #else
@@ -442,7 +424,7 @@ int FTS::TraditionalConnection::connectByName(String in_sName, uint16_t in_usPor
  * \param in_ulMaxWaitMillisec The amount of milliseconds (1/1000 seconds) to
  *                             wait for a message to come.\n
  *
- * \return If successfull:  0
+ * \return If successful:  0
  * \return If failed:      <0
  * \return If timed out:    1
  *
@@ -462,22 +444,17 @@ int FTS::TraditionalConnection::get_lowlevel(void *out_pBuf, uint32_t in_uiLen, 
     Chronometer timeout;
 
     do {
-        { Lock l(m_mutex);
+        {
+            Lock l( m_mutex );
+
+            read = ::recv( m_sock, ( char * ) buf, to_read, 0 );
 #if WINDOOF
-            read = ::recv(m_sock, (char *)buf, to_read, 0);
-            if(read == SOCKET_ERROR && (WSAGetLastError() == WSAEINTR ||
-                                        WSAGetLastError() == WSATRY_AGAIN ||
-                                        WSAGetLastError() == WSAEWOULDBLOCK)) {
-                // Only check for timeouts when waiting for data!
-                if(timeout.measure()*1000.0 > in_ulMaxWaitMillisec) {
-                    netlog("Dropping due to timeout (allowed "+String::nr(in_ulMaxWaitMillisec)+" ms)!");
-                    return ERR_OK;
-                }
-                continue;
-            }
+            auto errorno = WSAGetLastError();
+            if(read == SOCKET_ERROR && (errorno == WSAEINTR || errorno == WSATRY_AGAIN || errorno == WSAEWOULDBLOCK)) {
 #else
-            read = ::recv(m_sock, buf, to_read, 0);
-            if(read < 0 && (errno == EINTR || errno == EAGAIN || errno == EWOULDBLOCK)) {
+            if( read < 0 && (errno == EINTR || errno == EAGAIN || errno == EWOULDBLOCK) ) {
+#endif
+
                 // Only check for timeouts when waiting for data!
                 if(timeout.measure()*1000.0 > in_ulMaxWaitMillisec) {
                     netlog("Dropping due to timeout (allowed "+String::nr(in_ulMaxWaitMillisec)+" ms)!");
@@ -485,7 +462,6 @@ int FTS::TraditionalConnection::get_lowlevel(void *out_pBuf, uint32_t in_uiLen, 
                 }
                 continue;
             }
-#endif
         }
 
         if(read <= 0) {
@@ -500,9 +476,7 @@ int FTS::TraditionalConnection::get_lowlevel(void *out_pBuf, uint32_t in_uiLen, 
         buf += read;
     } while(to_read);
 
-#if defined(DEBUG) && NETLOG
     netlog2("recv", in_uiLen, (const char *)out_pBuf);
-#endif
 
     return ERR_OK;
 }
@@ -569,7 +543,7 @@ Packet *FTS::TraditionalConnection::getPacket(bool in_bUseQueue, uint64_t in_ulM
 {
     if(!m_bConnected) {
         FTS18N("InvParam", MsgType::Horror, "FTS::Connection::recv");
-        return NULL;
+        return nullptr;
     }
 
     // First, check the queue if wanted.
@@ -613,16 +587,16 @@ Packet *FTS::TraditionalConnection::getPacket(bool in_bUseQueue, uint64_t in_ulM
     if( serr == SOCKET_ERROR ) {
         FTS18N( "Net_TCPIP_select", MsgType::Error, strerror(errno), String::nr(errno) );
         this->disconnect();
-        return NULL;
+        return nullptr;
     }
 
     if( serr == 0 ) {
-        return NULL;
+        return nullptr;
     }
 
     if(timeout.measure()*1000.0 > in_ulMaxWaitMillisec) {
         netlog("Dropping due to timeout (allowed "+String::nr(in_ulMaxWaitMillisec)+" ms)!");
-        return NULL;
+        return nullptr;
     }
 
     // First, ignore everything until the "FTSS" identifier.
@@ -630,55 +604,31 @@ Packet *FTS::TraditionalConnection::getPacket(bool in_bUseQueue, uint64_t in_ulM
 
     while(true) {
         // Get the first "F"
-#if defined(DEBUG) && NETLOG
-        g_netlogcmt = "getPacket: first F";
-#endif
         do {
             if(ERR_OK != this->get_lowlevel(&buf, 1, (uint64_t)(in_ulMaxWaitMillisec - 1000.0*timeout.measure()) )) {
-#if defined(DEBUG) && NETLOG
-                g_netlogcmt = NULL;
-#endif
-                return NULL;
+                return nullptr;
             }
         } while(buf != 'F');
 
         // Check for the next "T". If it isn't one, restart.
-#if defined(DEBUG) && NETLOG
-        g_netlogcmt = "getPacket: first T";
-#endif
         if(ERR_OK != this->get_lowlevel(&buf, 1, (uint64_t)(in_ulMaxWaitMillisec - 1000.0*timeout.measure()) )) {
-#if defined(DEBUG) && NETLOG
-                g_netlogcmt = NULL;
-#endif
-            return NULL;
+            return nullptr;
         }
 
         if(buf != 'T')
             continue;
 
         // Check for the next "S". If it isn't one, restart.
-#if defined(DEBUG) && NETLOG
-        g_netlogcmt = "getPacket: first S";
-#endif
         if(ERR_OK != this->get_lowlevel(&buf, 1, (uint64_t)(in_ulMaxWaitMillisec - 1000.0*timeout.measure()) )) {
-#if defined(DEBUG) && NETLOG
-                g_netlogcmt = NULL;
-#endif
-            return NULL;
+            return nullptr;
         }
 
         if(buf != 'S')
             continue;
 
         // Check for the next "S". If it isn't one, restart.
-#if defined(DEBUG) && NETLOG
-        g_netlogcmt = "getPacket: 2nd   S";
-#endif
         if(ERR_OK != this->get_lowlevel(&buf, 1, (uint64_t)(in_ulMaxWaitMillisec - 1000.0*timeout.measure()) )) {
-#if defined(DEBUG) && NETLOG
-                g_netlogcmt = NULL;
-#endif
-            return NULL;
+            return nullptr;
         }
 
         if(buf != 'S')
@@ -687,39 +637,27 @@ Packet *FTS::TraditionalConnection::getPacket(bool in_bUseQueue, uint64_t in_ulM
     }
 
     // We already got the "FTSS" header, now get the rest of the header.
-#if defined(DEBUG) && NETLOG
-    g_netlogcmt = "getPacket: header rest";
-#endif
     Packet *p = new Packet(DSRV_MSG_NULL);
     serr = this->get_lowlevel(&p->m_pData[4], sizeof(fts_packet_hdr_t)-4, (uint64_t)(in_ulMaxWaitMillisec - 1000.0*timeout.measure()) );
-#if defined(DEBUG) && NETLOG
-    g_netlogcmt = NULL;
-#endif
     if( serr != ERR_OK ) {
         SAFE_DELETE( p );
-        return NULL;
+        return nullptr;
     }
 
     // Now, prepare to get the packet's data.
     if( p->getPayloadLen() <= 0 ) {
         FTS18N( "Net_packet_len", MsgType::Error, String::nr(p->getPayloadLen()) );
         SAFE_DELETE(p);
-        return NULL;
+        return nullptr;
     }
 
     p->m_pData = (int8_t*)realloc(p->m_pData,p->getTotalLen());
-    assert(p->m_pData != NULL );
+    assert( p->m_pData != nullptr );
     // And get it.
-#if defined(DEBUG) && NETLOG
-    g_netlogcmt = "getPacket: data";
-#endif
     serr = this->get_lowlevel(&p->m_pData[sizeof(fts_packet_hdr_t)], p->getPayloadLen(), (uint64_t)(in_ulMaxWaitMillisec - 1000.0*timeout.measure()) );
-#if defined(DEBUG) && NETLOG
-    g_netlogcmt = NULL;
-#endif
     if(serr != ERR_OK) {
         SAFE_DELETE( p );
-        return NULL;
+        return nullptr;
     }
 
     // All is good, check the package ID.
@@ -734,7 +672,7 @@ Packet *FTS::TraditionalConnection::getPacket(bool in_bUseQueue, uint64_t in_ulM
     // Invalid packet received.
     FTS18N("Net_packet", MsgType::Error, "No FTSS Header/Invalid request");
     SAFE_DELETE(p);
-    return NULL;
+    return nullptr;
 }
 
 /// Waits for and then receives any packet.
@@ -770,7 +708,7 @@ Packet *FTS::TraditionalConnection::waitForThenGetPacket(bool in_bUseQueue, uint
  *
  * \param in_bUseQueue Use the queue or just ignore it ?
  *
- * \return If successfull: A pointer to the packet.
+ * \return If successful: A pointer to the packet.
  * \return If failed:      NULL
  *
  * \note The user has to free the returned value !
@@ -796,7 +734,7 @@ Packet *FTS::TraditionalConnection::getPacketIfPresent(bool in_bUseQueue)
  *                            wait for a message to come, or 0, that means wait
  *                            for an infinite time (this is dangerous).
  *
- * \return If successfull: A pointer to the packet.
+ * \return If successful: A pointer to the packet.
  * \return If failed:      NULL
  *
  * \note The user has to free the returned value !
@@ -810,7 +748,7 @@ Packet *FTS::TraditionalConnection::waitForThenGetPacketWithReq(master_request_t
 {
     // Check for valid packet request ID's.
     if(in_req == DSRV_MSG_NONE || in_req > DSRV_MSG_MAX)
-        return NULL;
+        return nullptr;
 
     // We need to check the queue ourselves to avoid infinite recursion:
     Packet *p = this->getFirstPacketFromQueue(in_req);
@@ -825,7 +763,7 @@ Packet *FTS::TraditionalConnection::waitForThenGetPacketWithReq(master_request_t
 
         // Nothing got in time, bye.
         if(!p)
-            return NULL;
+            return nullptr;
 
         // Check if this is the packet we want.
         if(((fts_packet_hdr_t *)p->m_pData)->req_id == in_req) {
@@ -840,7 +778,7 @@ Packet *FTS::TraditionalConnection::waitForThenGetPacketWithReq(master_request_t
         this->queuePacket(p);
     } while(true);
 
-    return NULL;
+    return nullptr;
 }
 
 /// Checks for and then receives a certain packet.
@@ -865,7 +803,7 @@ Packet *FTS::TraditionalConnection::getPacketWithReqIfPresent(master_request_t i
 {
     // Check for valid packet request ID's.
     if(in_req == DSRV_MSG_NONE || in_req > DSRV_MSG_MAX)
-        return NULL;
+        return nullptr;
 
     // We need to check the queue ourselves to avoid infinite recursion:
     Packet *p = this->getFirstPacketFromQueue(in_req);
@@ -873,7 +811,7 @@ Packet *FTS::TraditionalConnection::getPacketWithReqIfPresent(master_request_t i
         return p;
 
     // Nothing in the queue, check for a message.
-    while((p = this->getPacketIfPresent(true)) != NULL) {
+    while( (p = this->getPacketIfPresent( true )) != nullptr ) {
 
         // Check if this is the packet we want.
         if(((fts_packet_hdr_t *)p->m_pData)->req_id == in_req) {
@@ -889,7 +827,7 @@ Packet *FTS::TraditionalConnection::getPacketWithReqIfPresent(master_request_t i
     }
 
     // No packet on the wire.
-    return NULL;
+    return nullptr;
 }
 
 /// Sends some data.
@@ -937,9 +875,7 @@ int FTS::TraditionalConnection::send(const void *in_pData, uint32_t in_uiLen)
         buf += iSent;
     } while(uiToSend > 0);
 
-#if defined(DEBUG)
     netlog2("send", in_uiLen, (const char *)in_pData);
-#endif
 
     return ERR_OK;
 }
@@ -958,10 +894,10 @@ int FTS::TraditionalConnection::send(const void *in_pData, uint32_t in_uiLen)
  */
 int FTS::TraditionalConnection::send(Packet * in_pPacket)
 {
-    if(!m_bConnected || in_pPacket == NULL)
+    if( !m_bConnected || in_pPacket == nullptr )
         return -1;
 
-#if defined(DEBUG) && !defined(D_COMPILES_SERVER)
+#if defined(D_DEBUG_CON) && !defined(D_COMPILES_SERVER)
     FTSMSGDBG("Sending packet with ID 0x{1}, payload len: {2}", 4,
               String::nr(in_pPacket->getType(), -1, ' ', std::ios::hex),
               String::nr(in_pPacket->getPayloadLen()));
@@ -983,7 +919,7 @@ int FTS::TraditionalConnection::send(Packet * in_pPacket)
  * @param[out] out_pPacket The packet to send. Will be replaced by the response.
  * @param[in] in_ulMaxWaitMillisec The maximum time to wait for the response (in milliseconds).
  *
- * @return If successfull: ERR_OK
+ * @return If successful: ERR_OK
  * @return If failed:      Error code < 0
  *
  * @note Adapted by Pompei2.
@@ -1007,7 +943,7 @@ int FTS::TraditionalConnection::mreq(Packet *out_pPacket, uint64_t in_ulMaxWaitM
     }
 
     Packet *p = this->waitForThenGetPacketWithReq(req, in_ulMaxWaitMillisec);
-    if(p == NULL) {
+    if( p == nullptr ) {
         return FTSC_ERR_RECEIVE;
     }
 
@@ -1027,7 +963,7 @@ int FTS::TraditionalConnection::mreq(Packet *out_pPacket, uint64_t in_ulMaxWaitM
     out_pPacket->m_pData = p->m_pData;
 
     // In order that the delete works, set data pointer to NULL
-    p->m_pData = NULL;
+    p->m_pData = nullptr;
 
     // delete the interim packet
     SAFE_DELETE(p);
@@ -1194,7 +1130,7 @@ int FTS::getHTTPFile(FTS::RawDataContainer &out_data, const String &in_sServer, 
  * \param in_sPath The path to the file on the server, ex: /path/to/file.ex
  * \param out_uiFileSize Will be set to the size of the data that will be returned.
  *
- * \return If successfull:  A new DataContainer containing the file.
+ * \return If successful:  A new DataContainer containing the file.
  * \return If failed:       NULL
  *
  * \note The DataContainer object you get should be deleted by you.
@@ -1227,7 +1163,7 @@ FTS::RawDataContainer *FTS::getHTTPFile(const String &in_sServer, const String &
  * \param in_ulMaxWaitMillisec The amount of milliseconds (1/1000 seconds) to
  *                             wait for a message to come.
  *
- * \return If successfull:  ERR_OK
+ * \return If successful:  ERR_OK
  * \return If failed:       An error code < 0
  *
  * \note If the file pointed to by \a in_sLocal already exists, it will be overwritten.
