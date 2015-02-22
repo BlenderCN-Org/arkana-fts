@@ -226,7 +226,7 @@ int FTSSrv2::DataBase::storedFunctionInt(const char *in_pszFunc, const char *in_
     MYSQL_ROW row = NULL;
 
     // There was an error hum hum ...
-    if(!this->query(pRes, "SELECT `"DSRV_MYSQL_DB"`.`", in_pszFunc, "` ( ", in_pszArgs, " )", NULL)) {
+    if(!this->query(pRes, "SELECT `" DSRV_MYSQL_DB "`.`", in_pszFunc, "` ( ", in_pszArgs, " )", NULL)) {
         return -1;
     }
 
@@ -244,7 +244,7 @@ int FTSSrv2::DataBase::storedFunctionInt(const char *in_pszFunc, const char *in_
 
 bool FTSSrv2::DataBase::storedProcedure(MYSQL_RES *&out_pRes, const char *in_pszProc, const char *in_pszArgs)
 {
-    return this->query(out_pRes, "CALL `"DSRV_MYSQL_DB"`.`", in_pszProc, "` ( ", in_pszArgs, " )", NULL);
+    return this->query(out_pRes, "CALL `" DSRV_MYSQL_DB "`.`", in_pszProc, "` ( ", in_pszArgs, " )", NULL);
 }
 
 FTS::String FTSSrv2::DataBase::getError()

@@ -101,7 +101,7 @@ int FTSSrv2::Channel::save()
 
     // Or just save modifications ?
     } else {
-        sQuery = "UPDATE `"DSRV_TBL_CHANS"`"
+        sQuery = "UPDATE `" DSRV_TBL_CHANS "`"
                  " SET `"+DataBase::getUniqueDB()->TblChansField(DSRV_TBL_CHANS_NAME)+"`"
                         "=\'" + DataBase::getUniqueDB()->escape(m_sName) + "\',"
                       "`"+DataBase::getUniqueDB()->TblChansField(DSRV_TBL_CHANS_MOTTO)+"`"
@@ -423,7 +423,7 @@ int FTSSrv2::ChannelManager::loadChannels(void)
                             ",`"+DataBase::getUniqueDB()->TblChansField(DSRV_TBL_CHANS_NAME)+"`"
                             ",`"+DataBase::getUniqueDB()->TblChansField(DSRV_TBL_CHANS_MOTTO)+"`"
                             ",`"+DataBase::getUniqueDB()->TblChansField(DSRV_TBL_CHANS_ADMIN)+"`"
-                     " FROM `"DSRV_TBL_CHANS"`";
+                     " FROM `" DSRV_TBL_CHANS "`";
 
     if(!DataBase::getUniqueDB()->query(pRes, sQuery)) {
         DataBase::getUniqueDB()->free(pRes);
@@ -453,7 +453,7 @@ int FTSSrv2::ChannelManager::loadChannels(void)
     // Now read all channel operators.
     sQuery = "SELECT  `"+DataBase::getUniqueDB()->TblChanOpsField(DSRV_VIEW_CHANOPS_NICK)+"`"
                     ",`"+DataBase::getUniqueDB()->TblChanOpsField(DSRV_VIEW_CHANOPS_CHAN)+"`"
-             " FROM `"DSRV_VIEW_CHANOPS"`";
+             " FROM `" DSRV_VIEW_CHANOPS "`";
     if(!DataBase::getUniqueDB()->query(pRes, sQuery)) {
         DataBase::getUniqueDB()->free(pRes);
         return -3;

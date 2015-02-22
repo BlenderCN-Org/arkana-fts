@@ -140,7 +140,7 @@ int FTSSrv2::Client::getIDByNick(const String & in_sNick)
 
     // Query the id of the user.
     sQuery = "SELECT `"+DataBase::getUniqueDB()->TblUsrField(DSRV_TBL_USR_ID)+"`"
-             " FROM `"DSRV_TBL_USR"`"
+             " FROM `" DSRV_TBL_USR "`"
              " WHERE `"+DataBase::getUniqueDB()->TblUsrField(DSRV_TBL_USR_NICK)+"`"
                 "=\'" + DataBase::getUniqueDB()->escape(in_sNick) + "\'";
     if(!DataBase::getUniqueDB()->query(pRes, sQuery)) {
@@ -477,7 +477,7 @@ success:
 bool FTSSrv2::Client::onFeedback(const String &in_sMessage)
 {
     int8_t iRet = ERR_OK;
-    String sQuery = "INSERT INTO `"DSRV_TBL_FEEDBACK"` ("
+    String sQuery = "INSERT INTO `" DSRV_TBL_FEEDBACK "` ("
                         " `"+DataBase::getUniqueDB()->TblFeedbackField(DSRV_TBL_FEEDBACK_NICK)+"`,"
                         " `"+DataBase::getUniqueDB()->TblFeedbackField(DSRV_TBL_FEEDBACK_MSG)+"`,"
                         " `"+DataBase::getUniqueDB()->TblFeedbackField(DSRV_TBL_FEEDBACK_WHEN)+"`) "
@@ -549,7 +549,7 @@ bool FTSSrv2::Client::onPlayerSet(uint8_t in_cField, Packet *out_pPacket)
         goto error;
     }
 
-    sQuery = "UPDATE `"DSRV_TBL_USR"`"
+    sQuery = "UPDATE `" DSRV_TBL_USR "`"
              " SET `" + sField + "` = \'" + sValue + "\'"
              " WHERE `"+DataBase::getUniqueDB()->TblUsrField(DSRV_TBL_USR_NICK)+"`"
                 " = \'" + DataBase::getUniqueDB()->escape(m_sNick) + "\'"
@@ -878,7 +878,7 @@ error:
 success:
 
     // Update the location field in the database.
-    String sQuery = "UPDATE `"DSRV_TBL_USR"`"
+    String sQuery = "UPDATE `" DSRV_TBL_USR "`"
                      " SET `"+DataBase::getUniqueDB()->TblUsrField(DSRV_TBL_USR_LOCATION)+"`"
                         "='chan:"+DataBase::getUniqueDB()->escape(in_sChan)+"'"
                      " WHERE `"+DataBase::getUniqueDB()->TblUsrField(DSRV_TBL_USR_NICK)+"`"
