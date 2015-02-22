@@ -79,7 +79,7 @@ std::string getNextToken( stringstream& sb, char delimiter = ' ' )
 
 int main(int argc, char *argv[])
 {
-#ifdef _DEBUG && WINDOOF
+#if defined(_DEBUG) && defined(WINDOOF)
     int flag = _CrtSetDbgFlag( _CRTDBG_REPORT_FLAG );
     flag |= _CRTDBG_LEAK_CHECK_DF; // Turn on leak-checking bit
     _CrtSetDbgFlag( flag );
