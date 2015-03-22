@@ -14,11 +14,12 @@ void FTSSrv2::srvFlush(FILE * pFile)
     fflush(pFile);
 }
 
-FTSSrv2::ServerLogger::ServerLogger(const FTS::String &in_sLogDir, bool in_bVerbose)
+FTSSrv2::ServerLogger::ServerLogger( const FTS::String &in_sLogDir, bool in_bVerbose, int in_dbgLvl)
     : m_nPlayers(0)
     , m_nGames(0)
     , m_bDaemon(false)
     , m_bVerbose(in_bVerbose)
+    , m_dbgLvl(in_dbgLvl)
 {
     m_sLogFile     = tryFile(DSRV_LOGFILE_LOG,   in_sLogDir);
     m_sNetLogFile  = tryFile(DSRV_LOGFILE_NETLOG,in_sLogDir);
@@ -248,6 +249,8 @@ int FTSSrv2::ServerLogger::messageDbg(const FTS::String &in_pszMsg, int in_iDbgL
                              const FTS::String &in_sArg7, const FTS::String &in_sArg8,
                              const FTS::String &in_sArg9)
 {
+    if( in_iDbgLv > m_dbgLvl )
+        return 0;
     return this->message(in_pszMsg, MsgType::Raw,
                          in_sArg1, in_sArg2, in_sArg3, in_sArg4,
                          in_sArg5, in_sArg6, in_sArg7, in_sArg8, in_sArg9);
@@ -347,5 +350,21 @@ size_t FTSSrv2::ServerLogger::remGame()
     }
 
     return m_nGames;
+}
+
+void FTSSrv2::ServerLogger::statAddSendPacket( int req )
+{
+    ++m_statSndPckt[req];
+}
+
+void FTSSrv2::ServerLogger::statAddRecvPacket( int req )
+{
+    ++m_statRecvPckt[req];
+}
+
+void FTSSrv2::ServerLogger::clearStats()
+{
+    m_statRecvPckt.clear();
+    m_statSndPckt.clear();
 }
 

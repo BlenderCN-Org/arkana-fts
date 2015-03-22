@@ -15,6 +15,7 @@
 #include "utilities/DataContainer.h"
 #include "utilities/utilities.h"
 #include "logging/Chronometer.h"
+#include "server_log.h"
 
 #if !WINDOOF
 #  include <unistd.h>
@@ -40,32 +41,32 @@ inline void close(SOCKET s)
 
 using namespace FTS;
 
-#if 0//defined(DEBUG) && !defined(D_COMPILES_SERVER)
+#if defined(DEBUG) && !defined(D_COMPILES_SERVER)
 #define D_DEBUG_QUEUE
-#define D_DEBUG_CON
 #endif
 /// TODO: Add better logging of what travels trough the net maybe ?
 #define NETLOG 0
 #if NETLOG && defined(DEBUG)
 void netlog(const String &in_s)
 {
-#ifndef D_COMPILES_SERVER
+#if 1 //ndef D_COMPILES_SERVER
         FTSMSGDBG(in_s+"\n", 5);
 #else /* D_COMPILES_SERVER */
         CSLog::netlog(in_s + "\n");
 #endif /* D_COMPILES_SERVER */
 }
 
-void netlog2(const String &in_s, uint32_t in_uiLen, const char *in_pBuf)
+void netlog2(const String &in_s, const void* id, uint32_t in_uiLen, const char *in_pBuf)
 {
     const String sHex = String::hexFromData(in_pBuf, in_uiLen);
-    String sMsg = in_s + ": "+String::nr(in_uiLen)+" Bytes: "+sHex+" (\"";
+    const String sIdent = String::nr((const uint32_t) id, 4, '0', std::ios_base::hex );
+    String sMsg = "<" + sIdent + ">" + in_s + ": "+String::nr(in_uiLen)+" Bytes: "+sHex+" (\"";
     for(uint32_t i = 0 ; i < in_uiLen ; i++) {
         // Replace control characters by a space for output.
         if(in_pBuf[i] < 32) {
             sMsg += " ";
         } else {
-            sMsg += in_pBuf[i];
+            sMsg += String::chr(in_pBuf[i]);
         }
     }
 
@@ -74,8 +75,14 @@ void netlog2(const String &in_s, uint32_t in_uiLen, const char *in_pBuf)
 }
 #else
 #  define netlog(a)
-#  define netlog2(a, b, c)
+#  define netlog2(a, b, c, d)
 #endif
+
+Packet *FTS::Connection::getReceivedPacketIfAny()
+{
+    return getFirstPacketFromQueue();
+}
+
 
 /// Retrieves the packet in front of the queue or the first packet with a special ID.
 /** This takes out either the packet that is in front of the message queue (if \a in_req
@@ -118,9 +125,8 @@ Packet *FTS::Connection::getFirstPacketFromQueue( master_request_t in_req )
         }
     }
 
-#ifdef D_DEBUG_CON
     if( p != nullptr ) {
-        FTSMSGDBG("Recv packet from queue with ID 0x{1}, payload len: {2}", 4,
+        FTSMSGDBG("Recv packet from queue with ID 0x{1}, payload len: {2}", 5,
                    String::nr(p->getType(), -1, ' ', std::ios::hex), String::nr(p->getPayloadLen()));
         String s = "Queue is now: (len:"+String::nr(m_lpPacketQueue.size())+")";
         for(std::list<Packet *>::iterator i = m_lpPacketQueue.begin() ; i != m_lpPacketQueue.end() ; i++) {
@@ -130,7 +136,6 @@ Packet *FTS::Connection::getFirstPacketFromQueue( master_request_t in_req )
         s += "End.";
         FTSMSGDBG(s, 4);
     }
-#endif
 
     return p;
 }
@@ -340,6 +345,7 @@ int FTS::TraditionalConnection::connectByName(String in_sName, uint16_t in_usPor
 
         // It was successful.
         if(iRet == 0) {
+            FTSMSGDBG( "Successful connected.\n", 0 );
             m_bConnected = true;
             return ERR_OK;
 #if WINDOOF
@@ -476,7 +482,7 @@ int FTS::TraditionalConnection::get_lowlevel(void *out_pBuf, uint32_t in_uiLen, 
         buf += read;
     } while(to_read);
 
-    netlog2("recv", in_uiLen, (const char *)out_pBuf);
+    netlog2("recv", this, in_uiLen, (const char *)out_pBuf);
 
     return ERR_OK;
 }
@@ -662,10 +668,9 @@ Packet *FTS::TraditionalConnection::getPacket(bool in_bUseQueue, uint64_t in_ulM
 
     // All is good, check the package ID.
     if(p->isValid()) {
-#if defined(DEBUG) && !defined(D_COMPILES_SERVER)
-        FTSMSGDBG("Recv packet with ID 0x{1}, payload len: {2}", 4,
+        FTSMSGDBG("Recv packet with ID 0x{1}, payload len: {2}", 5,
                   String::nr(p->getType(), -1, ' ', std::ios::hex), String::nr(p->getPayloadLen()));
-#endif
+        dynamic_cast< FTSSrv2::ServerLogger * >(FTS::Logger::getSingletonPtr())->statAddRecvPacket(p->getType());
         return p;
     }
 
@@ -767,10 +772,8 @@ Packet *FTS::TraditionalConnection::waitForThenGetPacketWithReq(master_request_t
 
         // Check if this is the packet we want.
         if(((fts_packet_hdr_t *)p->m_pData)->req_id == in_req) {
-#ifndef D_COMPILES_SERVER
-            FTSMSGDBG("Accepted packet with ID 0x{1}, payload len: {2}", 4,
+            FTSMSGDBG("Accepted packet with ID 0x{1}, payload len: {2}", 5,
                       String::nr(p->getType(), -1, ' ', std::ios::hex), String::nr(p->getPayloadLen()));
-#endif
             return p;
         }
 
@@ -791,7 +794,7 @@ Packet *FTS::TraditionalConnection::waitForThenGetPacketWithReq(master_request_t
  *
  * \param in_req The request ID of the message to wait for (DSRV_MSG_XXX).
  *
- * \return If successfull: A pointer to the packet.
+ * \return If successful: A pointer to the packet.
  * \return If failed:      NULL
  *
  * \note The user has to free the returned value !
@@ -815,10 +818,8 @@ Packet *FTS::TraditionalConnection::getPacketWithReqIfPresent(master_request_t i
 
         // Check if this is the packet we want.
         if(((fts_packet_hdr_t *)p->m_pData)->req_id == in_req) {
-#ifndef D_COMPILES_SERVER
-            FTSMSGDBG("Accepted packet with ID 0x{1}, payload len: {2}", 4,
+            FTSMSGDBG( "Accepted packet with ID 0x{1}, payload len: {2}", 5,
                       String::nr(p->getType(), -1, ' ', std::ios::hex), String::nr(p->getPayloadLen()));
-#endif
             return p;
         }
 
@@ -875,7 +876,7 @@ int FTS::TraditionalConnection::send(const void *in_pData, uint32_t in_uiLen)
         buf += iSent;
     } while(uiToSend > 0);
 
-    netlog2("send", in_uiLen, (const char *)in_pData);
+    netlog2("send", this, in_uiLen, (const char *)in_pData);
 
     return ERR_OK;
 }
@@ -897,11 +898,10 @@ int FTS::TraditionalConnection::send(Packet * in_pPacket)
     if( !m_bConnected || in_pPacket == nullptr )
         return -1;
 
-#if defined(D_DEBUG_CON) && !defined(D_COMPILES_SERVER)
-    FTSMSGDBG("Sending packet with ID 0x{1}, payload len: {2}", 4,
+    FTSMSGDBG("Sending packet with ID 0x{1}, payload len: {2}", 5,
               String::nr(in_pPacket->getType(), -1, ' ', std::ios::hex),
               String::nr(in_pPacket->getPayloadLen()));
-#endif
+    dynamic_cast< FTSSrv2::ServerLogger * >(FTS::Logger::getSingletonPtr())->statAddSendPacket( in_pPacket->getType() );
 
     if(this->send(in_pPacket->m_pData, in_pPacket->getTotalLen()) != ERR_OK)
         return -1;

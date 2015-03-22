@@ -56,7 +56,7 @@ int FTSSrv2::Channel::join(Client *in_pUser)
 
     in_pUser->setMyChannel(this);
 
-    FTSMSGDBG(in_pUser->getNick() + " joined " + m_sName, 1);
+    FTSMSGDBG(in_pUser->getNick() + " joined " + m_sName, 4);
     return ERR_OK;
 }
 
@@ -77,7 +77,7 @@ int FTSSrv2::Channel::quit(Client *in_pUser)
 
     in_pUser->setMyChannel(NULL);
 
-    FTSMSGDBG(in_pUser->getNick() + " left " + m_sName, 1);
+    FTSMSGDBG(in_pUser->getNick() + " left " + m_sName, 4);
     return ERR_OK;
 }
 
@@ -146,19 +146,19 @@ int FTSSrv2::Channel::op(const String & in_sUser, bool in_bOninit)
     if(!in_bOninit) {
         // Check if the user is in the channel.
         if(NULL == this->getUserIfPresent(in_sUser)) {
-            FTSMSGDBG(in_sUser+" does not exist in this channel", 1);
+            FTSMSGDBG(in_sUser+" does not exist in this channel", 4);
             return -31;
         }
 
         // Do not add the user to the operators list if he already is.
         if(this->isop(in_sUser)) {
-            FTSMSGDBG(in_sUser+" is already operator in this channel", 1);
+            FTSMSGDBG(in_sUser+" is already operator in this channel", 4);
             return -32;
         }
     }
 
     if(in_sUser == m_sAdmin) {
-        FTSMSGDBG(in_sUser+" is the channel admin!", 1);
+        FTSMSGDBG(in_sUser+" is the channel admin!", 4);
         return -33;
     }
 
@@ -178,7 +178,7 @@ int FTSSrv2::Channel::op(const String & in_sUser, bool in_bOninit)
     // Store the changes in the database.
     this->save();
 
-    FTSMSGDBG(in_sUser+" op in "+m_sName, 1);
+    FTSMSGDBG(in_sUser+" op in "+m_sName, 4);
     return ERR_OK;
 }
 
@@ -186,7 +186,7 @@ int FTSSrv2::Channel::deop( const String & in_sUser )
 {
     // Check if the user is op.
     if(!this->isop(in_sUser)) {
-        FTSMSGDBG(in_sUser+" is not operator in this channel", 1);
+        FTSMSGDBG(in_sUser+" is not operator in this channel", 4);
         return -1;
     }
 
@@ -204,7 +204,7 @@ int FTSSrv2::Channel::deop( const String & in_sUser )
     // Store the changes in the database.
     this->save();
 
-    FTSMSGDBG(in_sUser+" deop in "+m_sName, 1);
+    FTSMSGDBG(in_sUser+" deop in "+m_sName, 4);
     return ERR_OK;
 }
 
@@ -228,7 +228,7 @@ int FTSSrv2::Channel::messageToAll( const Client &in_From, const String & in_sMe
     p->append(in_From.getNick());
     p->append(in_sMessage);
 
-    FTSMSGDBG(in_From.getNick()+" says "+in_sMessage, 1);
+    FTSMSGDBG(in_From.getNick()+" says "+in_sMessage, 4);
 
     this->sendPacketToAll(p);
     SAFE_DELETE(p);

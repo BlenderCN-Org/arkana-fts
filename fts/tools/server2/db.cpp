@@ -194,7 +194,7 @@ bool FTSSrv2::DataBase::query(MYSQL_RES *&out_pRes, const char *in_pszQuery, ...
 
     // If the result has to be freed, this mutex only gets unlocked when calling free.
     m_mutex.lock();
-    FTSMSGDBG( "SQL Query : " + String(pszQuery), 1 );
+    FTSMSGDBG( "SQL Query : " + String(pszQuery), 4 );
     // Execute the query.
     if(0 != mysql_query(m_pSQL, pszQuery)) {
         FTSMSG("[ERROR] MySQL query\nQuery string: "+String(pszQuery)+"\nError: "+this->getError(), MsgType::Error);

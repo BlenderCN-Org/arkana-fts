@@ -94,12 +94,13 @@ bool FTSSrv2::SocketConnectionWaiter::waitForThenDoConnection(uint64_t in_ulMaxW
         if( (connectSocket = accept( m_listenSocket, ( sockaddr * ) & clientAddress, &iClientAddressSize )) != -1 ) {
             // Yeah, we got someone !
 
-            FTSMSGDBG( "Accept connection on port 0x" + String::nr( ( int ) m_port, 0, ' ', std::ios::hex ), 1 );
+            //FTSMSGDBG( "Accept connection on port 0x" + String::nr( ( int ) m_port, 0, ' ', std::ios::hex ), 1 );
 
             // Build up a class that will work this connection.
             TraditionalConnection *pCon = new TraditionalConnection(connectSocket, clientAddress);
             Client *pCli = ClientsManager::getManager()->createClient(pCon);
-            
+            FTSMSGDBG( "Accept connection on port 0x" + String::nr( ( int ) m_port, 0, ' ', std::ios::hex ) + " client<"+ String::nr((const uint32_t)pCli,4, '0', std::ios_base::hex) + "> con<"+ String::nr((const uint32_t)pCon,4,'0', std::ios_base::hex)+ ">", 1 );
+
             // And start a new thread for him.
             auto thr = std::thread( Client::starter, pCli );
             thr.detach();

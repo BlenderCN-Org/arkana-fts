@@ -70,7 +70,7 @@ public:
 
     virtual Packet *waitForThenGetPacket(bool in_bUseQueue = true, uint64_t in_ulMaxWaitMillisec = FTSC_TIME_OUT) = 0;
     virtual Packet *getPacketIfPresent(bool in_bUseQueue = true) = 0;
-
+    virtual Packet *getReceivedPacketIfAny();
     virtual int send(Packet *in_pPacket) = 0;
     virtual int mreq(Packet *in_pPacket, uint64_t in_ulMaxWaitMillisec = FTSC_TIME_OUT) = 0;
 
