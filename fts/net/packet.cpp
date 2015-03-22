@@ -180,6 +180,23 @@ String FTS::Packet::get_string()
     if(m_uiCursor >= len)
         return String::EMPTY;
 
+    // Check if a \0 is in the buffer, otherwise return empty string and move to cursor to the end, since the buffer is corrupt.
+    bool foundEnd = false;
+    for( int i = 0; i < (len - m_uiCursor); ++i )
+    {
+        if( m_pData[m_uiCursor + i] == 0 )
+        {
+            foundEnd = true;
+            break;
+        }
+    }
+    if ( !foundEnd )
+    {
+        m_uiCursor = len;
+        return String::EMPTY;
+    }
+
+    // The strings can be build.
     String ret = String((char *)&m_pData[m_uiCursor]);
 
     m_uiCursor += ret.byteCount() + 1;
@@ -256,13 +273,7 @@ int FTS::Packet::get(void *out_pData, uint32_t in_iSize)
  */
 uint32_t FTS::Packet::getTotalLen( void ) const
 {
-#ifdef DEBUG
-    fts_packet_hdr_t *hdr = (fts_packet_hdr_t *)m_pData;
-    uint32_t s = sizeof(fts_packet_hdr_t);
-    return hdr->data_len + s;
-#else
     return ((fts_packet_hdr_t*)m_pData)->data_len + sizeof(fts_packet_hdr_t);
-#endif
 }
 
 /*! Return the length of payload data.

@@ -938,52 +938,69 @@ success:
 
 bool FTSSrv2::Client::onChatSend(Packet *out_pPacket)
 {
-    Packet p(DSRV_MSG_CHAT_SENDMSG);
     int8_t iRet = ERR_OK;
 
-    FTSMSGDBG(m_sNick+" is saying something ... ", 1);
+    FTSMSGDBG(m_sNick+" is saying something ... ", 4);
 
     uint8_t cType = out_pPacket->get();
     uint8_t cFlags = out_pPacket->get();
 
     switch(cType) {
-    case DSRV_CHAT_TYPE_NORMAL:
-        // Are we currently in a channel ?
-        if( m_pMyChannel == NULL ) {
-            FTSMSGDBG("Hmm, in no channel ?", 1);
-            iRet = -1;
-            goto error;
-        }
+        case DSRV_CHAT_TYPE_NORMAL:
+        {
+            // Are we currently in a channel ?
+            if( m_pMyChannel == NULL ) {
+                FTSMSGDBG( "Hmm, in no channel ?", 4 );
+                iRet = -1;
+                goto error;
+            }
+            auto sMsg = out_pPacket->get_string();
+            if( sMsg == String::EMPTY ) {
+                FTSMSGDBG( "Hmm, no or corrupted text !", 4 );
+                iRet = -2;
+                goto error;
+            }
 
-        m_pMyChannel->messageToAll( *this, out_pPacket->get_string(), cFlags );
-        goto success;
+            m_pMyChannel->messageToAll( *this, sMsg, cFlags );
+            goto success;
+        }
     case DSRV_CHAT_TYPE_WHISPER:
         {
         FTSSrv2::Client *pTo = NULL;
         String sTo = out_pPacket->get_string().trim();
-        FTSMSGDBG("Target is: "+sTo+".", 1);
+        FTSMSGDBG("Target is: "+sTo+".", 4);
 
         pTo = FTSSrv2::ClientsManager::getManager()->findClient(sTo);
 
-        if(pTo == this || pTo == NULL) {
-            // User not online, not existent or myself: send a error.
+        if( pTo == NULL ) {
+            // User not online, not existent : send a error.
             iRet = 1;
-            FTSMSGDBG("Target not existing or online, or it is myself.", 1);
+            FTSMSGDBG( "Target not existing or online.", 4 );
+            goto error;
+        } else if( pTo == this ) {
+            // User is myself: send a error.
+            iRet = 2;
+            FTSMSGDBG( "Target is myself.", 4 );
             goto error;
         } else {
             // Send the message to the user.
             String sMessage = out_pPacket->get_string();
-            Packet *pRalf = new Packet(DSRV_MSG_CHAT_GETMSG);
-            pRalf->append(DSRV_CHAT_TYPE_WHISPER);
-            pRalf->append((uint8_t)0);
-            pRalf->append(this->getNick());
-            pRalf->append(sMessage);
+            if( sMessage == String::EMPTY ) {
+                FTSMSGDBG( "Hmm, no or corrupted text !", 4 );
+                iRet = -2;
+                goto error;
+            }
+            Packet *pRalf = new Packet( DSRV_MSG_CHAT_GETMSG );
+            pRalf->append( DSRV_CHAT_TYPE_WHISPER );
+            pRalf->append( ( uint8_t ) 0 );
+            pRalf->append( this->getNick() );
+            pRalf->append( sMessage );
 
-            FTSMSGDBG("He whisps "+sTo+": "+sMessage, 1);
+            FTSMSGDBG("He whisps "+sTo+": "+sMessage, 4);
 
             if(pTo->sendPacket(pRalf) != ERR_OK) {
                 SAFE_DELETE(pRalf);
-                iRet = 2;
+                iRet = 3;
                 goto error;
             }
 
@@ -1003,7 +1020,8 @@ bool FTSSrv2::Client::onChatSend(Packet *out_pPacket)
 error:
 
 success:
-    p.append(iRet);
+    Packet p( DSRV_MSG_CHAT_SENDMSG );
+    p.append( iRet );
     m_pConnection->send(&p);
 
     return true;
