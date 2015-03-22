@@ -60,6 +60,12 @@ gmon.out
 *.blend2
 *.swp*
 
+# Other artifacts not to track
+msg.txt
+sound/SndBuffer.*
+tools/MapBuilder
+.gitattributes
+
 # Ignore video files (for now)
 *.mp4
 *.webm
