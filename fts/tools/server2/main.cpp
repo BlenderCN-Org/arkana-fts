@@ -175,7 +175,7 @@ int main(int argc, char *argv[])
 
     // Logging and daemonizing.
     // ========================
-    new FTSSrv2::ServerLogger(logdir, bVerbose);
+    new FTSSrv2::ServerLogger(logdir, bVerbose, 1);
 
     // Daemonize if wanted.
     if(bDaemon)
@@ -281,6 +281,17 @@ int main(int argc, char *argv[])
                     bool b = dynamic_cast< ServerLogger * >(FTS::Logger::getSingletonPtr())->getVerbose();
                     FTSMSG( "Verbose mode is currently " + String( b ? "on" : "off" ), MsgType::Message );
                 }
+            } else if( cmd == "stats" ) {
+                auto snds = dynamic_cast< FTSSrv2::ServerLogger* >(FTS::Logger::getSingletonPtr())->getStatSendPacket();
+                auto recvs = dynamic_cast< FTSSrv2::ServerLogger* >(FTS::Logger::getSingletonPtr())->getStatRecvPacket();
+                for( const auto& kv : snds ) {
+                    FTSMSGDBG( "s: req {1} = {2} ", 1, String::nr( kv.first, 2, ' ' ), String::nr( kv.second, 2, ' ' ) );
+                }
+                for( const auto& kv : recvs ) {
+                    FTSMSGDBG( "r: req {1} = {2} ", 1, String::nr( kv.first, 2, ' ' ), String::nr( kv.second, 2, ' ' ) );
+                }
+            } else if( cmd == "statsreset" ) {
+                dynamic_cast< FTSSrv2::ServerLogger* >(FTS::Logger::getSingletonPtr())->clearStats();
             } else {
                 FTSMSG( "Unknown command '" + String( cmd ) + "', u n00b, try typing 'help' to get some help.", MsgType::Error );
             }
