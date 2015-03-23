@@ -16,8 +16,8 @@ using namespace FTSSrv2;
 
 FTSSrv2::Client::Client(Connection *in_pConnection)
     : m_bLoggedIn(false)
-    , m_pMyGame(NULL)
-    , m_pMyChannel(NULL)
+    , m_pMyGame(nullptr)
+    , m_pMyChannel(nullptr)
     , m_pConnection(in_pConnection)
 {
 }
@@ -41,7 +41,7 @@ void *FTSSrv2::Client::starter(void *in_pThis)
 {
     FTSSrv2::Client *pThis = static_cast<FTSSrv2::Client *>(in_pThis);
     pThis->run();
-    return NULL;
+    return nullptr;
 }
 
 int FTSSrv2::Client::run()
@@ -84,7 +84,7 @@ int FTSSrv2::Client::quit()
         // Leave the current game.
         if(m_pMyGame) {
             m_pMyGame->playerLeft(this->getNick());
-            m_pMyGame = NULL;
+            m_pMyGame = nullptr;
         }
 
         // Kill all games hosted by me.
@@ -96,7 +96,7 @@ int FTSSrv2::Client::quit()
         // Leave the current chat room.
         if(m_pMyChannel) {
             m_pMyChannel->quit(this);
-            m_pMyChannel = NULL;
+            m_pMyChannel = nullptr;
         }
 
         // Call the stored procedure to logout.
@@ -135,8 +135,8 @@ int FTSSrv2::Client::tellToQuit()
 int FTSSrv2::Client::getIDByNick(const String & in_sNick)
 {
     String sQuery;
-    MYSQL_RES *pRes = NULL;
-    MYSQL_ROW pRow = NULL;
+    MYSQL_RES *pRes = nullptr;
+    MYSQL_ROW pRow = nullptr;
 
     // Query the id of the user.
     sQuery = "SELECT `"+DataBase::getUniqueDB()->TblUsrField(DSRV_TBL_USR_ID)+"`"
@@ -150,13 +150,13 @@ int FTSSrv2::Client::getIDByNick(const String & in_sNick)
     }
 
     // Get the query result.
-    if(pRes == NULL || NULL == (pRow = mysql_fetch_row(pRes))) {
+    if(pRes == nullptr || nullptr == (pRow = mysql_fetch_row(pRes))) {
         FTSMSG("Error during sql fetch row in getID: "+DataBase::getUniqueDB()->getError(), MsgType::Error);
         DataBase::getUniqueDB()->free(pRes);
         return -3;
     }
 
-    int iRet = pRow[0] == NULL ? -4 : atoi(pRow[0]);
+    int iRet = pRow[0] == nullptr ? -4 : atoi(pRow[0]);
     DataBase::getUniqueDB()->free(pRes);
 
     return iRet;
@@ -1380,9 +1380,9 @@ void FTSSrv2::ClientsManager::unregisterClient(FTSSrv2::Client *in_pClient)
 {
     Lock l(m_mutex);
 
-    for(std::map<String, FTSSrv2::Client *>::iterator i = m_mClients.begin() ; i != m_mClients.end() ; ++i) {
-        if(i->second == in_pClient) {
-            m_mClients.erase(i);
+    for(const auto& i : m_mClients) {
+        if(i.second == in_pClient) {
+            m_mClients.erase(i.first);
             return ;
         }
     }
@@ -1406,11 +1406,10 @@ FTSSrv2::Client *FTSSrv2::ClientsManager::findClient(const Connection *in_pConne
 {
     Lock l(m_mutex);
 
-    for(std::map<String, FTSSrv2::Client *>::iterator i = m_mClients.begin() ;
-        i != m_mClients.end() ; ++i) {
+    for(const auto& i : m_mClients) {
 
-        if(i->second->m_pConnection == in_pConnection) {
-            return i->second;
+        if(i.second->m_pConnection == in_pConnection) {
+            return i.second;
         }
     }
 

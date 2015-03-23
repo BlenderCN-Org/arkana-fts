@@ -18,7 +18,7 @@ FTS::String FTSSrv2::DataBase::m_psTblFeedbackFields[DSRV_TBL_FEEDBACK_COUNT];
 
 FTSSrv2::DataBase::DataBase()
 {
-    m_pSQL = NULL;
+    m_pSQL = nullptr;
 
     // Fill the arrays with the table names.
     m_psTblUsrFields[DSRV_TBL_USR_ID]="id";
@@ -65,13 +65,13 @@ FTSSrv2::DataBase::~DataBase()
 {
     if(m_pSQL) {
         mysql_close(m_pSQL);
-        m_pSQL = NULL;
+        m_pSQL = nullptr;
     }
 }
 
 int FTSSrv2::DataBase::init()
 {
-    if(NULL == (m_pSQL = mysql_init(NULL))) {
+    if(nullptr == (m_pSQL = mysql_init(nullptr))) {
         FTSMSG("[ERROR] MySQL init: "+this->getError(), MsgType::Error);
         return -1;
     }
@@ -80,12 +80,12 @@ int FTSSrv2::DataBase::init()
     mysql_options(m_pSQL, MYSQL_OPT_RECONNECT, &bTrue);
     mysql_options(m_pSQL, MYSQL_OPT_COMPRESS, &bTrue);
 
-    if(NULL == mysql_real_connect(m_pSQL, DSRV_MYSQL_HOST, DSRV_MYSQL_USER,
+    if(nullptr == mysql_real_connect(m_pSQL, DSRV_MYSQL_HOST, DSRV_MYSQL_USER,
                                   DSRV_MYSQL_PASS, DSRV_MYSQL_DB, 0, NULL,
                                   CLIENT_MULTI_STATEMENTS)) {
         FTSMSG("[ERROR] MySQL connect: "+this->getError(), MsgType::Error);
         mysql_close(m_pSQL);
-        m_pSQL = NULL;
+        m_pSQL = nullptr;
         return -2;
     }
 
@@ -109,7 +109,7 @@ int FTSSrv2::DataBase::free(MYSQL_RES *&out_pRes)
     if(out_pRes) {
         mysql_free_result(out_pRes);
     }
-    out_pRes = NULL;
+    out_pRes = nullptr;
 
     // And then every other if there are some more from multiple queries:
     while(mysql_next_result(m_pSQL) == 0) {
@@ -169,11 +169,11 @@ bool FTSSrv2::DataBase::storedProcedure(MYSQL_RES *&out_pRes, const FTS::String 
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! //
 bool FTSSrv2::DataBase::query(MYSQL_RES *&out_pRes, const char *in_pszQuery, ...)
 {
-    out_pRes = NULL;
+    out_pRes = nullptr;
 
     va_list args;
     const char *pszArg = in_pszQuery;
-    char *pszQuery = NULL;
+    char *pszQuery = nullptr;
 
     int n = 0, i = 0;
 
@@ -211,7 +211,7 @@ bool FTSSrv2::DataBase::query(MYSQL_RES *&out_pRes, const char *in_pszQuery, ...
     ::free(pszQuery);
 
     out_pRes = mysql_store_result(m_pSQL);
-    if(out_pRes == NULL && mysql_field_count(m_pSQL) != 0) {
+    if(out_pRes == nullptr && mysql_field_count(m_pSQL) != 0) {
         // Errors occured during the query. (connection ? too large result ?)
         FTSMSG("[ERROR] MySQL field count\nQuery string: "+String(pszQuery)+"\nError: "+this->getError(), MsgType::Error);
         return false;
@@ -222,8 +222,8 @@ bool FTSSrv2::DataBase::query(MYSQL_RES *&out_pRes, const char *in_pszQuery, ...
 
 int FTSSrv2::DataBase::storedFunctionInt(const char *in_pszFunc, const char *in_pszArgs)
 {
-    MYSQL_RES *pRes = NULL;
-    MYSQL_ROW row = NULL;
+    MYSQL_RES *pRes = nullptr;
+    MYSQL_ROW row = nullptr;
 
     // There was an error hum hum ...
     if(!this->query(pRes, "SELECT `" DSRV_MYSQL_DB "`.`", in_pszFunc, "` ( ", in_pszArgs, " )", NULL)) {
@@ -231,7 +231,7 @@ int FTSSrv2::DataBase::storedFunctionInt(const char *in_pszFunc, const char *in_
     }
 
     // How can it happen that a stored function returns nothing ??
-    if(NULL == (row = mysql_fetch_row(pRes))) {
+    if(nullptr == (row = mysql_fetch_row(pRes))) {
         this->free(pRes);
         FTSMSG("[ERROR] MySQL fetch stored function "+String(in_pszFunc)+"\nArguments: "+String(in_pszArgs)+"\nError: "+this->getError(), MsgType::Error);
         return -1;
@@ -252,7 +252,7 @@ FTS::String FTSSrv2::DataBase::getError()
     return FTS::String(mysql_error(m_pSQL));
 }
 
-static FTSSrv2::DataBase *g_pTheDatabase = NULL;
+static FTSSrv2::DataBase *g_pTheDatabase = nullptr;
 
 int FTSSrv2::DataBase::initUniqueDB()
 {

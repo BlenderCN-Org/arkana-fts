@@ -116,7 +116,7 @@ Packet *FTS::Connection::getFirstPacketFromQueue( master_request_t in_req )
     } else {
         // Search the list for the first packet with the corresponding request id.
         auto i = std::find_if( std::begin( m_lpPacketQueue ), std::end( m_lpPacketQueue ), [in_req] ( Packet* packet ) {
-            return (( fts_packet_hdr_t * ) packet->m_pData)->req_id == in_req ? true : false;
+            return (( fts_packet_hdr_t * ) packet->m_pData)->req_id == in_req ;
         } );
 
         if( i != std::end( m_lpPacketQueue ) ) {
@@ -126,11 +126,9 @@ Packet *FTS::Connection::getFirstPacketFromQueue( master_request_t in_req )
     }
 
     if( p != nullptr ) {
-        FTSMSGDBG("Recv packet from queue with ID 0x{1}, payload len: {2}", 5,
-                   String::nr(p->getType(), -1, ' ', std::ios::hex), String::nr(p->getPayloadLen()));
+        FTSMSGDBG("Recv packet from queue with ID 0x{1}, payload len: {2}", 5, String::nr(p->getType(), -1, ' ', std::ios::hex), String::nr(p->getPayloadLen()));
         String s = "Queue is now: (len:"+String::nr(m_lpPacketQueue.size())+")";
-        for(std::list<Packet *>::iterator i = m_lpPacketQueue.begin() ; i != m_lpPacketQueue.end() ; i++) {
-            Packet *pPack = *i;
+        for(auto pPack : m_lpPacketQueue) {
             s += "(0x" + String::nr(pPack->getType(), -1, ' ', std::ios::hex) + "," + String::nr(pPack->getPayloadLen()) + ")";
         }
         s += "End.";
@@ -170,8 +168,7 @@ void FTS::Connection::queuePacket(Packet *in_pPacket)
     FTSMSGDBG("Queued packet with ID 0x{1}, payload len: {2}", 4,
               String::nr(in_pPacket->getType(),-1,' ',std::ios::hex), String::nr(in_pPacket->getPayloadLen()));
     String s = "Queue is now: (len:"+String::nr(m_lpPacketQueue.size())+")";
-    for(std::list<Packet *>::iterator i = m_lpPacketQueue.begin() ; i != m_lpPacketQueue.end() ; i++) {
-        Packet *pPack = *i;
+    for(auto pPack : m_lpPacketQueue) {
         s += "(0x" + String::nr(pPack->getType(), -1, ' ', std::ios::hex) + "," + String::nr(pPack->getPayloadLen()) + ")";
     }
     s += "End.";
@@ -300,7 +297,7 @@ int FTS::TraditionalConnection::connectByName(String in_sName, uint16_t in_usPor
         this->disconnect();
     }
 
-    hostent *serverInfo = NULL;
+    hostent *serverInfo = nullptr;
     int iRet = -1;
 
     Lock l( m_mutex );
@@ -316,7 +313,7 @@ int FTS::TraditionalConnection::connectByName(String in_sName, uint16_t in_usPor
     }
 
     // Get some information we need to connect to the server.
-    if( NULL == (serverInfo = gethostbyname( in_sName.c_str() )) ) {
+    if( nullptr == (serverInfo = gethostbyname( in_sName.c_str() )) ) {
         switch( h_errno ) {
             case -1:
                 FTS18N( "Net_TCPIP_hostname", MsgType::Error, in_sName, strerror( errno ), String::nr( errno ) );
@@ -668,8 +665,7 @@ Packet *FTS::TraditionalConnection::getPacket(bool in_bUseQueue, uint64_t in_ulM
 
     // All is good, check the package ID.
     if(p->isValid()) {
-        FTSMSGDBG("Recv packet with ID 0x{1}, payload len: {2}", 5,
-                  String::nr(p->getType(), -1, ' ', std::ios::hex), String::nr(p->getPayloadLen()));
+        FTSMSGDBG("Recv packet with ID 0x{1}, payload len: {2}", 5, String::nr(p->getType(), -1, ' ', std::ios::hex), String::nr(p->getPayloadLen()));
         dynamic_cast< FTSSrv2::ServerLogger * >(FTS::Logger::getSingletonPtr())->statAddRecvPacket(p->getType());
         return p;
     }
@@ -1175,7 +1171,7 @@ FTS::RawDataContainer *FTS::getHTTPFile(const String &in_sServer, const String &
 int FTS::downloadHTTPFile(const String &in_sServer, const String &in_sPath, const String &in_sLocal, uint64_t in_ulMaxWaitMillisec)
 {
     FTS::DataContainer *pData = FTS::getHTTPFile(in_sServer, in_sPath, in_ulMaxWaitMillisec);
-    if(pData == NULL)
+    if(pData == nullptr)
         return -1;
 
     FILE *pFile = fopen(in_sLocal.c_str(), "w+b");
