@@ -15,11 +15,13 @@ $kindNames[MsgType::SOMEONE_JOINS_THE_CHAT] = 'Joined'
 $kindNames[MsgType::QUITCHAT] = 'QuitChat'
 $kindNames[MsgType::GETCHATLIST] = 'GetChatList'
 # curretly not used $kindNames[MsgType::GETCHATUSER] = 'GetChatUser'
+$kindNames[MsgType::DESTROY_CHAN] = 'ChatDestroy'
 
 class Client
   attr_reader :failedHdr
   attr_reader :failedMsg
   attr_reader :port
+  attr_reader :user
   
   def initialize host, port, user, pwd
     @host = host
@@ -89,6 +91,12 @@ class Client
 
     sender msg
   end
+  def destroyChan
+    msg = Packet.new  :ident => 'FTSS', :kind => MsgType::DESTROY_CHAN, :pwd => @pwd, :room => "UselessChan"
+    msg.len = msg.pwd.size + "UselessChan".size + 2
+
+    sender msg
+  end
   def logout
     msg = Packet.new( :ident => 'FTSS', :kind => MsgType::LOGOUT, :pwd => @pwd )
     msg.len = msg.pwd.size + 1 # 1 end string delimiter
@@ -108,9 +116,10 @@ def testCase1( client )
   client.join
   client.listChatUsers
   for i in 0..19
+    client.destroyChan if i == 10 and client.user == 'Test44917'
     client.chatMessage
   end
-  sleep(0.1)
+  sleep(0.100)
   client.logout
   client.quit
   puts "Client #{client.port} hdr #{client.failedHdr} msg #{client.failedMsg}" if client.failedHdr.size > 4
