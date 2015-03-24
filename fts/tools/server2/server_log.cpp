@@ -354,16 +354,19 @@ size_t FTSSrv2::ServerLogger::remGame()
 
 void FTSSrv2::ServerLogger::statAddSendPacket( int req )
 {
+    Lock l( m_mutex );
     ++m_statSndPckt[req];
 }
 
 void FTSSrv2::ServerLogger::statAddRecvPacket( int req )
 {
+    Lock l( m_mutex );
     ++m_statRecvPckt[req];
 }
 
 void FTSSrv2::ServerLogger::clearStats()
 {
+    Lock l( m_mutex );
     m_statRecvPckt.clear();
     m_statSndPckt.clear();
 }
