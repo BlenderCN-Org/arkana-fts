@@ -7,17 +7,19 @@
 #  include "main.h"
 #endif
 
-typedef uint8_t master_request_t;
+using master_request_t = uint8_t;
 
 #define D_PACKET_HDR_LEN (4*sizeof(int8_t)+sizeof(master_request_t)+sizeof(uint32_t))
 
 #pragma pack(push, 1)
 #pragma pack(1)
-typedef struct {
+struct fts_packet_hdr_t
+{
     int8_t ident[4];            ///< 'FTSS'
     master_request_t req_id;    ///< DSRV_MSG_ constant
     uint32_t data_len;          ///< following size of data in bytes
-} fts_packet_hdr_t;
+} ;
+
 #pragma pack(pop)
 
 // The message types.
