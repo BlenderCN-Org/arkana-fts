@@ -1,6 +1,10 @@
+# coding: iso-8859-1
 require 'socket'
 require_relative 'fts_packets'
 require_relative 'fts_connection'
+
+#$hostname = '192.168.1.9'
+$hostname = 'localhost'
 
 $statMsgSend = Hash.new( 0 )
 $statMsgRecv = Hash.new( 0 )
@@ -23,6 +27,8 @@ class Client
   attr_reader :failedMsg
   attr_reader :port
   attr_reader :user
+  attr_reader :statMsgSend
+  attr_reader :statMsgRecv
   
   def initialize host, port, user, pwd
     @host = host
@@ -33,7 +39,8 @@ class Client
     @isDone = false
     @failedHdr = Array.new
     @failedMsg = Array.new
-    puts "Created Client #{@user}"
+    @statMsgSend = Hash.new( 0 )
+    @statMsgRecv = Hash.new( 0 )
   end
   def start
     @treceiver = Thread.start do
@@ -59,6 +66,7 @@ class Client
         puts "#r #{rp} #{ba}" if $debug
         failed = 0
         $statMsgRecv[rp.kind.snapshot] += 1
+        @statMsgRecv[rp.kind.snapshot] += 1
       end
     end
   end
@@ -67,6 +75,7 @@ class Client
     @con.senddata msg.to_binary_s
     puts "#s #{msg} #{sndlen} bytes" if $debug
     $statMsgSend[msg.kind.snapshot] += 1 # snapshot returns the value as FinNum a ruby object
+    @statMsgSend[msg.kind.snapshot] += 1 # snapshot returns the value as FinNum a ruby object
   end
   def login
     msg = Packet.new( :ident => 'FTSS', :kind => MsgType::LOGIN, :user => @user, :pwd => @pwd )
@@ -117,7 +126,7 @@ def testCase1( client )
   client.join
   client.listChatUsers
   for i in 0..19
-    client.destroyChan if i == 10 and client.user == 'Test44917'
+    client.destroyChan if i == 10
     client.chatMessage
   end
   sleep(0.100)
@@ -126,23 +135,37 @@ def testCase1( client )
   puts "Client #{client.port} hdr #{client.failedHdr} msg #{client.failedMsg}" if client.failedHdr.size > 4
 end
 
+myClients = Array.new
+
 thr = Array.new
 (0..9).each do |x|
   port = 44917 + x
   userpwd = "Test#{port}"
+  myClients[x] = Client.new $hostname, port, userpwd, userpwd
   thr << Thread.start do
-    testCase1 Client.new 'localhost', port, userpwd, userpwd
+    testCase1 myClients[x] #Client.new $hostname, port, userpwd, userpwd
   end
+
 end
 
 thr.each do |t|
   t.join
 end
 
-txt = "Result: "
+myClients.each do | client |
+  txt = "Result: "
+  $kindNames.each do |k,v|
+    txt += "#{v}(#{client.statMsgSend[k]}/#{client.statMsgRecv[k]}) " if client.statMsgSend[k] != 0 or client.statMsgRecv[k] != 0 
+  end
+  puts txt
+end
+
+txt = "Total : "
 $kindNames.each do |k,v|
-  txt += "#{v}(#{$statMsgSend[k]}/#{$statMsgRecv[k]}) "
+  txt += "#{v}(#{$statMsgSend[k]}/#{$statMsgRecv[k]}) " if $statMsgSend[k] != 0 or $statMsgRecv[k] != 0
 end
 puts txt
 
-
+sumSended = $statMsgSend.values.reduce :+
+sumReceived = $statMsgRecv.values.reduce :+
+puts "Total Send #{sumSended} Recv #{sumReceived}"
