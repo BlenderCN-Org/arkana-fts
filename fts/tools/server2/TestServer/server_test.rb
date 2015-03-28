@@ -14,7 +14,8 @@ $kindNames[MsgType::JOINCHAT] = 'JoinChat'
 $kindNames[MsgType::SOMEONE_JOINS_THE_CHAT] = 'Joined'
 $kindNames[MsgType::QUITCHAT] = 'QuitChat'
 $kindNames[MsgType::GETCHATLIST] = 'GetChatList'
-# curretly not used $kindNames[MsgType::GETCHATUSER] = 'GetChatUser'
+$kindNames[MsgType::CHAT_KICKED] = 'ChatKicked'
+$kindNames[MsgType::GETCHATUSER] = 'GetChatUser'
 $kindNames[MsgType::DESTROY_CHAN] = 'ChatDestroy'
 
 class Client

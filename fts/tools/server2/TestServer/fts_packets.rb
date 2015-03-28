@@ -10,6 +10,7 @@ class MsgType
   QUITCHAT=0x35               #53
   GETCHATLIST=0x39            #57
   GETCHATUSER=0x3A            #58
+  CHAT_KICKED=0x3D            #61
   DESTROY_CHAN=0x43           #67
 end
 
@@ -48,8 +49,8 @@ class PacketResp < PacketHeader
   uint32  :users, :onlyif => :isUserList?
   array   :data, :type => :uint8, :onlyif => :hasData?, :initial_length => lambda { len - 1 }
   array   :user_names, :type => :stringz, :onlyif => :isUserList?, :initial_length => lambda { users }
-  stringz :name, :onlyif => lambda {kind == MsgType::QUITCHAT or kind == MsgType::SOMEONE_JOINS_THE_CHAT or kind == MsgType::CHAT_GET_MSG}
-  stringz :text, :onlyif => lambda{ kind == MsgType::CHAT_GET_MSG }
+  stringz :name, :onlyif => :hasName? 
+  stringz :text, :onlyif => :hasText?
 
   def hasData?
     not isUserList? and hasResult? and len > 1 and result == 0
@@ -59,5 +60,11 @@ class PacketResp < PacketHeader
   end
   def hasResult?
     kind != MsgType::QUITCHAT and kind != MsgType::SOMEONE_JOINS_THE_CHAT and kind != MsgType::CHAT_GET_MSG
+  end
+  def hasName?
+    kind == MsgType::QUITCHAT or kind == MsgType::SOMEONE_JOINS_THE_CHAT or kind == MsgType::CHAT_GET_MSG or kind == MsgType::CHAT_KICKED
+  end
+  def hasText?
+    kind == MsgType::CHAT_GET_MSG or kind == MsgType::CHAT_KICKED
   end
 end
