@@ -14,6 +14,7 @@
 
 #if WINDOOF
 #pragma comment(lib, "Ws2_32.lib")
+#pragma warning (disable: 4996) // disable complaining about not ISO C++ conformant name open etc.
 #endif
 
 #include <vector>
@@ -21,6 +22,7 @@
 #include <chrono>
 #include <thread>
 #include <algorithm>
+#include <numeric>
 #include <signal.h>
 #if !WINDOOF
 #include <pwd.h>
@@ -40,6 +42,8 @@ bool stopSpamThread = false;
 
 void connectionListener(void *in_iPort);
 void help( const std::string& in_pszLine, char *in_pszMe );
+void printServerStats();
+
 static void daemonize( const char *lockfile, const char *dir );
 static void trytokill(const char *lockfile);
 
@@ -282,15 +286,8 @@ int main(int argc, char *argv[])
                     FTSMSG( "Verbose mode is currently " + String( b ? "on" : "off" ), MsgType::Message );
                 }
             } else if( cmd == "stats" ) {
-                auto snds = dynamic_cast< FTSSrv2::ServerLogger* >(FTS::Logger::getSingletonPtr())->getStatSendPacket();
-                auto recvs = dynamic_cast< FTSSrv2::ServerLogger* >(FTS::Logger::getSingletonPtr())->getStatRecvPacket();
-                for( const auto& kv : snds ) {
-                    FTSMSGDBG( "s: req {1} = {2} ", 1, String::nr( kv.first, 2, ' ' ), String::nr( kv.second, 2, ' ' ) );
-                }
-                for( const auto& kv : recvs ) {
-                    FTSMSGDBG( "r: req {1} = {2} ", 1, String::nr( kv.first, 2, ' ' ), String::nr( kv.second, 2, ' ' ) );
-                }
-            } else if( cmd == "statsreset" ) {
+                printServerStats();
+            } else if( cmd == "clearstats" ) {
                 dynamic_cast< FTSSrv2::ServerLogger* >(FTS::Logger::getSingletonPtr())->clearStats();
             } else {
                 FTSMSG( "Unknown command '" + String( cmd ) + "', u n00b, try typing 'help' to get some help.", MsgType::Error );
@@ -335,6 +332,21 @@ int main(int argc, char *argv[])
     return EXIT_SUCCESS;
 }
 
+void printServerStats()
+{
+    auto totals = dynamic_cast< FTSSrv2::ServerLogger* >(FTS::Logger::getSingletonPtr())->getStatTotalPackets();
+    FTSMSGDBG( " ", 1 );
+    FTSMSGDBG( "Req No    Snd  Recv", 1 );
+    FTSMSGDBG( "---------+----+----+", 1 );
+    for( const auto& kv : totals ) {
+        FTSMSGDBG( "req {1}   |{2}|{3}| ", 1, String::nr( kv.first, 2, ' ' ), String::nr( kv.second.first, 4, ' ' ), String::nr( kv.second.second, 4, ' ' ) );
+    }
+    FTSMSGDBG( "---------+----+----+", 1 );
+    int totalSend = std::accumulate( std::begin( totals ), std::end( totals ), 0, [] ( int sum, const std::pair<int, std::pair<int, int>>& p ) { return sum + p.second.first; } );
+    int totalRecv = std::accumulate( std::begin( totals ), std::end( totals ), 0, [] ( int sum, const std::pair<int, std::pair<int, int>>& p ) { return sum + p.second.second; } );
+    FTSMSGDBG( "Totals   |{1}|{2}|", 1, String::nr( totalSend, 4, ' ' ), String::nr( totalRecv, 4, ' ' ) );
+}
+
 // Display some help.
 void help(const string& topic, char *in_pszMe)
 {
@@ -349,7 +361,21 @@ void help(const string& topic, char *in_pszMe)
         std::cout << "\tThis will close the connection to all clients and shutdown the server.\n";
         std::cout << "Normally, every client should get a warning message that the server has been shutdown.\n";
         std::cout << "\n";
-    } else if(topic == "nplayers") {
+    } else if( topic == "stats" ) {
+        std::cout << "SYNTAX:\n";
+        std::cout << "\tstats\n";
+        std::cout << "\n";
+        std::cout << "DESC:\n";
+        std::cout << "\tThis will show the statistics about request packets.\n";
+        std::cout << "\n";
+    } else if( topic == "clearstats" ) {
+        std::cout << "SYNTAX:\n";
+        std::cout << "\tclearstats\n";
+        std::cout << "\n";
+        std::cout << "DESC:\n";
+        std::cout << "\tThis will clear all accumulated request packets statistics.\n";
+        std::cout << "\n";
+    } else if( topic == "nplayers" ) {
         std::cout << "SYNTAX:\n";
         std::cout << "\tnplayers\n";
         std::cout << "\n";
@@ -403,6 +429,8 @@ void help(const string& topic, char *in_pszMe)
         std::cout << "  ngames   see the number of games.\n";
         std::cout << "  spam     start/stop a spam bot in the main channel.\n";
         std::cout << "  verbose  let me talk much or not.\n";
+        std::cout << "  stats    show some statistics.\n";
+        std::cout << "  clearstats deletes the statistics.\n";
         std::cout << "\n";
         std::cout << "FILES:\n";
         std::cout << "All files are located in the current working directory.\n";

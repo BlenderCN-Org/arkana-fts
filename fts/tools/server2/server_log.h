@@ -11,10 +11,10 @@
 namespace FTSSrv2 {
 
 void srvFlush(FILE * pFile);
-using StatPackets = std::unordered_map < int, int > ;
-class ServerLogger : public FTS::Logger {
-    StatPackets m_statSndPckt;
-    StatPackets m_statRecvPckt;
+using TotalStatPackets = std::unordered_map < int, std::pair<int, int> > ;
+class ServerLogger : public FTS::Logger
+{
+    TotalStatPackets m_totalPackets;
 protected:
     /// Protect from copying.
     ServerLogger(const ServerLogger &) {};
@@ -149,9 +149,8 @@ public:
 
     void statAddSendPacket( int req );
     void statAddRecvPacket( int req );
-    StatPackets& getStatSendPacket() { return m_statSndPckt; }
-    StatPackets& getStatRecvPacket() { return m_statRecvPckt; }
     void clearStats();
+    TotalStatPackets& getStatTotalPackets() { return m_totalPackets; }
 
     inline bool getVerbose() const { return m_bVerbose; };
     inline bool setVerbose(bool in_b) {bool bOld = m_bVerbose; m_bVerbose = in_b; return bOld;};
