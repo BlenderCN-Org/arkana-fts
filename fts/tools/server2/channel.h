@@ -5,6 +5,7 @@
 #include "dLib/dString/dString.h"
 
 #include <list>
+#include "ChannelManager.h"
 
 namespace FTS {
     class Packet;
@@ -61,39 +62,6 @@ public:
     inline bool isPublic() const { return m_bPublic; }
 
     Client *getUserIfPresent(const FTS::String &in_sUsername);
-};
-
-class ChannelManager {
-private:
-    std::list<Channel *>m_lpChannels; ///< This list contains all existing channels.
-    FTS::Mutex m_mutex; ///< Mutex for accessing me.
-
-public:
-    ChannelManager();
-    virtual ~ChannelManager();
-
-    // Singleton-like stuff.
-    static int init();
-    static ChannelManager *getManager();
-    static int deinit();
-
-    int loadChannels();
-    int saveChannels();
-
-    Channel *createChannel(const FTS::String &in_sName, const Client *in_pCreater, bool in_bPublic = false);
-    int removeChannel(Channel *out_pChannel, const FTS::String &in_sWhoWantsIt);
-
-    std::list<Channel *> getPublicChannels();
-
-    int joinChannel(Channel *out_pChannel, Client *out_pClient);
-    Channel *findChannel(const FTS::String &in_sName);
-    Channel *getDefaultChannel();
-    uint32_t countUserChannels(const FTS::String &in_sUserName);
-    std::list<FTS::String> getUserChannels(const FTS::String &in_sUserName);
-
-    int getNChannels() {
-        return m_lpChannels.size();
-    }
 };
 
 } // namespace FTSSrv2

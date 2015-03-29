@@ -1,7 +1,8 @@
 #include "server_log.h"
 #include "db.h"
-#include "ClientsManager.h"
 #include "channel.h"
+#include "ClientsManager.h"
+#include "ChannelManager.h"
 #include "game.h"
 #include "utilities/threading.h"
 #include "net/connection.h"
@@ -204,8 +205,9 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    ChannelManager::init();
-    new FTSSrv2::ClientsManager();
+    new ChannelManager();
+    ChannelManager::getManager()->init();
+    new ClientsManager();
     GameManager::init();
 
     // Begin to listen on all ports.
