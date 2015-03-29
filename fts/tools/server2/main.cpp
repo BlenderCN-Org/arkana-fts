@@ -1,6 +1,6 @@
 #include "server_log.h"
 #include "db.h"
-#include "client.h"
+#include "ClientsManager.h"
 #include "channel.h"
 #include "game.h"
 #include "utilities/threading.h"
@@ -89,7 +89,6 @@ int main(int argc, char *argv[])
     _CrtSetDbgFlag( flag );
     //_CrtSetBreakAlloc( 5382 ); // Comment or un-comment on need basis
 #endif
-
     bool bDaemon = false, bVerbose = false;
     String logdir(DSRV_LOG_DIR);
     int opt = -1;
@@ -206,7 +205,7 @@ int main(int argc, char *argv[])
     }
 
     ChannelManager::init();
-    ClientsManager::init();
+    new FTSSrv2::ClientsManager();
     GameManager::init();
 
     // Begin to listen on all ports.

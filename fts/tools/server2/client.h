@@ -6,6 +6,7 @@
 
 #  include "utilities/threading.h"
 #  include "net/connection.h"
+#include "ClientsManager.h"
 
 namespace FTS {
     class Packet;
@@ -94,26 +95,6 @@ private:
     bool onChatDestroyChan(const FTS::String &in_sChan);
 };
 
-class ClientsManager {
-private:
-    std::map<FTS::String, Client *>m_mClients;
-    FTS::Mutex m_mutex;
-
-public:
-    ClientsManager();
-    virtual ~ClientsManager();
-
-    static void init();
-    static ClientsManager *getManager();
-    static void deinit();
-
-    Client *createClient(FTS::Connection *in_pConnection);
-    void registerClient(Client *in_pClient);
-    void unregisterClient(Client *in_pClient);
-    Client *findClient(const FTS::String &in_sName);
-    Client *findClient(const FTS::Connection *in_pConnection);
-    void deleteClient(const FTS::String &in_sName);
-};
 
 } // namespace FTSSrv2
 
