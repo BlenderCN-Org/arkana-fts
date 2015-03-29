@@ -38,7 +38,7 @@ find_package(MYSQL REQUIRED)
 # Put all sourcefiles into one variable. #
 ##########################################
 set(SOURCES main.cpp channel.cpp client.cpp db.cpp db_build.cpp dummy_types.cpp
-            game.cpp server_log.cpp socket_connection_waiter.cpp ClientsManager.cpp ChannelManager.cpp
+            game.cpp server_log.cpp socket_connection_waiter.cpp ClientsManager.cpp ChannelManager.cpp GameManager.cpp
             checksum/sha2.cpp
             checksum/md5.cpp
             ../toolcompat.cpp

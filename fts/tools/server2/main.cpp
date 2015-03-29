@@ -3,7 +3,7 @@
 #include "channel.h"
 #include "ClientsManager.h"
 #include "ChannelManager.h"
-#include "game.h"
+#include "GameManager.h"
 #include "utilities/threading.h"
 #include "net/connection.h"
 #include "socket_connection_waiter.h"
@@ -208,7 +208,7 @@ int main(int argc, char *argv[])
     new ChannelManager();
     ChannelManager::getManager()->init();
     new ClientsManager();
-    GameManager::init();
+    new GameManager();
 
     // Begin to listen on all ports.
     // =============================
