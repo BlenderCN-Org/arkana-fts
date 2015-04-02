@@ -125,8 +125,9 @@ Packet *FTS::Connection::getFirstPacketFromQueue( master_request_t in_req )
         }
     }
 
+#ifdef D_DEBUG_QUEUE
     if( p != nullptr ) {
-        FTSMSGDBG("Recv packet from queue with ID 0x{1}, payload len: {2}", 5, String::nr(p->getType(), -1, ' ', std::ios::hex), String::nr(p->getPayloadLen()));
+        FTSMSGDBG("Recv packet from queue with ID 0x{1}, payload len: {2}", 4, String::nr(p->getType(), -1, ' ', std::ios::hex), String::nr(p->getPayloadLen()));
         String s = "Queue is now: (len:"+String::nr(m_lpPacketQueue.size())+")";
         for(auto pPack : m_lpPacketQueue) {
             s += "(0x" + String::nr(pPack->getType(), -1, ' ', std::ios::hex) + "," + String::nr(pPack->getPayloadLen()) + ")";
@@ -134,6 +135,7 @@ Packet *FTS::Connection::getFirstPacketFromQueue( master_request_t in_req )
         s += "End.";
         FTSMSGDBG(s, 4);
     }
+#endif
 
     return p;
 }
@@ -256,8 +258,8 @@ void FTS::TraditionalConnection::disconnect()
     }
     // We need to check empty the queue ourselves.
     if(!m_lpPacketQueue.empty()) {
-#if defined(DEBUG)
-        FTSMSGDBG( "There are still {1} packets in the queue left.", 1, String::nr( m_lpPacketQueue.size() ) );
+#if defined(D_DEBUG_QUEUE)
+        FTSMSGDBG( "There are still {1} packets in the queue left.", 4, String::nr( m_lpPacketQueue.size() ) );
 #endif
         for( auto p : m_lpPacketQueue ) {
             SAFE_DELETE(p);
