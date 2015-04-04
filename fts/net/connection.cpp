@@ -656,10 +656,9 @@ Packet *FTS::TraditionalConnection::getPacket(bool in_bUseQueue, uint64_t in_ulM
         return nullptr;
     }
 
-    p->m_pData = (int8_t*)realloc(p->m_pData,p->getTotalLen());
-    assert( p->m_pData != nullptr );
+    p->realloc(p->getTotalLen());
     // And get it.
-    serr = this->get_lowlevel(&p->m_pData[sizeof(fts_packet_hdr_t)], p->getPayloadLen(), (uint64_t)(in_ulMaxWaitMillisec - 1000.0*timeout.measure()) );
+    serr = this->get_lowlevel(p->getPayloadPtr(), p->getPayloadLen(), (uint64_t)(in_ulMaxWaitMillisec - 1000.0*timeout.measure()) );
     if(serr != ERR_OK) {
         SAFE_DELETE( p );
         return nullptr;
@@ -769,7 +768,7 @@ Packet *FTS::TraditionalConnection::waitForThenGetPacketWithReq(master_request_t
             return nullptr;
 
         // Check if this is the packet we want.
-        if(((fts_packet_hdr_t *)p->m_pData)->req_id == in_req) {
+        if( p->getType() == in_req) {
             FTSMSGDBG("Accepted packet with ID 0x{1}, payload len: {2}", 5,
                       String::nr(p->getType(), -1, ' ', std::ios::hex), String::nr(p->getPayloadLen()));
             return p;
@@ -815,7 +814,7 @@ Packet *FTS::TraditionalConnection::getPacketWithReqIfPresent(master_request_t i
     while( (p = this->getPacketIfPresent( true )) != nullptr ) {
 
         // Check if this is the packet we want.
-        if(((fts_packet_hdr_t *)p->m_pData)->req_id == in_req) {
+        if( p->getType() == in_req) {
             FTSMSGDBG( "Accepted packet with ID 0x{1}, payload len: {2}", 5,
                       String::nr(p->getType(), -1, ' ', std::ios::hex), String::nr(p->getPayloadLen()));
             return p;
@@ -924,13 +923,11 @@ int FTS::TraditionalConnection::send(Packet * in_pPacket)
  */
 int FTS::TraditionalConnection::mreq(Packet *out_pPacket, uint64_t in_ulMaxWaitMillisec)
 {
-    master_request_t req;
-
     if(!m_bConnected) {
         return FTSC_ERR_NOT_CONNECTED;
     }
 
-    req = out_pPacket->getType();
+    master_request_t req = out_pPacket->getType();
     if(req == DSRV_MSG_NULL || req == DSRV_MSG_NONE || req > DSRV_MSG_MAX ) {
         return FTSC_ERR_WRONG_REQ;
     }
@@ -946,25 +943,18 @@ int FTS::TraditionalConnection::mreq(Packet *out_pPacket, uint64_t in_ulMaxWaitM
     }
 
     if(p->getType() != req) {
-        master_request_t id = ((fts_packet_hdr_t *) p->m_pData)->req_id;
+        master_request_t id = p->getType();
         FTS18N("Net_packet", MsgType::Error, "got id "+String::nr(id)+", wanted "+String::nr(req));
         SAFE_DELETE(p);
         return FTSC_ERR_WRONG_RSP;
     }
 
     // Transfer the receive buffer to the in packet
-
-    // Free the send data buffer
-    SAFE_FREE(out_pPacket->m_pData);
-
-    // Put the receive buffer pointer in to the in packet
-    out_pPacket->m_pData = p->m_pData;
-
-    // In order that the delete works, set data pointer to NULL
-    p->m_pData = nullptr;
-
+    out_pPacket->transferData( p );
+    
     // delete the interim packet
     SAFE_DELETE(p);
+
     out_pPacket->rewind();
     return ERR_OK;
 }

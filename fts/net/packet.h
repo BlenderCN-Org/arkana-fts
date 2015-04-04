@@ -45,6 +45,10 @@ public:
     uint32_t getTotalLen() const;
     uint32_t getPayloadLen()const;
     Packet *rewind();
+    Packet *realloc( size_t in_newSize );
+    uint8_t* getPayloadPtr() const { return ( uint8_t* ) &m_pData[sizeof( fts_packet_hdr_t )]; }
+    Packet* transferData( Packet* p );
+
 
     Packet *append(const FTS::String & in);
     Packet *append(const void *in_pData, uint32_t in_iSize);
@@ -93,7 +97,7 @@ private:
      */
      template<typename T> Packet * append_intern(T in) {
         int8_t* pBuf ; 
-        pBuf = (int8_t *)realloc((void *)m_pData, sizeof(T) + m_uiCursor);
+        pBuf = (int8_t *)::realloc((void *)m_pData, sizeof(T) + m_uiCursor);
         if( pBuf != NULL ) {
             m_pData = pBuf;
             *((T *) & m_pData[m_uiCursor]) = in;
