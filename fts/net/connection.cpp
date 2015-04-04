@@ -15,7 +15,6 @@
 #include "utilities/DataContainer.h"
 #include "utilities/utilities.h"
 #include "logging/Chronometer.h"
-#include "server_log.h"
 
 #if !WINDOOF
 #  include <unistd.h>
@@ -40,6 +39,22 @@ inline void close(SOCKET s)
 #include <cassert>
 
 using namespace FTS;
+
+#if defined(D_COMPILES_SERVER)
+#include "server_log.h"
+void addRecvPacketStat( Packet* p )
+{
+    dynamic_cast< FTSSrv2::ServerLogger * >(FTS::Logger::getSingletonPtr())->statAddRecvPacket( p->getType() );
+}
+void addSendPacketStat( Packet* p )
+{
+    dynamic_cast< FTSSrv2::ServerLogger * >(FTS::Logger::getSingletonPtr())->statAddSendPacket( p->getType() );
+}
+#else
+void addRecvPacketStat( Packet* p ) {}
+void addSendPacketStat( Packet* p ) {}
+#endif
+
 
 #if defined(DEBUG) && !defined(D_COMPILES_SERVER)
 #define D_DEBUG_QUEUE
@@ -77,6 +92,7 @@ void netlog2(const String &in_s, const void* id, uint32_t in_uiLen, const char *
 #  define netlog(a)
 #  define netlog2(a, b, c, d)
 #endif
+
 
 Packet *FTS::Connection::getReceivedPacketIfAny()
 {
@@ -667,7 +683,7 @@ Packet *FTS::TraditionalConnection::getPacket(bool in_bUseQueue, uint64_t in_ulM
     // All is good, check the package ID.
     if(p->isValid()) {
         FTSMSGDBG("Recv packet with ID 0x{1}, payload len: {2}", 5, String::nr(p->getType(), -1, ' ', std::ios::hex), String::nr(p->getPayloadLen()));
-        dynamic_cast< FTSSrv2::ServerLogger * >(FTS::Logger::getSingletonPtr())->statAddRecvPacket(p->getType());
+        addRecvPacketStat(p);
         return p;
     }
 
@@ -898,7 +914,7 @@ int FTS::TraditionalConnection::send(Packet * in_pPacket)
     FTSMSGDBG("Sending packet with ID 0x{1}, payload len: {2}", 5,
               String::nr(in_pPacket->getType(), -1, ' ', std::ios::hex),
               String::nr(in_pPacket->getPayloadLen()));
-    dynamic_cast< FTSSrv2::ServerLogger * >(FTS::Logger::getSingletonPtr())->statAddSendPacket( in_pPacket->getType() );
+    addSendPacketStat(in_pPacket);
 
     if(this->send(in_pPacket->m_pData, in_pPacket->getTotalLen()) != ERR_OK)
         return -1;
