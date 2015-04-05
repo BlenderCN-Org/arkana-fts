@@ -35,13 +35,19 @@ using SOCKADDR_IN = sockaddr_in;
 #define FTSC_TIME_OUT      1000    ///< time out value in milliseconds
 #define FTSC_MAX_QUEUE_LEN 32      ///< The longest queue we shall have. If queue gets longer, drop it.
 
-#define FTSC_ERR_NOT_CONNECTED -1; ///< The connection is not connected.
-#define FTSC_ERR_SEND          -2; ///< Socket error on send()
-#define FTSC_ERR_SELECT        -3; ///< Socket error on select
-#define FTSC_ERR_TIMEOUT       -4; ///< select() w/ has timed out
-#define FTSC_ERR_RECEIVE       -5; ///< Socket error on recv
-#define FTSC_ERR_WRONG_RSP     -6; ///< Response doesn't match the request
-#define FTSC_ERR_WRONG_REQ     -7; ///< Invalid request
+enum class FTSC_ERR {
+    OK            =  0, ///< No error.
+    NOT_CONNECTED = -1, ///< The connection is not connected.
+    SEND          = -2, ///< Socket error on send()
+    SELECT        = -3, ///< Socket error on select
+    TIMEOUT       = -4, ///< select() w/ has timed out
+    RECEIVE       = -5, ///< Socket error on recv
+    WRONG_RSP     = -6, ///< Response doesn't match the request
+    WRONG_REQ     = -7, ///< Invalid request
+    HOST_NAME     = -8, ///< Get Host by name failed.
+    SOCKET        = -9, ///< Socket error.
+    INVALID_INPUT = -10, ///< Invalid method parameter. Usually a nullptr.
+};
 
 namespace FTS {
     class RawDataContainer;
@@ -55,11 +61,12 @@ class Connection {
 public:
     virtual ~Connection() {};
 
-    typedef enum {
+    enum class eConnectionType
+    {
         D_CONNECTION_TRADITIONAL  = 0x0,
         D_CONNECTION_ONDEMAND_CLI = 0x1,
         D_CONNECTION_ONDEMAND_SRV = 0x2
-    } eConnectionType;
+    } ;
 
     virtual eConnectionType getType() const = 0;
 
@@ -71,8 +78,8 @@ public:
     virtual Packet *waitForThenGetPacket(bool in_bUseQueue = true, uint64_t in_ulMaxWaitMillisec = FTSC_TIME_OUT) = 0;
     virtual Packet *getPacketIfPresent(bool in_bUseQueue = true) = 0;
     virtual Packet *getReceivedPacketIfAny();
-    virtual int send(Packet *in_pPacket) = 0;
-    virtual int mreq(Packet *in_pPacket, uint64_t in_ulMaxWaitMillisec = FTSC_TIME_OUT) = 0;
+    virtual FTSC_ERR send( Packet *in_pPacket ) = 0;
+    virtual FTSC_ERR mreq(Packet *in_pPacket, uint64_t in_ulMaxWaitMillisec = FTSC_TIME_OUT) = 0;
 
     virtual void waitAntiFlood() = 0;
 
@@ -110,7 +117,7 @@ public:
     TraditionalConnection(SOCKET in_sock, SOCKADDR_IN in_sa);
     virtual ~TraditionalConnection();
 
-    eConnectionType getType() const {return D_CONNECTION_TRADITIONAL;};
+    eConnectionType getType() const { return eConnectionType::D_CONNECTION_TRADITIONAL; }
 
     virtual bool isConnected();
     virtual void disconnect();
@@ -123,8 +130,8 @@ public:
     virtual Packet *waitForThenGetPacketWithReq(master_request_t in_req, uint64_t in_ulMaxWaitMillisec = FTSC_TIME_OUT);
     virtual Packet *getPacketWithReqIfPresent(master_request_t in_req);
 
-    virtual int send(Packet *in_pPacket);
-    virtual int mreq(Packet *in_pPacket, uint64_t in_ulMaxWaitMillisec = FTSC_TIME_OUT);
+    virtual FTSC_ERR send( Packet *in_pPacket );
+    virtual FTSC_ERR mreq(Packet *in_pPacket, uint64_t in_ulMaxWaitMillisec = FTSC_TIME_OUT);
 
     virtual void waitAntiFlood();
     static int setSocketBlocking(SOCKET out_socket, bool in_bBlocking);
@@ -135,12 +142,12 @@ protected:
     SOCKADDR_IN m_saCounterpart; ///< This is the address of our counterpart.
     unsigned long m_ulLastcall;  ///< The last time a networking function has been called.
 
-    int connectByName( String in_sName, uint16_t in_usPort, uint64_t in_ulTimeoutInMillisec);
+    FTSC_ERR connectByName( String in_sName, uint16_t in_usPort, uint64_t in_ulTimeoutInMillisec);
     virtual Packet *getPacket(bool in_bUseQueue, uint64_t in_ulMaxWaitMillisec);
-    virtual int get_lowlevel(void *out_pBuf, uint32_t in_uiLen, uint64_t in_ulMaxWaitMillisec);
+    virtual FTSC_ERR get_lowlevel(void *out_pBuf, uint32_t in_uiLen, uint64_t in_ulMaxWaitMillisec);
     virtual String getLine(const String in_sLineEnding, uint64_t in_ulMaxWaitMillisec);
 
-    virtual int send(const void *in_pData, uint32_t in_uiLen);
+    virtual FTSC_ERR send( const void *in_pData, uint32_t in_uiLen );
 };
 
 #if 0

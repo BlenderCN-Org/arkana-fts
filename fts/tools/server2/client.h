@@ -55,7 +55,7 @@ public:
     int getID() const;
     static int getIDByNick(const FTS::String &in_sNick);
 
-    int sendPacket(FTS::Packet *in_pPacket);
+    bool sendPacket(FTS::Packet *in_pPacket);
     int sendChatJoins(const FTS::String &in_sPlayer);
     int sendChatQuits(const FTS::String &in_sPlayer);
     int sendChatOped(const FTS::String &in_sPlayer);

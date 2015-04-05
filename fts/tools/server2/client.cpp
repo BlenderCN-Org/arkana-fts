@@ -296,11 +296,11 @@ bool FTSSrv2::Client::workPacket(Packet *in_pPacket)
     return false;
 }
 
-int FTSSrv2::Client::sendPacket(Packet *in_pPacket)
+bool FTSSrv2::Client::sendPacket(Packet *in_pPacket)
 {
     FTSMSGDBG("\n\nsent message 0x"+String::nr(in_pPacket->getType(),-1,'0',std::ios::hex), 5);
 
-    return m_pConnection->send(in_pPacket);
+    return m_pConnection->send(in_pPacket) == FTSC_ERR::OK;
 }
 
 int FTSSrv2::Client::sendChatJoins( const String & in_sPlayer )

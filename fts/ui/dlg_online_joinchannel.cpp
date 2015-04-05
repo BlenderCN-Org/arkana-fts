@@ -54,7 +54,7 @@ FTS::OnlineJoinChannelWindow::OnlineJoinChannelWindow(OnlineMenuRlv &in_rlv)
         Connection *pCon = g_pMeHacky->og_getConnection();
         Packet p(DSRV_MSG_CHAT_PUBLICS);
         p.append(g_pMeHacky->og_getMD5());
-        if(pCon->mreq(&p) == ERR_OK && p.get() == ERR_OK) {
+        if( pCon->mreq( &p ) == FTSC_ERR::OK && p.get() == ERR_OK ) {
             uint32_t nChans = 0;
             p.get(nChans);
 

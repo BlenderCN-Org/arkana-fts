@@ -289,7 +289,7 @@ void FTSSrv2::ServerLogger::netlog(const FTS::String &s)
     m_mutex.unlock();
 
     FTS::String sMsg = this->timeString() + ": " + s + "\n";
-    this->logToFile(sMsg + "\n", sFile);
+    this->logToFile(sMsg, sFile);
 
 #if defined(DEBUG)
     if(bVerbose && !bDaemon) {
