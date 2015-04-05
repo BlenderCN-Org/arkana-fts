@@ -3,7 +3,7 @@ require 'socket'
 require_relative 'fts_packets'
 require_relative 'fts_connection'
 
-#$hostname = '192.168.1.9'
+#$hostname = '192.168.1.7'
 $hostname = 'localhost'
 
 $statMsgSend = Hash.new( 0 )

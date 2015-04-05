@@ -75,19 +75,20 @@ public:
 
     virtual String getCounterpartIP() const = 0;
 
-    virtual Packet *waitForThenGetPacket(bool in_bUseQueue = true, uint64_t in_ulMaxWaitMillisec = FTSC_TIME_OUT) = 0;
+    virtual Packet *waitForThenGetPacket(bool in_bUseQueue = true) = 0;
     virtual Packet *getPacketIfPresent(bool in_bUseQueue = true) = 0;
-    virtual Packet *getReceivedPacketIfAny();
+    virtual Packet *getReceivedPacketIfAny() = 0 ;
     virtual FTSC_ERR send( Packet *in_pPacket ) = 0;
-    virtual FTSC_ERR mreq(Packet *in_pPacket, uint64_t in_ulMaxWaitMillisec = FTSC_TIME_OUT) = 0;
+    virtual FTSC_ERR mreq(Packet *in_pPacket) = 0;
 
     virtual void waitAntiFlood() = 0;
-
+    virtual void setMaxWaitMillisec( uint64_t in_ulMaxWaitMillisec ) { m_maxWaitMillisec = in_ulMaxWaitMillisec; }
 protected:
     std::list<Packet *>m_lpPacketQueue; ///< A queue of packets that have been received but not consumed. Most recent are at the back.
     Mutex m_mutex;                      ///< The mutex to protect myself.
+    uint64_t m_maxWaitMillisec;         ///< Time out in millisec for all socket calls.
 
-    Connection() {};
+    Connection() : m_maxWaitMillisec( FTSC_TIME_OUT ) {};
     virtual Packet *getFirstPacketFromQueue(master_request_t in_req = DSRV_MSG_NONE);
     virtual void queuePacket(Packet *in_pPacket);
 };
@@ -124,28 +125,29 @@ public:
 
     virtual String getCounterpartIP() const;
 
-    virtual Packet *waitForThenGetPacket(bool in_bUseQueue = true, uint64_t in_ulMaxWaitMillisec = FTSC_TIME_OUT);
+    virtual Packet *waitForThenGetPacket(bool in_bUseQueue = true);
     virtual Packet *getPacketIfPresent(bool in_bUseQueue = true);
+    virtual Packet *getReceivedPacketIfAny() ;
 
-    virtual Packet *waitForThenGetPacketWithReq(master_request_t in_req, uint64_t in_ulMaxWaitMillisec = FTSC_TIME_OUT);
+    virtual Packet *waitForThenGetPacketWithReq(master_request_t in_req);
     virtual Packet *getPacketWithReqIfPresent(master_request_t in_req);
 
     virtual FTSC_ERR send( Packet *in_pPacket );
-    virtual FTSC_ERR mreq(Packet *in_pPacket, uint64_t in_ulMaxWaitMillisec = FTSC_TIME_OUT);
+    virtual FTSC_ERR mreq(Packet *in_pPacket);
 
     virtual void waitAntiFlood();
     static int setSocketBlocking(SOCKET out_socket, bool in_bBlocking);
 
 protected:
-    bool m_bConnected;           ///< Wether the connection is up or not.
-    SOCKET m_sock;               ///< The connection socket.
-    SOCKADDR_IN m_saCounterpart; ///< This is the address of our counterpart.
-    unsigned long m_ulLastcall;  ///< The last time a networking function has been called.
+    bool m_bConnected;              ///< Wether the connection is up or not.
+    SOCKET m_sock;                  ///< The connection socket.
+    SOCKADDR_IN m_saCounterpart;    ///< This is the address of our counterpart.
+    unsigned long m_ulLastcall;     ///< The last time a networking function has been called.
 
-    FTSC_ERR connectByName( String in_sName, uint16_t in_usPort, uint64_t in_ulTimeoutInMillisec);
-    virtual Packet *getPacket(bool in_bUseQueue, uint64_t in_ulMaxWaitMillisec);
-    virtual FTSC_ERR get_lowlevel(void *out_pBuf, uint32_t in_uiLen, uint64_t in_ulMaxWaitMillisec);
-    virtual String getLine(const String in_sLineEnding, uint64_t in_ulMaxWaitMillisec);
+    FTSC_ERR connectByName( String in_sName, uint16_t in_usPort);
+    virtual Packet *getPacket(bool in_bUseQueue);
+    virtual FTSC_ERR get_lowlevel(void *out_pBuf, uint32_t in_uiLen);
+    virtual String getLine(const String in_sLineEnding);
 
     virtual FTSC_ERR send( const void *in_pData, uint32_t in_uiLen );
 };

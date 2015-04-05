@@ -50,7 +50,7 @@ int FTSSrv2::Client::run()
     // If we lost the connection, most of the time it means that
     // the user logged out.
     while(m_pConnection->isConnected()) {
-        Packet *pPack = m_pConnection->waitForThenGetPacket(false, 500);
+        Packet *pPack = m_pConnection->waitForThenGetPacket(false);
 
         if(!pPack) {
             std::this_thread::sleep_for( std::chrono::microseconds( 100 ) );
