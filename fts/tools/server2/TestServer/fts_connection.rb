@@ -27,7 +27,7 @@ class Connection
   end
 
   def senddata(  msg )
-    sndlen = @sock.send msg, 0
+    @sock.send msg, 0
   end
 
   def close

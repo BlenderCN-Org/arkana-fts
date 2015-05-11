@@ -3,7 +3,10 @@ require 'socket'
 require_relative 'fts_packets'
 require_relative 'fts_connection'
 
-#$hostname = '192.168.1.7'
+#$debug = 0
+#$preint_raw = 0
+
+#$hostname = '192.168.1.12'
 $hostname = 'localhost'
 
 $statMsgSend = Hash.new( 0 )
@@ -72,7 +75,7 @@ class Client
   end
   def sender msg
     sleep(0.1) # make it some how realistic
-    @con.senddata msg.to_binary_s
+    sndlen = @con.senddata msg.to_binary_s
     puts "#s #{msg} #{sndlen} bytes" if $debug
     $statMsgSend[msg.kind.snapshot] += 1 # snapshot returns the value as FinNum a ruby object
     @statMsgSend[msg.kind.snapshot] += 1 # snapshot returns the value as FinNum a ruby object
