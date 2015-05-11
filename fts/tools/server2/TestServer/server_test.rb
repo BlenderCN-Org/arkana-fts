@@ -14,12 +14,12 @@ $kindNames[MsgType::LOGIN] = 'Login'
 $kindNames[MsgType::LOGOUT] = 'Logout'
 $kindNames[MsgType::CHAT_SEND_MSG] = 'ChatSend'
 $kindNames[MsgType::CHAT_GET_MSG] = 'ChatGet'
-$kindNames[MsgType::JOINCHAT] = 'JoinChat'
+$kindNames[MsgType::JOIN_CHAT] = 'JoinChat'
 $kindNames[MsgType::SOMEONE_JOINS_THE_CHAT] = 'Joined'
-$kindNames[MsgType::QUITCHAT] = 'QuitChat'
-$kindNames[MsgType::GETCHATLIST] = 'GetChatList'
+$kindNames[MsgType::QUIT_CHAT] = 'QuitChat'
+$kindNames[MsgType::GET_CHAT_LIST] = 'GetChatList'
 $kindNames[MsgType::CHAT_KICKED] = 'ChatKicked'
-$kindNames[MsgType::GETCHATUSER] = 'GetChatUser'
+$kindNames[MsgType::GET_CHAT_USER] = 'GetChatUser'
 $kindNames[MsgType::DESTROY_CHAN] = 'ChatDestroy'
 
 class Client
@@ -83,13 +83,13 @@ class Client
     sender msg
   end
   def join
-    msg = Packet.new( :ident => 'FTSS', :kind => MsgType::JOINCHAT, :pwd => @pwd, :room => "UselessChan" )
+    msg = Packet.new( :ident => 'FTSS', :kind => MsgType::JOIN_CHAT, :pwd => @pwd, :room => "UselessChan" )
     msg.len = msg.pwd.size + "UselessChan".size + 2 
 
     sender msg
   end
   def listChatUsers
-    msg = Packet.new( :ident => 'FTSS', :kind => MsgType::GETCHATLIST, :pwd => @pwd )
+    msg = Packet.new( :ident => 'FTSS', :kind => MsgType::GET_CHAT_LIST, :pwd => @pwd )
     msg.len = msg.pwd.size + 1 # 1 end string delimiter
 
     sender msg
