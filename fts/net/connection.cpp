@@ -386,7 +386,7 @@ FTSC_ERR FTS::TraditionalConnection::connectByName(String in_sName, uint16_t in_
             pfd.revents = 0;
 
             // Wait an amount of time or wait infinitely
-            if(in_ulTimeoutInMillisec == ((uint64_t)(-1)))
+            if(m_maxWaitMillisec == ((uint64_t)(-1)))
                 serr = ::poll( &pfd, 1, -1 );
             else
                 serr = ::poll( &pfd, 1, (int)(m_maxWaitMillisec) );
