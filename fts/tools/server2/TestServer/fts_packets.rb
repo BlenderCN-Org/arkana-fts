@@ -45,7 +45,7 @@ class Packet < PacketHeader
   uint8   :chat_type, :value => 1, :onlyif => lambda{ kind == MsgType::CHAT_SEND_MSG }
   uint8   :flags, :value => 0, :onlyif => lambda{ kind == MsgType::CHAT_SEND_MSG }
   stringz :toUser, :onlyif => lambda{ chat_type == ChatType::WHISPER and kind == MsgType::CHAT_SEND_MSG }
-  stringz :text, :onlyif => lambda{ kind == MsgType::CHAT_SEND_MSG }
+  stringz :text, :onlyif => lambda{ kind == MsgType::CHAT_SEND_MSG or kind == MsgType::GET_CHAT_USER}
   def isUserRequired?
     kind == MsgType::LOGIN
   end
