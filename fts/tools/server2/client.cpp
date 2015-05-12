@@ -165,7 +165,7 @@ int FTSSrv2::Client::getIDByNick(const String & in_sNick)
 // Returning true keeps the connection up. False would close the connection.
 bool FTSSrv2::Client::workPacket(Packet *in_pPacket)
 {
-    FTSMSGDBG("\n\ngot message 0x"+ String::nr(in_pPacket->getType(),std::ios::hex), 5);
+    FTSMSGDBG("\n\ngot message 0x"+ String::nr(in_pPacket->getType(),-1,'0',std::ios::hex), 5);
 
     // Preliminary checks.
     master_request_t req = in_pPacket->getType();
