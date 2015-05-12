@@ -93,7 +93,7 @@ int main(int argc, char *argv[])
     bool bDaemon = false, bVerbose = false;
     String logdir(DSRV_LOG_DIR);
     int opt = -1;
-
+    int dbgLevel = 1;
 #if WINDOOF
     //----------------------
     // Initialize Winsock.
@@ -112,7 +112,13 @@ int main(int argc, char *argv[])
 
     String sHome = getenv("HOME");
     bool bJustKill = false;
-    GetOpt getopt( argc, argv, "H:l:vdkh" );
+#if WINDOOF
+    // No run as daemon possible 
+    std::string options = "H:l:vkhg:";
+#else
+    std::string options = "H:l:vdkhg:";
+#endif
+    GetOpt getopt( argc, argv, options );
     while((opt = getopt()) != -1) {
         switch(opt) {
         case 'H':
@@ -130,6 +136,9 @@ int main(int argc, char *argv[])
         case 'k':
             bJustKill = true;
             break;
+        case 'g':
+            dbgLevel = atoi( getopt.get().c_str() );
+            break;
         case 'h':
         default:
             std::cout << "usage: " << " [-H HOMEDIR] [-l LOGDIR] [-v] [-h]\n" ;
@@ -141,6 +150,7 @@ int main(int argc, char *argv[])
             std::cout << "      -d         start as a daemon (not interactive) (EXPERIMENTAL)\n";
 #endif
             std::cout << "      -k         shut down the active daemon (TODO)\n";
+            std::cout << "      -g LEVEL   sets the gravity level of the logger\n";
             std::cout << "      -h         shows this help message\n";
             exit(EXIT_SUCCESS);
             break;
@@ -179,7 +189,7 @@ int main(int argc, char *argv[])
 
     // Logging and daemonizing.
     // ========================
-    new FTSSrv2::ServerLogger(logdir, bVerbose, 1);
+    new FTSSrv2::ServerLogger(logdir, bVerbose, dbgLevel);
 
     // Daemonize if wanted.
     if(bDaemon)
