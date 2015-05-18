@@ -45,9 +45,9 @@ class Packet < PacketHeader
   uint8   :chat_type, :value => 1, :onlyif => lambda{ kind == MsgType::CHAT_SEND_MSG }
   uint8   :flags, :value => 0, :onlyif => lambda{ kind == MsgType::CHAT_SEND_MSG }
   stringz :toUser, :onlyif => lambda{ chat_type == ChatType::WHISPER and kind == MsgType::CHAT_SEND_MSG }
-  stringz :text, :onlyif => lambda{ kind == MsgType::CHAT_SEND_MSG or kind == MsgType::GET_CHAT_USER}
+  stringz :text, :onlyif => lambda{ kind == MsgType::CHAT_SEND_MSG }
   def isUserRequired?
-    kind == MsgType::LOGIN
+    kind == MsgType::LOGIN or kind == MsgType::GET_CHAT_USER
   end
 end
 
@@ -56,17 +56,17 @@ class PacketResp < PacketHeader
   uint8   :result, :onlyif => :hasResult?
   uint8   :chat_type, :value => 1, :onlyif => lambda{ kind == MsgType::CHAT_GET_MSG }
   uint8   :flags, :value => 0, :onlyif => lambda{ kind == MsgType::CHAT_GET_MSG }
-  uint32  :users, :onlyif => :isUserList?
+  uint32  :elemets, :onlyif => :isList?
+  array   :list_names, :type => :stringz, :onlyif => :isList?, :initial_length => lambda { elemets }
   array   :data, :type => :uint8, :onlyif => :hasData?, :initial_length => lambda { len - 1 }
-  array   :user_names, :type => :stringz, :onlyif => :isUserList?, :initial_length => lambda { users }
   stringz :name, :onlyif => :hasName? 
   stringz :text, :onlyif => :hasText?
 
   def hasData?
-    not isUserList? and hasResult? and len > 1 and result == 0
+    not isList? and hasResult? and len > 1 and result == 0
   end
-  def isUserList?
-    kind == MsgType::GET_CHAT_LIST
+  def isList?
+    kind == MsgType::GET_CHAT_LIST or kind == MsgType::GET_CHAT_PUBLICS or kind == MsgType::CHAT_LIST_MY_CHANS
   end
   def hasResult?
     kind != MsgType::QUIT_CHAT and kind != MsgType::SOMEONE_JOINS_THE_CHAT and kind != MsgType::CHAT_GET_MSG

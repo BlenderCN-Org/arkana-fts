@@ -3,13 +3,17 @@ require 'socket'
 require_relative 'fts_packets'
 require_relative 'fts_connection'
 
-#$debug = 1
+$debug = 1
 #$preint_raw = 1
+
+def dbgprint? bit
+  ($debug & bit) > 0
+end
 
 #$hostname = '192.168.1.12'
 $hostname = 'localhost'
 
-$nClients = 10
+$nClients = 1
 
 $statMsgSend = Hash.new( 0 )
 $statMsgRecv = Hash.new( 0 )
@@ -27,6 +31,7 @@ $kindNames[MsgType::GET_CHAT_LIST] = 'GetChatList'
 $kindNames[MsgType::CHAT_KICKED] = 'ChatKicked'
 $kindNames[MsgType::GET_CHAT_USER] = 'GetChatUser'
 $kindNames[MsgType::DESTROY_CHAN] = 'ChatDestroy'
+$kindNames[MsgType::GET_CHAT_PUBLICS] = 'GetPublics'
 
 class Client
   attr_reader :failedHdr
@@ -55,7 +60,7 @@ class Client
       until @isDone and failed > 3 do
         hdr = @con.recvdata(9)
         ba = hdr.unpack('H*') if $preint_raw
-        puts "#r hdr #{hdr} #{ba}" if $debug
+        puts "#r hdr #{hdr} #{ba}" if dbgprint? 0x02
         if hdr.size != 9
           failed += 1
           @failedHdr << hdr.size
@@ -63,19 +68,19 @@ class Client
         end
         rhdr = PacketHeader.new
         rhdr.read(hdr)
-        puts "#r rhdr #{rhdr}" if $debug
+        puts "#r rhdr #{rhdr}" if dbgprint? 0x02
         ans = @con.recvdata(rhdr.len)
-        puts "#r ans #{ans.size}  #{ans}" if $debug
+        puts "#r ans #{ans.size}  #{ans}" if dbgprint? 0x02
         if ans.size != rhdr.len
           @failedMsg << ans.size
           next
         end
         answer = hdr + ans
         rp = PacketResp.new
-        puts "#r asnwer #{answer}" if $debug
+        puts "#r asnwer #{answer}" if dbgprint? 0x02
         rp.read(answer)
         ba = answer.unpack('H*') if $preint_raw
-        puts "#r #{rp} #{ba}" if $debug
+        puts "#r #{rp} #{ba}" if dbgprint? 0x01
         failed = 0
         $statMsgRecv[rp.kind.snapshot] += 1
         @statMsgRecv[rp.kind.snapshot] += 1
@@ -90,6 +95,7 @@ class Client
     $statMsgSend[msg.kind.snapshot] += 1 # snapshot returns the value as FixNum ruby object
     @statMsgSend[msg.kind.snapshot] += 1
   end
+  
   def login
     msg = Packet.new( :ident => 'FTSS', :kind => MsgType::LOGIN, :user => @user, :pwd => @pwd )
     msg.len = msg.user.size + msg.pwd.size + 2 # 2 end string delimiter
@@ -117,8 +123,20 @@ class Client
 
   def getUserState
     msg = Packet.new( :ident => 'FTSS', :kind => MsgType::GET_CHAT_USER, :pwd => @pwd )
-    msg.text = @user
-    msg.len = msg.pwd.size + msg.text.size + 2 # chat_type + flags+ 2 * end string delimiter
+    msg.user = @user
+    msg.len = msg.pwd.size + msg.user.size + 2 # chat_type + flags+ 2 * end string delimiter
+    sender msg
+  end
+
+  def getPublicChannels
+    msg = Packet.new( :ident => 'FTSS', :kind => MsgType::GET_CHAT_PUBLICS, :pwd => @pwd )
+    msg.len = msg.pwd.size + 1
+    sender msg
+  end
+
+  def listMyChans
+    msg = Packet.new( :ident => 'FTSS', :kind => MsgType::CHAT_LIST_MY_CHANS, :pwd => @pwd )
+    msg.len = msg.pwd.size + 1 # 1 end string delimiter
     sender msg
   end
 
@@ -147,7 +165,10 @@ def testCase1( client )
   client.join
   client.listChatUsers
   client.getUserState
-  for i in 0..19
+  client.getPublicChannels
+  client.listMyChans
+  loops = 0
+  for i in 0..loops
     client.destroyChan if i == 10
     client.chatMessage
   end
@@ -190,7 +211,8 @@ puts txt
 
 txt = "Missed : "
 myClients.each do | client |
-    txt += "#{client.failedHdr} / #{client.failedMsg} "
+  failedHdr = client.failedHdr - [0]
+  txt += "#{failedHdr} / #{client.failedMsg} "
 end
 puts txt
 
