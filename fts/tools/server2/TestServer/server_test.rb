@@ -167,7 +167,7 @@ def testCase1( client )
   client.getUserState
   client.getPublicChannels
   client.listMyChans
-  loops = 11
+  loops = 19
   for i in 0..loops
     client.destroyChan if i == 10
     client.chatMessage
@@ -175,7 +175,6 @@ def testCase1( client )
   sleep(0.100)
   client.logout
   client.quit
-  puts "Client #{client.port} hdr #{client.failedHdr} msg #{client.failedMsg}" if client.failedHdr.size > 4
 end
 
 myClients = Array.new
@@ -212,7 +211,9 @@ puts txt
 txt = "Missed : "
 myClients.each do | client |
   failedHdr = client.failedHdr - [0]
-  txt += "#{failedHdr} / #{client.failedMsg} "
+  if (failedHdr.length > 0) or (client.failedMsg.length) > 0 then
+    txt += "#{client.user}: #{failedHdr} / #{client.failedMsg} | "
+  end
 end
 puts txt
 
