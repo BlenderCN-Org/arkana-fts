@@ -168,6 +168,8 @@ int main(int argc, char *argv[])
     // =====================================
     int lfp = -1;
 
+#if defined(_DEBUG)
+#else
     // Check the lockfile
     lfp = open(sLockFile.c_str(),O_RDONLY);
 
@@ -186,6 +188,7 @@ int main(int argc, char *argv[])
         exit(EXIT_FAILURE);
     }
     close( lfp );
+#endif
 
     // Logging and daemonizing.
     // ========================
