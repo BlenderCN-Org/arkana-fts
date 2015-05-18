@@ -3,17 +3,17 @@ require 'socket'
 require_relative 'fts_packets'
 require_relative 'fts_connection'
 
-$debug = 1
+#$debug = 1
 #$preint_raw = 1
 
 def dbgprint? bit
-  ($debug & bit) > 0
+  ($debug & bit) > 0 if $debug
 end
 
 #$hostname = '192.168.1.12'
 $hostname = 'localhost'
 
-$nClients = 1
+$nClients = 10
 
 $statMsgSend = Hash.new( 0 )
 $statMsgRecv = Hash.new( 0 )
@@ -167,7 +167,7 @@ def testCase1( client )
   client.getUserState
   client.getPublicChannels
   client.listMyChans
-  loops = 0
+  loops = 11
   for i in 0..loops
     client.destroyChan if i == 10
     client.chatMessage
