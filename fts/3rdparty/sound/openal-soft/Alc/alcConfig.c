@@ -28,7 +28,7 @@
 #include "alMain.h"
 
 #ifdef _WIN32
-#define _WIN32_IE 0x400
+//#define _WIN32_IE 0x400
 #include <shlobj.h>
 #endif
 

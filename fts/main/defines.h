@@ -28,12 +28,14 @@
 #  if _MSC_VER < 1500
 #    define vsnprintf _vsnprintf
 #  endif
+#  if _MSC_VER < 1900
 #    define snprintf _snprintf
 #    define strdup _strdup
 #    define strcasecmp _stricmp
 #    define strncasecmp _strnicmp
-
 #    define unlink _unlink
+#endif
+
 
 #    define beginthread _beginthread
 #    define S_ISREG(m) ((m)& S_IFREG)
