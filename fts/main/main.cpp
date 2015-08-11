@@ -266,7 +266,7 @@ int cleanFTS(void)
             // Also deinits Image codec.
             delete CEGUI::System::getSingletonPtr()->getRenderer();
             /// \TODO: Debug why here is a pure virtual function call!
-//             delete CEGUI::System::getSingletonPtr();
+            //delete CEGUI::System::getSingletonPtr();
         }
     } catch(CEGUI::Exception & e) {
         FTS18N("CEGUI", MsgType::Error, e.getMessage());
@@ -283,6 +283,7 @@ int cleanFTS(void)
     } catch(const ArkanaException&) { }
 
     delete GUI::getSingletonPtr();
+    delete ISndSys::getSingletonPtr();
 
     SDL_Quit();
 
