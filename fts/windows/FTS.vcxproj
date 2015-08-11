@@ -75,7 +75,7 @@
       <DisableSpecificWarnings>4018;4267;4129;4311;4313;4005;4521;4291;4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>freetype_d.lib;pcre_d.lib;OpenGL32.lib;glu32.lib;SDL_d.lib;SDLmain_d.lib;CEGUIBase_d.lib;OpenGLGUIRenderer_d.lib;wsock32.lib;CEGUIFalagardWRBase_d.lib;CEGUITinyXMLParser_d.lib;OpenAL32_d.lib;alut_d.lib;libvorbis_d.lib;libvorbisfile_d.lib;libogg_d.lib;dao_d.lib;bouge_d.lib;User32.lib;winmm.lib;dsound.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>freetype_d.lib;pcre_d.lib;OpenGL32.lib;glu32.lib;SDL_d.lib;SDLmain_d.lib;CEGUIBase_d.lib;OpenGLGUIRenderer_d.lib;wsock32.lib;CEGUIFalagardWRBase_d.lib;CEGUITinyXMLParser_d.lib;OpenAL32_d.lib;OpenALcommon_d.lib;alut_d.lib;libvorbis_d.lib;libvorbisfile_d.lib;libogg_d.lib;dao_d.lib;bouge_d.lib;User32.lib;winmm.lib;dsound.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>../3rdparty/vclib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -93,7 +93,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <AdditionalIncludeDirectories>..;../3rdparty/CEGUI/include;../3rdparty/CEGUI;../3rdparty/sound/libogg/include;../3rdparty/sound/libvorbis/include;../3rdparty/sound/freealut/include;../3rdparty/sound/openal-soft/include;../3rdparty/sound/openal-soft/include/AL;../main;../3rdparty/sdl/include;../3rdparty/dao/src;../3rdparty/bouge/include</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>NDEBUG;D_STRING_FTS_PATHS;D_USE_CEGUI;ALL_STATIC;CEGUI_STATIC;D_SND_SYS=1;DAO_DIRECT_API;DAO_SND_STATIC;BOUGE_STATIC</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;D_STRING_FTS_PATHS;D_USE_CEGUI;ALL_STATIC;CEGUI_STATIC;D_SND_SYS=1;DAO_DIRECT_API;DAO_SND_STATIC;BOUGE_STATIC;AL_LIBTYPE_STATIC</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <DisableSpecificWarnings>4018;4267;4129;4311;4313;4005;4521;4291;4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
@@ -104,7 +104,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>freetype.lib;pcre.lib;OpenGL32.lib;glu32.lib;SDL.lib;SDLmain.lib;CEGUIBase.lib;OpenGLGUIRenderer.lib;wsock32.lib;user32.lib;CEGUIFalagardWRBase.lib;CEGUITinyXMLParser.lib;OpenAL32.lib;alut.lib;libvorbis.lib;libvorbisfile.lib;libogg.lib;dao.lib;bouge.lib;winmm.lib;dxguid.lib;dsound.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>freetype.lib;pcre.lib;OpenGL32.lib;glu32.lib;SDL.lib;SDLmain.lib;CEGUIBase.lib;OpenGLGUIRenderer.lib;wsock32.lib;user32.lib;CEGUIFalagardWRBase.lib;CEGUITinyXMLParser.lib;OpenAL32.lib;OpenALcommon.lib;alut.lib;libvorbis.lib;libvorbisfile.lib;libogg.lib;dao.lib;bouge.lib;winmm.lib;dxguid.lib;dsound.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>../3rdparty/vclib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <EnableUAC>false</EnableUAC>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>

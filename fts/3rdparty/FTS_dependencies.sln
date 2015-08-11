@@ -35,6 +35,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SDLmain", "SDL\VisualC\SDLm
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bouge", "bouge\build-win32\bouge\bouge.vcxproj", "{8A2C37A2-AE96-4291-9997-61514A88A2D3}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenALcommon", "sound\openal-soft\build\common.vcxproj", "{1B5F4F1A-03A9-4053-8DC9-2677757B86DE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug_Static|Win32 = Debug_Static|Win32
@@ -169,6 +171,14 @@ Global
 		{8A2C37A2-AE96-4291-9997-61514A88A2D3}.Release_Static|Win32.Build.0 = Release_Static|Win32
 		{8A2C37A2-AE96-4291-9997-61514A88A2D3}.Release|Win32.ActiveCfg = Release_Static|Win32
 		{8A2C37A2-AE96-4291-9997-61514A88A2D3}.Release|Win32.Build.0 = Release_Static|Win32
+		{1B5F4F1A-03A9-4053-8DC9-2677757B86DE}.Debug_Static|Win32.ActiveCfg = Debug_Static|Win32
+		{1B5F4F1A-03A9-4053-8DC9-2677757B86DE}.Debug_Static|Win32.Build.0 = Debug_Static|Win32
+		{1B5F4F1A-03A9-4053-8DC9-2677757B86DE}.Debug|Win32.ActiveCfg = Debug_Static|Win32
+		{1B5F4F1A-03A9-4053-8DC9-2677757B86DE}.Debug|Win32.Build.0 = Debug_Static|Win32
+		{1B5F4F1A-03A9-4053-8DC9-2677757B86DE}.Release_Static|Win32.ActiveCfg = Release_Static|Win32
+		{1B5F4F1A-03A9-4053-8DC9-2677757B86DE}.Release_Static|Win32.Build.0 = Release_Static|Win32
+		{1B5F4F1A-03A9-4053-8DC9-2677757B86DE}.Release|Win32.ActiveCfg = Release_Static|Win32
+		{1B5F4F1A-03A9-4053-8DC9-2677757B86DE}.Release|Win32.Build.0 = Release_Static|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
