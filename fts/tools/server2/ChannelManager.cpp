@@ -244,10 +244,10 @@ FTSSrv2::Channel *FTSSrv2::ChannelManager::findChannel(const String & in_sName)
     return nullptr;
 }
 
-uint32_t FTSSrv2::ChannelManager::countUserChannels(const String &in_sUserName)
+std::uint32_t FTSSrv2::ChannelManager::countUserChannels(const String &in_sUserName)
 {
     Lock l(m_mutex);
-    uint32_t nChans = std::count_if( std::begin( m_lpChannels ), std::end( m_lpChannels ), [in_sUserName] ( Channel* pChan ){ return pChan->getAdmin().ieq( in_sUserName); } );
+    std::uint32_t nChans = (std::uint32_t) std::count_if( std::begin( m_lpChannels ), std::end( m_lpChannels ), [in_sUserName] ( Channel* pChan ){ return pChan->getAdmin().ieq( in_sUserName); } );
     return nChans;
 }
 
