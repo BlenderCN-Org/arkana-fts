@@ -81,11 +81,9 @@ public:
     virtual FTSC_ERR send( Packet *in_pPacket ) = 0;
     virtual FTSC_ERR mreq(Packet *in_pPacket) = 0;
 
-    virtual void waitAntiFlood() = 0;
     virtual void setMaxWaitMillisec( uint64_t in_ulMaxWaitMillisec ) { m_maxWaitMillisec = in_ulMaxWaitMillisec; }
 protected:
     std::list<Packet *>m_lpPacketQueue; ///< A queue of packets that have been received but not consumed. Most recent are at the back.
-    Mutex m_mutex;                      ///< The mutex to protect myself.
     uint64_t m_maxWaitMillisec;         ///< Time out in millisec for all socket calls.
 
     Connection() : m_maxWaitMillisec( FTSC_TIME_OUT ) {};
@@ -135,14 +133,12 @@ public:
     virtual FTSC_ERR send( Packet *in_pPacket );
     virtual FTSC_ERR mreq(Packet *in_pPacket);
 
-    virtual void waitAntiFlood();
     static int setSocketBlocking(SOCKET out_socket, bool in_bBlocking);
 
 protected:
     bool m_bConnected;              ///< Wether the connection is up or not.
     SOCKET m_sock;                  ///< The connection socket.
     SOCKADDR_IN m_saCounterpart;    ///< This is the address of our counterpart.
-    unsigned long m_ulLastcall;     ///< The last time a networking function has been called.
 
     FTSC_ERR connectByName( String in_sName, uint16_t in_usPort);
     virtual Packet *getPacket(bool in_bUseQueue);
@@ -192,7 +188,6 @@ public:
 
 protected:
     bool m_bConnected;            ///< Wether the connection is up or not.
-    unsigned long m_ulLastcall;   ///< The last time a networking function has been called.
     String m_sLastCounterpartIP; ///< The IP the counterpart had last time we connected.
 
     String m_sServer;    ///< The name of the server we always connect to.
@@ -245,7 +240,6 @@ public:
 
 protected:
     bool m_bConnected;           ///< Wether the connection is up or not.
-    unsigned long m_ulLastcall;  ///< The last time a networking function has been called.
 };
 #endif
 

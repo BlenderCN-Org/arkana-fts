@@ -109,8 +109,6 @@ void netlog2(const String &in_s, const void* id, uint32_t in_uiLen, const char *
  */
 Packet *FTS::Connection::getFirstPacketFromQueue( master_request_t in_req )
 {
-    Lock l( m_mutex );
-
     if( m_lpPacketQueue.empty() ) {
         return nullptr;
     }
@@ -162,7 +160,6 @@ void FTS::Connection::queuePacket(Packet *in_pPacket)
     if(!in_pPacket)
         return ;
 
-    Lock l(m_mutex);
     m_lpPacketQueue.push_back(in_pPacket);
 
     // Don't make the queue too big.
@@ -173,7 +170,7 @@ void FTS::Connection::queuePacket(Packet *in_pPacket)
                   String::nr(pPack->getType(), -1, ' ', std::ios::hex), String::nr(pPack->getPayloadLen()));
 #endif
         m_lpPacketQueue.pop_front();
-        SAFE_DELETE(pPack);
+        delete pPack;
     }
 
 #ifdef D_DEBUG_QUEUE
@@ -272,7 +269,6 @@ bool FTS::TraditionalConnection::isConnected()
  */
 void FTS::TraditionalConnection::disconnect()
 {
-    Lock l(m_mutex);
     if(m_bConnected) {
         close(m_sock);
         m_bConnected = false;
@@ -283,7 +279,7 @@ void FTS::TraditionalConnection::disconnect()
         FTSMSGDBG( "There are still {1} packets in the queue left.", 4, String::nr( m_lpPacketQueue.size() ) );
 #endif
         for( auto p : m_lpPacketQueue ) {
-            SAFE_DELETE(p);
+            delete p;
         }
     }
 }
@@ -320,8 +316,6 @@ FTSC_ERR FTS::TraditionalConnection::connectByName(String in_sName, uint16_t in_
     }
 
     hostent *serverInfo = nullptr;
-
-    Lock l( m_mutex );
 
     // Setup the connection socket.
 #if WINDOOF
@@ -465,24 +459,19 @@ FTSC_ERR FTS::TraditionalConnection::get_lowlevel(void *out_pBuf, uint32_t in_ui
     Chronometer timeout;
 
     do {
-        {
-            Lock l( m_mutex );
-
-            read = ::recv( m_sock, ( char * ) buf, to_read, 0 );
+        read = ::recv( m_sock, (char *) buf, to_read, 0 );
 #if WINDOOF
-            auto errorno = WSAGetLastError();
-            if(read == SOCKET_ERROR && (errorno == WSAEINTR || errorno == WSATRY_AGAIN || errorno == WSAEWOULDBLOCK)) {
+        auto errorno = WSAGetLastError();
+        if( read == SOCKET_ERROR && (errorno == WSAEINTR || errorno == WSATRY_AGAIN || errorno == WSAEWOULDBLOCK) ) {
 #else
-            if( read < 0 && (errno == EINTR || errno == EAGAIN || errno == EWOULDBLOCK) ) {
+        if( read < 0 && (errno == EINTR || errno == EAGAIN || errno == EWOULDBLOCK) ) {
 #endif
-
-                // Only check for timeouts when waiting for data!
-                if(timeout.measure()*1000.0 > m_maxWaitMillisec) {
-                    netlog("Dropping due to timeout (allowed "+String::nr(m_maxWaitMillisec)+" ms)!");
-                    return FTSC_ERR::OK;
-                }
-                continue;
+            // Only check for timeouts when waiting for data!
+            if( timeout.measure()*1000.0 > m_maxWaitMillisec ) {
+                netlog( "Dropping due to timeout (allowed " + String::nr( m_maxWaitMillisec ) + " ms)!" );
+                return FTSC_ERR::OK;
             }
+            continue;
         }
 
         if(read <= 0) {
@@ -653,21 +642,21 @@ Packet *FTS::TraditionalConnection::getPacket(bool in_bUseQueue)
     // We already got the "FTSS" header, now get the rest of the header.
     Packet *p = new Packet(DSRV_MSG_NULL);
     if( FTSC_ERR::OK != this->get_lowlevel( &p->m_pData[4], sizeof( fts_packet_hdr_t ) - 4 ) ) {
-        SAFE_DELETE( p );
+        delete p;
         return nullptr;
     }
 
     // Now, prepare to get the packet's data.
     if( p->getPayloadLen() <= 0 ) {
         FTS18N( "Net_packet_len", MsgType::Error, String::nr(p->getPayloadLen()) );
-        SAFE_DELETE(p);
+        delete p;
         return nullptr;
     }
 
     p->realloc(p->getTotalLen());
     // And get it.
     if( FTSC_ERR::OK != this->get_lowlevel( p->getPayloadPtr(), p->getPayloadLen() ) ) {
-        SAFE_DELETE( p );
+        delete p;
         return nullptr;
     }
 
@@ -680,7 +669,7 @@ Packet *FTS::TraditionalConnection::getPacket(bool in_bUseQueue)
 
     // Invalid packet received.
     FTS18N("Net_packet", MsgType::Error, "No FTSS Header/Invalid request");
-    SAFE_DELETE(p);
+    delete p;
     return nullptr;
 }
 
@@ -853,7 +842,6 @@ FTSC_ERR FTS::TraditionalConnection::send( const void *in_pData, uint32_t in_uiL
     uint32_t uiToSend = in_uiLen;
     const int8_t *buf = (const int8_t *)in_pData;
 
-    Lock l(m_mutex);
     do {
 #if WINDOOF
         iSent = ::send(m_sock, (const char *)buf, uiToSend, 0);
@@ -952,39 +940,6 @@ FTSC_ERR FTS::TraditionalConnection::mreq(Packet *out_pPacket)
 
     out_pPacket->rewind();
     return FTSC_ERR::OK;
-}
-
-/// Sleeps until we can send again without flooding.
-/** This function sleeps the thread long enough so that when this function
- *  returns, one can send packets again without any danger of being kicked
- *  off of the server because of flooding.
- *
- * \TODO: SHIT, because of tcp storing packets and sending them altogether, this seems not to work !
- *
- * \author Pompei2
- */
-void FTS::TraditionalConnection::waitAntiFlood()
-{
-    /*    unsigned long ulNow = dGetTicks( );
-     *
-     * // The first message will never be flood :)
-     * if( m_ulLastcall == 0 ) {
-     * m_ulLastcall = ulNow;
-     * return ;
-     * }
-     *
-     * // If this is true, he sends data too fast.
-     * if( (dGetTicks( ) - m_ulLastcall) < (D_NETPACKET_LEN/10) * D_ANTIFLOOD_DELAY_PER_TEN_BYTE ) {
-     * unsigned long ulTimeDiff = (ulNow - m_ulLastcall);
-     * unsigned long ulIdeal = ((D_NETPACKET_LEN/10) * D_ANTIFLOOD_DELAY_PER_TEN_BYTE);
-     *
-     * // So wait the needed amount of time.
-     * dSleep( ulIdeal - ulTimeDiff );
-     *
-     * FTSMSG( "Sleeping %d msec to avoid flooding\n", FTS_NOMSG, ulIdeal - ulTimeDiff );
-     * }
-     */
-    return;
 }
 
 /*! Change a sockets blocking mode.
@@ -1188,7 +1143,6 @@ int FTS::downloadHTTPFile(const String &in_sServer, const String &in_sPath, cons
  */
 CFTSOnDemandHTTPConnection::CFTSOnDemandHTTPConnection(const String &in_sName, const String &in_sPath, uint16_t in_usPort)
         : m_bConnected(false),
-          m_ulLastcall(0),
           m_sLastCounterpartIP(String::EMPTY),
           m_sServer(in_sName),
           m_usPort(in_usPort)
@@ -1286,10 +1240,6 @@ int CFTSOnDemandHTTPConnection::mreq(Packet *out_pPacket, uint64_t in_ulMaxWaitM
         SAFE_DELETE(p);
         return FTSC_ERR_WRONG_RSP;
     }
-
-    m_mutex.lock();
-    m_ulLastcall = dGetTicks();
-    m_mutex.unlock();
 
     // Transfer the receive buffer to the in packet
 
