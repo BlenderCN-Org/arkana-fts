@@ -357,14 +357,11 @@ int FTSSrv2::Client::sendChatMottoChanged(const String & in_sFrom, const String 
 
 bool FTSSrv2::Client::onLogin(const String & in_sNick, const String & in_sMD5)
 {
-    Packet p(DSRV_MSG_LOGIN);
-    int iRet = ERR_OK;
-
     FTSMSGDBG(in_sNick+" is logging in ... ", 4);
 
     // Call the stored procedure to login.
     String sIP = m_pConnection->getCounterpartIP();
-    iRet = DataBase::getUniqueDB()
+    int iRet = DataBase::getUniqueDB()
                     ->storedFunctionInt("connect",
                                         "\'" + DataBase::getUniqueDB()->escape(in_sNick) + "\', " +
                                         "\'" + DataBase::getUniqueDB()->escape(in_sMD5)  + "\', " +
@@ -373,25 +370,20 @@ bool FTSSrv2::Client::onLogin(const String & in_sNick, const String & in_sMD5)
 
     Lock l(m_mutex);
 
-    if(iRet != ERR_OK) {
+    if( iRet == ERR_OK ) {
+        // save some "session data".
+        m_sNick = in_sNick;
+        m_sPassMD5 = in_sMD5;
+        m_bLoggedIn = true;
+        dynamic_cast< ServerLogger * >(FTS::Logger::getSingletonPtr())->addPlayer();
+        FTSSrv2::ClientsManager::getManager()->registerClient( this );
+
+        FTSMSGDBG( "success", 4 );
+    } else {
         FTSMSG("failed: sql login script returned "+String::nr(iRet), MsgType::Error);
-        goto error;
     }
 
-    // save some "session data".
-    m_sNick = in_sNick;
-    m_sPassMD5 = in_sMD5;
-    m_bLoggedIn = true;
-    dynamic_cast<ServerLogger *>(FTS::Logger::getSingletonPtr())->addPlayer();
-    FTSSrv2::ClientsManager::getManager()->registerClient(this);
-
-    FTSMSGDBG("success", 4);
-    goto success;
-
-error:
-
-success:
-    p.setType(DSRV_MSG_LOGIN);
+    Packet p( DSRV_MSG_LOGIN );
     p.append((int8_t)iRet);
 
     // And then send the result back to the client.
@@ -406,25 +398,22 @@ success:
 
 bool FTSSrv2::Client::onLogout()
 {
-    Packet p(DSRV_MSG_LOGOUT);
-    int iRet = ERR_OK;
-
     FTSMSGDBG(m_sNick+" is logging out ... ", 4);
 
-    if(ERR_OK == (iRet = this->quit())) {
+    int iRet = this->quit();
+    if(ERR_OK == iRet) {
         FTSMSGDBG("success", 4);
     }
 
-    p.append((int8_t)iRet);
+    Packet p( DSRV_MSG_LOGOUT );
+    p.append( ( int8_t ) iRet );
 
     // And then send the result back to the client.
     sendPacket(&p);
     return false;
 }
 
-bool FTSSrv2::Client::onSignup(const String & in_sNick,
-                       const String & in_sMD5,
-                       const String & in_sEMail)
+bool FTSSrv2::Client::onSignup(const String & in_sNick, const String & in_sMD5, const String & in_sEMail)
 {
     Packet p(DSRV_MSG_SIGNUP);
     String sArgs;
@@ -467,7 +456,7 @@ success:
     // And then send the result back to the client.
     sendPacket(&p);
 
-    return true;
+    return (iRet == ERR_OK) ? true : false;
 }
 
 bool FTSSrv2::Client::onFeedback(const String &in_sMessage)
