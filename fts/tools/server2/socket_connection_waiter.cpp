@@ -85,7 +85,8 @@ bool FTSSrv2::SocketConnectionWaiter::waitForThenDoConnection(std::int64_t in_ul
     while(true) {
         // Nothing correct got in time, bye.
         auto nowTime = std::chrono::steady_clock::now();
-        if( std::chrono::duration_cast< std::chrono::milliseconds >(startTime - nowTime).count() >= in_ulMaxWaitMillisec )
+        auto diffTime = std::chrono::duration_cast<std::chrono::milliseconds>(nowTime - startTime).count();
+        if( diffTime >= in_ulMaxWaitMillisec )
             return false;
 
         SOCKADDR_IN clientAddress;
