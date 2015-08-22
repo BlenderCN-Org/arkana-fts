@@ -36,7 +36,7 @@ public:
     Client(FTS::Connection *in_pConnection);
     virtual ~Client();
 
-    static void *starter(void *in_pThis);
+    static void starter(Client *in_pThis);
     int run();
     bool workPacket(FTS::Packet *in_pPacket);
     int quit();

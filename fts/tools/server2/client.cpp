@@ -37,11 +37,10 @@ int FTSSrv2::Client::getID() const
     return FTSSrv2::Client::getIDByNick(m_sNick);
 }
 
-void *FTSSrv2::Client::starter(void *in_pThis)
+void FTSSrv2::Client::starter(Client *in_pThis)
 {
     FTSSrv2::Client *pThis = static_cast<FTSSrv2::Client *>(in_pThis);
     pThis->run();
-    return nullptr;
 }
 
 int FTSSrv2::Client::run()
