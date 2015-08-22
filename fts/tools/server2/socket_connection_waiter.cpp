@@ -20,9 +20,7 @@ using socklen_t = int;
 inline void close( SOCKET s )
 {
     closesocket( s );
-    return;
 }
-
 #endif
 
 using namespace FTS;
@@ -34,7 +32,7 @@ FTSSrv2::SocketConnectionWaiter::SocketConnectionWaiter()
 
 FTSSrv2::SocketConnectionWaiter::~SocketConnectionWaiter()
 {
-    this->deinit();
+    close( m_listenSocket );
 }
 
 int FTSSrv2::SocketConnectionWaiter::init(std::uint16_t in_usPort)
@@ -72,12 +70,6 @@ int FTSSrv2::SocketConnectionWaiter::init(std::uint16_t in_usPort)
     return ERR_OK;
 }
 
-int FTSSrv2::SocketConnectionWaiter::deinit()
-{
-    close(m_listenSocket);
-    return ERR_OK;
-}
-
 bool FTSSrv2::SocketConnectionWaiter::waitForThenDoConnection(std::int64_t in_ulMaxWaitMillisec)
 {
     auto startTime = std::chrono::steady_clock::now();
@@ -98,7 +90,12 @@ bool FTSSrv2::SocketConnectionWaiter::waitForThenDoConnection(std::int64_t in_ul
             // Build up a class that will work this connection.
             TraditionalConnection *pCon = new TraditionalConnection(connectSocket, clientAddress);
             Client *pCli = ClientsManager::getManager()->createClient(pCon);
-             FTSMSGDBG( "Accept connection on port 0x" + String::nr( ( int ) m_port, 0, ' ', std::ios::hex ) + " client<"+ String::nr((const uint64_t)pCli,4, '0', std::ios_base::hex) + "> con<"+ String::nr((const uint64_t)pCon,4,'0', std::ios_base::hex)+ ">", 4 );
+            if( pCli == nullptr ) {
+                FTSMSG( "[ERROR] Can't create client, may be it exists already. Port<" + String::nr( (int) m_port, 0, ' ', std::ios::hex ) + "> con<" + String::nr( (const uint64_t) pCon, 4, '0', std::ios_base::hex ) + ">", MsgType::Error );
+                return false;
+            }
+
+            FTSMSGDBG( "Accept connection on port 0x" + String::nr( ( int ) m_port, 0, ' ', std::ios::hex ) + " client<"+ String::nr((const uint64_t)pCli,4, '0', std::ios_base::hex) + "> con<"+ String::nr((const uint64_t)pCon,4,'0', std::ios_base::hex)+ ">", 4 );
 
             // And start a new thread for him.
             auto thr = std::thread( Client::starter, pCli );

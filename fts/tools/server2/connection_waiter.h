@@ -7,7 +7,6 @@ public:
 
     virtual int init(std::uint16_t in_usPort) = 0;
     virtual bool waitForThenDoConnection(std::int64_t in_ulMaxWaitMillisec = FTSC_TIME_OUT) = 0;
-    virtual int deinit() = 0;
 
 protected:
     ConnectionWaiter() {};
