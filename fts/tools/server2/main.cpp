@@ -41,7 +41,7 @@
 bool g_bExit = false;
 bool stopSpamThread = false;
 
-void connectionListener(void *in_iPort);
+void connectionListener(uint16_t in_iPort);
 void help( const std::string& in_pszLine, char *in_pszMe );
 void printServerStats();
 
@@ -230,8 +230,8 @@ int main(int argc, char *argv[])
     // DEBUG: the +1 at the end.
     std::vector<std::thread> threads;
 
-    for(size_t i = DSRV_PORT_FIRST; i < DSRV_PORT_LAST + 1; i++)
-        threads.push_back( std::thread(connectionListener, (void *)i) );
+    for(uint16_t i = DSRV_PORT_FIRST; i < DSRV_PORT_LAST + 1; i++)
+        threads.push_back( std::thread(connectionListener, i) );
 
     // DEBUG: a test spamming thread.
     std::thread tSpamThread;
@@ -457,11 +457,11 @@ void help(const string& topic, char *in_pszMe)
 }
 
 // This sets up everything to listen on a certain port, and then goes listen.
-void connectionListener(void *in_iPort)
+void connectionListener(uint16_t in_iPort)
 {
-    std::unique_ptr<ConnectionWaiter> pWaiter( new SocketConnectionWaiter );
+    auto pWaiter = std::make_unique<SocketConnectionWaiter>();
 
-    if(ERR_OK != pWaiter->init((uint16_t)((size_t)in_iPort)))
+    if( ERR_OK != pWaiter->init(in_iPort) )
         return ;
 
 

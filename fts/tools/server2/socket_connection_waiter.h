@@ -23,7 +23,7 @@ public:
     SocketConnectionWaiter();
     ~SocketConnectionWaiter();
 
-    int init(uint16_t in_usPort);
+    int init(std::uint16_t in_usPort);
     int deinit();
     bool waitForThenDoConnection(std::int64_t in_ulMaxWaitMillisec = FTSC_TIME_OUT);
 

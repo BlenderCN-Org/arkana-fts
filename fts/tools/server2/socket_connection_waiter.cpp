@@ -37,7 +37,7 @@ FTSSrv2::SocketConnectionWaiter::~SocketConnectionWaiter()
     this->deinit();
 }
 
-int FTSSrv2::SocketConnectionWaiter::init(uint16_t in_usPort)
+int FTSSrv2::SocketConnectionWaiter::init(std::uint16_t in_usPort)
 {
     m_port = in_usPort;
     SOCKADDR_IN serverAddress;
