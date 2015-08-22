@@ -81,19 +81,19 @@ public:
     virtual FTSC_ERR send( Packet *in_pPacket ) = 0;
     virtual FTSC_ERR mreq(Packet *in_pPacket) = 0;
 
-    virtual void setMaxWaitMillisec( uint64_t in_ulMaxWaitMillisec ) { m_maxWaitMillisec = in_ulMaxWaitMillisec; }
+    virtual void setMaxWaitMillisec( std::uint64_t in_ulMaxWaitMillisec ) { m_maxWaitMillisec = in_ulMaxWaitMillisec; }
 protected:
     std::list<Packet *>m_lpPacketQueue; ///< A queue of packets that have been received but not consumed. Most recent are at the back.
-    uint64_t m_maxWaitMillisec;         ///< Time out in millisec for all socket calls.
-
+    std::uint64_t m_maxWaitMillisec;         ///< Time out in millisec for all socket calls.
+    
     Connection() : m_maxWaitMillisec( FTSC_TIME_OUT ) {};
     virtual Packet *getFirstPacketFromQueue(master_request_t in_req = DSRV_MSG_NONE);
     virtual void queuePacket(Packet *in_pPacket);
 };
 
-int getHTTPFile(FTS::RawDataContainer &out_data, const String &in_sServer, const String &in_sPath, uint64_t in_ulMaxWaitMillisec);
-FTS::RawDataContainer *getHTTPFile(const String &in_sServer, const String &in_sPath, uint64_t in_ulMaxWaitMillisec);
-int downloadHTTPFile(const String &in_sServer, const String &in_sPath, const String &in_sLocal, uint64_t in_ulMaxWaitMillisec);
+int getHTTPFile(FTS::RawDataContainer &out_data, const String &in_sServer, const String &in_sPath, std::uint64_t in_ulMaxWaitMillisec);
+FTS::RawDataContainer *getHTTPFile(const String &in_sServer, const String &in_sPath, std::uint64_t in_ulMaxWaitMillisec);
+int downloadHTTPFile(const String &in_sServer, const String &in_sPath, const String &in_sLocal, std::uint64_t in_ulMaxWaitMillisec);
 
 /// A Traditional TCP/IP implementation of the connection class.
 /**
@@ -109,10 +109,10 @@ int downloadHTTPFile(const String &in_sServer, const String &in_sPath, const Str
  **/
 class TraditionalConnection : public Connection {
     friend class OnDemandHTTPConnection;
-    friend int FTS::getHTTPFile(FTS::RawDataContainer &out_data, const String &in_sServer, const String &in_sPath, uint64_t in_ulMaxWaitMillisec);
+    friend int FTS::getHTTPFile(FTS::RawDataContainer &out_data, const String &in_sServer, const String &in_sPath, std::uint64_t in_ulMaxWaitMillisec);
 
 public:
-    TraditionalConnection(const String &in_sName, uint16_t in_usPort, uint64_t in_ulTimeoutInMillisec);
+    TraditionalConnection(const String &in_sName, std::uint16_t in_usPort, std::uint64_t in_ulTimeoutInMillisec);
     TraditionalConnection(SOCKET in_sock, SOCKADDR_IN in_sa);
     virtual ~TraditionalConnection();
 
@@ -140,12 +140,12 @@ protected:
     SOCKET m_sock;                  ///< The connection socket.
     SOCKADDR_IN m_saCounterpart;    ///< This is the address of our counterpart.
 
-    FTSC_ERR connectByName( String in_sName, uint16_t in_usPort);
+    FTSC_ERR connectByName( String in_sName, std::uint16_t in_usPort);
     virtual Packet *getPacket(bool in_bUseQueue);
-    virtual FTSC_ERR get_lowlevel(void *out_pBuf, uint32_t in_uiLen);
+    virtual FTSC_ERR get_lowlevel(void *out_pBuf, std::uint32_t in_uiLen);
     virtual String getLine(const String in_sLineEnding);
 
-    virtual FTSC_ERR send( const void *in_pData, uint32_t in_uiLen );
+    virtual FTSC_ERR send( const void *in_pData, std::uint32_t in_uiLen );
 };
 
 }

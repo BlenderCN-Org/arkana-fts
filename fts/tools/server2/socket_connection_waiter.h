@@ -25,7 +25,7 @@ public:
 
     int init(uint16_t in_usPort);
     int deinit();
-    bool waitForThenDoConnection(uint64_t in_ulMaxWaitMillisec = FTSC_TIME_OUT);
+    bool waitForThenDoConnection(std::int64_t in_ulMaxWaitMillisec = FTSC_TIME_OUT);
 
 protected:
     SOCKET m_listenSocket;       ///< The socket that has been prepared for listening.

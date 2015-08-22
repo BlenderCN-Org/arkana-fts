@@ -450,7 +450,7 @@ FTSC_ERR FTS::TraditionalConnection::connectByName(String in_sName, uint16_t in_
  *
  * \author Pompei2
  */
-FTSC_ERR FTS::TraditionalConnection::get_lowlevel(void *out_pBuf, uint32_t in_uiLen)
+FTSC_ERR FTS::TraditionalConnection::get_lowlevel(void *out_pBuf, std::uint32_t in_uiLen)
 {
     int read = 0;
     uint32_t to_read = in_uiLen;
@@ -831,7 +831,7 @@ Packet *FTS::TraditionalConnection::getPacketWithReqIfPresent(master_request_t i
  *
  * \author Pompei2
  */
-FTSC_ERR FTS::TraditionalConnection::send( const void *in_pData, uint32_t in_uiLen )
+FTSC_ERR FTS::TraditionalConnection::send( const void *in_pData, std::uint32_t in_uiLen )
 {
     if(!m_bConnected)
         return FTSC_ERR::NOT_CONNECTED;
@@ -1007,7 +1007,7 @@ int FTS::TraditionalConnection::setSocketBlocking(SOCKET in_socket, bool in_bBlo
  *
  * \author Pompei2
  */
-int FTS::getHTTPFile(FTS::RawDataContainer &out_data, const String &in_sServer, const String &in_sPath, uint64_t in_ulMaxWaitMillisec)
+int FTS::getHTTPFile(FTS::RawDataContainer &out_data, const String &in_sServer, const String &in_sPath, std::uint64_t in_ulMaxWaitMillisec)
 {
     // We connect using the traditional connection.
     TraditionalConnection tradConn(in_sServer, 80, in_ulMaxWaitMillisec);
@@ -1079,7 +1079,7 @@ int FTS::getHTTPFile(FTS::RawDataContainer &out_data, const String &in_sServer, 
  *
  * \author Pompei2
  */
-FTS::RawDataContainer *FTS::getHTTPFile(const String &in_sServer, const String &in_sPath, uint64_t in_ulMaxWaitMillisec)
+FTS::RawDataContainer *FTS::getHTTPFile(const String &in_sServer, const String &in_sPath, std::uint64_t in_ulMaxWaitMillisec)
 {
     // Get the memory to write the data in.
     FTS::RawDataContainer *pdc = new FTS::RawDataContainer(0);
@@ -1110,7 +1110,7 @@ FTS::RawDataContainer *FTS::getHTTPFile(const String &in_sServer, const String &
  *
  * \author Pompei2
  */
-int FTS::downloadHTTPFile(const String &in_sServer, const String &in_sPath, const String &in_sLocal, uint64_t in_ulMaxWaitMillisec)
+int FTS::downloadHTTPFile(const String &in_sServer, const String &in_sPath, const String &in_sLocal, std::uint64_t in_ulMaxWaitMillisec)
 {
     FTS::DataContainer *pData = FTS::getHTTPFile(in_sServer, in_sPath, in_ulMaxWaitMillisec);
     if(pData == nullptr)

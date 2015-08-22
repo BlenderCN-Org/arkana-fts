@@ -13,7 +13,7 @@ end
 #$hostname = '192.168.1.12'
 $hostname = 'localhost'
 
-$nClients = 10
+$nClients = 20
 
 $statMsgSend = Hash.new( 0 )
 $statMsgRecv = Hash.new( 0 )
@@ -179,10 +179,13 @@ end
 
 myClients = Array.new
 
+startTime = Time.now
+
 thr = Array.new
 (0..($nClients-1)).each do |x|
-  port = 44917 + x
-  userpwd = "Test#{port}"
+  port = 44917#  + x
+  passwd = 44917 + x 
+  userpwd = "Test#{passwd}"
   myClients[x] = Client.new $hostname, port, userpwd, userpwd
   thr << Thread.start do
     testCase1 myClients[x] #Client.new $hostname, port, userpwd, userpwd
@@ -193,6 +196,7 @@ end
 thr.each do |t|
   t.join
 end
+endTime = Time.now
 
 myClients.each do | client |
   txt = "Result: "
@@ -220,3 +224,4 @@ puts txt
 sumSended = $statMsgSend.values.reduce :+
 sumReceived = $statMsgRecv.values.reduce :+
 puts "Total Send #{sumSended} Recv #{sumReceived}"
+puts "Total Execution Time #{endTime - startTime} avg #{(endTime - startTime)/(sumSended+sumReceived)}"

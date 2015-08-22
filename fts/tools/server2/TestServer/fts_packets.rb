@@ -9,7 +9,7 @@ class MsgType
   SOMEONE_JOINS_THE_CHAT=0x34 #52
   QUIT_CHAT=0x35              #53
   GET_CHAT_MOTTO=0x36
-  SET_CAHT_MOTTO=0x37
+  SET_CHAT_MOTTO=0x37
   CHAT_MOTTO_CHANGED=0x38
   GET_CHAT_LIST=0x39          #57  Returns the list of users in the channel
   GET_CHAT_USER=0x3A          #58  Returns the state of the user

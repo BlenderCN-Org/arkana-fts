@@ -78,7 +78,7 @@ int FTSSrv2::SocketConnectionWaiter::deinit()
     return ERR_OK;
 }
 
-bool FTSSrv2::SocketConnectionWaiter::waitForThenDoConnection(uint64_t in_ulMaxWaitMillisec)
+bool FTSSrv2::SocketConnectionWaiter::waitForThenDoConnection(std::int64_t in_ulMaxWaitMillisec)
 {
     auto startTime = std::chrono::steady_clock::now();
     // wait for connections a certain amount of time or infinitely.
@@ -97,7 +97,7 @@ bool FTSSrv2::SocketConnectionWaiter::waitForThenDoConnection(uint64_t in_ulMaxW
             // Build up a class that will work this connection.
             TraditionalConnection *pCon = new TraditionalConnection(connectSocket, clientAddress);
             Client *pCli = ClientsManager::getManager()->createClient(pCon);
-            FTSMSGDBG( "Accept connection on port 0x" + String::nr( ( int ) m_port, 0, ' ', std::ios::hex ) + " client<"+ String::nr((const uint32_t)pCli,4, '0', std::ios_base::hex) + "> con<"+ String::nr((const uint32_t)pCon,4,'0', std::ios_base::hex)+ ">", 4 );
+             FTSMSGDBG( "Accept connection on port 0x" + String::nr( ( int ) m_port, 0, ' ', std::ios::hex ) + " client<"+ String::nr((const uint64_t)pCli,4, '0', std::ios_base::hex) + "> con<"+ String::nr((const uint64_t)pCon,4,'0', std::ios_base::hex)+ ">", 4 );
 
             // And start a new thread for him.
             auto thr = std::thread( Client::starter, pCli );
