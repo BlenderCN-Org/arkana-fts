@@ -141,8 +141,8 @@ int FTSSrv2::ChannelManager::loadChannels(void)
     DataBase::getUniqueDB()->free(pRes);
 
     // Now we execute that action (only now as the DB result needs to be freed).
-    for(std::list<std::pair<FTSSrv2::Channel *, String> >::iterator i = operators.begin() ; i != operators.end() ; ++i) {
-        i->first->op(i->second, true);
+    for( auto& i : operators ) {
+        i.first->op(i.second, true);
     }
 
     return ERR_OK;
