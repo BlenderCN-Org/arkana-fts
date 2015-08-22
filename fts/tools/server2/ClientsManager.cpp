@@ -29,8 +29,8 @@ FTSSrv2::ClientsManager::~ClientsManager()
 FTSSrv2::Client *FTSSrv2::ClientsManager::createClient(Connection *in_pConnection)
 {
     // Check if the client does not yet exist first.
-    if(this->findClient(in_pConnection) != NULL)
-        return NULL;
+    if(this->findClient(in_pConnection) != nullptr)
+        return nullptr;
 
     return new FTSSrv2::Client(in_pConnection);
 }
@@ -63,7 +63,7 @@ FTSSrv2::Client *FTSSrv2::ClientsManager::findClient(const String &in_sName)
     std::map<String, FTSSrv2::Client *>::iterator i = m_mClients.find(in_sName.lower());
 
     if(i == m_mClients.end()) {
-       return NULL;
+       return nullptr;
     }
 
     return i->second;
@@ -80,7 +80,7 @@ FTSSrv2::Client *FTSSrv2::ClientsManager::findClient(const Connection *in_pConne
         }
     }
 
-    return NULL;
+    return nullptr;
 }
 
 void FTSSrv2::ClientsManager::deleteClient(const String &in_sName)
