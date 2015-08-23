@@ -10,24 +10,12 @@
 #include <stdlib.h>
 #include <locale.h>
 #include <stdarg.h>
-
-#if defined(MSDOS) || defined(OS2) || defined(WIN32) || defined(_WIN32) || defined(_WIN32_) || defined(__CYGWIN__)
-#  if 0
-#    define MS_VISUAL 1
-#  endif
-#  define WINDOOF 1
-#  define NOMINMAX
-#  include <sys/stat.h>
-#else
-#  define WINDOOF 0
-#endif
+#include <cstdint>
 
 #include "dLib/dMem/dMem.h"
 
 #if WINDOOF
-#  if !defined(_MSC_VER)
-#    include <unistd.h>
-#  else
+#  if defined(_MSC_VER)
 #    include <direct.h>
 #  endif
 #  include <Winsock2.h>
@@ -35,8 +23,6 @@
 #  define _USE_MATH_DEFINES // needed for math constants like M_PI
 
 #else
-#  include <unistd.h>
-#  include <pthread.h>
 #  include <sys/select.h>
 #  include <sys/socket.h>
 #  include <sys/types.h>

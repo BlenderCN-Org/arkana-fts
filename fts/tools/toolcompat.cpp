@@ -1,12 +1,7 @@
 #include "main.h"
 #include "toolcompat.h"
 #include <thread>
-
-#if WINDOOF
-#  include <time.h>
-#else
-#  include <sys/time.h>
-#endif
+#include <chrono>
 
 using namespace FTSTools;
 using namespace FTS;

@@ -89,10 +89,10 @@ void MiniLZOCompressor::decompress(StreamedDataContainer& out_where, const DataC
     }
 
     // Check the version. Nothing to check.
-    scdc.readui8();
+    scdc.read<uint8_t>();
 
     // Get the size of the whole thing when uncompressed.
-    uint64_t uiUncompSize = scdc.readui64();
+    uint64_t uiUncompSize = scdc.read<uint64_t>();
     lzo_uint uiUncompSizeLib = static_cast<lzo_uint>(uiUncompSize);
 
     // Check if all went right.

@@ -2,6 +2,7 @@
 #define D_EXCEPTION_H
 
 #include <exception>
+#include <cstdint>
 #include "logging/MsgType.h"
 #include "main/defines.h"
 
@@ -185,7 +186,7 @@ public:
     /// \param in_sInfo What hardware limit are we talking about?
     /// \param in_uiNeeded How much would we need?
     /// \param in_uiLimit And what is the limit that the hardware imposes?
-    HardwareLimitException(const String& in_sInfo, uint64_t in_uiNeeded, uint64_t in_uiLimit) throw();
+    HardwareLimitException(const String& in_sInfo, std::uint64_t in_uiNeeded, std::uint64_t in_uiLimit) throw();
 };
 
 
