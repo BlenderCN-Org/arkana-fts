@@ -14,6 +14,7 @@
 #include "utilities/DataContainer.h"
 #include "utilities/StreamedDataContainer.h"
 #include "main/Exception.h"
+#include "logging/logger.h"
 
 #include <memory>
 #include <map>
@@ -103,7 +104,7 @@ protected:
 
     std::size_t readRaw(void* out_ptr, std::size_t in_size);
     int insert(const void* in_ptr, std::size_t in_size);
-    int writeRaw(const uint8_t* const in_ptr, std::size_t in_size);
+    int writeRaw(const std::uint8_t* const in_ptr, std::size_t in_size);
 
     /// This constructs a FTS::File object that just makes a copy of all that data
     /// for itself and decompresses it if necessary. Only for internal use by the
@@ -400,7 +401,7 @@ public:
     inline Path getName() const {return m_sName;};
 
     /// \return the size of the file or 0 if no file is opened.
-    inline uint64_t getSize() const {return m_pSDC->getBoundDC() == NULL ? 0 : m_pSDC->getBoundDC()->getSize();};
+    inline std::uint64_t getSize() const {return m_pSDC->getBoundDC() == NULL ? 0 : m_pSDC->getBoundDC()->getSize();};
 
     /// This method returns the size of a file.
     ///
@@ -413,7 +414,7 @@ public:
     ///\note Although the return value is a 64-bit unsigned integer, the support for
     ///      large files (>4GB) is not implemented yet.
     ///\note This method may fail if the file doesn't exist or is not readable.
-    static uint64_t getSize(const Path &in_sFileName);
+    static std::uint64_t getSize(const Path &in_sFileName);
 
     /// This method returns the size of an already-opened file descriptor.
     ///
@@ -427,7 +428,7 @@ public:
     ///      large files (>4GB) is not implemented/tested yet.
     ///\note The file position indicator will be at the same position after a call
     ///      to this method.
-    static uint64_t getSize(std::FILE* out_pFile);
+    static std::uint64_t getSize(std::FILE* out_pFile);
 
     // Data extraction functions, wrappers around the SDC, for convenience.
 
@@ -437,11 +438,11 @@ public:
     ///
     ///\param in_uiPos The position where to place the cursor.
     ///\note This is only a wrapper around the streamed data container.
-    inline void setCursorPos(uint64_t in_uiPos) {m_pSDC->setCursorPos(in_uiPos);};
+    inline void setCursorPos( std::uint64_t in_uiPos) {m_pSDC->setCursorPos(in_uiPos);};
     /// \return The current writing cursor position in the file, like ftell().
     /// \note This is only a wrapper around the streamed data container.
-    inline uint64_t getCursorPos() const {return m_pSDC->getCursorPos();};
-    inline uint32_t fletcher32FromCursor() const {return m_pSDC->fletcher32FromCursor();};
+    inline std::uint64_t getCursorPos() const {return m_pSDC->getCursorPos();};
+    inline std::uint32_t fletcher32FromCursor() const {return m_pSDC->fletcher32FromCursor();};
 
     /// \see ReadableStream::read
     inline std::size_t read(void* out_ptr, std::size_t in_size, std::size_t in_nmemb) {return m_pSDC->read(out_ptr, in_size, in_nmemb);};
@@ -502,150 +503,58 @@ public:
     ///\author Pompei2
     std::size_t writeNoEndian(const DataContainer& in_data);
 
-    // The following are written WITHOUT the use of templates with intention!
-    // That is to force you use these types to be compatible 64bit and so one...
-
     /// \see ReadableStream::read
-    inline ReadableStream& read(int8_t &out) {return m_pSDC->read(out);};
+    template<class T, typename std::enable_if<std::is_arithmetic<T>::value>::type* = nullptr>
+    ReadableStream& read(T& out) 
+    {
+        return m_pSDC->read(out);
+    }
+    inline ReadableStream& read( String &out ) { return m_pSDC->read( out ); };
+
     /// \see ReadableStream::readi8
-    inline int8_t readi8() {return m_pSDC->readi8();};
-    /// \see ReadableStream::read
-    inline ReadableStream& read(uint8_t &out) {return m_pSDC->read(out);};
+    inline std::int8_t readi8() {return m_pSDC->read<decltype(this->readi8())>();}
     /// \see ReadableStream::readui8
-    inline uint8_t readui8() {return m_pSDC->readui8();};
-    /// \see ReadableStream::read
-    inline ReadableStream& read(int16_t &out) {return m_pSDC->read(out);};
+    inline std::uint8_t readui8() {return m_pSDC->read<decltype(this->readui8())>();}
     /// \see ReadableStream::readi16
-    inline int16_t readi16() {return m_pSDC->readi16();};
-    /// \see ReadableStream::read
-    inline ReadableStream& read(uint16_t &out) {return m_pSDC->read(out);};
+    inline std::int16_t readi16() {return m_pSDC->read<decltype(this->readi16())>();}
     /// \see ReadableStream::readui16
-    inline uint16_t readui16() {return m_pSDC->readui16();};
-    /// \see ReadableStream::read
-    inline ReadableStream& read(int32_t &out) {return m_pSDC->read(out);};
+    inline std::uint16_t readui16() {return m_pSDC->read<decltype(this->readui16())>();}
     /// \see ReadableStream::readi32
-    inline int32_t readi32() {return m_pSDC->readi32();};
-    /// \see ReadableStream::read
-    inline ReadableStream& read(uint32_t &out) {return m_pSDC->read(out);};
+    inline std::int32_t readi32() {return m_pSDC->read<decltype(this->readi32())>();}
     /// \see ReadableStream::readui32
-    inline uint32_t readui32() {return m_pSDC->readui32();};
-    /// \see ReadableStream::read
-    inline ReadableStream& read(int64_t &out) {return m_pSDC->read(out);};
+    inline std::uint32_t readui32() {return m_pSDC->read<decltype(this->readui32())>();}
     /// \see ReadableStream::readi64
-    inline int64_t readi64() {return m_pSDC->readi64();};
-    /// \see ReadableStream::read
-    inline ReadableStream& read(uint64_t &out) {return m_pSDC->read(out);};
+    inline std::int64_t readi64() { return m_pSDC->read<decltype(this->readi64())>(); }
     /// \see ReadableStream::readui64
-    inline uint64_t readui64() {return m_pSDC->readui64();};
-    /// \see ReadableStream::read
-    inline ReadableStream& read(float &out) {return m_pSDC->read(out);};
+    inline std::uint64_t readui64() {return m_pSDC->read<decltype(this->readui64())>();}
     /// \see ReadableStream::readf
-    inline float readf() {return m_pSDC->readf();};
-    /// \see ReadableStream::read
-    inline ReadableStream& read(double &out) {return m_pSDC->read(out);};
+    inline float readf() {return m_pSDC->read<decltype(this->readf())>();}
     /// \see ReadableStream::readd
-    inline double readd() {return m_pSDC->readd();};
-    /// \see ReadableStream::read
-    inline ReadableStream& read(long double &out) {return m_pSDC->read(out);};
+    inline double readd() {return m_pSDC->read<decltype(this->readd())>();}
     /// \see ReadableStream::readld
-    inline long double readld() {return m_pSDC->readld();};
-    /// \see ReadableStream::read
-    inline ReadableStream& read(String &out) {return m_pSDC->read(out);};
+    inline long double readld() {return m_pSDC->read<decltype(this->readld())>();}
+
     /// \see ReadableStream::readstr
-    inline String readstr() {return m_pSDC->readstr();};
+    inline String readstr() {return m_pSDC->readstr();}
 
-    /// Writes one 8 bit (1 byte) signed integer into the file.
+    /// Writes n bit (n byte) integer or floating point value into the file.
     /// \param in The data to write.
     /// \return ERR_OK on success, an error code < 0 on failure.
     /// \note This converts the data into little-endian format if needed before
     ///       writing it to the file.
     /// \note All writes only occur in memory. You must call the save method to
     ///       store the changes on the disk.
-    int write(int8_t in);
+    template<class T, typename std::enable_if<std::is_arithmetic<T>::value>::type* = nullptr>
+    int write( T in )
+    {
+        switch( this->getMode() ) {
+            case Insert: return m_pSDC->insert( in );
+            case Overwrite: return m_pSDC->overwrite( in );
+            default: FTS18N( "File_Write", MsgType::Warning, this->getName(), "File opened in read only mode" ); return -1;
+        }
+    }
 
-    /// Writes one 8 bit (1 byte) unsigned integer into the file.
-    /// \param in The data to write.
-    /// \return ERR_OK on success, an error code < 0 on failure.
-    /// \note This converts the data into little-endian format if needed before
-    ///       writing it to the file.
-    /// \note All writes only occur in memory. You must call the save method to
-    ///       store the changes on the disk.
-    int write(uint8_t in);
 
-    /// Writes one 16 bit (2 byte) signed integer into the file.
-    /// \param in The data to write.
-    /// \return ERR_OK on success, an error code < 0 on failure.
-    /// \note This converts the data into little-endian format if needed before
-    ///       writing it to the file.
-    /// \note All writes only occur in memory. You must call the save method to
-    ///       store the changes on the disk.
-    int write(int16_t in);
-
-    /// Writes one 16 bit (2 byte) unsigned integer into the file.
-    /// \param in The data to write.
-    /// \return ERR_OK on success, an error code < 0 on failure.
-    /// \note This converts the data into little-endian format if needed before
-    ///       writing it to the file.
-    /// \note All writes only occur in memory. You must call the save method to
-    ///       store the changes on the disk.
-    int write(uint16_t in);
-
-    /// Writes one 32 bit (4 byte) signed integer into the file.
-    /// \param in The data to write.
-    /// \return ERR_OK on success, an error code < 0 on failure.
-    /// \note This converts the data into little-endian format if needed before
-    ///       writing it to the file.
-    /// \note All writes only occur in memory. You must call the save method to
-    ///       store the changes on the disk.
-    int write(int32_t in);
-
-    /// Writes one 32 bit (4 byte) unsigned integer into the file.
-    /// \param in The data to write.
-    /// \return ERR_OK on success, an error code < 0 on failure.
-    /// \note This converts the data into little-endian format if needed before
-    ///       writing it to the file.
-    /// \note All writes only occur in memory. You must call the save method to
-    ///       store the changes on the disk.
-    int write(uint32_t in);
-
-    /// Writes one 64 bit (8 byte) signed integer into the file.
-    /// \param in The data to write.
-    /// \return ERR_OK on success, an error code < 0 on failure.
-    /// \note This converts the data into little-endian format if needed before
-    ///       writing it to the file.
-    /// \note All writes only occur in memory. You must call the save method to
-    ///       store the changes on the disk.
-    int write(int64_t in);
-
-    /// Writes one 64 bit (8 byte) unsigned integer into the file.
-    /// \param in The data to write.
-    /// \return ERR_OK on success, an error code < 0 on failure.
-    /// \note This converts the data into little-endian format if needed before
-    ///       writing it to the file.
-    /// \note All writes only occur in memory. You must call the save method to
-    ///       store the changes on the disk.
-    int write(uint64_t in);
-
-    /// Writes one 32 bit (4 byte) floating point value into the file.
-    /// \param in The data to write.
-    /// \return ERR_OK on success, an error code < 0 on failure.
-    /// \note All writes only occur in memory. You must call the save method to
-    ///       store the changes on the disk.
-    int write(float in);
-
-    /// Writes one 64 bit (8 byte) floating point value into the file.
-    /// \param in The data to write.
-    /// \return ERR_OK on success, an error code < 0 on failure.
-    /// \note All writes only occur in memory. You must call the save method to
-    ///       store the changes on the disk.
-    int write(double in);
-
-    /// Writes one 128 bit (16 byte) floating point value into the file.
-    /// \param in The data to write.
-    /// \return ERR_OK on success, an error code < 0 on failure.
-    /// \note All writes only occur in memory. You must call the save method to
-    ///       store the changes on the disk.
-    int write(long double in);
 
     /// Writes one zero-terminated string into the file.
     /// \param in The data to write.
@@ -657,27 +566,27 @@ public:
     // Again, these can't be templated if we want other classes to define
     // the >> and << operator with a templated input.
 
-    inline File& operator << (int8_t in) { this->write(in); return *this; };
-    inline File& operator << (uint8_t in) { this->write(in); return *this; };
-    inline File& operator << (int16_t in) { this->write(in); return *this; };
-    inline File& operator << (uint16_t in) { this->write(in); return *this; };
-    inline File& operator << (int32_t in) { this->write(in); return *this; };
-    inline File& operator << (uint32_t in) { this->write(in); return *this; };
-    inline File& operator << (int64_t in) { this->write(in); return *this; };
-    inline File& operator << (uint64_t in) { this->write(in); return *this; };
+    inline File& operator << (std::int8_t in) { this->write(in); return *this; };
+    inline File& operator << (std::uint8_t in) { this->write(in); return *this; };
+    inline File& operator << (std::int16_t in) { this->write(in); return *this; };
+    inline File& operator << (std::uint16_t in) { this->write(in); return *this; };
+    inline File& operator << (std::int32_t in) { this->write(in); return *this; };
+    inline File& operator << (std::uint32_t in) { this->write(in); return *this; };
+    inline File& operator << (std::int64_t in) { this->write(in); return *this; };
+    inline File& operator << (std::uint64_t in) { this->write(in); return *this; };
     inline File& operator << (float in) { this->write(in); return *this; };
     inline File& operator << (double in) { this->write(in); return *this; };
     inline File& operator << (long double in) { this->write(in); return *this; };
     inline File& operator << (String in) { this->write(in); return *this; };
 
-    inline File& operator >>(int8_t& out) { this->read(out); return *this; };
-    inline File& operator >>(uint8_t& out) { this->read(out); return *this; };
-    inline File& operator >>(int16_t& out) { this->read(out); return *this; };
-    inline File& operator >>(uint16_t& out) { this->read(out); return *this; };
-    inline File& operator >>(int32_t& out) { this->read(out); return *this; };
-    inline File& operator >>(uint32_t& out) { this->read(out); return *this; };
-    inline File& operator >>(int64_t& out) { this->read(out); return *this; };
-    inline File& operator >>(uint64_t& out) { this->read(out); return *this; };
+    inline File& operator >>(std::int8_t& out) { this->read(out); return *this; };
+    inline File& operator >>(std::uint8_t& out) { this->read(out); return *this; };
+    inline File& operator >>(std::int16_t& out) { this->read(out); return *this; };
+    inline File& operator >>(std::uint16_t& out) { this->read(out); return *this; };
+    inline File& operator >>(std::int32_t& out) { this->read(out); return *this; };
+    inline File& operator >>(std::uint32_t& out) { this->read(out); return *this; };
+    inline File& operator >>(std::int64_t& out) { this->read(out); return *this; };
+    inline File& operator >>(std::uint64_t& out) { this->read(out); return *this; };
     inline File& operator >>(float& out) { this->read(out); return *this; };
     inline File& operator >>(double& out) { this->read(out); return *this; };
     inline File& operator >>(long double& out) { this->read(out); return *this; };
