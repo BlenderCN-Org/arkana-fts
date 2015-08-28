@@ -1,5 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
+<<<<<<< ours
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+=======
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+>>>>>>> theirs
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug_Static|Win32">
       <Configuration>Debug_Static</Configuration>
@@ -20,10 +24,18 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'" Label="Configuration">
     <CharacterSet>MultiByte</CharacterSet>
+<<<<<<< ours
+=======
+    <PlatformToolset>v140</PlatformToolset>
+>>>>>>> theirs
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'" Label="Configuration">
     <CharacterSet>MultiByte</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
+<<<<<<< ours
+=======
+    <PlatformToolset>v140</PlatformToolset>
+>>>>>>> theirs
   </PropertyGroup>
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <CharacterSet>MultiByte</CharacterSet>

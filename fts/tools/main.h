@@ -20,7 +20,7 @@
 #  endif
 #  include <Winsock2.h>
 #  include <windows.h>
-#  define _USE_MATH_DEFINES // needed for math constants like M_PI
+//#  define _USE_MATH_DEFINES // needed for math constants like M_PI
 
 #else
 #  include <sys/select.h>
