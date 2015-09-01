@@ -52,26 +52,6 @@ using namespace std;
 using namespace FTSSrv2;
 using namespace FTS;
 
-void testSpammer(void *args)
-{
-    Channel *pChan = (Channel *)args;
-
-    FTSMSGDBG("Starting the test spammer in default channel.", 1);
-
-    Packet p(DSRV_MSG_CHAT_GETMSG);
-    p.append(DSRV_CHAT_TYPE_NORMAL);
-    p.append((int8_t)0);
-    p.append(String("Test_Spammer"));
-    p.append(String("spam0r messag0r"));
-
-    // wait for connections or quit.
-    while(!g_bExit && !stopSpamThread) {
-        std::this_thread::sleep_for( std::chrono::microseconds ( 100 ) );
-        pChan->sendPacketToAll(&p);
-    }
-
-}
-
 std::string getNextToken( stringstream& sb, char delimiter = ' ' )
 {
     string token;
@@ -271,20 +251,6 @@ int main(int argc, char *argv[])
                 FTSMSGDBG( "Number of games that are opened: " + String::nr( nGames ), 1 );
             } else if( cmd == "version" ) {
                 FTSMSGDBG( "The version of the server is " D_SERVER_VERSION_STR, 1 );
-            } else if( cmd == "spam" ) {
-                auto arg = getNextToken( sb );
-                std::transform( arg.begin(), arg.end(), arg.begin(), ::tolower ); // Thanks to SO
-                if( (arg == "start") && !tSpamThread.joinable() ) {
-                    tSpamThread = std::thread( testSpammer, ( void * ) ChannelManager::getManager()->getDefaultChannel() );
-                    if( tSpamThread.joinable() )
-                        FTSMSGDBG( "Spam bot started.", 1 );
-                    else
-                        FTSMSG( "Spam bot could not be started (" + String( strerror( errno ) ) + ").", MsgType::Error );
-                } else if( ( arg == "stop" ) && tSpamThread.joinable() ) {
-                    stopSpamThread = true;
-                    tSpamThread.join();
-                    FTSMSGDBG( "Spam bot stopped.", 1 );
-                }
             } else if( cmd == "verbose" ) {
                 auto arg = getNextToken( sb );
                 std::transform( arg.begin(), arg.end(), arg.begin(), ::tolower ); // Thanks to SO
@@ -413,16 +379,6 @@ void help(const string& topic, char *in_pszMe)
         std::cout << "\n";
         std::cout << "DESC:\n";
         std::cout << "\tThis just prints out the version of the server.\n";
-    } else if(topic == "spam") {
-        std::cout << "SYNTAX:\n";
-        std::cout << "\tspam [start|stop]\n";
-        std::cout << "\n";
-        std::cout << "DESC:\n";
-        std::cout << "\tThis starts or stops a spam bot, depending on the argument.\n";
-        std::cout << "The spam bot will send a spam message 10 times a second in the\n";
-        std::cout << "main channel, but he won't appear in the players list and won't\n";
-        std::cout << "answer to any message, he just spams messages in the channel.\n";
-        std::cout << "\n";
     } else if(topic == "verbose") {
         std::cout << "SYNTAX:\n";
         std::cout << "\tverbose [on|off]\n";
