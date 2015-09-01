@@ -211,10 +211,7 @@ int main(int argc, char *argv[])
     std::vector<std::thread> threads;
 
     for(uint16_t i = DSRV_PORT_FIRST; i < DSRV_PORT_LAST + 1; i++)
-        threads.push_back( std::thread(connectionListener, i) );
-
-    // DEBUG: a test spamming thread.
-    std::thread tSpamThread;
+        threads.emplace_back( connectionListener, i );
 
     // Here we access directly to it, because we just read it, so there's no danger (I hope)
     while(!g_bExit) {
