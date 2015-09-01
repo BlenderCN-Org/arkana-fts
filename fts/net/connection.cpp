@@ -562,7 +562,7 @@ Packet *FTS::TraditionalConnection::getPacket(bool in_bUseQueue)
 
 #if WINDOOF
     fd_set fdr;
-    timeval tv = {0, (long)m_maxWaitMillisec*1000};
+    timeval tv = {0, (long) 10000 }; // 10ms
 
     FD_ZERO( &fdr );
     FD_SET( m_sock, &fdr );
@@ -583,7 +583,7 @@ Packet *FTS::TraditionalConnection::getPacket(bool in_bUseQueue)
         if(m_maxWaitMillisec == ((uint64_t)(-1)))
             serr = ::poll( &pfd, 1, -1 );
         else
-            serr = ::poll( &pfd, 1, (int)(m_maxWaitMillisec) );
+            serr = ::poll( &pfd, 1, (int)10000 );
     } while( serr == SOCKET_ERROR && errno == EINTR );
 #endif
 
