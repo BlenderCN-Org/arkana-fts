@@ -26,7 +26,6 @@ private:
 
     Game *m_pMyGame;           ///< The game I have started or I am in. NULL else.
     Channel *m_pMyChannel;     ///< The chat channel the player is currently in.
-    FTS::Mutex m_mutex;          ///< A mutex to protect myself.
 
     FTS::Connection *m_pConnection; ///< The connection to my client.
 

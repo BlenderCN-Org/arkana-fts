@@ -76,7 +76,6 @@ int FTSSrv2::Client::run()
 int FTSSrv2::Client::quit()
 {
     int iRet = ERR_OK;
-    Lock l (m_mutex);
 
     // Logout only if needed.
     if(m_bLoggedIn) {
@@ -126,7 +125,6 @@ int FTSSrv2::Client::quit()
 int FTSSrv2::Client::tellToQuit()
 {
     // Closing the connection makes the "quitting"-stone rolling.
-    Lock l(m_mutex);
     m_pConnection->disconnect();
     return ERR_OK;
 }
@@ -366,8 +364,6 @@ bool FTSSrv2::Client::onLogin(const String & in_sNick, const String & in_sMD5)
                                         "\'" + DataBase::getUniqueDB()->escape(in_sMD5)  + "\', " +
                                         "\'" + DataBase::getUniqueDB()->escape(sIP) + "\'," +
                                         "\'" + String::nr(DSRV_PROC_CONNECT_INGAME) + "\'");
-
-    Lock l(m_mutex);
 
     if( iRet == ERR_OK ) {
         // save some "session data".
