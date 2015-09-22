@@ -57,7 +57,7 @@ void client_functions::login( String user, String pwd )
     p->append( pwd );
 
     // And login.
-    auto rc = connection->mreq( p );
+    auto rc = (int)connection->mreq( p );
     if( rc != ERR_OK ) {
         nMreqSendErr.push_back( rc );
     } else {
@@ -76,7 +76,7 @@ void client_functions::joinChat( String ChatRoom )
     p->append( pwd );
     p->append( chatRoom );
 
-    auto rc = connection->mreq( p );
+    auto rc = (int) connection->mreq( p );
     if( rc != ERR_OK ) {
         nMreqSendErr.push_back( rc );
     } else {
@@ -93,7 +93,7 @@ void client_functions::getChatList()
     auto p = new Packet( DSRV_MSG_CHAT_LIST );
     p->append( pwd );
 
-    auto rc = connection->mreq( p );
+    auto rc = (int) connection->mreq( p );
     if( rc != ERR_OK ) {
         nMreqSendErr.push_back( rc );
     } else {
@@ -128,7 +128,7 @@ void client_functions::chatMessage(String message, String toUser /*= String::EMP
     }
     p->append( message );
 
-    auto rc = connection->mreq( p );
+    auto rc = (int) connection->mreq( p );
     if( rc != ERR_OK ) {
         nMreqSendErr.push_back( rc );
     } else {
@@ -145,7 +145,7 @@ void client_functions::logout()
     auto p = new Packet( DSRV_MSG_LOGOUT );
     p->append( pwd );
 
-    auto rc = connection->mreq( p );
+    auto rc = (int) connection->mreq( p );
     if( rc != ERR_OK ) {
         nMreqSendErr.push_back( rc );
     } else {
