@@ -5,12 +5,20 @@ v.i5
 *.log
 
 # Ignore some of the VC++ user-files
+.editorconfig
 *.vcxproj.user
 *.sdf
 *.suo
 *.ilk
 *.pdb
 *.exe
+*.lib
+*.docstates
+*.log
+*.ex*
+*.opensdf
+*.psess
+*.vspx
 
 # Ignore the VC++ build folders
 Debug_Static/
@@ -20,6 +28,14 @@ ipch/
 3rdparty/freetype/objs/
 3rdparty/sound/libogg/win32/
 3rdparty/dao/objs
+Debug
+dummy.*
+3rdparty/dao/*.dao
+3rdparty/dao/*.cmd
+3rdparty/dao/Windows/*.sln
+3rdparty/pcre/linux/
+3rdparty/vclib/*
+
 
 # Ignore KDevelop-specific folders too
 .kdev*
@@ -30,6 +46,8 @@ ipch/
 
 # Ignore CMake build files
 build/
+CMakeFiles
+linux
 
 # Ignore profiler and debugger files
 gmon.out
@@ -48,4 +66,28 @@ gmon.out
 *.ogv
 *.avi
 *.glc
+CriticalError.txt
+*.org
+tools/TestSound
+gamedbg/
+gameserver/
+fts
+fts.sql
+tools/server2/*.dll
 
+3rdparty/SDL/Makefile
+3rdparty/SDL/SDL.qpg
+3rdparty/SDL/aclocal.m4
+3rdparty/SDL/build-deps
+3rdparty/SDL/config.status
+3rdparty/SDL/libtool
+3rdparty/SDL/sdl-config
+3rdparty/SDL/sdl.pc
+3rdparty/freetype/builds/unix/config.status
+3rdparty/freetype/builds/unix/freetype-config
+3rdparty/freetype/builds/unix/freetype2.pc
+3rdparty/freetype/builds/unix/ftconfig.h
+3rdparty/freetype/builds/unix/libtool
+3rdparty/freetype/builds/unix/unix-cc.mk
+3rdparty/freetype/builds/unix/unix-def.mk
+3rdparty/freetype/config.mk
