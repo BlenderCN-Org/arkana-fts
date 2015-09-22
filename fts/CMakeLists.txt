@@ -212,6 +212,7 @@ endif()
 
 set(FTS_LIBS)
 set(FTS_INCLUDES)
+list(APPEND FTS_LIBS X11)
 
 # The std:: namespace.
 include(${CMAKE_ROOT}/Modules/TestForSTDNamespace.cmake)
