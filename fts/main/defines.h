@@ -20,40 +20,21 @@
 #    define VC_EXTRALEAN 1
 #    define WIN32_LEAN_AND_MEAN 1
 #    define _CRT_SECURE_NO_DEPRECATE
-#  if _MSC_VER < 1600
-#    define EISCONN WSAEISCONN
-#    define EINPROGRESS WSAEINPROGRESS
-#    define EALREADY WSAEALREADY
-#  endif
-#  if _MSC_VER < 1500
-#    define vsnprintf _vsnprintf
-#  endif
-#  if _MSC_VER < 1900
-#    define snprintf _snprintf
-#    define strdup _strdup
-#    define strcasecmp _stricmp
-#    define strncasecmp _strnicmp
-#    define unlink _unlink
-#endif
-
-
-#    define beginthread _beginthread
-#    define S_ISREG(m) ((m)& S_IFREG)
-#  endif
-
-/* For Visual Studio, we have to define these needed things manually ... */
-#  ifdef _MSC_VER
-        /* inttypes.h - int64_t */
-typedef signed __int8		int8_t;
-typedef unsigned __int8		uint8_t;
-typedef signed __int16		int16_t;
-typedef unsigned __int16	uint16_t;
-typedef signed __int32		int32_t;
-typedef unsigned __int32	uint32_t;
-typedef signed __int64		int64_t;
-typedef unsigned __int64	uint64_t;
-#  else
-#    include <inttypes.h>
+#    if _MSC_VER < 1600
+#      define EISCONN WSAEISCONN
+#      define EINPROGRESS WSAEINPROGRESS
+#      define EALREADY WSAEALREADY
+#    endif
+#    if _MSC_VER < 1500
+#      define vsnprintf _vsnprintf
+#    endif
+#    if _MSC_VER < 1900
+#      define snprintf _snprintf
+#      define strdup _strdup
+#      define strcasecmp _stricmp
+#      define strncasecmp _strnicmp
+#      define unlink _unlink
+#    endif
 #  endif
 
 ////////////////////////////////////////////////////////////

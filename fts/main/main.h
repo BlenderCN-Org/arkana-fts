@@ -41,6 +41,7 @@
 #  include <errno.h>
 #  include <time.h>
 #  include <math.h>
+#  include <cstdint>
 
 #  if WINDOOF
 #    include <windows.h>

@@ -4,6 +4,19 @@
 #include <stdarg.h>
 
 #ifdef D_COMPILES_SERVER
+#if defined(_MSC_VER)
+
+#  include <fcntl.h>
+#  include <io.h>
+
+#ifdef _DEBUG
+#ifndef DBG_NEW
+#define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
+#define new DBG_NEW
+#endif
+#endif  // _DEBUG
+
+#else
 #  include <mysql/mysql.h>
 #  include <pthread.h>
 
@@ -20,7 +33,7 @@
 #  include <fcntl.h>
 #  include <errno.h>
 #  include <malloc.h>
-
+#endif
 #  include "dLib/dString/dString.h"
 
 #  include "../toolcompat.h"

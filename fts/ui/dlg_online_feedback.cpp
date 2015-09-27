@@ -89,7 +89,7 @@ bool FTS::OnlineFeedbackWindow::cbSend(const CEGUI::EventArgs &)
     p.append(sMessage);
 
     // Only close myself if everything was successful.
-    if(pCon->mreq(&p) == ERR_OK && p.get() == ERR_OK) {
+    if( pCon->mreq( &p ) == FTSC_ERR::OK && p.get() == ERR_OK ) {
         CEGUI::EventArgs ea;
         this->cbCancel(ea);
     }

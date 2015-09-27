@@ -7,12 +7,21 @@
  **/
 
 #ifdef D_COMPILES_SERVER
+#include <thread>
+#include <chrono>
 
 #include "client.h"
 #include "socket_connection_waiter.h"
-#include "net/packet.h"
 #include "server_log.h"
-#include "db.h"
+
+#if WINDOOF
+using socklen_t = int;
+
+inline void close( SOCKET s )
+{
+    closesocket( s );
+}
+#endif
 
 using namespace FTS;
 using namespace FTSSrv2;
@@ -23,11 +32,12 @@ FTSSrv2::SocketConnectionWaiter::SocketConnectionWaiter()
 
 FTSSrv2::SocketConnectionWaiter::~SocketConnectionWaiter()
 {
-    this->deinit();
+    close( m_listenSocket );
 }
 
-int FTSSrv2::SocketConnectionWaiter::init(uint16_t in_usPort)
+int FTSSrv2::SocketConnectionWaiter::init(std::uint16_t in_usPort)
 {
+    m_port = in_usPort;
     SOCKADDR_IN serverAddress;
 
     // Choose our options.
@@ -60,53 +70,63 @@ int FTSSrv2::SocketConnectionWaiter::init(uint16_t in_usPort)
     return ERR_OK;
 }
 
-int FTSSrv2::SocketConnectionWaiter::deinit()
+bool FTSSrv2::SocketConnectionWaiter::waitForThenDoConnection(std::int64_t in_ulMaxWaitMillisec)
 {
-    close(m_listenSocket);
-    return ERR_OK;
-}
-
-bool FTSSrv2::SocketConnectionWaiter::waitForThenDoConnection(uint64_t in_ulMaxWaitMillisec)
-{
-    SOCKADDR_IN clientAddress;
-    socklen_t iClientAddressSize = sizeof(clientAddress);
-    SOCKET connectSocket;
-
-    int64_t lMaxWaitMillisecLeft = in_ulMaxWaitMillisec;
-    uint32_t uiLastTick = dGetTicks();
-
+    auto startTime = std::chrono::steady_clock::now();
     // wait for connections a certain amount of time or infinitely.
     while(true) {
-        uint32_t uiNow = dGetTicks();
-        lMaxWaitMillisecLeft -= (uiNow - uiLastTick);
-        uiLastTick = uiNow;
-
         // Nothing correct got in time, bye.
-        if(lMaxWaitMillisecLeft <= 0)
+        auto nowTime = std::chrono::steady_clock::now();
+        auto diffTime = std::chrono::duration_cast<std::chrono::milliseconds>(nowTime - startTime).count();
+        if( diffTime >= in_ulMaxWaitMillisec )
             return false;
 
-        // Yeah, we got someone !
-        if((connectSocket = accept(m_listenSocket, (sockaddr *) & clientAddress, &iClientAddressSize)) != -1) {
+        SOCKADDR_IN clientAddress;
+        socklen_t iClientAddressSize = sizeof( clientAddress );
+        SOCKET connectSocket;
+        if( (connectSocket = accept( m_listenSocket, ( sockaddr * ) & clientAddress, &iClientAddressSize )) != -1 ) {
+            // Yeah, we got someone !
+
             // Build up a class that will work this connection.
             TraditionalConnection *pCon = new TraditionalConnection(connectSocket, clientAddress);
             Client *pCli = ClientsManager::getManager()->createClient(pCon);
+            if( pCli == nullptr ) {
+                FTSMSG( "[ERROR] Can't create client, may be it exists already. Port<" + String::nr( (int) m_port, 0, ' ', std::ios::hex ) + "> con<" + String::nr( (const uint64_t) pCon, 4, '0', std::ios_base::hex ) + ">", MsgType::Error );
+                return false;
+            }
+
+            FTSMSGDBG( "Accept connection on port 0x" + String::nr( ( int ) m_port, 0, ' ', std::ios::hex ) + " client<"+ String::nr((const uint64_t)pCli,4, '0', std::ios_base::hex) + "> con<"+ String::nr((const uint64_t)pCon,4,'0', std::ios_base::hex)+ ">", 4 );
 
             // And start a new thread for him.
-            pthread_t thr;
-            pthread_create(&thr, 0, Client::starter, pCli);
-
+            auto thr = std::thread( Client::starter, pCli );
+            thr.detach();
             return true;
 
         } else if(errno == EAGAIN || errno == EWOULDBLOCK) {
             // yoyo, wait a bit to avoid megaload of cpu. 1000 microsec = 1 millisec.
-            usleep(1000);
+            std::this_thread::sleep_for( std::chrono::milliseconds(1) );
             continue;
         } else {
+#if WINDOOF
+            if ( connectSocket == INVALID_SOCKET)
+            {
+                auto err = WSAGetLastError();
+                if ( err == WSAEWOULDBLOCK )
+                {
+                    // yoyo, wait a bit to avoid megaload of cpu. 1000 microsec = 1 millisec.
+                    std::this_thread::sleep_for( std::chrono::milliseconds( 1 ) );
+                    continue;
+                }
+                
+                FTSMSG( "[ERROR] socket accept: " + String::nr( err ), MsgType::Error );
+            }
+
+#endif
             // Some error ... but continue waiting for a connection.
             FTSMSG("[ERROR] socket accept: "+String(strerror(errno)), MsgType::Error);
             srvFlush(stderr);
             // yoyo, wait a bit to avoid megaload of cpu. 1000 microsec = 1 millisec.
-            usleep(1000);
+            std::this_thread::sleep_for( std::chrono::milliseconds( 1 ) );
             continue;
         }
     }

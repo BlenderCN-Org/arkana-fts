@@ -27,7 +27,7 @@ void cbTestYes()
 {
     Packet p(DSRV_MSG_GAME_START);
     p.append(g_pMeHacky->og_getMD5());
-    if(ERR_OK != g_pMeHacky->og_getConnection()->mreq(&p)) {
+    if(FTSC_ERR::OK != g_pMeHacky->og_getConnection()->mreq(&p)) {
         return ;
     }
 }
@@ -36,7 +36,7 @@ void cbTestNo()
 {
     Packet p(DSRV_MSG_GAME_REM);
     p.append(g_pMeHacky->og_getMD5());
-    if(ERR_OK != g_pMeHacky->og_getConnection()->mreq(&p)) {
+    if( FTSC_ERR::OK != g_pMeHacky->og_getConnection()->mreq( &p ) ) {
         return ;
     }
 }
@@ -152,7 +152,7 @@ bool FTS::DlgOnlineNewGame::cbOk(const CEGUI::EventArgs & in_ea)
     p.append((uint16_t)12345);
     m_pMapInfo->writeToPacket(&p);
 
-    if(ERR_OK != g_pMeHacky->og_getConnection()->mreq(&p)) {
+    if( FTSC_ERR::OK != g_pMeHacky->og_getConnection()->mreq( &p ) ) {
         return true;
     }
 

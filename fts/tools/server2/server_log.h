@@ -6,37 +6,40 @@
 #  include "utilities/threading.h"
 
 #  include <stdio.h>
+#include <unordered_map>
 
 namespace FTSSrv2 {
 
 void srvFlush(FILE * pFile);
-
-class ServerLogger : public FTS::Logger {
+using TotalStatPackets = std::unordered_map < int, std::pair<int, int> > ;
+class ServerLogger : public FTS::Logger
+{
+    TotalStatPackets m_totalPackets;
 protected:
     /// Protect from copying.
     ServerLogger(const ServerLogger &) {};
 
-    size_t m_nPlayers;         ///< Number of players logged in.
+    size_t m_nPlayers;          ///< Number of players logged in.
     FTS::Mutex m_nPlayersMutex; ///< Protects the number of players attribute.
-    size_t m_nGames;           ///< Number of games currently opened.
+    size_t m_nGames;            ///< Number of games currently opened.
     FTS::Mutex m_nGamesMutex;   ///< Protects the number of games attribute.
 
     FTS::Mutex m_mutex;         ///< Protects from threaded calls.
-    FTS::String m_sErrFile;        ///< The file to write error messages to.
-    FTS::String m_sLogFile;        ///< The file to write logging messages to.
-    FTS::String m_sNetLogFile;     ///< The file to log network traffic to.
-    FTS::String m_sPlayersFile;    ///< The file to write the actual player count to.
-    FTS::String m_sGamesFile;      ///< The file to write the actual games count to.
-    bool m_bDaemon;            ///< Whether I'm started as a daemon or not.
-    bool m_bVerbose;           ///< Whether I'm verbose or not.
-
+    FTS::String m_sErrFile;     ///< The file to write error messages to.
+    FTS::String m_sLogFile;     ///< The file to write logging messages to.
+    FTS::String m_sNetLogFile;  ///< The file to log network traffic to.
+    FTS::String m_sPlayersFile; ///< The file to write the actual player count to.
+    FTS::String m_sGamesFile;   ///< The file to write the actual games count to.
+    bool m_bDaemon;             ///< Whether I'm started as a daemon or not.
+    bool m_bVerbose;            ///< Whether I'm verbose or not.
+    int m_dbgLvl;               ///< All debug message must have a level .lt. this to be printed.
     FTS::String tryFile(const FTS::String &in_sFilename, const FTS::String &in_sDir) const;
     FTS::String timeString() const;
 
     int logToFile(const FTS::String &in_sMessage, const FTS::String & in_sFile) const;
 
 public:
-    ServerLogger(const FTS::String &in_sLogDir, bool in_bVerbose);
+    ServerLogger(const FTS::String &in_sLogDir, bool in_bVerbose, int in_dbgLvl = 0);
     virtual ~ServerLogger();
 
     int loadConfig() {return ERR_OK;};
@@ -144,8 +147,15 @@ public:
     size_t remGame(void);
     inline size_t getGameCount(void) const {return m_nGames;};
 
-    inline bool getVerbose() const {return m_bVerbose;};
+    void statAddSendPacket( int req );
+    void statAddRecvPacket( int req );
+    void clearStats();
+    TotalStatPackets& getStatTotalPackets() { return m_totalPackets; }
+
+    inline bool getVerbose() const { return m_bVerbose; };
     inline bool setVerbose(bool in_b) {bool bOld = m_bVerbose; m_bVerbose = in_b; return bOld;};
+    inline int  geDbgLevel() const { return m_dbgLvl; }
+    inline int  setDbgLevel( int dbgLvl ) { int oldDbgLvl = m_dbgLvl; m_dbgLvl = dbgLvl; return oldDbgLvl; }
 };
 
 } // namespace FTSSrv2

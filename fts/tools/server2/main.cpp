@@ -1,20 +1,33 @@
-#include "server.h"
 #include "server_log.h"
 #include "db.h"
-#include "client.h"
 #include "channel.h"
-#include "game.h"
+#include "ClientsManager.h"
+#include "ChannelManager.h"
+#include "GameManager.h"
 #include "utilities/threading.h"
 #include "net/connection.h"
 #include "socket_connection_waiter.h"
+#include "utilities/GetOpt.h"
 
 #include "constants.h"
 
-#include <list>
-#include <sys/time.h>
+#include "server.h" // Move here to avoid including problems w/ main.h in net/connection.h 
 
-#include <pwd.h>
+#if WINDOOF
+#pragma comment(lib, "Ws2_32.lib")
+#pragma warning (disable: 4996) // disable complaining about not ISO C++ conformant name open etc.
+#endif
+
+#include <vector>
+#include <list>
+#include <chrono>
+#include <thread>
+#include <algorithm>
+#include <numeric>
 #include <signal.h>
+#if !WINDOOF
+#include <pwd.h>
+#endif
 
 /* Change this to whatever your daemon is called */
 #define DAEMON_NAME "fts-server"
@@ -26,45 +39,52 @@
 #define EXIT_FAILURE 1
 
 bool g_bExit = false;
+bool stopSpamThread = false;
 
-void *connectionListener(void *in_iPort);
-void help(char *in_pszLine, char *in_pszMe);
-static void daemonize(const char *lockfile, const char *dir);
+void connectionListener(uint16_t in_iPort);
+void help( const std::string& in_pszLine, char *in_pszMe );
+void printServerStats();
+
+static void daemonize( const char *lockfile, const char *dir );
 static void trytokill(const char *lockfile);
 
+using namespace std;
 using namespace FTSSrv2;
 using namespace FTS;
 
-void *testSpammer(void *args)
+std::string getNextToken( stringstream& sb, char delimiter = ' ' )
 {
-    Channel *pChan = (Channel *)args;
+    string token;
+    do {
+        getline( sb, token, delimiter );
+    } while( token.empty() && !sb.eof() );
 
-    FTSMSGDBG("Starting the test spammer in default channel.", 1);
-
-    Packet p(DSRV_MSG_CHAT_GETMSG);
-    p.append(DSRV_CHAT_TYPE_NORMAL);
-    p.append((int8_t)0);
-    p.append(String("Test_Spammer"));
-    p.append(String("spam0r messag0r"));
-
-    struct timespec ts;
-    ts.tv_sec = 0;
-    ts.tv_nsec = 100000000; // 100 000 000 = 0.1 sec
-
-    // wait for connections or quit.
-    while(!g_bExit) {
-        nanosleep(&ts, NULL);
-        pChan->sendPacketToAll(&p);
-    }
-
-    return NULL;
+    return token;
 }
 
 int main(int argc, char *argv[])
 {
+#if defined(_DEBUG) && defined(WINDOOF)
+    int flag = _CrtSetDbgFlag( _CRTDBG_REPORT_FLAG );
+    flag |= _CRTDBG_LEAK_CHECK_DF; // Turn on leak-checking bit
+    _CrtSetDbgFlag( flag );
+    //_CrtSetBreakAlloc( 5382 ); // Comment or un-comment on need basis
+#endif
     bool bDaemon = false, bVerbose = false;
-    char *logdir = strdup(DSRV_LOG_DIR);
+    String logdir(DSRV_LOG_DIR);
     int opt = -1;
+    int dbgLevel = 1;
+#if WINDOOF
+    //----------------------
+    // Initialize Winsock.
+    WSADATA wsaData;
+    int iResult = WSAStartup( MAKEWORD( 2, 2 ), &wsaData );
+    if ( iResult != NO_ERROR )
+    {
+        fprintf(stdout, "WSAStartup failed with error: %ld\n", iResult );
+        return 1;
+    }
+#endif
 
 #ifdef SIGPIPE
     signal(SIGPIPE, SIG_IGN); /* Ignore broken pipe */
@@ -72,14 +92,20 @@ int main(int argc, char *argv[])
 
     String sHome = getenv("HOME");
     bool bJustKill = false;
-    while((opt = getopt(argc, argv, "H:l:vdkh")) != -1) {
+#if WINDOOF
+    // No run as daemon possible 
+    std::string options = "H:l:vkhg:";
+#else
+    std::string options = "H:l:vdkhg:";
+#endif
+    GetOpt getopt( argc, argv, options );
+    while((opt = getopt()) != -1) {
         switch(opt) {
         case 'H':
-            sHome = String(optarg);
+            sHome = String(getopt.get());
             break;
         case 'l':
-            free(logdir);
-            logdir = strdup(optarg);
+            logdir = String(getopt.get());
             break;
         case 'v':
             bVerbose = true;
@@ -90,16 +116,22 @@ int main(int argc, char *argv[])
         case 'k':
             bJustKill = true;
             break;
+        case 'g':
+            dbgLevel = atoi( getopt.get().c_str() );
+            break;
         case 'h':
         default:
-            fprintf(stdout, "usage: %s [-H HOMEDIR] [-l LOGDIR] [-v] [-h]\n", argv[0]);
-            fprintf(stdout, "      -H HOMEDIR assume the home directory to be HOMEDIR.\n"
-                            "                  The lockfile will be written there.\n");
-            fprintf(stdout, "      -l LOGDIR  sets the directory to write logfiles\n");
-            fprintf(stdout, "      -v         activates verbose mode\n");
-            fprintf(stdout, "      -d         start as a daemon (not interactive) (EXPERIMENTAL)\n");
-            fprintf(stdout, "      -k         shut down the active daemon (TODO)\n");
-            fprintf(stdout, "      -h         shows this help message\n");
+            std::cout << "usage: " << " [-H HOMEDIR] [-l LOGDIR] [-v] [-h]\n" ;
+            std::cout << "      -H HOMEDIR assume the home directory to be HOMEDIR.\n"
+                      << "                  The lockfile will be written there.\n";
+            std::cout << "      -l LOGDIR  sets the directory to write logfiles\n";
+            std::cout << "      -v         activates verbose mode\n";
+#if !WINDOOF
+            std::cout << "      -d         start as a daemon (not interactive) (EXPERIMENTAL)\n";
+#endif
+            std::cout << "      -k         shut down the active daemon (TODO)\n";
+            std::cout << "      -g LEVEL   sets the gravity level of the logger\n";
+            std::cout << "      -h         shows this help message\n";
             exit(EXIT_SUCCESS);
             break;
         }
@@ -116,17 +148,18 @@ int main(int argc, char *argv[])
     // =====================================
     int lfp = -1;
 
+#if defined(_DEBUG)
+#else
     // Check the lockfile
     lfp = open(sLockFile.c_str(),O_RDONLY);
 
     if(lfp >= 0) {
-        printf("A lockfile already exists, this usually means that"
+        std::cout << "A lockfile already exists, this usually means that"
                " the server is already started. Please first stop the"
                " server using the -k switch or delete the lockfile if"
-               " you are sure the server is not running.\n");
+               " you are sure the server is not running.\n";
         exit(EXIT_FAILURE);
-    } else
-        close(lfp);
+    } 
 
     // Create the lockfile.
     lfp = open(sLockFile.c_str(),O_RDWR|O_CREAT,0640);
@@ -134,11 +167,12 @@ int main(int argc, char *argv[])
         std::cerr << "unable to create lock file " << sLockFile << " (" << strerror(errno) << ")" << std::endl;
         exit(EXIT_FAILURE);
     }
+    close( lfp );
+#endif
 
     // Logging and daemonizing.
     // ========================
-    new FTSSrv2::ServerLogger(logdir, bVerbose);
-    free(logdir);
+    new FTSSrv2::ServerLogger(logdir, bVerbose, dbgLevel);
 
     // Daemonize if wanted.
     if(bDaemon)
@@ -164,118 +198,87 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    ChannelManager::init();
-    ClientsManager::init();
-    GameManager::init();
+    new ChannelManager();
+    ChannelManager::getManager()->init();
+    new ClientsManager();
+    new GameManager();
 
     // Begin to listen on all ports.
     // =============================
 
     // Create a thread waiting on each port. Including the fts port: 0xAF75 :)
     // DEBUG: the +1 at the end.
-    pthread_t threads[DSRV_PORT_LAST + 1 - DSRV_PORT_FIRST + 1];
+    std::vector<std::thread> threads;
 
-    for(size_t i = DSRV_PORT_FIRST; i < DSRV_PORT_LAST + 1; i++)
-        pthread_create(&threads[i - DSRV_PORT_FIRST], 0, connectionListener, (void *)i);
-
-    // DEBUG: a test spamming thread.
-    pthread_t tSpamThread = 0;
-
-    // wait for user input.
-    char line[1024];
-    char cmd[1024];
+    for(uint16_t i = DSRV_PORT_FIRST; i < DSRV_PORT_LAST + 1; i++)
+        threads.emplace_back( connectionListener, i );
 
     // Here we access directly to it, because we just read it, so there's no danger (I hope)
     while(!g_bExit) {
         // Don't read stdin if being a daemon.
         if(bDaemon) {
-            usleep(10);
+            std::this_thread::sleep_for( std::chrono::microseconds(10));
             continue;
         }
-
-        memset(line, '\0', sizeof(line));
-        memset(cmd, '\0', sizeof(cmd));
 
         srvFlush(stdout);
 
-        if(NULL == fgets(line, sizeof(line) - 1, stdin)) {
-            FTSMSG("w00t did you enter ? Something wrong, that's sure! Ignoring this...", MsgType::Error);
-            continue;
-        }
+        string s;
+        getline( cin, s );
+        auto linebuf = s.erase( 0, s.find_first_not_of( " \t\n" ) );
+        stringstream sb( linebuf );
+        string cmd;
 
-        int l = strlen(line);
-
-        if(l == 0)
-            continue;
-        if(line[--l] == '\n') {
-            if(l == 0)
-                continue;
-            line[l] = '\0';
-        } else if(l == sizeof(line) - 2) {
-            FTSMSG("Man, I don't accept lines longer then 1022 chars.", MsgType::Error);
-            while((l = getchar()) != '\n' && l != EOF)
-                /* void */ ;
-            continue;
-        }
-        // Now here the line is well formatted (no trailing \n, but a trailing \0).
-
-        // get the command outta here.
-        sscanf(line, "%s", cmd);
-
-        // Parse it !
-        if(!strcmp(cmd, "help")) {
-            help(line, argv[0]);
-        } else if(!strcmp(cmd, "exit")) {
-            g_bExit = true;
-            break;
-        } else if(!strcmp(cmd, "nplayers")) {
-            size_t nPlayers = dynamic_cast<ServerLogger *>(FTS::Logger::getSingletonPtr())->getPlayerCount();
-            FTSMSGDBG("Number of players that are logged in: "+String::nr(nPlayers), 1);
-        } else if(!strcmp(cmd, "ngames")) {
-            size_t nGames = dynamic_cast<ServerLogger *>(FTS::Logger::getSingletonPtr())->getGameCount();
-            FTSMSGDBG("Number of games that are opened: "+String::nr(nGames), 1);
-        } else if(!strcmp(cmd, "version")) {
-            FTSMSGDBG("The version of the server is " D_SERVER_VERSION_STR, 1);
-        } else if(!strcmp(cmd, "spam")) {
-            char arg[8] = {0, 0, 0, 0, 0, 0, 0, 0};
-            sscanf(line, "spam%7s", arg);
-            if(!strcmp(arg, "start") && tSpamThread == 0) {
-                if(pthread_create(&tSpamThread, 0, testSpammer, (void *)ChannelManager::getManager()->getDefaultChannel()) == 0)
-                    FTSMSGDBG("Spam bot started.", 1);
-                else
-                    FTSMSG("Spam bot could not be started ("+String(strerror(errno))+").", MsgType::Error);
-            } else if(!strcmp(arg, "stop") && tSpamThread != 0) {
-                if(pthread_cancel(tSpamThread) == 0) {
-                    FTSMSGDBG("Spam bot stopped.", 1);
-                    tSpamThread = 0;
-                } else
-                    FTSMSG("Spam bot could not be stopped ("+String(strerror(errno))+").", MsgType::Error);
-            }
-        } else if(!strcmp(cmd, "verbose")) {
-            char arg[6] = {0, 0, 0, 0, 0, 0};
-            sscanf(line, "verbose%5s", arg);
-            if(!strcmp(arg, "on")) {
-                bool bOld = dynamic_cast<ServerLogger *>(FTS::Logger::getSingletonPtr())->setVerbose(true);
-                FTSMSGDBG("Verbose mode was "+String(bOld ? "on" : "off")+", now it is on.", 1);
-            } else if(!strcmp(arg, "off")) {
-                bool bOld = dynamic_cast<ServerLogger *>(FTS::Logger::getSingletonPtr())->setVerbose(false);
-                FTSMSGDBG("Verbose mode was "+String(bOld ? "on" : "off")+", now it is off.", 1);
-                FTSMSG("Verbose mode was "+String(bOld ? "on" : "off")+", now it is off.", MsgType::Message);
+        while ( getline( sb, cmd, ' ' ) )
+        {
+            std::transform( cmd.begin(), cmd.end(), cmd.begin(), ::tolower ); // Thanks to SO
+            // Parse it !
+            if( cmd == "help"  ) {
+                auto arg = getNextToken( sb );
+                std::transform( arg.begin(), arg.end(), arg.begin(), ::tolower ); // Thanks to SO
+                help( arg, argv[0] );
+            } else if( cmd == "exit" ) {
+                g_bExit = true;
+                break;
+            } else if( cmd == "nplayers" ) {
+                size_t nPlayers = dynamic_cast< ServerLogger * >(FTS::Logger::getSingletonPtr())->getPlayerCount();
+                FTSMSGDBG( "Number of players that are logged in: " + String::nr( nPlayers ), 1 );
+            } else if( cmd == "ngames" ) {
+                size_t nGames = dynamic_cast< ServerLogger * >(FTS::Logger::getSingletonPtr())->getGameCount();
+                FTSMSGDBG( "Number of games that are opened: " + String::nr( nGames ), 1 );
+            } else if( cmd == "version" ) {
+                FTSMSGDBG( "The version of the server is " D_SERVER_VERSION_STR, 1 );
+            } else if( cmd == "verbose" ) {
+                auto arg = getNextToken( sb );
+                std::transform( arg.begin(), arg.end(), arg.begin(), ::tolower ); // Thanks to SO
+                if( arg == "on" ) {
+                    bool bOld = dynamic_cast< ServerLogger * >(FTS::Logger::getSingletonPtr())->setVerbose( true );
+                    FTSMSGDBG( "Verbose mode was " + String( bOld ? "on" : "off" ) + ", now it is on.", 1 );
+                } else if( arg == "off" ) {
+                    bool bOld = dynamic_cast< ServerLogger * >(FTS::Logger::getSingletonPtr())->setVerbose( false );
+                    FTSMSGDBG( "Verbose mode was " + String( bOld ? "on" : "off" ) + ", now it is off.", 1 );
+                    FTSMSG( "Verbose mode was " + String( bOld ? "on" : "off" ) + ", now it is off.", MsgType::Message );
+                } else {
+                    bool b = dynamic_cast< ServerLogger * >(FTS::Logger::getSingletonPtr())->getVerbose();
+                    FTSMSG( "Verbose mode is currently " + String( b ? "on" : "off" ), MsgType::Message );
+                }
+            } else if( cmd == "stats" ) {
+                printServerStats();
+            } else if( cmd == "clearstats" ) {
+                dynamic_cast< FTSSrv2::ServerLogger* >(FTS::Logger::getSingletonPtr())->clearStats();
             } else {
-                bool b = dynamic_cast<ServerLogger *>(FTS::Logger::getSingletonPtr())->getVerbose();
-                FTSMSG("Verbose mode is currently "+String(b ? "on" : "off"), MsgType::Message);
+                FTSMSG( "Unknown command '" + String( cmd ) + "', u n00b, try typing 'help' to get some help.", MsgType::Error );
             }
-        } else {
-            FTSMSG("Unknown command '"+String(cmd)+"', u n00b, try typing 'help' to get some help.", MsgType::Error);
         }
     }
 
     // Now all is lost, nobody likes fts anymore :( clean up.
 
     FTSMSGDBG("Waiting for every thread to close ...", 1);
-    for(size_t i = DSRV_PORT_FIRST; i < DSRV_PORT_LAST + 1; i++) {
-        pthread_join(threads[i - DSRV_PORT_FIRST], 0);
-        FTSMSGDBG("Thread on port 0x"+String::nr(i, -1,'0',std::ios::hex)+" successfully closed.", 1);
+    int i = 0;
+    for( auto& thread : threads ) {
+        thread.join();
+        FTSMSGDBG( "Thread on port 0x" + String::nr( DSRV_PORT_FIRST + i++, -1, '0', std::ios::hex ) + " successfully closed.", 1 );
     }
 
     // Shutdown all connectons to all clients that still exist.
@@ -297,6 +300,7 @@ int main(int argc, char *argv[])
         FTSMSG("Error removing the lockfile "+sLockFile+
                ". If the file still exists, you should try to remove "
                "it by hand, so the server will start next time.\n", MsgType::Error);
+        FTSMSG( "The Error Text is " + String( strerror( errno ) ), MsgType::Error );
     }
 
     FTSMSGDBG("Everything done, bye\n", 1);
@@ -305,82 +309,98 @@ int main(int argc, char *argv[])
     return EXIT_SUCCESS;
 }
 
-// Display some help.
-void help(char *in_pszLine, char *in_pszMe)
+void printServerStats()
 {
-    char topic[1024];
+    auto totals = dynamic_cast< FTSSrv2::ServerLogger* >(FTS::Logger::getSingletonPtr())->getStatTotalPackets();
+    FTSMSGDBG( " ", 1 );
+    FTSMSGDBG( "Req No    Snd  Recv", 1 );
+    FTSMSGDBG( "---------+----+----+", 1 );
+    for( const auto& kv : totals ) {
+        FTSMSGDBG( "req {1}   |{2}|{3}| ", 1, String::nr( kv.first, 2, ' ' ), String::nr( kv.second.first, 4, ' ' ), String::nr( kv.second.second, 4, ' ' ) );
+    }
+    FTSMSGDBG( "---------+----+----+", 1 );
+    int totalSend = std::accumulate( std::begin( totals ), std::end( totals ), 0, [] ( int sum, const std::pair<int, std::pair<int, int>>& p ) { return sum + p.second.first; } );
+    int totalRecv = std::accumulate( std::begin( totals ), std::end( totals ), 0, [] ( int sum, const std::pair<int, std::pair<int, int>>& p ) { return sum + p.second.second; } );
+    FTSMSGDBG( "Totals   |{1}|{2}|", 1, String::nr( totalSend, 4, ' ' ), String::nr( totalRecv, 4, ' ' ) );
+}
 
-    memset(topic, '\0', sizeof(topic));
+// Display some help.
+void help(const string& topic, char *in_pszMe)
+{
 
-    sscanf(in_pszLine, "help%1023s", topic);
-
-    if(!strcmp(topic, "help")) {
-        fprintf(stdout, "Just type help once, It won't help to type help more often :p");
-    } else if(!strcmp(topic, "exit")) {
-        fprintf(stdout, "SYNTAX:\n");
-        fprintf(stdout, "\texit\n");
-        fprintf(stdout, "\n");
-        fprintf(stdout, "DESC:\n");
-        fprintf(stdout, "\tThis will close the connection to all clients and shutdown the server.\n");
-        fprintf(stdout, "Normally, every client should get a warning message that the server has been shutdown.\n");
-        fprintf(stdout, "\n");
-    } else if(!strcmp(topic, "nplayers")) {
-        fprintf(stdout, "SYNTAX:\n");
-        fprintf(stdout, "\tnplayers\n");
-        fprintf(stdout, "\n");
-        fprintf(stdout, "DESC:\n");
-        fprintf(stdout, "\tThis just prints out how much players are actually connected.\n");
-        fprintf(stdout, "The players that are connected, but not logged in are also counted here.\n");
-        fprintf(stdout, "You can always see this in the file " DSRV_FILE_NPLAYERS".\n");
-        fprintf(stdout, "\n");
-    } else if(!strcmp(topic, "ngames")) {
-        fprintf(stdout, "SYNTAX:\n");
-        fprintf(stdout, "\tngames\n");
-        fprintf(stdout, "\n");
-        fprintf(stdout, "DESC:\n");
-        fprintf(stdout, "\tThis just prints out how much games are actually opened.\n");
-        fprintf(stdout, "The players that are opened, but not started yet are also counted here.\n");
-        fprintf(stdout, "You can always see this in the file " DSRV_FILE_NGAMES".\n");
-        fprintf(stdout, "\n");
-    } else if(!strcmp(topic, "version")) {
-        fprintf(stdout, "SYNTAX:\n");
-        fprintf(stdout, "\tversion\n");
-        fprintf(stdout, "\n");
-        fprintf(stdout, "DESC:\n");
-        fprintf(stdout, "\tThis just prints out the version of the server.\n");
-    } else if(!strcmp(topic, "spam")) {
-        fprintf(stdout, "SYNTAX:\n");
-        fprintf(stdout, "\tspam [start|stop]\n");
-        fprintf(stdout, "\n");
-        fprintf(stdout, "DESC:\n");
-        fprintf(stdout, "\tThis starts or stops a spam bot, depending on the argument.\n");
-        fprintf(stdout, "The spam bot will send a spam message 10 times a second in the\n");
-        fprintf(stdout, "main channel, but he won't appear in the players list and won't\n");
-        fprintf(stdout, "answer to any message, he just spams messages in the channel.\n");
-        fprintf(stdout, "\n");
-    } else if(!strcmp(topic, "verbose")) {
-        fprintf(stdout, "SYNTAX:\n");
-        fprintf(stdout, "\tverbose [on|off]\n");
-        fprintf(stdout, "\n");
-        fprintf(stdout, "DESC:\n");
-        fprintf(stdout, "\tThis changes the verbosity mode of the server.\n");
-        fprintf(stdout, "If verbosity is off, the server only tells you about the errors\n");
-        fprintf(stdout, "and loggs all the rest into the logfile. If verbosity is on,\n");
-        fprintf(stdout, "the server tells you everything that happens too.\n");
-        fprintf(stdout, "If no argument is given, it prints the current verbosity state.\n");
-        fprintf(stdout, "\n");
+    if(topic == "help") {
+        std::cout << "Just type help once, It won't help to type help more often :p\n";
+    } else if(topic == "exit") {
+        std::cout << "SYNTAX:\n";
+        std::cout << "\texit\n";
+        std::cout << "\n";
+        std::cout << "DESC:\n";
+        std::cout << "\tThis will close the connection to all clients and shutdown the server.\n";
+        std::cout << "Normally, every client should get a warning message that the server has been shutdown.\n";
+        std::cout << "\n";
+    } else if( topic == "stats" ) {
+        std::cout << "SYNTAX:\n";
+        std::cout << "\tstats\n";
+        std::cout << "\n";
+        std::cout << "DESC:\n";
+        std::cout << "\tThis will show the statistics about request packets.\n";
+        std::cout << "\n";
+    } else if( topic == "clearstats" ) {
+        std::cout << "SYNTAX:\n";
+        std::cout << "\tclearstats\n";
+        std::cout << "\n";
+        std::cout << "DESC:\n";
+        std::cout << "\tThis will clear all accumulated request packets statistics.\n";
+        std::cout << "\n";
+    } else if( topic == "nplayers" ) {
+        std::cout << "SYNTAX:\n";
+        std::cout << "\tnplayers\n";
+        std::cout << "\n";
+        std::cout << "DESC:\n";
+        std::cout << "\tThis just prints out how much players are actually connected.\n";
+        std::cout << "The players that are connected, but not logged in are also counted here.\n";
+        std::cout << "You can always see this in the file " DSRV_FILE_NPLAYERS".\n";
+        std::cout << "\n";
+    } else if(topic == "ngames") {
+        std::cout << "SYNTAX:\n";
+        std::cout << "\tngames\n";
+        std::cout << "\n";
+        std::cout << "DESC:\n";
+        std::cout << "\tThis just prints out how much games are actually opened.\n";
+        std::cout << "The players that are opened, but not started yet are also counted here.\n";
+        std::cout << "You can always see this in the file " DSRV_FILE_NGAMES".\n";
+        std::cout << "\n";
+    } else if(topic == "version") {
+        std::cout << "SYNTAX:\n";
+        std::cout << "\tversion\n";
+        std::cout << "\n";
+        std::cout << "DESC:\n";
+        std::cout << "\tThis just prints out the version of the server.\n";
+    } else if(topic == "verbose") {
+        std::cout << "SYNTAX:\n";
+        std::cout << "\tverbose [on|off]\n";
+        std::cout << "\n";
+        std::cout << "DESC:\n";
+        std::cout << "\tThis changes the verbosity mode of the server.\n";
+        std::cout << "If verbosity is off, the server only tells you about the errors\n";
+        std::cout << "and loggs all the rest into the logfile. If verbosity is on,\n";
+        std::cout << "the server tells you everything that happens too.\n";
+        std::cout << "If no argument is given, it prints the current verbosity state.\n";
+        std::cout << "\n";
     } else {
-        fprintf(stdout, "Type: help [command], where command is one of the followings:\n");
-        fprintf(stdout, "\n");
-        fprintf(stdout, "  exit     shuts down this server.\n");
-        fprintf(stdout, "  version  see the server-version.\n");
-        fprintf(stdout, "  nplayers see the number of players.\n");
-        fprintf(stdout, "  ngames   see the number of games.\n");
-        fprintf(stdout, "  spam     start/stop a spam bot in the main channel.\n");
-        fprintf(stdout, "  verbose  let me talk much or not.\n");
-        fprintf(stdout, "\n");
-        fprintf(stdout, "FILES:\n");
-        fprintf(stdout, "All files are located in the current working directory.\n");
+        std::cout << "Type: help [command], where command is one of the followings:\n";
+        std::cout << "\n";
+        std::cout << "  exit     shuts down this server.\n";
+        std::cout << "  version  see the server-version.\n";
+        std::cout << "  nplayers see the number of players.\n";
+        std::cout << "  ngames   see the number of games.\n";
+        std::cout << "  spam     start/stop a spam bot in the main channel.\n";
+        std::cout << "  verbose  let me talk much or not.\n";
+        std::cout << "  stats    show some statistics.\n";
+        std::cout << "  clearstats deletes the statistics.\n";
+        std::cout << "\n";
+        std::cout << "FILES:\n";
+        std::cout << "All files are located in the current working directory.\n";
         std::cout << "  " << dynamic_cast<ServerLogger *>(FTS::Logger::getSingletonPtr())->getLogfilename() << " contains a lot of logging messages." << std::endl;
         std::cout << "  " << dynamic_cast<ServerLogger *>(FTS::Logger::getSingletonPtr())->getErrfilename() << " contains all error messages that happened." << std::endl;
         std::cout << "  " << dynamic_cast<ServerLogger *>(FTS::Logger::getSingletonPtr())->getPlayersfilename() << " contains the number of players actually connected." << std::endl;
@@ -390,12 +410,13 @@ void help(char *in_pszLine, char *in_pszMe)
 }
 
 // This sets up everything to listen on a certain port, and then goes listen.
-void *connectionListener(void *in_iPort)
+void connectionListener(uint16_t in_iPort)
 {
-    ConnectionWaiter *pWaiter = new SocketConnectionWaiter;
+    auto pWaiter = std::make_unique<SocketConnectionWaiter>();
 
-    if(ERR_OK != pWaiter->init((uint16_t)((size_t)in_iPort)))
-        return (void *)0;
+    if( ERR_OK != pWaiter->init(in_iPort) )
+        return ;
+
 
     // wait for connections unless we need to quit.
     while(!g_bExit) {
@@ -403,27 +424,27 @@ void *connectionListener(void *in_iPort)
         // Wait for a connection&packet for 1000 ms, if none is got,
         // wait a bit to avoid megaload of cpu. 100 microsec = 0.1 millisec.
         pWaiter->waitForThenDoConnection(1000);
-        usleep(100);
+        std::this_thread::sleep_for( std::chrono::microseconds(100) );
     }
 
-    SAFE_DELETE(pWaiter);
-
-    pthread_exit((void *)0);
 }
 
 static void child_handler(int signum)
 {
+#if !WINDOOF
     switch(signum) {
     case SIGALRM: exit(EXIT_FAILURE); break;
     case SIGUSR1: exit(EXIT_SUCCESS); break;
     case SIGUSR2: g_bExit = true; break;
     case SIGCHLD: exit(EXIT_FAILURE); break;
     }
+#endif
 }
 
 // From: http://www-theorie.physik.unizh.ch/~dpotter/howto/daemonize
 static void daemonize( const char *lockfile, const char *dir )
 {
+#if !WINDOOF
     pid_t pid, sid, parent;
 
     /* already a daemon */
@@ -507,10 +528,12 @@ static void daemonize( const char *lockfile, const char *dir )
 
     /* Tell the parent process that we are A-okay */
     kill( parent, SIGUSR1 );
+#endif
 }
 
 static void trytokill(const char *lockfile)
 {
+#if !WINDOOF
     if(lockfile == NULL || lockfile[0] == '\0')
         return;
 
@@ -535,7 +558,7 @@ static void trytokill(const char *lockfile)
     }
     fclose(pFile);
 
-    printf("The server (PID: %d) is shuttung down, waiting for it to be done ... \n", pid);
+    printf("The server (PID: %d) is shutting down, waiting for it to be done ... \n", pid);
     fflush(stdout);
 
     // Tell the server to quit.
@@ -566,9 +589,10 @@ static void trytokill(const char *lockfile)
     // Give the server some time ...
     sleep(5);
 
-    printf("If you see any numbers below, the server is still running ! Maybe you just need to give it more time, check ps | grep "DAEMON_NAME" in a few seconds again.\n");
+    printf("If you see any numbers below, the server is still running ! Maybe you just need to give it more time, check ps | grep " DAEMON_NAME " in a few seconds again.\n");
 //    system(("cat "+String(lockfile)+" 2> /dev/null").c_str());
 //    system("ps -C "DAEMON_NAME" -o pid,cmd=");
-    system("ps | grep "DAEMON_NAME);
+    system("ps | grep " DAEMON_NAME );
     printf("\nIf you didn't see any number one line above, the server has quit successfully.\n");
+#endif
 }

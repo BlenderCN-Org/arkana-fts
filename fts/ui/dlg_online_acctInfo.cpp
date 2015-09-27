@@ -325,34 +325,28 @@ int FTS::DlgOnlineAcctInfo::saveDetails()
         return -3;
     }
 
-    g_pMeHacky->og_getConnection()->waitAntiFlood();
     if(ERR_OK != g_pMeHacky->og_accountSet(DSRV_TBL_USR_MAIL, String(sMail, 0, 64)))
         return -4;
 
-    g_pMeHacky->og_getConnection()->waitAntiFlood();
     if(ERR_OK != g_pMeHacky->og_accountSetFlag(DSRV_PLAYER_FLAG_HIDEMAIL, bHideMail))
         return -5;
 
     if((bEmptyCheck && !sJabber.empty()) || !bEmptyCheck) {
-        g_pMeHacky->og_getConnection()->waitAntiFlood();
         if(ERR_OK != g_pMeHacky->og_accountSet(DSRV_TBL_USR_JABBER, String(sJabber, 0, 64)))
             return -6;
     }
 
     if((bEmptyCheck && !sContact.empty() && sContact != "\n") || !bEmptyCheck) {
-        g_pMeHacky->og_getConnection()->waitAntiFlood();
         if(ERR_OK != g_pMeHacky->og_accountSet(DSRV_TBL_USR_CONTACT, String(sContact, 0, 255)))
             return -7;
     }
 
     if((bEmptyCheck && !sFName.empty()) || !bEmptyCheck) {
-        g_pMeHacky->og_getConnection()->waitAntiFlood();
         if(ERR_OK != g_pMeHacky->og_accountSet(DSRV_TBL_USR_FNAME, String(sFName, 0, 32)))
             return -8;
     }
 
     if((bEmptyCheck && !sName.empty()) || !bEmptyCheck) {
-        g_pMeHacky->og_getConnection()->waitAntiFlood();
         if(ERR_OK != g_pMeHacky->og_accountSet(DSRV_TBL_USR_NAME, String(sName, 0, 32)))
             return -9;
     }
@@ -360,19 +354,15 @@ int FTS::DlgOnlineAcctInfo::saveDetails()
     String sBDay = sBDYear + "-" + sBDMonth + "-" + sBDDay;
 
     if((bEmptyCheck && !sBDay.empty()) || !bEmptyCheck) {
-        g_pMeHacky->og_getConnection()->waitAntiFlood();
         if(ERR_OK != g_pMeHacky->og_accountSet(DSRV_TBL_USR_BDAY, String(sBDay, 0, 10)))
             return -10;
     }
 
-    if((bEmptyCheck && !sCmt.empty() && sCmt != "\n")
-       || !bEmptyCheck) {
-        g_pMeHacky->og_getConnection()->waitAntiFlood();
+    if((bEmptyCheck && !sCmt.empty() && sCmt != "\n") || !bEmptyCheck) {
         if(ERR_OK != g_pMeHacky->og_accountSet(DSRV_TBL_USR_CMT, String(sCmt, 0, 255)))
             return -11;
     }
 
-    g_pMeHacky->og_getConnection()->waitAntiFlood();
     if(ERR_OK != g_pMeHacky->og_accountSet(DSRV_TBL_USR_SEX, String::nr(cSex)))
         return -12;
 

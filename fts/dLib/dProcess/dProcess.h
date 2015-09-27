@@ -3,7 +3,6 @@
 
 #include "main.h"
 
-//int spawnl( char *in_pszExecutable, char *in_pszArgs, ... );
 int spawnv_sync( const char *in_pszExecutable, const char *in_ppszArgs[] );
 int spawnp_sync( const char *in_pszExecutable, const char *in_ppszArgs );
 

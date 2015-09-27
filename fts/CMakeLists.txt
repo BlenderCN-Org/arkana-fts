@@ -194,8 +194,8 @@ endif()
 # In order to have them built with the same flags.
 if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
 # -Wextra -Wold-style-cast -Wfloat-equal -Wswitch-enum -Wundef -Wpointer-arith -Wcast-align
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -std=c++0x -Wno-non-virtual-dtor -Wall -O0 -pg -fstack-protector-all -Winvalid-pch")
-    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -std=c++0x -Wall -s -O2 -Winvalid-pch")
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -std=c++14 -Wno-non-virtual-dtor -Wall -O0 -pg -fstack-protector-all -Winvalid-pch")
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -std=c++14 -Wall -s -O2 -Winvalid-pch")
 elseif(MSVC)
 endif()
 

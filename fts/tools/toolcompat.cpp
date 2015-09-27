@@ -1,11 +1,7 @@
 #include "main.h"
 #include "toolcompat.h"
-
-#if WINDOOF
-#  include <time.h>
-#else
-#  include <sys/time.h>
-#endif
+#include <thread>
+#include <chrono>
 
 using namespace FTSTools;
 using namespace FTS;
@@ -209,22 +205,10 @@ int MinimalLogger::failConsoleMessage()
     return ERR_OK;
 }
 
-// Take them outside to speed things up a bit.
-static uint32_t ticks;
-#if !WINDOOF
-static struct timeval now;
-struct timeval g_tvStart;
-#endif
-
 uint32_t FTS::dGetTicks()
 {
-#if WINDOOF
-    ticks = GetTickCount();
-#else
-    gettimeofday(&now, NULL);
-    ticks = (now.tv_sec-g_tvStart.tv_sec)*1000 + (now.tv_usec-g_tvStart.tv_usec)/1000;
-#endif
-    return ticks;
+    auto now = std::chrono::system_clock::now();
+    return std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
 }
 
 /// Sleeps the thread for a certain amount of time.
@@ -236,33 +220,13 @@ uint32_t FTS::dGetTicks()
  */
 void FTS::dSleep(unsigned long in_ulMilliseconds)
 {
-#if WINDOOF
-    Sleep(in_ulMilliseconds);
-#else
-    timespec ts;
-    timespec rem;
-
-    ts.tv_sec = in_ulMilliseconds / 1000;
-    ts.tv_nsec = (in_ulMilliseconds - ts.tv_sec*1000) * 1000000;
-
-    int iRet = 0;
-    errno = 0;
-    do {
-        iRet = nanosleep(&ts, &rem);
-        ts.tv_sec = rem.tv_sec;
-        ts.tv_nsec = rem.tv_nsec;
-    } while(iRet != 0 && errno == EINTR);
-#endif
+    std::this_thread::sleep_for( std::chrono::milliseconds( in_ulMilliseconds ) );
 }
 
 void FTSTools::init()
 {
     srand((unsigned)time(NULL));
     setlocale(LC_ALL, "C");
-
-#if !WINDOOF
-    gettimeofday(&g_tvStart, NULL);
-#endif
 }
 
 String FTS::getTranslatedString(const String &in_s, const String &, bool *)

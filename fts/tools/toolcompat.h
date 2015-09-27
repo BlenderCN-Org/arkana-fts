@@ -1,7 +1,6 @@
 #ifndef FTS_TOOLCOMPAT_H
 #define FTS_TOOLCOMPAT_H
 
-#include <time.h>
 #include <stdlib.h>
 #include <locale.h>
 
