@@ -225,8 +225,8 @@ find_package(Threads REQUIRED)
 list(APPEND FTS_LIBS ${CMAKE_THREAD_LIBS_INIT})
 
 find_package(OpenGL REQUIRED)
-find_package(GLU REQUIRED)
 list(APPEND FTS_LIBS ${OPENGL_LIBRARIES})
+list(APPEND FTS_INCLUDES ${OPENGL_INCLUDE_DIR})
 
 find_package(SDL)
 if(${SDL_FOUND} STREQUAL "NO")
@@ -355,7 +355,6 @@ list(APPEND FTS_LIBS aTest)
 include_directories(${fts_SOURCE_DIR})
 include_directories("${fts_SOURCE_DIR}/main")
 include_directories(${FTS_INCLUDES})
-include_directories(${OPENGL_INCLUDE_DIR})
 
 # Add additional defines:
 add_definitions(-DD_STRING_FTS_LIBS)
