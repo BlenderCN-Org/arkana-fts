@@ -7,6 +7,7 @@
 
 #include <cmath>
 #include <cstdlib>
+#include <algorithm>
 
 using namespace FTS;
 

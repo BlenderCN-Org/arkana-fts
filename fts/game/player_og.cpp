@@ -148,8 +148,8 @@ int FTS::Player::og_accountCreate(const String & in_sNickname,
     p->append(sNick);
     p->append(sPMD5);
     p->append(sMail);
-    if(m_pcMasterServer->mreq(p) != ERR_OK) {
-        SAFE_DELETE(p);
+    if( FTSC_ERR::OK != m_pcMasterServer->mreq( p ) ) {
+        SAFE_DELETE( p );
         return -3;
     }
     if(!p || (p->get() != ERR_OK)) {
@@ -170,11 +170,11 @@ int FTS::Player::og_accountCreate(const String & in_sNickname,
  *
  *  One can only play online if one is logged in.
  *
- * \param in_sNickname    the nickname with wich you want to login.
+ * \param in_sNickname    the nickname with which you want to login.
  * \param in_sPassword    the password that comes with that nickname, in clear text.
  *
- * \return If successfull: ERR_OK
- * \return If failed:      Error code < 0
+ * \return If successful: ERR_OK
+ * \return If failed:     Error code < 0
  *
  * \note
  *
@@ -212,8 +212,8 @@ int FTS::Player::og_login(const String & in_sNickname,
     p->append(m_sMD5);
 
     // And login.
-    if(m_pcMasterServer->mreq(p) != ERR_OK) {
-        SAFE_DELETE(p);
+    if( FTSC_ERR::OK != m_pcMasterServer->mreq( p ) ) {
+        SAFE_DELETE( p );
         return -3;
     }
 
@@ -235,8 +235,8 @@ int FTS::Player::og_login(const String & in_sNickname,
 /** This logs the player out of the master server, so he can't
  *  play online anymore - until he connects again.
  *
- * \return If successfull: ERR_OK
- * \return If failed:      Error code < 0
+ * \return If successful: ERR_OK
+ * \return If failed:     Error code < 0
  *
  * \note
  *
@@ -257,8 +257,8 @@ int FTS::Player::og_logout()
     FTSMSGDBG("  Logging out", 3);
 
     p->append(m_sMD5);
-    if(m_pcMasterServer->mreq(p) != ERR_OK) {
-        SAFE_DELETE(p);
+    if( FTSC_ERR::OK != m_pcMasterServer->mreq( p ) ) {
+        SAFE_DELETE( p );
         goto logout;
     }
 
@@ -287,8 +287,8 @@ logout:
  *  dokuwiki, category online gaming/networking, or take a look
  *  at server.h, these are the DSRV_TBL_USR_xxx defines.
  *
- * \return If successfull: ERR_OK
- * \return If failed:      Error code < 0
+ * \return If successful: ERR_OK
+ * \return If failed:     Error code < 0
  *
  * \note Some of these can't be set, like the nickname,
  *       the online time and the lastonline and signup
@@ -314,8 +314,8 @@ int FTS::Player::og_accountSet(uint8_t in_cField, const String & in_sValue)
     p->append(m_sMD5);
     p->append(in_cField);
     p->append(in_sValue);
-    if(m_pcMasterServer->mreq(p) != ERR_OK) {
-        SAFE_DELETE(p);
+    if( FTSC_ERR::OK != m_pcMasterServer->mreq( p ) ) {
+        SAFE_DELETE( p );
         return -3;
     }
     if(!p || (p->get() != ERR_OK)) {
@@ -335,8 +335,8 @@ int FTS::Player::og_accountSet(uint8_t in_cField, const String & in_sValue)
  *  dokuwiki, category online gaming/networking, or take a look
  *  at server.h, these are the DSRV_TBL_USR_xxx defines.
  *
- * \return If successfull: ERR_OK
- * \return If failed:      Error code < 0
+ * \return If successful: ERR_OK
+ * \return If failed:     Error code < 0
  *
  * \note Some of these can't be set, like the nickname,
  *       the online time and the lastonline and signup
@@ -363,8 +363,8 @@ int FTS::Player::og_accountSetInt(uint8_t in_cField, int in_iValue)
     p->append(m_sMD5);
     p->append(in_cField);
     p->append(in_iValue);
-    if(m_pcMasterServer->mreq(p) != ERR_OK) {
-        SAFE_DELETE(p);
+    if( FTSC_ERR::OK != m_pcMasterServer->mreq( p ) ) {
+        SAFE_DELETE( p );
         return -3;
     }
     if(!p || (p->get() != ERR_OK)) {
@@ -387,7 +387,7 @@ int FTS::Player::og_accountSetInt(uint8_t in_cField, int in_iValue)
  * \param in_cFlag The mask of flags you want to set/clear.
  * \param in_bValue Whether to set (true) or clear (false) the flag(s).
  *
- * \return If successfull: ERR_OK
+ * \return If successful: ERR_OK
  * \return If failed:      Error code < 0
  *
  * \note You can also set/clear several flags at a time, the parameter \a in_cFlag
@@ -409,8 +409,8 @@ int FTS::Player::og_accountSetFlag(uint32_t in_cFlag, bool in_bValue)
     p->append(m_sMD5);
     p->append(in_cFlag);
     p->append((uint8_t)(in_bValue ? 1 : 0));
-    if(m_pcMasterServer->mreq(p) != ERR_OK) {
-        SAFE_DELETE(p);
+    if( FTSC_ERR::OK != m_pcMasterServer->mreq( p ) ) {
+        SAFE_DELETE( p );
         return -3;
     }
     if(!p || (p->get() != ERR_OK)) {
@@ -430,8 +430,8 @@ int FTS::Player::og_accountSetFlag(uint32_t in_cFlag, bool in_bValue)
  *  dokuwiki, category online gaming/networking, or take a look
  *  at server.h, these are the DSRV_TBL_USR_xxx defines.
  *
- * \return If successfull: The string.
- * \return If failed:      An empty string.
+ * \return If successful: The string.
+ * \return If failed:     An empty string.
  *
  * \note The flags
  *       DSRV_TBL_USR_WEEKON, DSRV_TBL_USR_TOTALON, DSRV_TBL_USR_WINS,
@@ -456,8 +456,8 @@ String FTS::Player::og_accountGetFrom(uint8_t in_cField,
     p->append(m_sMD5);
     p->append(in_cField);
     p->append(in_sNickname);
-    if(m_pcMasterServer->mreq(p) != ERR_OK) {
-        SAFE_DELETE(p);
+    if( FTSC_ERR::OK != m_pcMasterServer->mreq( p ) ) {
+        SAFE_DELETE( p );
         return String::EMPTY;
     }
     if(!p || (p->get() != ERR_OK)) {
@@ -487,7 +487,7 @@ String FTS::Player::og_accountGetFrom(uint8_t in_cField,
  *  dokuwiki, category online gaming/networking, or take a look
  *  at server.h, these are the DSRV_TBL_USR_xxx defines.
  *
- * \return If successfull: ERR_OK
+ * \return If successful: ERR_OK
  * \return If failed:      Error code < 0
  *
  * \note This function can ONLY get the following fields:
@@ -513,8 +513,8 @@ int FTS::Player::og_accountGetIntFrom(uint8_t in_cField,
     p->append(m_sMD5);
     p->append(in_cField);
     p->append(in_sNickname);
-    if(m_pcMasterServer->mreq(p) != ERR_OK) {
-        SAFE_DELETE(p);
+    if( FTSC_ERR::OK != m_pcMasterServer->mreq( p ) ) {
+        SAFE_DELETE( p );
         return -3;
     }
     if(!p || (p->get() != ERR_OK)) {
@@ -540,12 +540,12 @@ int FTS::Player::og_accountGetIntFrom(uint8_t in_cField,
 
 /// Joins a chat channel
 /** This function joins a new chat channel. After joining the channel,
- *  This also gets the players list and all other channel propreties.
+ *  This also gets the players list and all other channel properties.
  *
  * \param in_sChannel The name of the channel to join.
  *
- * \return If successfull: ERR_OK
- * \return If failed:      An error code <0
+ * \return If successful: ERR_OK
+ * \return If failed:     An error code <0
  *
  * \author Pompei2
  */
@@ -568,8 +568,8 @@ int FTS::Player::og_chatJoin(const String & in_sChannel)
 
     // Send the join message.
     // The server will make us leave the current channel if we are in one.
-    if(m_pcMasterServer->mreq(p) != ERR_OK) {
-        SAFE_DELETE(p);
+    if( FTSC_ERR::OK != m_pcMasterServer->mreq( p ) ) {
+        SAFE_DELETE( p );
         return -3;
     }
 
@@ -605,8 +605,8 @@ std::list<String> FTS::Player::og_chatMyChans()
     p->append(m_sMD5);
 
     // Send the message.
-    if(m_pcMasterServer->mreq(p) != ERR_OK) {
-        SAFE_DELETE(p);
+    if( FTSC_ERR::OK != m_pcMasterServer->mreq( p ) ) {
+        SAFE_DELETE( p );
         return sChans;
     }
 
@@ -634,8 +634,8 @@ std::list<String> FTS::Player::og_chatMyChans()
  *
  * \param in_sChannel The name of the channel to destroy.
  *
- * \return If successfull: ERR_OK
- * \return If failed:      An error code <0
+ * \return If successful: ERR_OK
+ * \return If failed:     An error code <0
  *
  * \author Pompei2
  */
@@ -652,8 +652,8 @@ int FTS::Player::og_chatRemChan(const String & in_sChannel)
     p->append(in_sChannel);
 
     // Send the message.
-    if(m_pcMasterServer->mreq(p) != ERR_OK) {
-        SAFE_DELETE(p);
+    if( FTSC_ERR::OK != m_pcMasterServer->mreq( p ) ) {
+        SAFE_DELETE( p );
         return -2;
     }
 
@@ -686,7 +686,7 @@ String FTS::Player::og_chatGetCurChannel()
     Packet *p = new Packet(DSRV_MSG_CHAT_IUNAI);
     p->append(m_sMD5);
 
-    if(ERR_OK != m_pcMasterServer->mreq(p)) {
+    if( FTSC_ERR::OK != m_pcMasterServer->mreq( p ) ) {
         SAFE_DELETE(p);
         return String::EMPTY;
     }
@@ -708,8 +708,8 @@ String FTS::Player::og_chatGetCurChannel()
  *
  * \param in_sMessage The contents of the message to send
  *
- * \return If successfull: ERR_OK
- * \return If failed:      Error code < 0
+ * \return If successful: ERR_OK
+ * \return If failed:     Error code < 0
  *
  * \author Pompei2
  */
@@ -727,7 +727,7 @@ int FTS::Player::og_chatSendMessage(const String & in_sMessage)
     p->append((uint8_t)0);
     p->append(in_sMessage);
 
-    if(ERR_OK != m_pcMasterServer->mreq(p)) {
+    if( FTSC_ERR::OK != m_pcMasterServer->mreq( p ) ) {
         SAFE_DELETE(p);
         return -1;
     }
@@ -748,8 +748,8 @@ int FTS::Player::og_chatSendMessage(const String & in_sMessage)
  * \param in_sPlayer The player to send the message to
  * \param in_sMessage The contents of the message to send
  *
- * \return If successfull: ERR_OK
- * \return If failed:      Error code < 0
+ * \return If successful: ERR_OK
+ * \return If failed:     Error code < 0
  *
  * \author Pompei2
  */
@@ -768,7 +768,7 @@ int FTS::Player::og_chatWhisp(const String &in_sPlayer, const String & in_sMessa
     p->append(in_sPlayer);
     p->append(in_sMessage);
 
-    if(ERR_OK != m_pcMasterServer->mreq(p)) {
+    if( FTSC_ERR::OK != m_pcMasterServer->mreq( p ) ) {
         SAFE_DELETE(p);
         return -1;
     }
@@ -796,8 +796,8 @@ int FTS::Player::og_chatWhisp(const String &in_sPlayer, const String & in_sMessa
  *  (FTSPacket) in the queue. If there is and it is packet related to
  *  chatting or the channel, it does the according thing.
  *
- * \return If successfull: ERR_OK
- * \return If failed:      Error code < 0
+ * \return If successful: ERR_OK
+ * \return If failed:     Error code < 0
  *
  * \note Currently, this function makes the game loose all other messages.
  *
@@ -864,7 +864,7 @@ int FTS::Player::og_chatGetPlayerList(std::list<String> &out_playerList)
 
     p->append(m_sMD5);
 
-    if(m_pcMasterServer->mreq(p) != ERR_OK) {
+    if( FTSC_ERR::OK != m_pcMasterServer->mreq( p ) ) {
         SAFE_DELETE(p);
         return -2;
     }
@@ -911,7 +911,7 @@ int FTS::Player::og_chatRefreshChannelInfo()
 
     p->append(m_sMD5);
 
-    if(m_pcMasterServer->mreq(p) != ERR_OK) {
+    if( FTSC_ERR::OK != m_pcMasterServer->mreq( p ) ) {
         SAFE_DELETE(p);
         return -2;
     }
@@ -950,8 +950,8 @@ int FTS::Player::og_chatRefreshChannelInfo()
  *
  * \param in_sUser The name of the user to get the state.
  *
- * \return If successfull: 0 = normal user, 1 = channel operator, 2 = channel admin.
- * \return If failed:      An error code <0
+ * \return If successful: 0 = normal user, 1 = channel operator, 2 = channel admin.
+ * \return If failed:     An error code <0
  *
  * \note The players list CEGUI::Listbox has to be present for this function to work !
  *
@@ -970,7 +970,7 @@ uint8_t FTS::Player::og_chatUserGet(const String & in_sUser)
     p->append(in_sUser);
 
     // Send the message.
-    if(m_pcMasterServer->mreq(p) != ERR_OK) {
+    if( FTSC_ERR::OK != m_pcMasterServer->mreq( p ) ) {
         SAFE_DELETE(p);
         return -3;
     }
@@ -993,8 +993,8 @@ uint8_t FTS::Player::og_chatUserGet(const String & in_sUser)
  *
  * \param in_sMotto The new motto to set.
  *
- * \return If successfull: ERR_OK.
- * \return If failed:      An error code <0
+ * \return If successful: ERR_OK.
+ * \return If failed:     An error code <0
  *
  * \author Pompei2
  */
@@ -1010,7 +1010,7 @@ int FTS::Player::og_chatSetMotto(const String & in_sMotto)
     p->append(m_sMD5);
     p->append(in_sMotto);
 
-    if(ERR_OK != m_pcMasterServer->mreq(p)) {
+    if( FTSC_ERR::OK != m_pcMasterServer->mreq( p ) ) {
         SAFE_DELETE(p);
         return -3;
     }
@@ -1030,8 +1030,8 @@ int FTS::Player::og_chatSetMotto(const String & in_sMotto)
 /// Gets the motto of a channel.
 /** This function gets the motto of the current channel.
  *
- * \return If successfull: The motto of the current channel.
- * \return If failed:      String::EMPTY
+ * \return If successful: The motto of the current channel.
+ * \return If failed:     String::EMPTY
  *
  * \author Pompei2
  */
@@ -1041,7 +1041,7 @@ String FTS::Player::og_chatGetMotto()
     p->append(m_sMD5);
 
     // Send the message.
-    if(m_pcMasterServer->mreq(p) != ERR_OK) {
+    if( FTSC_ERR::OK != m_pcMasterServer->mreq( p ) ) {
         SAFE_DELETE(p);
         return String::EMPTY;
     }
@@ -1066,8 +1066,8 @@ String FTS::Player::og_chatGetMotto()
  *
  * \param in_sName The name of the player to kick.
  *
- * \return If successfull: ERR_OK.
- * \return If failed:      An error code <0
+ * \return If successful: ERR_OK.
+ * \return If failed:     An error code <0
  *
  * \author Pompei2
  */
@@ -1083,7 +1083,7 @@ int FTS::Player::og_chatKick(const String &in_sName)
     p->append(m_sMD5);
     p->append(in_sName);
 
-    if(ERR_OK != m_pcMasterServer->mreq(p)) {
+    if( FTSC_ERR::OK != m_pcMasterServer->mreq( p ) ) {
         SAFE_DELETE(p);
         return -3;
     }
@@ -1105,8 +1105,8 @@ int FTS::Player::og_chatKick(const String &in_sName)
  *
  * \param in_sName The name of the player to op.
  *
- * \return If successfull: ERR_OK.
- * \return If failed:      An error code <0
+ * \return If successful: ERR_OK.
+ * \return If failed:     An error code <0
  *
  * \author Pompei2
  */
@@ -1123,7 +1123,7 @@ int FTS::Player::og_chatOp(const String &in_sName)
     p->append(in_sName);
 
     // Send the message. This message awaits no answer !
-    if(ERR_OK != m_pcMasterServer->mreq(p)) {
+    if( FTSC_ERR::OK != m_pcMasterServer->mreq( p ) ) {
         SAFE_DELETE(p);
         return -3;
     }
@@ -1144,7 +1144,7 @@ int FTS::Player::og_chatOp(const String &in_sName)
  *
  * \param in_sName The name of the player to deop.
  *
- * \return If successfull: ERR_OK.
+ * \return If successful: ERR_OK.
  * \return If failed:      An error code <0
  *
  * \author Pompei2
@@ -1162,7 +1162,7 @@ int FTS::Player::og_chatDeop(const String &in_sName)
     p->append(in_sName);
 
     // Send the message. This message awaits no answer !
-    if(ERR_OK != m_pcMasterServer->mreq(p)) {
+    if( FTSC_ERR::OK != m_pcMasterServer->mreq( p ) ) {
         SAFE_DELETE(p);
         return -3;
     }

@@ -15,17 +15,10 @@
 #  ifdef D_USE_CEGUI
 #    undef D_USE_CEGUI
 #  endif
-#  ifdef D_STRING_MYSQL
-#    undef D_STRING_MYSQL
-#  endif
 #endif
 
 #ifdef D_USE_CEGUI
 #  include <CEGUIString.h>
-#endif
-
-#ifdef D_STRING_MYSQL
-#  include <mysql/mysql.h>
 #endif
 
 #include "main.h"
@@ -575,16 +568,6 @@ public:
             *out = String(*this, lastpos, this->len() - lastpos);
         }
     }
-
-#ifdef D_STRING_MYSQL
-    /// Returns the MySQL escaped version of this string.
-    /// this creates a string that is a copy of this one, but escaped for mysql commands.
-    ///
-    /// \param in_pSQL The SQL context used to escape the string.
-    ///
-    /// \return The MySQL escaped copy of this string.
-    String mysqlEscaped(MYSQL * in_pSQL) const;
-#endif
 
     // A whole bunch of overloaded operators.
     String& operator =(const char *in_pszString);

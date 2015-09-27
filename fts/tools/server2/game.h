@@ -7,6 +7,7 @@
 #include "dLib/dString/dString.h"
 
 #include <list>
+#include "GameManager.h"
 
 namespace FTS {
     class Packet;
@@ -52,33 +53,6 @@ public:
 
     int addToInfoPacket(FTS::Packet *out_pPacket);
     int addToLstPacket(FTS::Packet *out_pPacket);
-};
-
-class GameManager {
-private:
-    std::list<Game *>m_lpGames; ///< This list contains all existing games.
-    FTS::Mutex m_mutex; ///< Mutex for accessing me.
-
-public:
-    GameManager();
-    virtual ~GameManager();
-
-    int addGame(Game *in_pGame);
-    int remGame(Game *in_pGame);
-    int startGame(Game *in_pGame);
-    Game *findGame(const FTS::String &in_sName);
-    Game *findGameByHost(const FTS::String &in_sHost);
-
-    int writeListToPacket(FTS::Packet *in_pPacket);
-
-    int16_t getNGames() {
-        return m_lpGames.size();
-    }
-
-    // Singleton-like stuff.
-    static int init();
-    static GameManager *getManager();
-    static int deinit();
 };
 
 } // namespace FTSSrv2

@@ -6,6 +6,9 @@
  *        that gets sent over a connection.
  **/
 
+#include <algorithm>
+#include <assert.h>
+
 #include "net/packet.h"
 
 #ifndef D_COMPILES_SERVER
@@ -85,12 +88,7 @@ Packet *FTS::Packet::setType(master_request_t in_cType)
  */
 master_request_t FTS::Packet::getType(void) const
 {
-#ifdef DEBUG
-    fts_packet_hdr_t *hdr = (fts_packet_hdr_t *)m_pData;
-    return hdr->req_id;
-#else
     return ((fts_packet_hdr_t *) m_pData)->req_id;
-#endif
 }
 
 /// Rewinds the cursor to the beginning.
@@ -119,7 +117,7 @@ Packet *FTS::Packet::rewind(void)
 Packet *FTS::Packet::append(const String & in)
 {
     size_t iLen =  in.len( ) + m_uiCursor + 1;
-    m_pData = (int8_t *)realloc((void *)m_pData, iLen);
+    realloc(iLen);
     if(in.c_str() == NULL) {
         // special case : on NULL ptr a \0 string should be generated.
         m_pData[m_uiCursor] = 0;
@@ -149,7 +147,7 @@ Packet *FTS::Packet::append(const String & in)
 Packet *FTS::Packet::append(const void *in_pData, uint32_t in_iSize)
 {
     uint32_t iLen = in_iSize + m_uiCursor + 1;
-    m_pData = (int8_t *)realloc((void *)m_pData, iLen);
+    realloc(iLen);
     if(in_pData == NULL) {
         // special case : on NULL ptr a \0 should be generated.
         m_pData[m_uiCursor] = 0;
@@ -174,10 +172,27 @@ Packet *FTS::Packet::append(const void *in_pData, uint32_t in_iSize)
  */
 String FTS::Packet::get_string()
 {
-    size_t len = this->getTotalLen();
+    auto len = this->getTotalLen();
     if(m_uiCursor >= len)
         return String::EMPTY;
 
+    // Check if a \0 is in the buffer, otherwise return empty string and move to cursor to the end, since the buffer is corrupt.
+    bool foundEnd = false;
+    for( int i = 0; i < (len - m_uiCursor); ++i )
+    {
+        if( m_pData[m_uiCursor + i] == 0 )
+        {
+            foundEnd = true;
+            break;
+        }
+    }
+    if ( !foundEnd )
+    {
+        m_uiCursor = len;
+        return String::EMPTY;
+    }
+
+    // The strings can be build.
     String ret = String((char *)&m_pData[m_uiCursor]);
 
     m_uiCursor += ret.byteCount() + 1;
@@ -246,29 +261,23 @@ int FTS::Packet::get(void *out_pData, uint32_t in_iSize)
     return ERR_OK;
 }
 
-/*! Return the total length of data.
- * \author kabey
+/** Return the total length of data.
+ * \author Klaus Beyer
  * \return size_t
  * \note
  *
  */
 uint32_t FTS::Packet::getTotalLen( void ) const
 {
-#ifdef DEBUG
-    fts_packet_hdr_t *hdr = (fts_packet_hdr_t *)m_pData;
-    uint32_t s = sizeof(fts_packet_hdr_t);
-    return hdr->data_len + s;
-#else
     return ((fts_packet_hdr_t*)m_pData)->data_len + sizeof(fts_packet_hdr_t);
-#endif
 }
 
-/*! Return the length of payload data.
-* \author kabey
-* \return size_t
-* \note
-*
-*/
+/** Return the length of payload data.
+ * \author Klaus Beyer
+ * \return size_t
+ * \note
+ *
+ */
 uint32_t FTS::Packet::getPayloadLen( void ) const
 {
     // For debug purposes
@@ -306,7 +315,7 @@ int FTS::Packet::writeToPacket(Packet *in_pPack)
 }
 
 /// Extracts a packet out of a packet.
-/** This extracts a packet (stored earlyer using the \a writeToPacket method)
+/** This extracts a packet (stored earlier using the \a writeToPacket method)
  *  from a packet (\a in_pPack ). The extracted packet will be stored in this.\n
  *  Every data currently stored in this will be removed first.
  *
@@ -361,4 +370,42 @@ int FTS::Packet::printToFile(FILE *in_pFile) const
         return -2;
 
     return ERR_OK;
+}
+
+/** Reallocates the data buffer to the new size.
+ *
+ * \param in_newSize    The new size of the internal data buffer
+ *
+ * \return this
+ *
+ * \author Klaus Beyer
+ */
+Packet * FTS::Packet::realloc( size_t in_newSize )
+{
+    m_pData = ( int8_t* ) ::realloc( m_pData, in_newSize );
+    assert( m_pData != nullptr );
+    return this;
+}
+
+/** Moves the internal data buffer of the input Packet to this one.
+ *  The input buffer is cleared and contains a nullptr after the move.
+ *
+ * \param p    The packet w/ the buffer to move into this.
+ *
+ * \return this
+ *
+ * \author Klaus Beyer
+ */
+Packet* FTS::Packet::transferData( Packet* p )
+{
+    // Free the data buffer
+    SAFE_FREE( m_pData );
+
+    // Put the other buffer pointer in to the in packet
+    m_pData = p->m_pData;
+
+    // In order that the delete works, set data pointer to NULL
+    p->m_pData = nullptr;
+
+    return this;
 }

@@ -1,3 +1,7 @@
+
+#include <thread>
+#include <chrono>
+
 #include "client.h"
 #include "server.h"
 #include "db.h"
@@ -12,14 +16,15 @@ using namespace FTSSrv2;
 
 FTSSrv2::Client::Client(Connection *in_pConnection)
     : m_bLoggedIn(false)
-    , m_pMyGame(NULL)
-    , m_pMyChannel(NULL)
+    , m_pMyGame(nullptr)
+    , m_pMyChannel(nullptr)
     , m_pConnection(in_pConnection)
 {
 }
 
 FTSSrv2::Client::~Client()
 {
+    delete m_pConnection;
 }
 
 int FTSSrv2::Client::getID() const
@@ -32,11 +37,10 @@ int FTSSrv2::Client::getID() const
     return FTSSrv2::Client::getIDByNick(m_sNick);
 }
 
-void *FTSSrv2::Client::starter(void *in_pThis)
+void FTSSrv2::Client::starter(Client *in_pThis)
 {
     FTSSrv2::Client *pThis = static_cast<FTSSrv2::Client *>(in_pThis);
     pThis->run();
-    return NULL;
 }
 
 int FTSSrv2::Client::run()
@@ -45,15 +49,17 @@ int FTSSrv2::Client::run()
     // If we lost the connection, most of the time it means that
     // the user logged out.
     while(m_pConnection->isConnected()) {
-        Packet *pPack = m_pConnection->waitForThenGetPacket(false, 500);
+        Packet *pPack = m_pConnection->waitForThenGetPacket(false);
 
         if(!pPack) {
-            usleep(100);
+            std::this_thread::sleep_for( std::chrono::microseconds( 100 ) );
             continue;
         }
 
         // False returned means the connection shall be closed.
-        if(!this->workPacket(pPack)) {
+        auto rc = this->workPacket( pPack );
+        delete pPack;
+        if(!rc) {
             m_pConnection->disconnect();
             break;
         }
@@ -63,7 +69,6 @@ int FTSSrv2::Client::run()
     this->quit();
 
     delete this;
-    pthread_exit((void *)ERR_OK);
     return 0;
 }
 
@@ -71,14 +76,13 @@ int FTSSrv2::Client::run()
 int FTSSrv2::Client::quit()
 {
     int iRet = ERR_OK;
-    Lock l (m_mutex);
 
     // Logout only if needed.
     if(m_bLoggedIn) {
         // Leave the current game.
         if(m_pMyGame) {
             m_pMyGame->playerLeft(this->getNick());
-            m_pMyGame = NULL;
+            m_pMyGame = nullptr;
         }
 
         // Kill all games hosted by me.
@@ -90,7 +94,7 @@ int FTSSrv2::Client::quit()
         // Leave the current chat room.
         if(m_pMyChannel) {
             m_pMyChannel->quit(this);
-            m_pMyChannel = NULL;
+            m_pMyChannel = nullptr;
         }
 
         // Call the stored procedure to logout.
@@ -121,7 +125,6 @@ int FTSSrv2::Client::quit()
 int FTSSrv2::Client::tellToQuit()
 {
     // Closing the connection makes the "quitting"-stone rolling.
-    Lock l(m_mutex);
     m_pConnection->disconnect();
     return ERR_OK;
 }
@@ -129,12 +132,12 @@ int FTSSrv2::Client::tellToQuit()
 int FTSSrv2::Client::getIDByNick(const String & in_sNick)
 {
     String sQuery;
-    MYSQL_RES *pRes = NULL;
-    MYSQL_ROW pRow = NULL;
+    MYSQL_RES *pRes = nullptr;
+    MYSQL_ROW pRow = nullptr;
 
     // Query the id of the user.
     sQuery = "SELECT `"+DataBase::getUniqueDB()->TblUsrField(DSRV_TBL_USR_ID)+"`"
-             " FROM `"DSRV_TBL_USR"`"
+             " FROM `" DSRV_TBL_USR "`"
              " WHERE `"+DataBase::getUniqueDB()->TblUsrField(DSRV_TBL_USR_NICK)+"`"
                 "=\'" + DataBase::getUniqueDB()->escape(in_sNick) + "\'";
     if(!DataBase::getUniqueDB()->query(pRes, sQuery)) {
@@ -144,13 +147,13 @@ int FTSSrv2::Client::getIDByNick(const String & in_sNick)
     }
 
     // Get the query result.
-    if(pRes == NULL || NULL == (pRow = mysql_fetch_row(pRes))) {
+    if(pRes == nullptr || nullptr == (pRow = mysql_fetch_row(pRes))) {
         FTSMSG("Error during sql fetch row in getID: "+DataBase::getUniqueDB()->getError(), MsgType::Error);
         DataBase::getUniqueDB()->free(pRes);
         return -3;
     }
 
-    int iRet = pRow[0] == NULL ? -4 : atoi(pRow[0]);
+    int iRet = pRow[0] == nullptr ? -4 : atoi(pRow[0]);
     DataBase::getUniqueDB()->free(pRes);
 
     return iRet;
@@ -159,9 +162,7 @@ int FTSSrv2::Client::getIDByNick(const String & in_sNick)
 // Returning true keeps the connection up. False would close the connection.
 bool FTSSrv2::Client::workPacket(Packet *in_pPacket)
 {
-#if DETAILED_LOG
-    FTSMSGDBG("\n\ngot message 0x",String::nr(in_pPacket->getType(),std::ios::hex), 5);
-#endif
+    FTSMSGDBG("\n\ngot message 0x"+ String::nr(in_pPacket->getType(),-1,'0',std::ios::hex), 5);
 
     // Preliminary checks.
     master_request_t req = in_pPacket->getType();
@@ -191,9 +192,9 @@ bool FTSSrv2::Client::workPacket(Packet *in_pPacket)
 
         // When there was an error, send back the error message and quit.
         if(iRet != ERR_OK) {
-            Packet *pPack = new Packet(req);
-            pPack->append(iRet);
-            m_pConnection->send(pPack);
+            Packet Pack(req);
+            Pack.append(iRet);
+            sendPacket(&Pack);
             return true;
         }
     }
@@ -292,113 +293,96 @@ bool FTSSrv2::Client::workPacket(Packet *in_pPacket)
     return false;
 }
 
-int FTSSrv2::Client::sendPacket(Packet *in_pPacket)
+bool FTSSrv2::Client::sendPacket(Packet *in_pPacket)
 {
-#if DETAILED_LOG
+    FTS::Lock l( m_mutex );
     FTSMSGDBG("\n\nsent message 0x"+String::nr(in_pPacket->getType(),-1,'0',std::ios::hex), 5);
-#endif
-
-    return m_pConnection->send(in_pPacket);
+    return m_pConnection->send(in_pPacket) == FTSC_ERR::OK;
 }
 
 int FTSSrv2::Client::sendChatJoins( const String & in_sPlayer )
 {
-    Packet *p = new Packet(DSRV_MSG_CHAT_JOINS);
+    Packet p(DSRV_MSG_CHAT_JOINS);
 
-    p->append(in_sPlayer);
-    this->sendPacket(p);
+    p.append(in_sPlayer);
+    sendPacket(&p);
 
-    SAFE_DELETE(p);
     return ERR_OK;
 }
 
 int FTSSrv2::Client::sendChatQuits( const String & in_sPlayer )
 {
-    Packet *p = new Packet(DSRV_MSG_CHAT_QUITS);
+    Packet p(DSRV_MSG_CHAT_QUITS);
 
-    p->append(in_sPlayer);
-    this->sendPacket(p);
+    p.append(in_sPlayer);
+    sendPacket(&p);
 
-    SAFE_DELETE(p);
     return ERR_OK;
 }
 
 int FTSSrv2::Client::sendChatOped( const String & in_sPlayer )
 {
-    Packet *p = new Packet(DSRV_MSG_CHAT_OPED);
+    Packet p(DSRV_MSG_CHAT_OPED);
 
-    p->append(in_sPlayer);
-    this->sendPacket(p);
+    p.append(in_sPlayer);
+    sendPacket(&p);
 
-    SAFE_DELETE(p);
     return ERR_OK;
 }
 
 int FTSSrv2::Client::sendChatDeOped( const String & in_sPlayer )
 {
-    Packet *p = new Packet(DSRV_MSG_CHAT_DEOPED);
+    Packet p(DSRV_MSG_CHAT_DEOPED);
 
-    p->append(in_sPlayer);
-    this->sendPacket(p);
+    p.append(in_sPlayer);
+    sendPacket(&p);
 
-    SAFE_DELETE(p);
     return ERR_OK;
 }
 
 int FTSSrv2::Client::sendChatMottoChanged(const String & in_sFrom, const String & in_sMotto)
 {
-    Packet *p = new Packet(DSRV_MSG_CHAT_MOTTO_CHANGED);
+    Packet p(DSRV_MSG_CHAT_MOTTO_CHANGED);
 
-    p->append(in_sFrom);
-    p->append(in_sMotto);
+    p.append(in_sFrom);
+    p.append(in_sMotto);
 
-    this->sendPacket(p);
+    sendPacket(&p);
 
-    SAFE_DELETE(p);
     return ERR_OK;
 }
 
 bool FTSSrv2::Client::onLogin(const String & in_sNick, const String & in_sMD5)
 {
-    Packet p(DSRV_MSG_LOGIN);
-    int iRet = ERR_OK;
-
-    FTSMSGDBG(in_sNick+" is logging in ... ", 1);
+    FTSMSGDBG(in_sNick+" is logging in ... ", 4);
 
     // Call the stored procedure to login.
     String sIP = m_pConnection->getCounterpartIP();
-    iRet = DataBase::getUniqueDB()
+    int iRet = DataBase::getUniqueDB()
                     ->storedFunctionInt("connect",
                                         "\'" + DataBase::getUniqueDB()->escape(in_sNick) + "\', " +
                                         "\'" + DataBase::getUniqueDB()->escape(in_sMD5)  + "\', " +
                                         "\'" + DataBase::getUniqueDB()->escape(sIP) + "\'," +
                                         "\'" + String::nr(DSRV_PROC_CONNECT_INGAME) + "\'");
 
-    Lock l(m_mutex);
+    if( iRet == ERR_OK ) {
+        // save some "session data".
+        m_sNick = in_sNick;
+        m_sPassMD5 = in_sMD5;
+        m_bLoggedIn = true;
+        dynamic_cast< ServerLogger * >(FTS::Logger::getSingletonPtr())->addPlayer();
+        FTSSrv2::ClientsManager::getManager()->registerClient( this );
 
-    if(iRet != ERR_OK) {
+        FTSMSGDBG( "success", 4 );
+    } else {
         FTSMSG("failed: sql login script returned "+String::nr(iRet), MsgType::Error);
-        goto error;
     }
 
-    // save some "session data".
-    m_sNick = in_sNick;
-    m_sPassMD5 = in_sMD5;
-    m_bLoggedIn = true;
-    dynamic_cast<ServerLogger *>(FTS::Logger::getSingletonPtr())->addPlayer();
-    FTSSrv2::ClientsManager::getManager()->registerClient(this);
-
-    FTSMSGDBG("success", 1);
-    goto success;
-
-error:
-
-success:
-    p.setType(DSRV_MSG_LOGIN);
+    Packet p( DSRV_MSG_LOGIN );
     p.append((int8_t)iRet);
 
     // And then send the result back to the client.
-    m_pConnection->send(&p);
+    sendPacket(&p);
 
     // If there is an error during the login, close the connection.
     if(iRet != ERR_OK)
@@ -409,31 +393,28 @@ success:
 
 bool FTSSrv2::Client::onLogout()
 {
-    Packet p(DSRV_MSG_LOGOUT);
-    int iRet = ERR_OK;
+    FTSMSGDBG(m_sNick+" is logging out ... ", 4);
 
-    FTSMSGDBG(m_sNick+" is logging out ... ", 1);
-
-    if(ERR_OK == (iRet = this->quit())) {
-        FTSMSGDBG("success", 1);
+    int iRet = this->quit();
+    if(ERR_OK == iRet) {
+        FTSMSGDBG("success", 4);
     }
 
-    p.append((int8_t)iRet);
+    Packet p( DSRV_MSG_LOGOUT );
+    p.append( ( int8_t ) iRet );
 
     // And then send the result back to the client.
-    m_pConnection->send(&p);
+    sendPacket(&p);
     return false;
 }
 
-bool FTSSrv2::Client::onSignup(const String & in_sNick,
-                       const String & in_sMD5,
-                       const String & in_sEMail)
+bool FTSSrv2::Client::onSignup(const String & in_sNick, const String & in_sMD5, const String & in_sEMail)
 {
     Packet p(DSRV_MSG_SIGNUP);
     String sArgs;
     int iRet = ERR_OK;
 
-    FTSMSGDBG("signing up "+in_sNick+" ("+in_sEMail+") ... ", 1);
+    FTSMSGDBG("signing up "+in_sNick+" ("+in_sEMail+") ... ", 4);
 
     // We are logged in but wanna signup ?
     if(m_bLoggedIn) {
@@ -459,7 +440,7 @@ bool FTSSrv2::Client::onSignup(const String & in_sNick,
         goto error;
     }
 
-    FTSMSGDBG("success", 1);
+    FTSMSGDBG("success", 4);
     goto success;
 
 error:
@@ -468,15 +449,15 @@ success:
     p.append((int8_t)iRet);
 
     // And then send the result back to the client.
-    m_pConnection->send(&p);
+    sendPacket(&p);
 
-    return true;
+    return (iRet == ERR_OK) ? true : false;
 }
 
 bool FTSSrv2::Client::onFeedback(const String &in_sMessage)
 {
     int8_t iRet = ERR_OK;
-    String sQuery = "INSERT INTO `"DSRV_TBL_FEEDBACK"` ("
+    String sQuery = "INSERT INTO `" DSRV_TBL_FEEDBACK "` ("
                         " `"+DataBase::getUniqueDB()->TblFeedbackField(DSRV_TBL_FEEDBACK_NICK)+"`,"
                         " `"+DataBase::getUniqueDB()->TblFeedbackField(DSRV_TBL_FEEDBACK_MSG)+"`,"
                         " `"+DataBase::getUniqueDB()->TblFeedbackField(DSRV_TBL_FEEDBACK_WHEN)+"`) "
@@ -495,7 +476,7 @@ bool FTSSrv2::Client::onFeedback(const String &in_sMessage)
     // Answer.
     Packet p(DSRV_MSG_FEEDBACK);
     p.append(iRet);
-    m_pConnection->send(&p);
+    sendPacket(&p);
 
     return true;
 }
@@ -506,7 +487,7 @@ bool FTSSrv2::Client::onPlayerSet(uint8_t in_cField, Packet *out_pPacket)
     String sValue, sQuery, sField;
     int8_t iRet = ERR_OK;
 
-    FTSMSGDBG(m_sNick+" is setting 0x"+String::nr(in_cField,-1,'0',std::ios::hex)+" ... ", 1);
+    FTSMSGDBG(m_sNick+" is setting 0x"+String::nr(in_cField,-1,'0',std::ios::hex)+" ... ", 4);
 
     // Format the value used in the MySQL query string.
     switch(in_cField) {
@@ -548,7 +529,7 @@ bool FTSSrv2::Client::onPlayerSet(uint8_t in_cField, Packet *out_pPacket)
         goto error;
     }
 
-    sQuery = "UPDATE `"DSRV_TBL_USR"`"
+    sQuery = "UPDATE `" DSRV_TBL_USR "`"
              " SET `" + sField + "` = \'" + sValue + "\'"
              " WHERE `"+DataBase::getUniqueDB()->TblUsrField(DSRV_TBL_USR_NICK)+"`"
                 " = \'" + DataBase::getUniqueDB()->escape(m_sNick) + "\'"
@@ -565,7 +546,7 @@ bool FTSSrv2::Client::onPlayerSet(uint8_t in_cField, Packet *out_pPacket)
     }
 
     DataBase::getUniqueDB()->free(pRes);
-    FTSMSGDBG("success", 1);
+    FTSMSGDBG("success", 4);
     goto success;
 
 error:
@@ -574,7 +555,7 @@ success:
     p.append(iRet);
 
     // And then send the result back to the client.
-    m_pConnection->send(&p);
+    sendPacket(&p);
 
     return true;
 }
@@ -586,7 +567,7 @@ bool FTSSrv2::Client::onPlayerGet(uint8_t in_cField, const String & in_sNick, Pa
     MYSQL_ROW pRow = NULL;
     int8_t iRet = ERR_OK;
 
-    FTSMSGDBG(m_sNick+" is getting 0x"+String::nr(in_cField,-1,'0',std::ios::hex)+" from "+in_sNick+" ... ", 1);
+    FTSMSGDBG(m_sNick+" is getting 0x"+String::nr(in_cField,-1,'0',std::ios::hex)+" from "+in_sNick+" ... ", 4);
 
     // Do the query to get the field.
     String sArgs = "\'"+DataBase::getUniqueDB()->escape(this->getNick())+"\', "+
@@ -606,13 +587,13 @@ bool FTSSrv2::Client::onPlayerGet(uint8_t in_cField, const String & in_sNick, Pa
         goto error;
     }
 
-    FTSMSGDBG("success", 1);
+    FTSMSGDBG("success", 4);
     goto success;
 
 error:
     // Send an error code back.
     p.append(iRet);
-    m_pConnection->send(&p);
+    sendPacket(&p);
 
     return true;
 
@@ -660,7 +641,7 @@ success:
     DataBase::getUniqueDB()->free(pRes);
 
     // And then send the result back to the client.
-    m_pConnection->send(&p);
+    sendPacket(&p);
 
     return true;
 }
@@ -668,20 +649,20 @@ success:
 bool FTSSrv2::Client::onPlayerSetFlag(uint32_t in_cFlag, bool in_bValue)
 {
     Packet p(DSRV_MSG_PLAYER_SET_FLAG);
-    FTSMSGDBG(m_sNick+" is " + (in_bValue ? "setting" : "clearing") + " his flag 0x"+String::nr(in_cFlag,-1,'0',std::ios::hex)+" ... ", 1);
+    FTSMSGDBG(m_sNick+" is " + (in_bValue ? "setting" : "clearing") + " his flag 0x"+String::nr(in_cFlag,-1,'0',std::ios::hex)+" ... ", 4);
 
     // The stored procedure does everything for us.
     String sArgs = "\'"+DataBase::getUniqueDB()->escape(this->getNick())+"\', "+
                    +"\'"+String::nr(in_cFlag)+"\', "+String::b(in_bValue);
     if(ERR_OK != DataBase::getUniqueDB()->storedFunctionInt("setUserFlag", sArgs)) {
         p.append((uint8_t)1);
-        FTSMSGDBG("failed", 1);
+        FTSMSGDBG("failed", 4);
     } else {
         p.append((uint8_t)ERR_OK);
-        FTSMSGDBG("success", 1);
+        FTSMSGDBG("success", 4);
     }
 
-    m_pConnection->send(&p);
+    sendPacket(&p);
     return true;
 }
 
@@ -692,7 +673,7 @@ bool FTSSrv2::Client::onGameIns(Packet *out_pPacket)
 
     String sGameName;
 
-    FTSMSGDBG(m_sNick+" is making a game ... ", 1);
+    FTSMSGDBG(m_sNick+" is making a game ... ", 4);
 
     // Already in a game ?
     if(m_pMyGame) {
@@ -704,7 +685,7 @@ bool FTSSrv2::Client::onGameIns(Packet *out_pPacket)
     // Ok, let's get the game's name.
     sGameName = out_pPacket->get_string().trim();
 
-    FTSMSGDBG("name: \""+sGameName+"\" ... ", 1);
+    FTSMSGDBG("name: \""+sGameName+"\" ... ", 4);
 
     // Check if the game already exists.
     if(GameManager::getManager()->findGame(sGameName) != NULL) {
@@ -717,7 +698,7 @@ bool FTSSrv2::Client::onGameIns(Packet *out_pPacket)
     m_pMyGame = new Game(this->getNick(), this->getCounterpartIP(), sGameName, out_pPacket);
     GameManager::getManager()->addGame(m_pMyGame);
 
-    FTSMSGDBG("success", 1);
+    FTSMSGDBG("success", 4);
     goto success;
 
 error:
@@ -726,7 +707,7 @@ success:
     p.append(iRet);
 
     // And then send the result back to the client.
-    m_pConnection->send(&p);
+    sendPacket(&p);
 
     return true;
 }
@@ -736,7 +717,7 @@ bool FTSSrv2::Client::onGameRem()
     Packet p(DSRV_MSG_GAME_REM);
     int8_t iRet = ERR_OK;
 
-    FTSMSGDBG(m_sNick+" has aborted/ended his game ... ", 1);
+    FTSMSGDBG(m_sNick+" has aborted/ended his game ... ", 4);
 
     // Do I even have a game?
     if(!m_pMyGame) {
@@ -750,7 +731,7 @@ bool FTSSrv2::Client::onGameRem()
     // Now I no more have a game!
     m_pMyGame = NULL;
 
-    FTSMSGDBG("success", 1);
+    FTSMSGDBG("success", 4);
     goto success;
 
 error:
@@ -759,7 +740,7 @@ success:
     p.append(iRet);
 
     // And then send the result back to the client.
-    m_pConnection->send(&p);
+    sendPacket(&p);
 
     return true;
 }
@@ -768,16 +749,16 @@ bool FTSSrv2::Client::onGameLst()
 {
     Packet p(DSRV_MSG_GAME_LST);
 
-    FTSMSGDBG(m_sNick+" gets a list of all games ... ", 1);
+    FTSMSGDBG(m_sNick+" gets a list of all games ... ", 4);
 
     p.append((int8_t)ERR_OK);
     p.append((int16_t)GameManager::getManager()->getNGames());
     GameManager::getManager()->writeListToPacket(&p);
 
-    FTSMSGDBG("success", 1);
+    FTSMSGDBG("success", 4);
 
     // And then send the result back to the client.
-    m_pConnection->send(&p);
+    sendPacket(&p);
 
     return true;
 }
@@ -788,11 +769,11 @@ bool FTSSrv2::Client::onGameInfo(const String & in_sName)
     Game *pGame = NULL;
     int8_t iRet = ERR_OK;
 
-    FTSMSGDBG(m_sNick+" is getting info about the game "+in_sName+" ... ", 1);
+    FTSMSGDBG(m_sNick+" is getting info about the game "+in_sName+" ... ", 4);
 
     pGame = GameManager::getManager()->findGame(in_sName);
     if(!pGame) {
-        FTSMSGDBG("failed: game not found.", 1);
+        FTSMSGDBG("failed: game not found.", 4);
         iRet = 1;
         goto error;
     }
@@ -800,7 +781,7 @@ bool FTSSrv2::Client::onGameInfo(const String & in_sName)
     p.append(iRet);
     pGame->addToInfoPacket(&p);
 
-    FTSMSGDBG("success", 1);
+    FTSMSGDBG("success", 4);
     goto success;
 
 error:
@@ -809,7 +790,7 @@ error:
 success:
 
     // And then send the result back to the client.
-    m_pConnection->send(&p);
+    sendPacket(&p);
 
     return true;
 }
@@ -819,7 +800,7 @@ bool FTSSrv2::Client::onGameStart()
     Packet p(DSRV_MSG_GAME_START);
     int8_t iRet = ERR_OK;
 
-    FTSMSGDBG(m_sNick+" is starting his game ... ", 1);
+    FTSMSGDBG(m_sNick+" is starting his game ... ", 4);
 
     // Do I even have a game?
     if(!m_pMyGame) {
@@ -830,7 +811,7 @@ bool FTSSrv2::Client::onGameStart()
 
     GameManager::getManager()->startGame(m_pMyGame);
 
-    FTSMSGDBG("success", 1);
+    FTSMSGDBG("success", 4);
     goto success;
 
 error:
@@ -839,7 +820,7 @@ success:
     p.append(iRet);
 
     // And then send the result back to the client.
-    m_pConnection->send(&p);
+    sendPacket(&p);
 
     return true;
 }
@@ -850,16 +831,16 @@ bool FTSSrv2::Client::onChatJoin(const String & in_sChan)
     Channel *pChannel = NULL;
     int8_t iRet = ERR_OK;
 
-    FTSMSGDBG(m_sNick+" is joining chan "+in_sChan+" ... ", 1);
+    FTSMSGDBG(m_sNick+" is joining chan "+in_sChan+" ... ", 4);
 
     pChannel = ChannelManager::getManager()->findChannel(in_sChan);
 
     // If the channel doesn't exist, we gotta create it first.
     if(NULL == pChannel) {
-        FTSMSGDBG("creating the channel ... ", 1);
+        FTSMSGDBG("creating the channel ... ", 4);
         pChannel = ChannelManager::getManager()->createChannel( in_sChan, this );
         if(pChannel == NULL) {
-            FTSMSGDBG("error!", 1);
+            FTSMSGDBG("error!", 4);
             iRet = -100;
             goto error;
         }
@@ -869,7 +850,7 @@ bool FTSSrv2::Client::onChatJoin(const String & in_sChan)
     if(iRet != ERR_OK)
         goto error;
 
-    FTSMSGDBG("success", 1);
+    FTSMSGDBG("success", 4);
     goto success;
 
 error:
@@ -877,7 +858,7 @@ error:
 success:
 
     // Update the location field in the database.
-    String sQuery = "UPDATE `"DSRV_TBL_USR"`"
+    String sQuery = "UPDATE `" DSRV_TBL_USR "`"
                      " SET `"+DataBase::getUniqueDB()->TblUsrField(DSRV_TBL_USR_LOCATION)+"`"
                         "='chan:"+DataBase::getUniqueDB()->escape(in_sChan)+"'"
                      " WHERE `"+DataBase::getUniqueDB()->TblUsrField(DSRV_TBL_USR_NICK)+"`"
@@ -890,7 +871,7 @@ success:
     p.append(iRet);
 
     // And then send the result back to the client.
-    m_pConnection->send(&p);
+    sendPacket(&p);
 
     return true;
 }
@@ -902,11 +883,11 @@ bool FTSSrv2::Client::onChatList()
     int8_t iRet = ERR_OK;
     int32_t nPlayers = -1;
 
-    FTSMSGDBG(m_sNick+" is listing his channel ... ", 1);
+    FTSMSGDBG(m_sNick+" is listing his channel ... ", 4);
 
     // If we are in no channel, just return an empty list.
     if( m_pMyChannel == NULL ) {
-        FTSMSGDBG("Hmm, in no channel ?", 1);
+        FTSMSGDBG("Hmm, in no channel ?", 4);
         iRet = -3;
         goto error;
     }
@@ -915,7 +896,7 @@ bool FTSSrv2::Client::onChatList()
     nPlayers = m_pMyChannel->getNUsers();
     lpUsers = m_pMyChannel->getUsers();
 
-    FTSMSGDBG("success", 1);
+    FTSMSGDBG("success", 4);
     goto success;
 
 error:
@@ -934,59 +915,76 @@ success:
     }
 
     // And then send the result back to the client.
-    m_pConnection->send(&p);
+    sendPacket(&p);
 
     return true;
 }
 
 bool FTSSrv2::Client::onChatSend(Packet *out_pPacket)
 {
-    Packet p(DSRV_MSG_CHAT_SENDMSG);
     int8_t iRet = ERR_OK;
 
-    FTSMSGDBG(m_sNick+" is saying something ... ", 1);
+    FTSMSGDBG(m_sNick+" is saying something ... ", 4);
 
     uint8_t cType = out_pPacket->get();
     uint8_t cFlags = out_pPacket->get();
 
     switch(cType) {
-    case DSRV_CHAT_TYPE_NORMAL:
-        // Are we currently in a channel ?
-        if( m_pMyChannel == NULL ) {
-            FTSMSGDBG("Hmm, in no channel ?", 1);
-            iRet = -1;
-            goto error;
-        }
+        case DSRV_CHAT_TYPE_NORMAL:
+        {
+            // Are we currently in a channel ?
+            if( m_pMyChannel == NULL ) {
+                FTSMSGDBG( "Hmm, in no channel ?", 4 );
+                iRet = -1;
+                goto error;
+            }
+            auto sMsg = out_pPacket->get_string();
+            if( sMsg == String::EMPTY ) {
+                FTSMSGDBG( "Hmm, no or corrupted text !", 4 );
+                iRet = -2;
+                goto error;
+            }
 
-        m_pMyChannel->messageToAll( *this, out_pPacket->get_string(), cFlags );
-        goto success;
+            m_pMyChannel->messageToAll( *this, sMsg, cFlags );
+            goto success;
+        }
     case DSRV_CHAT_TYPE_WHISPER:
         {
         FTSSrv2::Client *pTo = NULL;
         String sTo = out_pPacket->get_string().trim();
-        FTSMSGDBG("Target is: "+sTo+".", 1);
+        FTSMSGDBG("Target is: "+sTo+".", 4);
 
         pTo = FTSSrv2::ClientsManager::getManager()->findClient(sTo);
 
-        if(pTo == this || pTo == NULL) {
-            // User not online, not existent or myself: send a error.
+        if( pTo == NULL ) {
+            // User not online, not existent : send a error.
             iRet = 1;
-            FTSMSGDBG("Target not existing or online, or it is myself.", 1);
+            FTSMSGDBG( "Target not existing or online.", 4 );
+            goto error;
+        } else if( pTo == this ) {
+            // User is myself: send a error.
+            iRet = 2;
+            FTSMSGDBG( "Target is myself.", 4 );
             goto error;
         } else {
             // Send the message to the user.
             String sMessage = out_pPacket->get_string();
-            Packet *pRalf = new Packet(DSRV_MSG_CHAT_GETMSG);
-            pRalf->append(DSRV_CHAT_TYPE_WHISPER);
-            pRalf->append((uint8_t)0);
-            pRalf->append(this->getNick());
-            pRalf->append(sMessage);
+            if( sMessage == String::EMPTY ) {
+                FTSMSGDBG( "Hmm, no or corrupted text !", 4 );
+                iRet = -2;
+                goto error;
+            }
+            Packet *pRalf = new Packet( DSRV_MSG_CHAT_GETMSG );
+            pRalf->append( DSRV_CHAT_TYPE_WHISPER );
+            pRalf->append( ( uint8_t ) 0 );
+            pRalf->append( this->getNick() );
+            pRalf->append( sMessage );
 
-            FTSMSGDBG("He whisps "+sTo+": "+sMessage, 1);
+            FTSMSGDBG("He whisps "+sTo+": "+sMessage, 4);
 
             if(pTo->sendPacket(pRalf) != ERR_OK) {
                 SAFE_DELETE(pRalf);
-                iRet = 2;
+                iRet = 3;
                 goto error;
             }
 
@@ -1006,8 +1004,9 @@ bool FTSSrv2::Client::onChatSend(Packet *out_pPacket)
 error:
 
 success:
-    p.append(iRet);
-    m_pConnection->send(&p);
+    Packet p( DSRV_MSG_CHAT_SENDMSG );
+    p.append( iRet );
+    sendPacket(&p);
 
     return true;
 }
@@ -1018,14 +1017,14 @@ bool FTSSrv2::Client::onChatIuNai()
     String sChannel;
     int8_t iRet = ERR_OK;
 
-    FTSMSGDBG(m_sNick+" is asking where he is ... ", 1);
+    FTSMSGDBG(m_sNick+" is asking where he is ... ", 4);
 
     // Are we currently in a channel ?
     if( m_pMyChannel == NULL ) {
-        FTSMSGDBG("He is nowhere", 1);
+        FTSMSGDBG("He is nowhere", 4);
     } else {
         sChannel = m_pMyChannel->getName();
-        FTSMSGDBG("success, he is in " + sChannel, 1);
+        FTSMSGDBG("success, he is in " + sChannel, 4);
     }
 
     goto success;
@@ -1035,7 +1034,7 @@ success:
     p.append(sChannel);
 
     // And then send the result back to the client.
-    m_pConnection->send(&p);
+    sendPacket(&p);
 
     return true;
 }
@@ -1046,11 +1045,11 @@ bool FTSSrv2::Client::onChatMottoGet()
     String sMotto;
     int8_t iRet = ERR_OK;
 
-    FTSMSGDBG(m_sNick+" is getting his channel motto ... ", 1);
+    FTSMSGDBG(m_sNick+" is getting his channel motto ... ", 4);
 
     // Are we currently in a channel ?
     if( m_pMyChannel == NULL ) {
-        FTSMSGDBG("Hmm, in no channel ?", 1);
+        FTSMSGDBG("Hmm, in no channel ?", 4);
         iRet = 1;
         goto error;
     }
@@ -1058,7 +1057,7 @@ bool FTSSrv2::Client::onChatMottoGet()
     // Get it.
     sMotto = m_pMyChannel->getMotto();
 
-    FTSMSGDBG("success", 1);
+    FTSMSGDBG("success", 4);
     goto success;
 
 error:
@@ -1068,7 +1067,7 @@ success:
     p.append(sMotto);
 
     // And then send the result back to the client.
-    m_pConnection->send(&p);
+    sendPacket(&p);
 
     return true;
 }
@@ -1079,11 +1078,11 @@ bool FTSSrv2::Client::onChatMottoSet(const String & in_sMotto)
     String sMotto;
     int8_t iRet = ERR_OK;
 
-    FTSMSGDBG(m_sNick+" is setting his channel motto to "+in_sMotto+"... ", 1);
+    FTSMSGDBG(m_sNick+" is setting his channel motto to "+in_sMotto+"... ", 4);
 
     // Are we currently in a channel ?
     if( m_pMyChannel == NULL ) {
-        FTSMSGDBG("Hmm, in no channel ?", 1);
+        FTSMSGDBG("Hmm, in no channel ?", 4);
         iRet = 1;
         goto error;
     }
@@ -1092,9 +1091,9 @@ bool FTSSrv2::Client::onChatMottoSet(const String & in_sMotto)
     iRet = m_pMyChannel->setMotto(in_sMotto,m_sNick);
 
     if( iRet == ERR_OK )
-        FTSMSGDBG("success", 1);
+        FTSMSGDBG("success", 4);
     else {
-        FTSMSGDBG("error (no rights ?)", 1);
+        FTSMSGDBG("error (no rights ?)", 4);
         goto error;
     }
 
@@ -1104,7 +1103,7 @@ error:
 
 success:
     p.append(iRet);
-    m_pConnection->send(&p);
+    sendPacket(&p);
 
     return true;
 }
@@ -1115,11 +1114,11 @@ bool FTSSrv2::Client::onChatUserGet(const String & in_sUser)
     uint8_t cState = 0;
     int8_t iRet = ERR_OK;
 
-    FTSMSGDBG(m_sNick+" is getting the state of the user "+in_sUser+"... ", 1);
+    FTSMSGDBG(m_sNick+" is getting the state of the user "+in_sUser+"... ", 4);
 
     // Are we currently in a channel ?
     if( m_pMyChannel == NULL ) {
-        FTSMSGDBG("Hmm, in no channel ?", 1);
+        FTSMSGDBG("Hmm, in no channel ?", 4);
         iRet = 1;
         goto error;
     }
@@ -1134,7 +1133,7 @@ bool FTSSrv2::Client::onChatUserGet(const String & in_sUser)
     }
 
     if( iRet == ERR_OK )
-        FTSMSGDBG("success ("+String::nr(cState)+")", 1);
+        FTSMSGDBG("success ("+String::nr(cState)+")", 4);
 
     goto success;
 
@@ -1148,7 +1147,7 @@ success:
     }
 
     // And then send the result back to the client.
-    m_pConnection->send(&p);
+    sendPacket(&p);
 
     return true;
 }
@@ -1159,13 +1158,13 @@ bool FTSSrv2::Client::onChatPublics()
     std::list<Channel *> lpChannels;
     uint32_t nChans = 0;
 
-    FTSMSGDBG(m_sNick+" is listing public channels ... ", 1);
+    FTSMSGDBG(m_sNick+" is listing public channels ... ", 4);
 
     // Get the number and the list of public channels.
     lpChannels = ChannelManager::getManager()->getPublicChannels();
     nChans = lpChannels.size();
 
-    FTSMSGDBG("success (there are "+String::nr(nChans)+" public channels)", 1);
+    FTSMSGDBG("success (there are "+String::nr(nChans)+" public channels)", 4);
 
     // Append the number of public channels.
     p.append((int8_t)ERR_OK);
@@ -1177,7 +1176,7 @@ bool FTSSrv2::Client::onChatPublics()
     }
 
     // And then send the result back to the client.
-    m_pConnection->send(&p);
+    sendPacket(&p);
 
     return true;
 }
@@ -1186,11 +1185,11 @@ bool FTSSrv2::Client::onChatKick(const String & in_sUser)
 {
     Packet p(DSRV_MSG_CHAT_KICK);
     int8_t iRet;
-    FTSMSGDBG(m_sNick+" wants to kick "+in_sUser+" ... ", 1);
+    FTSMSGDBG(m_sNick+" wants to kick "+in_sUser+" ... ", 4);
 
     // Are we currently in a channel ?
     if( m_pMyChannel == NULL ) {
-        FTSMSGDBG("Hmm, in no channel ?", 1);
+        FTSMSGDBG("Hmm, in no channel ?", 4);
         iRet = -1;
         goto error;
     }
@@ -1198,10 +1197,10 @@ bool FTSSrv2::Client::onChatKick(const String & in_sUser)
     iRet = m_pMyChannel->kick(this, in_sUser);
 
     if(iRet == ERR_OK) {
-        FTSMSGDBG("success", 1);
+        FTSMSGDBG("success", 4);
         goto success;
     } else {
-        FTSMSGDBG("failed ("+String::nr(iRet)+")", 1);
+        FTSMSGDBG("failed ("+String::nr(iRet)+")", 4);
         goto error;
     }
 
@@ -1210,7 +1209,7 @@ error:
 success:
 
     p.append(iRet);
-    m_pConnection->send(&p);
+    sendPacket(&p);
 
     return true;
 }
@@ -1219,11 +1218,11 @@ bool FTSSrv2::Client::onChatOp(const String & in_sUser)
 {
     Packet p(DSRV_MSG_CHAT_OP);
     int8_t iRet;
-    FTSMSGDBG(m_sNick+" wants to op "+in_sUser+" ... ", 1);
+    FTSMSGDBG(m_sNick+" wants to op "+in_sUser+" ... ", 4);
 
     // Are we currently in a channel ?
     if( m_pMyChannel == NULL ) {
-        FTSMSGDBG("Hmm, in no channel ?", 1);
+        FTSMSGDBG("Hmm, in no channel ?", 4);
         iRet = -1;
         goto error;
     }
@@ -1235,10 +1234,10 @@ bool FTSSrv2::Client::onChatOp(const String & in_sUser)
     }
 
     if(iRet == ERR_OK) {
-        FTSMSGDBG("success", 1);
+        FTSMSGDBG("success", 4);
         goto success;
     } else {
-        FTSMSGDBG("failed ("+String::nr(iRet)+")", 1);
+        FTSMSGDBG("failed ("+String::nr(iRet)+")", 4);
         goto error;
     }
 
@@ -1247,7 +1246,7 @@ error:
 success:
 
     p.append(iRet);
-    m_pConnection->send(&p);
+    sendPacket(&p);
 
     return true;
 }
@@ -1256,11 +1255,11 @@ bool FTSSrv2::Client::onChatDeop(const String & in_sUser)
 {
     Packet p(DSRV_MSG_CHAT_DEOP);
     int8_t iRet;
-    FTSMSGDBG(m_sNick+" wants to deop "+in_sUser+" ... ", 1);
+    FTSMSGDBG(m_sNick+" wants to deop "+in_sUser+" ... ", 4);
 
     // Are we currently in a channel ?
     if( m_pMyChannel == NULL ) {
-        FTSMSGDBG("Hmm, in no channel ?", 1);
+        FTSMSGDBG("Hmm, in no channel ?", 4);
         iRet = -1;
         goto error;
     }
@@ -1272,10 +1271,10 @@ bool FTSSrv2::Client::onChatDeop(const String & in_sUser)
     }
 
     if(iRet == ERR_OK) {
-        FTSMSGDBG("success", 1);
+        FTSMSGDBG("success", 4);
         goto success;
     } else {
-        FTSMSGDBG("failed ("+String::nr(iRet)+")", 1);
+        FTSMSGDBG("failed ("+String::nr(iRet)+")", 4);
         goto error;
     }
 
@@ -1284,7 +1283,7 @@ error:
 success:
 
     p.append(iRet);
-    m_pConnection->send(&p);
+    sendPacket(&p);
 
     return true;
 }
@@ -1294,7 +1293,7 @@ bool FTSSrv2::Client::onChatListMyChans()
     Packet p(DSRV_MSG_CHAT_LIST_MY_CHANS);
     int8_t iRet = ERR_OK;
 
-    FTSMSGDBG(m_sNick+" wants a list of his chans ... ", 1);
+    FTSMSGDBG(m_sNick+" wants a list of his chans ... ", 4);
 
     std::list<String> sChans = ChannelManager::getManager()->getUserChannels(this->getNick());
 
@@ -1304,9 +1303,9 @@ bool FTSSrv2::Client::onChatListMyChans()
         p.append(*i);
     }
 
-    FTSMSGDBG("got that list, there are "+String::nr(sChans.size())+" of them", 1);
+    FTSMSGDBG("got that list, there are "+String::nr(sChans.size())+" of them", 4);
 
-    m_pConnection->send(&p);
+    sendPacket(&p);
 
     return true;
 }
@@ -1316,119 +1315,19 @@ bool FTSSrv2::Client::onChatDestroyChan(const String &in_sChan)
     Packet p(DSRV_MSG_CHAT_DESTROY_CHAN);
     int8_t iRet = ERR_OK;
 
-    FTSMSGDBG(m_sNick+" wants to destroy the channel "+in_sChan+" ... ", 1);
+    FTSMSGDBG(m_sNick+" wants to destroy the channel "+in_sChan+" ... ", 4);
 
     Channel *pChan = ChannelManager::getManager()->findChannel(in_sChan);
     if(!pChan) {
         iRet = -1;
-        FTSMSGDBG("failed: does not exist!", 1);
+        FTSMSGDBG("failed: does not exist!", 4);
     } else {
         iRet = ChannelManager::getManager()->removeChannel(pChan, this->getNick());
-        FTSMSGDBG( iRet == ERR_OK ? "success" : "failed", 1);
+        FTSMSGDBG( iRet == ERR_OK ? "success" : "failed", 4);
     }
 
     p.append(iRet);
-    m_pConnection->send(&p);
+    sendPacket(&p);
 
     return true;
-}
-
-FTSSrv2::ClientsManager::ClientsManager()
-{
-}
-
-FTSSrv2::ClientsManager::~ClientsManager()
-{
-    while(!m_mClients.empty()) {
-        this->deleteClient(m_mClients.begin()->first);
-    }
-}
-
-FTSSrv2::Client *FTSSrv2::ClientsManager::createClient(Connection *in_pConnection)
-{
-    // Check if the client does not yet exist first.
-    if(this->findClient(in_pConnection) != NULL)
-        return NULL;
-
-    return new FTSSrv2::Client(in_pConnection);
-}
-
-void FTSSrv2::ClientsManager::registerClient(FTSSrv2::Client *in_pClient)
-{
-    // We store them only in lowercase because nicknames are case insensitive.
-    // So we can search for some guy more easily.
-    Lock l(m_mutex);
-    m_mClients[in_pClient->getNick().lower()] = in_pClient;
-}
-
-void FTSSrv2::ClientsManager::unregisterClient(FTSSrv2::Client *in_pClient)
-{
-    Lock l(m_mutex);
-
-    for(std::map<String, FTSSrv2::Client *>::iterator i = m_mClients.begin() ; i != m_mClients.end() ; ++i) {
-        if(i->second == in_pClient) {
-            m_mClients.erase(i);
-            return ;
-        }
-    }
-
-    return ;
-}
-
-FTSSrv2::Client *FTSSrv2::ClientsManager::findClient(const String &in_sName)
-{
-    Lock l(m_mutex);
-    std::map<String, FTSSrv2::Client *>::iterator i = m_mClients.find(in_sName.lower());
-
-    if(i == m_mClients.end()) {
-       return NULL;
-    }
-
-    return i->second;
-}
-
-FTSSrv2::Client *FTSSrv2::ClientsManager::findClient(const Connection *in_pConnection)
-{
-    Lock l(m_mutex);
-
-    for(std::map<String, FTSSrv2::Client *>::iterator i = m_mClients.begin() ;
-        i != m_mClients.end() ; ++i) {
-
-        if(i->second->m_pConnection == in_pConnection) {
-            return i->second;
-        }
-    }
-
-    return NULL;
-}
-
-void FTSSrv2::ClientsManager::deleteClient(const String &in_sName)
-{
-    Lock l(m_mutex);
-    std::map<String, FTSSrv2::Client *>::iterator i = m_mClients.find(in_sName.lower());
-
-    if(i == m_mClients.end()) {
-        return ;
-    }
-
-    FTSSrv2::Client *pClient = i->second;
-    pClient->tellToQuit();
-    return ;
-}
-
-static FTSSrv2::ClientsManager *g_pCM = NULL;
-
-void FTSSrv2::ClientsManager::init()
-{
-    g_pCM = new FTSSrv2::ClientsManager;
-}
-
-FTSSrv2::ClientsManager *FTSSrv2::ClientsManager::getManager()
-{
-    return g_pCM;
-}
-
-void FTSSrv2::ClientsManager::deinit()
-{
-    SAFE_DELETE(g_pCM);
 }

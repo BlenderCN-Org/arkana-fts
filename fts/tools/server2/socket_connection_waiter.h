@@ -23,13 +23,13 @@ public:
     SocketConnectionWaiter();
     ~SocketConnectionWaiter();
 
-    int init(uint16_t in_usPort);
-    int deinit();
-    bool waitForThenDoConnection(uint64_t in_ulMaxWaitMillisec = FTSC_TIME_OUT);
+    int init(std::uint16_t in_usPort);
+    bool waitForThenDoConnection(std::int64_t in_ulMaxWaitMillisec = FTSC_TIME_OUT);
 
 protected:
     SOCKET m_listenSocket;       ///< The socket that has been prepared for listening.
     FTS::Mutex m_mutex;           ///< Mutex for the connections list.
+    unsigned short m_port;      ///< For debugging hold the port no we listening.
 };
 
 } // namespace FTSSrv2

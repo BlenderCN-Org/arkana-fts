@@ -110,7 +110,7 @@ bool FTS::DlgOnlineFindGame::cbRefresh(const CEGUI::EventArgs &)
     Packet p(DSRV_MSG_GAME_LST);
     p.append(g_pMeHacky->og_getMD5());
 
-    if(ERR_OK != g_pMeHacky->og_getConnection()->mreq(&p)) {
+    if( FTSC_ERR::OK != g_pMeHacky->og_getConnection()->mreq( &p ) ) {
         // No need for an error message, it will be retried later.
         return true;
     }
@@ -212,7 +212,7 @@ bool FTS::DlgOnlineFindGame::cbGameClicked(const CEGUI::EventArgs &)
         return true;
     }
 
-    if((ERR_OK != g_pMeHacky->og_getConnection()->mreq(&p)) || p.get() != ERR_OK) {
+    if( (FTSC_ERR::OK != g_pMeHacky->og_getConnection()->mreq( &p )) || p.get() != ERR_OK ) {
         return true;
     }
 

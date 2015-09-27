@@ -21,7 +21,7 @@ class Lock;
 
 class Mutex {
     friend class Lock;
-    std::mutex m_mtx;
+    std::recursive_mutex m_mtx;
 
 public:
     Mutex();
@@ -29,6 +29,7 @@ public:
 
     int lock();
     int unlock();
+
 };
 
 class Lock {

@@ -1,17 +1,18 @@
 #ifndef D_CLIENT_H
 #  define D_CLIENT_H
 
-#  include "server.h"
-#  include "utilities/threading.h"
-#  include "net/connection.h"
 #  include <list>
 #  include <map>
 
+#  include "utilities/threading.h"
+#  include "net/connection.h"
+#include "ClientsManager.h"
+
 namespace FTS {
     class Packet;
+    class Connection;
 }
 
-struct SOCKADDR_IN;
 
 namespace FTSSrv2 {
     class Game;
@@ -19,14 +20,13 @@ namespace FTSSrv2 {
 
 class Client {
 private:
-    bool m_bLoggedIn;           ///< Wether the user is logged in or not.
+    bool m_bLoggedIn;           ///< Whether the user is logged in or not.
     FTS::String m_sNick;            ///< The nickname of the user that is logged on.
     FTS::String m_sPassMD5;         ///< The MD5 encoded password of the user that is logged on.
 
     Game *m_pMyGame;           ///< The game I have started or I am in. NULL else.
     Channel *m_pMyChannel;     ///< The chat channel the player is currently in.
-    FTS::Mutex m_mutex;          ///< A mutex to protect myself.
-
+    FTS::Mutex m_mutex;        ///< Protect the sendPacket, it is used by other clients to send a msg directly.
     FTS::Connection *m_pConnection; ///< The connection to my client.
 
 public:
@@ -35,7 +35,7 @@ public:
     Client(FTS::Connection *in_pConnection);
     virtual ~Client();
 
-    static void *starter(void *in_pThis);
+    static void starter(Client *in_pThis);
     int run();
     bool workPacket(FTS::Packet *in_pPacket);
     int quit();
@@ -53,9 +53,8 @@ public:
 
     int getID() const;
     static int getIDByNick(const FTS::String &in_sNick);
-//     static FTS::String getIPByNick(const FTS::String &in_sNick);
 
-    int sendPacket(FTS::Packet *in_pPacket);
+    bool sendPacket(FTS::Packet *in_pPacket);
     int sendChatJoins(const FTS::String &in_sPlayer);
     int sendChatQuits(const FTS::String &in_sPlayer);
     int sendChatOped(const FTS::String &in_sPlayer);
@@ -95,26 +94,6 @@ private:
     bool onChatDestroyChan(const FTS::String &in_sChan);
 };
 
-class ClientsManager {
-private:
-    std::map<FTS::String, Client *>m_mClients;
-    FTS::Mutex m_mutex;
-
-public:
-    ClientsManager();
-    virtual ~ClientsManager();
-
-    static void init();
-    static ClientsManager *getManager();
-    static void deinit();
-
-    Client *createClient(FTS::Connection *in_pConnection);
-    void registerClient(Client *in_pClient);
-    void unregisterClient(Client *in_pClient);
-    Client *findClient(const FTS::String &in_sName);
-    Client *findClient(const FTS::Connection *in_pConnection);
-    void deleteClient(const FTS::String &in_sName);
-};
 
 } // namespace FTSSrv2
 

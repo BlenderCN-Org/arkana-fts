@@ -3,7 +3,6 @@
 #include <time.h>
 #include <errno.h>
 #include <string.h>
-#include <pthread.h>
 #include <fstream>
 
 using namespace FTS;
@@ -15,11 +14,12 @@ void FTSSrv2::srvFlush(FILE * pFile)
     fflush(pFile);
 }
 
-FTSSrv2::ServerLogger::ServerLogger(const FTS::String &in_sLogDir, bool in_bVerbose)
+FTSSrv2::ServerLogger::ServerLogger( const FTS::String &in_sLogDir, bool in_bVerbose, int in_dbgLvl)
     : m_nPlayers(0)
     , m_nGames(0)
     , m_bDaemon(false)
     , m_bVerbose(in_bVerbose)
+    , m_dbgLvl(in_dbgLvl)
 {
     m_sLogFile     = tryFile(DSRV_LOGFILE_LOG,   in_sLogDir);
     m_sNetLogFile  = tryFile(DSRV_LOGFILE_NETLOG,in_sLogDir);
@@ -249,6 +249,8 @@ int FTSSrv2::ServerLogger::messageDbg(const FTS::String &in_pszMsg, int in_iDbgL
                              const FTS::String &in_sArg7, const FTS::String &in_sArg8,
                              const FTS::String &in_sArg9)
 {
+    if( in_iDbgLv > m_dbgLvl )
+        return 0;
     return this->message(in_pszMsg, MsgType::Raw,
                          in_sArg1, in_sArg2, in_sArg3, in_sArg4,
                          in_sArg5, in_sArg6, in_sArg7, in_sArg8, in_sArg9);
@@ -281,15 +283,15 @@ void FTSSrv2::ServerLogger::netlog(const FTS::String &s)
 {
     m_mutex.lock();
     FTS::String sFile = m_sNetLogFile;
-#if DEBUG
+#if defined(DEBUG)
     bool bDaemon = m_bDaemon, bVerbose = m_bVerbose;
 #endif
     m_mutex.unlock();
 
     FTS::String sMsg = this->timeString() + ": " + s + "\n";
-    this->logToFile(sMsg + "\n", sFile);
+    this->logToFile(sMsg, sFile);
 
-#if DEBUG
+#if defined(DEBUG)
     if(bVerbose && !bDaemon) {
         fprintf(stdout, "Netlog: %s", sMsg.c_str());
         srvFlush(stdout);
@@ -348,5 +350,23 @@ size_t FTSSrv2::ServerLogger::remGame()
     }
 
     return m_nGames;
+}
+
+void FTSSrv2::ServerLogger::statAddSendPacket( int req )
+{
+    Lock l( m_mutex );
+    ++m_totalPackets[req].first;
+}
+
+void FTSSrv2::ServerLogger::statAddRecvPacket( int req )
+{
+    Lock l( m_mutex );
+    ++m_totalPackets[req].second;
+}
+
+void FTSSrv2::ServerLogger::clearStats()
+{
+    Lock l( m_mutex );
+    m_totalPackets.clear();
 }
 

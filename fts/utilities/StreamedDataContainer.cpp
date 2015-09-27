@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include "StreamedDataContainer.h"
 #include "DataContainer.h"
 
