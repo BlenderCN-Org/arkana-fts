@@ -488,9 +488,15 @@ void FTS::Program::init(const String& in_sShaderName)
         // Same story here as for the attribs... Crazy shit!
         u.id = glGetUniformLocation(this->id(), u.name.c_str());
 
-        // In case it is an array, we get the id of every single array entry...
-        for(GLint i = 0 ; i < u.size ; ++i) {
-            u.arrayIds.push_back(glGetUniformLocation(this->id(), (u.name + "[" + String::nr(i) + "]").c_str()));
+        // In case it is an array, we get the id of every single array entry.
+        // The name that was returned is defined to include the [0] by the standard.
+        // 7.3.1.1 Naming Active Resources.
+        if(u.size > 1 || u.name.right(3) == "[0]") {
+            u.arrayIds.push_back(u.id);
+            u.name = u.name.mid(0, 3);
+            for(GLint i = 1 ; i < u.size ; ++i) {
+                u.arrayIds.push_back(glGetUniformLocation(this->id(), (u.name + "[" + String::nr(i) + "]").c_str()));
+            }
         }
 
         m_uniforms[u.name] = u;
