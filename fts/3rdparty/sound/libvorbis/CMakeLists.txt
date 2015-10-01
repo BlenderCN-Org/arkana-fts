@@ -52,7 +52,6 @@ set(SOURCES lib/analysis.c
             lib/sharedbook.c
             lib/smallft.c
             lib/synthesis.c
-            lib/tone.c
             lib/vorbisenc.c
             lib/vorbisfile.c
             lib/window.c
@@ -74,14 +73,21 @@ if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -pg")
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall")
 elseif(MSVC)
+    FOREACH(flag_var
+        CMAKE_C_FLAGS CMAKE_C_FLAGS_DEBUG CMAKE_C_FLAGS_RELEASE
+        )
+        IF(${flag_var} MATCHES "/MD")
+            STRING(REGEX REPLACE "/MD" "/MT" ${flag_var} "${${flag_var}}")
+        ENDIF()
+    ENDFOREACH(flag_var)
 endif()
 
 # And show the flags.
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    message(STATUS "CXX Flags for the libvorbis (Debug) are: ${CMAKE_CXX_FLAGS_DEBUG}")
+    message(STATUS "C Flags for the libvorbis (Debug) are: ${CMAKE_C_FLAGS_DEBUG}")
     set(OUT_NAME "vorbis")
 else()
-    message(STATUS "CXX Flags for the libvorbis (Release) are: ${CMAKE_CXX_FLAGS_RELEASE}")
+    message(STATUS "C Flags for the libvorbis (Release) are: ${CMAKE_C_FLAGS_RELEASE}")
     set(OUT_NAME "vorbis")
 endif()
 
