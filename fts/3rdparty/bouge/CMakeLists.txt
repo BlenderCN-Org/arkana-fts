@@ -35,18 +35,24 @@ set(BUILD_SHARED_LIBS ${BOUGE_BUILD_SHARED_LIBS} CACHE BOOL "TRUE to build bouge
 # add an option for building the examples
 if(NOT DEFINED BOUGE_BUILD_EXAMPLES)
     set(BOUGE_BUILD_EXAMPLES TRUE)
+else()
+    set(BUILD_EXAMPLES ${BOUGE_BUILD_EXAMPLES})
 endif()
 set(BUILD_EXAMPLES ${BOUGE_BUILD_EXAMPLES} CACHE BOOL "TRUE to build the bouge examples, FALSE to ignore them")
 
 # add an option for building the API documentation
 if(NOT DEFINED BOUGE_BUILD_DOC)
     set(BOUGE_BUILD_DOC FALSE)
+else()
+    set(BUILD_DOC ${BOUGE_BUILD_DOC})
 endif()
 set(BUILD_DOC ${BOUGE_BUILD_DOC} CACHE BOOL "TRUE to generate the API documentation, FALSE to ignore it")
 
 # add an option for choosing to statically link to the CRT
 if(NOT DEFINED BOUGE_BUILD_STATICCRT)
     set(BOUGE_BUILD_STATICCRT FALSE)
+else()
+    set(BUILD_STATICCRT ${BOUGE_BUILD_STATICCRT})
 endif()
 set(BUILD_STATICCRT ${BOUGE_BUILD_STATICCRT} CACHE BOOL "TRUE to statically link against the C Runtime, FALSE to dynamically link agains the C Runtime")
 

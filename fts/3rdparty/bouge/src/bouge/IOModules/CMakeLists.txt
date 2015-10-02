@@ -1,12 +1,15 @@
 # add an option for choosing the build type (shared or static)
-
 if(NOT DEFINED BOUGE_BUILD_XMLIO)
     set(BOUGE_BUILD_XMLIO TRUE)
+else()
+    set(BOUGE_BUILD_XMLIO ${BOUGE_BUILD_XMLIO})
 endif()
 set(BUILD_BOUGEIO_XML ${BOUGE_BUILD_XMLIO} CACHE BOOL "TRUE to build the bouge-xml i/o modules (necessary to read .bx* files)")
 
 if(NOT DEFINED BOUGE_BUILD_CAL3DXMLIO)
     set(BOUGE_BUILD_CAL3DXMLIO TRUE)
+else()
+    set(BUILD_BOUGEIO_CAL3DX ${BOUGE_BUILD_CAL3DXMLIO})
 endif()
 set(BUILD_BOUGEIO_CAL3DX ${BOUGE_BUILD_CAL3DXMLIO} CACHE BOOL "TRUE to build the bouge Cal3D XML i/o modules (necessary to read Cal3D's .xmf, .xrf, .xsf, ... files)")
 
