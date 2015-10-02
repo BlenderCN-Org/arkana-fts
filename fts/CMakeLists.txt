@@ -212,7 +212,6 @@ endif()
 
 set(FTS_LIBS)
 set(FTS_INCLUDES)
-list(APPEND FTS_LIBS X11)
 
 # The std:: namespace.
 include(${CMAKE_ROOT}/Modules/TestForSTDNamespace.cmake)
@@ -226,8 +225,8 @@ find_package(Threads REQUIRED)
 list(APPEND FTS_LIBS ${CMAKE_THREAD_LIBS_INIT})
 
 find_package(OpenGL REQUIRED)
-find_package(GLU REQUIRED)
 list(APPEND FTS_LIBS ${OPENGL_LIBRARIES})
+list(APPEND FTS_INCLUDES ${OPENGL_INCLUDE_DIR})
 
 find_package(SDL)
 if(${SDL_FOUND} STREQUAL "NO")
@@ -260,6 +259,17 @@ else()
     message(STATUS "Found FreeType in ${FreeType_INCLUDE_DIR}: ${FreeType_LIBRARY}")
     list(APPEND FTS_INCLUDES ${FreeType_INCLUDE_DIR})
     list(APPEND FTS_LIBS ${FreeType_LIBRARIES})
+endif()
+
+# X11 is required (at least) by scrap.cpp. I'm sure there's more.
+set(X11_FIND_QUIETLY 1)
+find_package(X11)
+if(${X11_FOUND} STREQUAL "NO")
+    message(FATAL_ERROR "Could not find X11 libraries on your system. This means you have to install the x11/xorg development files. This can be done by installing a package called something along the lines of xorg-x11-dev.")
+else()
+    message(STATUS "Found X11 in ${X11_INCLUDE_DIR}: ${X11_LIBRARIES}")
+    list(APPEND FTS_INCLUDES ${X11_INCLUDE_DIR})
+    list(APPEND FTS_LIBS ${X11_LIBRARIES})
 endif()
 
 #
@@ -345,7 +355,6 @@ list(APPEND FTS_LIBS aTest)
 include_directories(${fts_SOURCE_DIR})
 include_directories("${fts_SOURCE_DIR}/main")
 include_directories(${FTS_INCLUDES})
-include_directories(${OPENGL_INCLUDE_DIR})
 
 # Add additional defines:
 add_definitions(-DD_STRING_FTS_LIBS)
