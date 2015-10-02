@@ -75,8 +75,8 @@
       <DisableSpecificWarnings>4018;4267;4129;4311;4313;4005;4521;4291;4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>freetype_d.lib;pcre_d.lib;OpenGL32.lib;glu32.lib;SDL_d.lib;SDLmain_d.lib;CEGUIBase_d.lib;OpenGLGUIRenderer_d.lib;wsock32.lib;CEGUIFalagardWRBase_d.lib;CEGUITinyXMLParser_d.lib;OpenAL32_d.lib;OpenALcommon_d.lib;alut_d.lib;libvorbis_d.lib;libvorbisfile_d.lib;libogg_d.lib;dao_d.lib;bouge_d.lib;User32.lib;winmm.lib;dsound.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>../3rdparty/vclib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>alut_d.lib;freetype_d.lib;pcred.lib;OpenGL32.lib;glu32.lib;SDL_d.lib;SDLmain_d.lib;CEGUIBase_d.lib;CEGUIOpenGLRenderer_d.lib;CEGUIFalagardWRBase_d.lib;CEGUITinyXMLParser_d.lib;OpenAL32_d.lib;vorbis_d.lib;ogg_d.lib;dao_d.lib;bouge-s-d.lib;bouge-math-s-d.lib;bouge-tinyxml-s-d.lib;bouge-xml-common-s-d.lib;bouge-xmlio-s-d.lib;wsock32.lib;User32.lib;winmm.lib;dsound.lib;dxguid.lib;imm32.lib;version.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../3rdparty/vclib;../3rdparty/vclib/debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <GenerateMapFile>false</GenerateMapFile>
@@ -104,8 +104,8 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>freetype.lib;pcre.lib;OpenGL32.lib;glu32.lib;SDL.lib;SDLmain.lib;CEGUIBase.lib;OpenGLGUIRenderer.lib;wsock32.lib;user32.lib;CEGUIFalagardWRBase.lib;CEGUITinyXMLParser.lib;OpenAL32.lib;OpenALcommon.lib;alut.lib;libvorbis.lib;libvorbisfile.lib;libogg.lib;dao.lib;bouge.lib;winmm.lib;dxguid.lib;dsound.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>../3rdparty/vclib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>freetype.lib;pcre.lib;OpenGL32.lib;glu32.lib;SDL.lib;SDLmain.lib;CEGUIBase.lib;CEGUIOpenGLRenderer.lib;CEGUIFalagardWRBase.lib;CEGUITinyXMLParser.lib;OpenAL32.lib;alut.lib;vorbis.lib;ogg.lib;dao.lib;bouge-s.lib;bouge-math-s.lib;bouge-tinyxml-s.lib;bouge-xml-common-s.lib;bouge-xmlio-s.lib;wsock32.lib;user32.lib;winmm.lib;dxguid.lib;dsound.lib;imm32.lib;version.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../3rdparty/vclib/Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <EnableUAC>false</EnableUAC>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <DelayLoadDLLs>%(DelayLoadDLLs)</DelayLoadDLLs>
