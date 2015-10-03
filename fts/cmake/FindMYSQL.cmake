@@ -55,6 +55,7 @@ else(MSVC)
 		/usr/lib64/mysql
 		/usr/local/lib/mysql
 		/usr/local/lib64/mysql
+		/usr/lib/x86_64-linux-gnu  # Ubuntu
 	)
 	find_path(MYSQL_LIBRARIES_DIR libmysqlclient_r.so
 		/usr/lib
@@ -62,6 +63,7 @@ else(MSVC)
 		/usr/lib64/mysql
 		/usr/local/lib/mysql
 		/usr/local/lib64/mysql
+		/usr/lib/x86_64-linux-gnu  # Ubuntu
         )
 endif(MSVC)
 
