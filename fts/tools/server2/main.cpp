@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
     _CrtSetDbgFlag( flag );
     //_CrtSetBreakAlloc( 5382 ); // Comment or un-comment on need basis
 #endif
-    bool bDaemon = false, bVerbose = false;
+    bool bServerMode = false, bDaemon = false, bVerbose = false;
     String logdir(DSRV_LOG_DIR);
     int opt = -1;
     int dbgLevel = 1;
@@ -94,9 +94,9 @@ int main(int argc, char *argv[])
     bool bJustKill = false;
 #if WINDOOF
     // No run as daemon possible 
-    std::string options = "H:l:vkhg:";
+    std::string options = "H:l:vskhg:";
 #else
-    std::string options = "H:l:vdkhg:";
+    std::string options = "H:l:vsdkhg:";
 #endif
     GetOpt getopt( argc, argv, options );
     while((opt = getopt()) != -1) {
@@ -109,6 +109,9 @@ int main(int argc, char *argv[])
             break;
         case 'v':
             bVerbose = true;
+            break;
+        case 's':
+            bInteractive = true;
             break;
         case 'd':
             bDaemon = true;
@@ -129,6 +132,7 @@ int main(int argc, char *argv[])
 #if !WINDOOF
             std::cout << "      -d         start as a daemon (not interactive) (EXPERIMENTAL)\n";
 #endif
+            std::cout << "      -s         start without REPL. Implied by -d."
             std::cout << "      -k         shut down the active daemon (TODO)\n";
             std::cout << "      -g LEVEL   sets the gravity level of the logger\n";
             std::cout << "      -h         shows this help message\n";
@@ -136,6 +140,8 @@ int main(int argc, char *argv[])
             break;
         }
     }
+
+    if(bDaemon) bServerMode = true;
 
     String sLockFile = sHome + "/" + LOCK_FILE;
 
@@ -215,8 +221,8 @@ int main(int argc, char *argv[])
 
     // Here we access directly to it, because we just read it, so there's no danger (I hope)
     while(!g_bExit) {
-        // Don't read stdin if being a daemon.
-        if(bDaemon) {
+        // Don't read stdin if not in interactive mode (such as being a daemon).
+        if(bServerMode) {
             std::this_thread::sleep_for( std::chrono::microseconds(10));
             continue;
         }
