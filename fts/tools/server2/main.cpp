@@ -132,7 +132,7 @@ int main(int argc, char *argv[])
 #if !WINDOOF
             std::cout << "      -d         start as a daemon (not interactive) (EXPERIMENTAL)\n";
 #endif
-            std::cout << "      -s         start without REPL. Implied by -d."
+            std::cout << "      -s         start without REPL. Implied by -d.\n";
             std::cout << "      -k         shut down the active daemon (TODO)\n";
             std::cout << "      -g LEVEL   sets the gravity level of the logger\n";
             std::cout << "      -h         shows this help message\n";
