@@ -111,7 +111,7 @@ int main(int argc, char *argv[])
             bVerbose = true;
             break;
         case 's':
-            bInteractive = true;
+            bServerMode = true;
             break;
         case 'd':
             bDaemon = true;
