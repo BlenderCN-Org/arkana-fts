@@ -216,7 +216,7 @@ bool FTS::LoadFTSRlv::update(const Clock&)
         DaoVm::getSingleton().execute(Path("EasterEggs.dao"));
         // TODO: load this one by script too, as soon as setting the type is possible.
         ISndSys::getSingleton().CreateSndObj(SndGroup::Attention, "whisp_recv.ogg");
-        ISndSys::getSingleton().CreateSndObj(SndGroup::UnitReaction, "scream1.wav");
+        ISndSys::getSingleton().CreateSndObj(SndGroup::UnitReaction, "scream1.ogg");
         Logger::getSingletonPtr()->doneConsoleMessage();
         m_eNextTodo = LoadNetwork;
         break;

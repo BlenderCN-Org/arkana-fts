@@ -771,7 +771,7 @@ bool FTS::ModelViewerRlv::cbPlayAction(const CEGUI::EventArgs &)
     // Again, for our halloween   e a s t e r   e g g:
     // When playing the "Jump" of the "Pumpkin", scream!
     if(m_sModelName.contains("Pumpkin") && sName == "Jump") {
-        ISndSys::getSingleton().getSndObj(SndGroup::UnitReaction, "scream1.wav")->Play();
+        ISndSys::getSingleton().getSndObj(SndGroup::UnitReaction, "scream1.ogg")->Play();
     }
 
     return true;

@@ -53,6 +53,8 @@ static ov_callbacks OV_CALLBACKS_WRAPPER = {
 
 #if D_SND_SYS == D_FTS_OpenAL
 
+typedef unsigned char PCMDATA ;
+
 FTS::SndFile::~SndFile()
 {
 }
@@ -141,13 +143,8 @@ FTS::SndFile::SndFile(const Path& in_sName)
         alBufferData(m_alBuffer ,vi->channels == 2 ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16, &pcm[0], m_size, m_samplingRate);
         ov_clear(&vf);
     } else {
-        //... load from file with alut ...
-        m_size = (size_t) fraw->getSize();
-        std::vector<PCMDATA> pcm(m_size);
-        fraw->readNoEndian(&pcm[0], m_size);
-        m_alBuffer = alutCreateBufferFromFileImage((const ALvoid *) &pcm[0], m_size);
-        if(!m_alBuffer)
-            throw OpenALException(sCompleteFilename);
+        // No more .wav/.ao
+        throw SndErrException(sCompleteFilename, "Only *.ogg sound files are supported.");
     }
 }
 

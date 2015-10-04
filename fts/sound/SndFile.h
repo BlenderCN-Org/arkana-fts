@@ -9,7 +9,6 @@
 #pragma once
 
 namespace FTS {
-    typedef unsigned char PCMDATA ;
     class Path;
 
 #if D_SND_SYS == D_FTS_OpenAL
@@ -35,6 +34,6 @@ private:
     ALuint m_alBuffer;
 };
 
-} // namespace FTS
-
 #endif
+
+} // namespace FTS

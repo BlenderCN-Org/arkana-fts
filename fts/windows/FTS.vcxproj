@@ -64,7 +64,7 @@
     </CustomBuildStep>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..;../3rdparty/CEGUI/include;../3rdparty/CEGUI;../3rdparty/sound/libogg/include;../3rdparty/sound/libvorbis/include;../3rdparty/sound/freealut/include;../3rdparty/sound/openal-soft/include;../3rdparty/sound/openal-soft/include/AL;../main;../3rdparty/sdl/include;../3rdparty/dao/src;../3rdparty/bouge/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..;../3rdparty/CEGUI/include;../3rdparty/CEGUI;../3rdparty/sound/libogg/include;../3rdparty/sound/libvorbis/include;../3rdparty/sound/openal-soft/include;../3rdparty/sound/openal-soft/include/AL;../main;../3rdparty/sdl/include;../3rdparty/dao/src;../3rdparty/bouge/include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;DEBUG;D_STRING_FTS_PATHS;D_USE_CEGUI;ALL_STATIC;CEGUI_STATIC;D_SND_SYS=1;DAO_DIRECT_API;DAO_SND_STATIC;BOUGE_STATIC;AL_LIBTYPE_STATIC</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -75,7 +75,7 @@
       <DisableSpecificWarnings>4018;4267;4129;4311;4313;4005;4521;4291;4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>alut_d.lib;freetype_d.lib;pcred.lib;OpenGL32.lib;glu32.lib;SDL_d.lib;SDLmain_d.lib;CEGUIBase_d.lib;CEGUIOpenGLRenderer_d.lib;CEGUIFalagardWRBase_d.lib;CEGUITinyXMLParser_d.lib;OpenAL32_d.lib;vorbis_d.lib;ogg_d.lib;dao_d.lib;bouge-s-d.lib;bouge-math-s-d.lib;bouge-tinyxml-s-d.lib;bouge-xml-common-s-d.lib;bouge-xmlio-s-d.lib;wsock32.lib;User32.lib;winmm.lib;dsound.lib;dxguid.lib;imm32.lib;version.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>freetype_d.lib;pcred.lib;OpenGL32.lib;glu32.lib;SDL_d.lib;SDLmain_d.lib;CEGUIBase_d.lib;CEGUIOpenGLRenderer_d.lib;CEGUIFalagardWRBase_d.lib;CEGUITinyXMLParser_d.lib;OpenAL32_d.lib;vorbis_d.lib;ogg_d.lib;dao_d.lib;bouge-s-d.lib;bouge-math-s-d.lib;bouge-tinyxml-s-d.lib;bouge-xml-common-s-d.lib;bouge-xmlio-s-d.lib;wsock32.lib;User32.lib;winmm.lib;dsound.lib;dxguid.lib;imm32.lib;version.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>../3rdparty/vclib;../3rdparty/vclib/debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -92,7 +92,7 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <AdditionalIncludeDirectories>..;../3rdparty/CEGUI/include;../3rdparty/CEGUI;../3rdparty/sound/libogg/include;../3rdparty/sound/libvorbis/include;../3rdparty/sound/freealut/include;../3rdparty/sound/openal-soft/include;../3rdparty/sound/openal-soft/include/AL;../main;../3rdparty/sdl/include;../3rdparty/dao/src;../3rdparty/bouge/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..;../3rdparty/CEGUI/include;../3rdparty/CEGUI;../3rdparty/sound/libogg/include;../3rdparty/sound/libvorbis/include;../3rdparty/sound/openal-soft/include;../3rdparty/sound/openal-soft/include/AL;../main;../3rdparty/sdl/include;../3rdparty/dao/src;../3rdparty/bouge/include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;D_STRING_FTS_PATHS;D_USE_CEGUI;ALL_STATIC;CEGUI_STATIC;D_SND_SYS=1;DAO_DIRECT_API;DAO_SND_STATIC;BOUGE_STATIC;AL_LIBTYPE_STATIC</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
@@ -104,7 +104,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>freetype.lib;pcre.lib;OpenGL32.lib;glu32.lib;SDL.lib;SDLmain.lib;CEGUIBase.lib;CEGUIOpenGLRenderer.lib;CEGUIFalagardWRBase.lib;CEGUITinyXMLParser.lib;OpenAL32.lib;alut.lib;vorbis.lib;ogg.lib;dao.lib;bouge-s.lib;bouge-math-s.lib;bouge-tinyxml-s.lib;bouge-xml-common-s.lib;bouge-xmlio-s.lib;wsock32.lib;user32.lib;winmm.lib;dxguid.lib;dsound.lib;imm32.lib;version.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>freetype.lib;pcre.lib;OpenGL32.lib;glu32.lib;SDL.lib;SDLmain.lib;CEGUIBase.lib;CEGUIOpenGLRenderer.lib;CEGUIFalagardWRBase.lib;CEGUITinyXMLParser.lib;OpenAL32.lib;vorbis.lib;ogg.lib;dao.lib;bouge-s.lib;bouge-math-s.lib;bouge-tinyxml-s.lib;bouge-xml-common-s.lib;bouge-xmlio-s.lib;wsock32.lib;user32.lib;winmm.lib;dxguid.lib;dsound.lib;imm32.lib;version.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>../3rdparty/vclib/Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <EnableUAC>false</EnableUAC>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>

@@ -8,5 +8,4 @@ set( CMAKE_DEBUG_POSTFIX "_d")
 add_subdirectory(openal-soft)
 add_subdirectory(libvorbis)
 add_subdirectory(libogg)
-add_subdirectory(freealut)
 

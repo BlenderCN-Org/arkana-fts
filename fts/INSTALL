@@ -18,7 +18,7 @@
   GCC 4.5 has known bugs and won't compile.
 
   The following 3rd party libraries will be compiled if they are not found on your system:
-    * The OpenAL software and OpenAl Utility Toolkit library (libopenal-soft and libalut) - For the sound
+    * The OpenAL software and OpenAl Utility Toolkit library (libopenal-soft) - For the sound
     * The Ogg and Vorbis libraries (libogg, libvorbis) - For compressed music files
     * A modified version of CEGUI 0.5, along with:
           o PCRE (libpcre)

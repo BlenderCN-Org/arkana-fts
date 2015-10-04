@@ -48,13 +48,6 @@ SndSysOpenAL::SndSysOpenAL()
 {
     ALCcontext *Context;
     ALCdevice *Device;
-    int argc = 1;
-    char *argv = (char *)"";
-
-    // initialize alut
-    alutInitWithoutContext(&argc,&argv);
-
-    //initialize OpenAL
 
     //Open device
     Device = alcOpenDevice(NULL);
@@ -114,7 +107,6 @@ SndSysOpenAL::~SndSysOpenAL()
     if(Device)
         alcCloseDevice(Device);
 
-    alutExit();
     UpdateableManager::getSingletonPtr()->rem("SoundSystem");
 }
 

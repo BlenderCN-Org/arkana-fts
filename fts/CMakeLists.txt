@@ -326,12 +326,11 @@ unset(BOUGE_BUILD_CAL3DXMLIO)
 unset(BOUGE_BUILD_STATICCRT)
 unset(BOUGE_BUILD_EXAMPLES)
 
-# Add OpenAL-soft and FreeALUT.
+# Add OpenAL-soft.
 add_subdirectory(${fts_SOURCE_DIR}/3rdparty/sound/openal-soft)
-add_subdirectory(${fts_SOURCE_DIR}/3rdparty/sound/freealut)
 add_definitions(-DD_SND_SYS=1)
-list(APPEND FTS_INCLUDES "3rdparty/sound/openal-soft/include" "3rdparty/sound/freealut/include")
-list(APPEND FTS_LIBS "openal" "alut")
+list(APPEND FTS_INCLUDES "3rdparty/sound/openal-soft/include")
+list(APPEND FTS_LIBS "openal")
 
 # Add libogg and libvorbis
 add_subdirectory(${fts_SOURCE_DIR}/3rdparty/sound/libogg)

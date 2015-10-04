@@ -18,7 +18,6 @@
 #  if D_SND_SYS == D_FTS_OpenAL
 #    include <AL/al.h>
 #    include <AL/alc.h>
-#    include <AL/alut.h>
 #  else
 #    if (WINDOOF)
 #      pragma message( "No sub sound system is defined" )
