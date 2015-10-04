@@ -6,10 +6,40 @@
 *.cpp text
 *.c text
 *.h text
+*.txt text
+*.xml text
+
+# CEGUI (TODO: we may want to rename them all to .xml)
+*.font text
+*.imageset text
+*.layout text
+*.looknfeel text
+*.scheme text
+
+# FTS-specific text formats
+*.bxanim text
+*.bxmat text
+*.bxmesh text
+*.bxmset text
+*.bxskel text
+*.dao text
+*.frag text
+*.vert text
+*.fraginc text
+*.vertinc text
 
 # Declare files that will always have CRLF line endings on checkout.
 *.sln text eol=crlf
+*.vcproj text eol=crlf
+*.vcxproj text eol=crlf
 
 # Denote all files that are truly binary and should not be modified.
 *.png binary
 *.jpg binary
+*.ico binary
+*.ogg binary
+*.blend binary
+
+# FTS-specific binary formats
+*.tileset binary
+*.ftsm binary
