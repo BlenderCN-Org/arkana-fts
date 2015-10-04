@@ -20,7 +20,7 @@
 
 #define F_PI    (3.14159265358979323846f)
 #define F_PI_2  (1.57079632679489661923f)
-#define F_2PI   (6.28318530717958647692f)
+#define F_TAU   (6.28318530717958647692f)
 
 #ifndef FLT_EPSILON
 #define FLT_EPSILON (1.19209290e-07f)
@@ -30,10 +30,6 @@
 #define RAD2DEG(x)  ((ALfloat)(x) * (180.0f/F_PI))
 
 
-#define SRC_HISTORY_BITS   (6)
-#define SRC_HISTORY_LENGTH (1<<SRC_HISTORY_BITS)
-#define SRC_HISTORY_MASK   (SRC_HISTORY_LENGTH-1)
-
 #define MAX_PITCH  (10)
 
 
@@ -41,25 +37,54 @@
 extern "C" {
 #endif
 
+struct ALsource;
+struct ALvoice;
+
+
+typedef union aluVector {
+    alignas(16) ALfloat v[4];
+} aluVector;
+
+inline void aluVectorSet(aluVector *vector, ALfloat x, ALfloat y, ALfloat z, ALfloat w)
+{
+    vector->v[0] = x;
+    vector->v[1] = y;
+    vector->v[2] = z;
+    vector->v[3] = w;
+}
+
+
+typedef union aluMatrix {
+    alignas(16) ALfloat m[4][4];
+} aluMatrix;
+
+inline void aluMatrixSetRow(aluMatrix *matrix, ALuint row,
+                            ALfloat m0, ALfloat m1, ALfloat m2, ALfloat m3)
+{
+    matrix->m[row][0] = m0;
+    matrix->m[row][1] = m1;
+    matrix->m[row][2] = m2;
+    matrix->m[row][3] = m3;
+}
+
+inline void aluMatrixSet(aluMatrix *matrix, ALfloat m00, ALfloat m01, ALfloat m02, ALfloat m03,
+                                            ALfloat m10, ALfloat m11, ALfloat m12, ALfloat m13,
+                                            ALfloat m20, ALfloat m21, ALfloat m22, ALfloat m23,
+                                            ALfloat m30, ALfloat m31, ALfloat m32, ALfloat m33)
+{
+    aluMatrixSetRow(matrix, 0, m00, m01, m02, m03);
+    aluMatrixSetRow(matrix, 1, m10, m11, m12, m13);
+    aluMatrixSetRow(matrix, 2, m20, m21, m22, m23);
+    aluMatrixSetRow(matrix, 3, m30, m31, m32, m33);
+}
+
+
 enum ActiveFilters {
     AF_None = 0,
     AF_LowPass = 1,
     AF_HighPass = 2,
     AF_BandPass = AF_LowPass | AF_HighPass
 };
-
-
-typedef struct HrtfState {
-    alignas(16) ALfloat History[SRC_HISTORY_LENGTH];
-    alignas(16) ALfloat Values[HRIR_LENGTH][2];
-} HrtfState;
-
-typedef struct HrtfParams {
-    alignas(16) ALfloat Coeffs[HRIR_LENGTH][2];
-    alignas(16) ALfloat CoeffStep[HRIR_LENGTH][2];
-    ALuint Delay[2];
-    ALint DelayStep[2];
-} HrtfParams;
 
 
 typedef struct MixGains {
@@ -71,11 +96,15 @@ typedef struct MixGains {
 
 typedef struct DirectParams {
     ALfloat (*OutBuffer)[BUFFERSIZE];
+    ALuint OutChannels;
 
     /* If not 'moving', gain/coefficients are set directly without fading. */
     ALboolean Moving;
     /* Stepping counter for gain/coefficient fading. */
     ALuint Counter;
+    /* Last direction (relative to listener) and gain of a moving source. */
+    aluVector LastDir;
+    ALfloat LastGain;
 
     struct {
         enum ActiveFilters ActiveType;
@@ -83,17 +112,11 @@ typedef struct DirectParams {
         ALfilterState HighPass;
     } Filters[MAX_INPUT_CHANNELS];
 
-    union {
-        struct {
-            HrtfParams Params[MAX_INPUT_CHANNELS];
-            HrtfState State[MAX_INPUT_CHANNELS];
-            ALuint IrSize;
-            ALfloat Gain;
-            ALfloat Dir[3];
-        } Hrtf;
-
-        MixGains Gains[MAX_INPUT_CHANNELS][MaxChannels];
-    } Mix;
+    struct {
+        HrtfParams Params;
+        HrtfState State;
+    } Hrtf[MAX_INPUT_CHANNELS];
+    MixGains Gains[MAX_INPUT_CHANNELS][MAX_OUTPUT_CHANNELS];
 } DirectParams;
 
 typedef struct SendParams {
@@ -131,7 +154,7 @@ typedef void (*HrtfMixerFunc)(ALfloat (*restrict OutBuffer)[BUFFERSIZE], const A
 #define SPEEDOFSOUNDMETRESPERSEC  (343.3f)
 #define AIRABSORBGAINHF           (0.99426f) /* -0.05dB */
 
-#define FRACTIONBITS (14)
+#define FRACTIONBITS (12)
 #define FRACTIONONE  (1<<FRACTIONBITS)
 #define FRACTIONMASK (FRACTIONONE-1)
 
@@ -179,47 +202,63 @@ inline ALuint64 clampu64(ALuint64 val, ALuint64 min, ALuint64 max)
 { return minu64(max, maxu64(min, val)); }
 
 
+extern alignas(16) ALfloat CubicLUT[FRACTIONONE][4];
+
+
 inline ALfloat lerp(ALfloat val1, ALfloat val2, ALfloat mu)
 {
     return val1 + (val2-val1)*mu;
 }
-inline ALfloat cubic(ALfloat val0, ALfloat val1, ALfloat val2, ALfloat val3, ALfloat mu)
+inline ALfloat cubic(ALfloat val0, ALfloat val1, ALfloat val2, ALfloat val3, ALuint frac)
 {
-    ALfloat mu2 = mu*mu;
-    ALfloat a0 = -0.5f*val0 +  1.5f*val1 + -1.5f*val2 +  0.5f*val3;
-    ALfloat a1 =       val0 + -2.5f*val1 +  2.0f*val2 + -0.5f*val3;
-    ALfloat a2 = -0.5f*val0              +  0.5f*val2;
-    ALfloat a3 =                    val1;
-
-    return a0*mu*mu2 + a1*mu2 + a2*mu + a3;
+    const ALfloat *k = CubicLUT[frac];
+    return k[0]*val0 + k[1]*val1 + k[2]*val2 + k[3]*val3;
 }
 
+
+void aluInitResamplers(void);
 
 ALvoid aluInitPanning(ALCdevice *Device);
 
 /**
- * ComputeAngleGains
+ * ComputeDirectionalGains
  *
- * Sets channel gains based on a given source's angle and its half-width. The
- * angle and hwidth parameters are in radians.
+ * Sets channel gains based on a direction. The direction must be a 3-component
+ * vector no longer than 1 unit.
  */
-void ComputeAngleGains(const ALCdevice *device, ALfloat angle, ALfloat hwidth, ALfloat ingain, ALfloat gains[MaxChannels]);
+void ComputeDirectionalGains(const ALCdevice *device, const ALfloat dir[3], ALfloat ingain, ALfloat gains[MAX_OUTPUT_CHANNELS]);
 
 /**
- * SetGains
+ * ComputeAngleGains
  *
- * Helper to set the appropriate channels to the specified gain.
+ * Sets channel gains based on angle and elevation. The angle and elevation
+ * parameters are in radians, going right and up respectively.
  */
-inline void SetGains(const ALCdevice *device, ALfloat ingain, ALfloat gains[MaxChannels])
-{
-    ComputeAngleGains(device, 0.0f, F_PI, ingain, gains);
-}
+void ComputeAngleGains(const ALCdevice *device, ALfloat angle, ALfloat elevation, ALfloat ingain, ALfloat gains[MAX_OUTPUT_CHANNELS]);
+
+/**
+ * ComputeAmbientGains
+ *
+ * Sets channel gains for ambient, omni-directional sounds.
+ */
+void ComputeAmbientGains(const ALCdevice *device, ALfloat ingain, ALfloat gains[MAX_OUTPUT_CHANNELS]);
+
+/**
+ * ComputeBFormatGains
+ *
+ * Sets channel gains for a given (first-order) B-Format channel. The matrix is
+ * a 1x4 'slice' of the rotation matrix for a given channel used to orient the
+ * coefficients.
+ */
+void ComputeBFormatGains(const ALCdevice *device, const ALfloat mtx[4], ALfloat ingain, ALfloat gains[MAX_OUTPUT_CHANNELS]);
 
 
-ALvoid CalcSourceParams(struct ALactivesource *src, const ALCcontext *ALContext);
-ALvoid CalcNonAttnSourceParams(struct ALactivesource *src, const ALCcontext *ALContext);
+ALvoid UpdateContextSources(ALCcontext *context);
 
-ALvoid MixSource(struct ALactivesource *src, ALCdevice *Device, ALuint SamplesToDo);
+ALvoid CalcSourceParams(struct ALvoice *voice, const struct ALsource *source, const ALCcontext *ALContext);
+ALvoid CalcNonAttnSourceParams(struct ALvoice *voice, const struct ALsource *source, const ALCcontext *ALContext);
+
+ALvoid MixSource(struct ALvoice *voice, struct ALsource *source, ALCdevice *Device, ALuint SamplesToDo);
 
 ALvoid aluMixData(ALCdevice *device, ALvoid *buffer, ALsizei size);
 /* Caller must lock the device. */
@@ -233,4 +272,3 @@ extern ALfloat ZScale;
 #endif
 
 #endif
-

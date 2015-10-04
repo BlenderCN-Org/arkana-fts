@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  *  License along with this library; if not, write to the
- *  Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- *  Boston, MA  02111-1307, USA.
+ *  Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  * Or go to http://www.gnu.org/copyleft/lgpl.html
  */
 
@@ -167,7 +167,7 @@ static ALCenum pa_open_playback(ALCdevice *device, const ALCchar *deviceName)
     data->update_size = device->UpdateSize;
 
     data->params.device = -1;
-    if(!ConfigValueInt("port", "device", &data->params.device) ||
+    if(!ConfigValueInt(NULL, "port", "device", &data->params.device) ||
        data->params.device < 0)
         data->params.device = Pa_GetDefaultOutputDevice();
     data->params.suggestedLatency = (device->UpdateSize*device->NumUpdates) /
@@ -319,7 +319,7 @@ static ALCenum pa_open_capture(ALCdevice *device, const ALCchar *deviceName)
         goto error;
 
     data->params.device = -1;
-    if(!ConfigValueInt("port", "capture", &data->params.device) ||
+    if(!ConfigValueInt(NULL, "port", "capture", &data->params.device) ||
        data->params.device < 0)
         data->params.device = Pa_GetDefaultInputDevice();
     data->params.suggestedLatency = 0.0f;
@@ -429,8 +429,7 @@ static const BackendFuncs pa_funcs = {
     pa_start_capture,
     pa_stop_capture,
     pa_capture_samples,
-    pa_available_samples,
-    ALCdevice_GetLatencyDefault
+    pa_available_samples
 };
 
 ALCboolean alc_pa_init(BackendFuncs *func_list)

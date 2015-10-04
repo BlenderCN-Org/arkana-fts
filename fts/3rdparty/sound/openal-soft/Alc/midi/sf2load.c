@@ -343,16 +343,15 @@ static GenModList GenModList_clone(const GenModList *self)
 
 static void GenModList_insertGen(GenModList *self, const Generator *gen, ALboolean ispreset)
 {
-    Generator *i = VECTOR_ITER_BEGIN(self->gens);
-    Generator *end = VECTOR_ITER_END(self->gens);
-    for(;i != end;i++)
+    Generator *i;
+#define MATCH_GENERATOR(i) ((i)->mGenerator == gen->mGenerator)
+    VECTOR_FIND_IF(i, Generator, self->gens, MATCH_GENERATOR);
+    if(i != VECTOR_ITER_END(self->gens))
     {
-        if(i->mGenerator == gen->mGenerator)
-        {
-            i->mAmount = gen->mAmount;
-            return;
-        }
+        i->mAmount = gen->mAmount;
+        return;
     }
+#undef MATCH_GENERATOR
 
     if(ispreset &&
        (gen->mGenerator == 0 || gen->mGenerator == 1 || gen->mGenerator == 2 ||
@@ -364,36 +363,35 @@ static void GenModList_insertGen(GenModList *self, const Generator *gen, ALboole
 
     if(VECTOR_PUSH_BACK(self->gens, *gen) == AL_FALSE)
     {
-        ERR("Failed to insert generator (from %d elements)\n", VECTOR_SIZE(self->gens));
+        ERR("Failed to insert generator (from "SZFMT" elements)\n", VECTOR_SIZE(self->gens));
         return;
     }
 }
 static void GenModList_accumGen(GenModList *self, const Generator *gen)
 {
-    Generator *i = VECTOR_ITER_BEGIN(self->gens);
-    Generator *end = VECTOR_ITER_END(self->gens);
-    for(;i != end;i++)
+    Generator *i;
+#define MATCH_GENERATOR(i) ((i)->mGenerator == gen->mGenerator)
+    VECTOR_FIND_IF(i, Generator, self->gens, MATCH_GENERATOR);
+    if(i != VECTOR_ITER_END(self->gens))
     {
-        if(i->mGenerator == gen->mGenerator)
+        if(gen->mGenerator == 43 || gen->mGenerator == 44)
         {
-            if(gen->mGenerator == 43 || gen->mGenerator == 44)
-            {
-                /* Range generators accumulate by taking the intersection of
-                 * the two ranges.
-                 */
-                ALushort low = maxu(i->mAmount&0x00ff, gen->mAmount&0x00ff);
-                ALushort high = minu(i->mAmount&0xff00, gen->mAmount&0xff00);
-                i->mAmount = low | high;
-            }
-            else
-                i->mAmount += gen->mAmount;
-            return;
+            /* Range generators accumulate by taking the intersection of the
+             * two ranges.
+             */
+            ALushort low = maxu(i->mAmount&0x00ff, gen->mAmount&0x00ff);
+            ALushort high = minu(i->mAmount&0xff00, gen->mAmount&0xff00);
+            i->mAmount = low | high;
         }
+        else
+            i->mAmount += gen->mAmount;
+        return;
     }
+#undef MATCH_GENERATOR
 
     if(VECTOR_PUSH_BACK(self->gens, *gen) == AL_FALSE)
     {
-        ERR("Failed to insert generator (from %d elements)\n", VECTOR_SIZE(self->gens));
+        ERR("Failed to insert generator (from "SZFMT" elements)\n", VECTOR_SIZE(self->gens));
         return;
     }
     if(gen->mGenerator < 60)
@@ -402,41 +400,39 @@ static void GenModList_accumGen(GenModList *self, const Generator *gen)
 
 static void GenModList_insertMod(GenModList *self, const Modulator *mod)
 {
-    Modulator *i = VECTOR_ITER_BEGIN(self->mods);
-    Modulator *end = VECTOR_ITER_END(self->mods);
-    for(;i != end;i++)
+    Modulator *i;
+#define MATCH_MODULATOR(i) ((i)->mDstOp == mod->mDstOp && (i)->mSrcOp == mod->mSrcOp && \
+                            (i)->mAmtSrcOp == mod->mAmtSrcOp && (i)->mTransOp == mod->mTransOp)
+    VECTOR_FIND_IF(i, Modulator, self->mods, MATCH_MODULATOR);
+    if(i != VECTOR_ITER_END(self->mods))
     {
-        if(i->mDstOp == mod->mDstOp && i->mSrcOp == mod->mSrcOp &&
-           i->mAmtSrcOp == mod->mAmtSrcOp && i->mTransOp == mod->mTransOp)
-        {
-            i->mAmount = mod->mAmount;
-            return;
-        }
+        i->mAmount = mod->mAmount;
+        return;
     }
+#undef MATCH_MODULATOR
 
     if(VECTOR_PUSH_BACK(self->mods, *mod) == AL_FALSE)
     {
-        ERR("Failed to insert modulator (from %d elements)\n", VECTOR_SIZE(self->mods));
+        ERR("Failed to insert modulator (from "SZFMT" elements)\n", VECTOR_SIZE(self->mods));
         return;
     }
 }
 static void GenModList_accumMod(GenModList *self, const Modulator *mod)
 {
-    Modulator *i = VECTOR_ITER_BEGIN(self->mods);
-    Modulator *end = VECTOR_ITER_END(self->mods);
-    for(;i != end;i++)
+    Modulator *i;
+#define MATCH_MODULATOR(i) ((i)->mDstOp == mod->mDstOp && (i)->mSrcOp == mod->mSrcOp && \
+                            (i)->mAmtSrcOp == mod->mAmtSrcOp && (i)->mTransOp == mod->mTransOp)
+    VECTOR_FIND_IF(i, Modulator, self->mods, MATCH_MODULATOR);
+    if(i != VECTOR_ITER_END(self->mods))
     {
-        if(i->mDstOp == mod->mDstOp && i->mSrcOp == mod->mSrcOp &&
-           i->mAmtSrcOp == mod->mAmtSrcOp && i->mTransOp == mod->mTransOp)
-        {
-            i->mAmount += mod->mAmount;
-            return;
-        }
+        i->mAmount += mod->mAmount;
+        return;
     }
+#undef MATCH_MODULATOR
 
     if(VECTOR_PUSH_BACK(self->mods, *mod) == AL_FALSE)
     {
-        ERR("Failed to insert modulator (from %d elements)\n", VECTOR_SIZE(self->mods));
+        ERR("Failed to insert modulator (from "SZFMT" elements)\n", VECTOR_SIZE(self->mods));
         return;
     }
 
@@ -754,7 +750,7 @@ static void fillZone(ALfontsound *sound, ALCcontext *context, const GenModList *
            dst == AL_BASE_KEY_SOFT)
             ERR("Unhandled modulator destination: %d\n", mod->mDstOp);
         else if(src0in != AL_INVALID && src0form != AL_INVALID && src0type != AL_INVALID &&
-                src1in != AL_INVALID && src1form != AL_INVALID && src0type != AL_INVALID &&
+                src1in != AL_INVALID && src1form != AL_INVALID && src1type != AL_INVALID &&
                 trans != AL_INVALID)
         {
             ALsizei idx = (ALsizei)(mod - VECTOR_ITER_BEGIN(zone->mods));
@@ -953,15 +949,15 @@ static void processInstrument(ALfontsound ***sounds, ALsizei *sounds_size, ALCco
     GenModList_Destruct(&gzone);
 }
 
-static size_t printStringChunk(Reader *stream, const RiffHdr *chnk, const char *title)
+static ALuint printStringChunk(Reader *stream, const RiffHdr *chnk, const char *title)
 {
-    size_t len = 0;
+    ALuint len = 0;
     if(chnk->mSize == 0 || (chnk->mSize&1))
         ERR("Invalid "FOURCCFMT" size: %d\n", FOURCCARGS(chnk->mCode), chnk->mSize);
     else
     {
         char *str = calloc(1, chnk->mSize+1);
-        len = Reader_read(stream, str, chnk->mSize);
+        len = (ALuint)Reader_read(stream, str, chnk->mSize);
 
         TRACE("%s: %s\n", title, str);
         free(str);
@@ -1116,7 +1112,7 @@ ALboolean loadSf2(Reader *stream, ALsoundfont *soundfont, ALCcontext *context)
 
         ptr = buffer->data;
         if(IS_LITTLE_ENDIAN)
-            smpl.mSize -= Reader_read(stream, ptr, smpl.mSize);
+            smpl.mSize -= (ALuint)Reader_read(stream, ptr, smpl.mSize);
         else
         {
             ALuint total = 0;
@@ -1126,7 +1122,7 @@ ALboolean loadSf2(Reader *stream, ALsoundfont *soundfont, ALCcontext *context)
                 ALuint todo = minu(smpl.mSize-total, sizeof(buf));
                 ALuint i;
 
-                smpl.mSize -= Reader_read(stream, buf, todo);
+                smpl.mSize -= (ALuint)Reader_read(stream, buf, todo);
                 for(i = 0;i < todo;i++)
                     ptr[total+i] = buf[i^1];
 
@@ -1335,7 +1331,7 @@ ALboolean loadSf2(Reader *stream, ALsoundfont *soundfont, ALCcontext *context)
             for(j = 0;j < sounds_size;j++)
                 IncrementRef(&sounds[j]->ref);
             sounds = ExchangePtr((XchgPtr*)&presets[presets_size]->Sounds, sounds);
-            ExchangeInt(&presets[presets_size]->NumSounds, sounds_size);
+            presets[presets_size]->NumSounds = sounds_size;
             presets_size++;
         }
         free(sounds);
@@ -1346,7 +1342,7 @@ ALboolean loadSf2(Reader *stream, ALsoundfont *soundfont, ALCcontext *context)
     for(i = soundfont->NumPresets;i < presets_size;i++)
         IncrementRef(&presets[i]->ref);
     presets = ExchangePtr((XchgPtr*)&soundfont->Presets, presets);
-    ExchangeInt(&soundfont->NumPresets, presets_size);
+    soundfont->NumPresets = presets_size;
 
     free(presets);
 

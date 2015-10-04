@@ -318,7 +318,7 @@ ALsoundfont *ALsoundfont_getDefSoundfont(ALCcontext *context)
 
     namelist = getenv("ALSOFT_SOUNDFONT");
     if(!namelist || !namelist[0])
-        ConfigValueStr("midi", "soundfont", &namelist);
+        ConfigValueStr(al_string_get_cstr(device->DeviceName), "midi", "soundfont", &namelist);
     while(namelist && namelist[0])
     {
         const char *next, *end;
@@ -360,26 +360,26 @@ ALsoundfont *ALsoundfont_getDefSoundfont(ALCcontext *context)
 
 void ALsoundfont_deleteSoundfont(ALsoundfont *self, ALCdevice *device)
 {
-    ALsfpreset **presets;
-    ALsizei num_presets;
+    ALsfpreset **presets = self->Presets;
+    ALsizei num_presets = self->NumPresets;
     VECTOR(ALbuffer*) buffers;
     ALsizei i;
 
     VECTOR_INIT(buffers);
-    presets = ExchangePtr((XchgPtr*)&self->Presets, NULL);
-    num_presets = ExchangeInt(&self->NumPresets, 0);
+
+    self->Presets = NULL;
+    self->NumPresets = 0;
 
     for(i = 0;i < num_presets;i++)
     {
         ALsfpreset *preset = presets[i];
-        ALfontsound **sounds;
-        ALsizei num_sounds;
+        ALfontsound **sounds = preset->Sounds;
+        ALsizei num_sounds = preset->NumSounds;
         ALboolean deleting;
         ALsizei j;
 
-        sounds = ExchangePtr((XchgPtr*)&preset->Sounds, NULL);
-        num_sounds = ExchangeInt(&preset->NumSounds, 0);
-
+        preset->Sounds = NULL;
+        preset->NumSounds = 0;
         DeletePreset(device, preset);
         preset = NULL;
 
@@ -395,10 +395,11 @@ void ALsoundfont_deleteSoundfont(ALsoundfont *self, ALCdevice *device)
             {
                 if(sounds[j] && ReadRef(&sounds[j]->ref) == 0)
                 {
+                    ALbuffer *buffer;
+
                     deleting = AL_TRUE;
-                    if(sounds[j]->Buffer)
+                    if((buffer=ATOMIC_LOAD(&sounds[j]->Buffer)) != NULL)
                     {
-                        ALbuffer *buffer = sounds[j]->Buffer;
                         ALbuffer **iter;
 
 #define MATCH_BUFFER(_i) (buffer == *(_i))
@@ -423,8 +424,8 @@ void ALsoundfont_deleteSoundfont(ALsoundfont *self, ALCdevice *device)
     DeleteBuffer(device, *(iter));         \
 } while(0)
     VECTOR_FOR_EACH(ALbuffer*, buffers, DELETE_BUFFER);
-    VECTOR_DEINIT(buffers);
 #undef DELETE_BUFFER
+    VECTOR_DEINIT(buffers);
 }
 
 

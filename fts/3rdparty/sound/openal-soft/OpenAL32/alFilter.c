@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  *  License along with this library; if not, write to the
- *  Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- *  Boston, MA  02111-1307, USA.
+ *  Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  * Or go to http://www.gnu.org/copyleft/lgpl.html
  */
 
@@ -344,7 +344,7 @@ void ALfilterState_setParams(ALfilterState *filter, ALfilterType type, ALfloat g
     // Limit gain to -100dB
     gain = maxf(gain, 0.00001f);
 
-    w0 = F_2PI * freq_mult;
+    w0 = F_TAU * freq_mult;
 
     /* Calculate filter coefficients depending on filter type */
     switch(type)
@@ -388,12 +388,12 @@ void ALfilterState_setParams(ALfilterState *filter, ALfilterType type, ALfloat g
             break;
         case ALfilterType_HighPass:
             alpha = sinf(w0) * sinhf(logf(2.0f) / 2.0f * bandwidth * w0 / sinf(w0));
-            filter->b[0] = (1.0f + cosf(w0)) / 2.0f;
-            filter->b[1] =  1.0f + cosf(w0);
-            filter->b[2] = (1.0f + cosf(w0)) / 2.0f;
-            filter->a[0] =  1.0f + alpha;
-            filter->a[1] = -2.0f * cosf(w0);
-            filter->a[2] =  1.0f - alpha;
+            filter->b[0] =  (1.0f + cosf(w0)) / 2.0f;
+            filter->b[1] = -(1.0f + cosf(w0));
+            filter->b[2] =  (1.0f + cosf(w0)) / 2.0f;
+            filter->a[0] =   1.0f + alpha;
+            filter->a[1] =  -2.0f * cosf(w0);
+            filter->a[2] =   1.0f - alpha;
             break;
         case ALfilterType_BandPass:
             alpha = sinf(w0) * sinhf(logf(2.0f) / 2.0f * bandwidth * w0 / sinf(w0));

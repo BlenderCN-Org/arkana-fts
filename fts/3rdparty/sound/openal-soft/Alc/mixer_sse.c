@@ -1,12 +1,5 @@
 #include "config.h"
 
-#ifdef IN_IDE_PARSER
-/* KDevelop's parser won't recognize these defines that get added by the -msse
- * switch used to compile this source. Without them, xmmintrin.h fails to
- * declare anything. */
-#define __MMX__
-#define __SSE__
-#endif
 #include <xmmintrin.h>
 
 #include "AL/al.h"
@@ -18,6 +11,23 @@
 #include "alAuxEffectSlot.h"
 #include "mixer_defs.h"
 
+
+static inline void SetupCoeffs(ALfloat (*restrict OutCoeffs)[2],
+                               const HrtfParams *hrtfparams,
+                               ALuint IrSize, ALuint Counter)
+{
+    const __m128 counter4 = _mm_set1_ps((float)Counter);
+    __m128 coeffs, step4;
+    ALuint i;
+
+    for(i = 0;i < IrSize;i += 2)
+    {
+        step4  = _mm_load_ps(&hrtfparams->CoeffStep[i][0]);
+        coeffs = _mm_load_ps(&hrtfparams->Coeffs[i][0]);
+        coeffs = _mm_sub_ps(coeffs, _mm_mul_ps(step4, counter4));
+        _mm_store_ps(&OutCoeffs[i][0], coeffs);
+    }
+}
 
 static inline void ApplyCoeffsStep(ALuint Offset, ALfloat (*restrict Values)[2],
                                    const ALuint IrSize,
@@ -133,9 +143,9 @@ static inline void ApplyCoeffs(ALuint Offset, ALfloat (*restrict Values)[2],
     }
 }
 
-#define SUFFIX SSE
+#define MixHrtf MixHrtf_SSE
 #include "mixer_inc.c"
-#undef SUFFIX
+#undef MixHrtf
 
 
 void Mix_SSE(const ALfloat *data, ALuint OutChans, ALfloat (*restrict OutBuffer)[BUFFERSIZE],
@@ -150,23 +160,23 @@ void Mix_SSE(const ALfloat *data, ALuint OutChans, ALfloat (*restrict OutBuffer)
         ALuint pos = 0;
         gain = Gains[c].Current;
         step = Gains[c].Step;
-        if(step != 1.0f && Counter > 0)
+        if(step != 0.0f && Counter > 0)
         {
             /* Mix with applying gain steps in aligned multiples of 4. */
             if(BufferSize-pos > 3 && Counter-pos > 3)
             {
                 gain4 = _mm_setr_ps(
                     gain,
-                    gain * step,
-                    gain * step * step,
-                    gain * step * step * step
+                    gain + step,
+                    gain + step + step,
+                    gain + step + step + step
                 );
-                step4 = _mm_set1_ps(step * step * step * step);
+                step4 = _mm_set1_ps(step + step + step + step);
                 do {
                     const __m128 val4 = _mm_load_ps(&data[pos]);
                     __m128 dry4 = _mm_load_ps(&OutBuffer[c][OutPos+pos]);
                     dry4 = _mm_add_ps(dry4, _mm_mul_ps(val4, gain4));
-                    gain4 = _mm_mul_ps(gain4, step4);
+                    gain4 = _mm_add_ps(gain4, step4);
                     _mm_store_ps(&OutBuffer[c][OutPos+pos], dry4);
                     pos += 4;
                 } while(BufferSize-pos > 3 && Counter-pos > 3);
@@ -176,7 +186,7 @@ void Mix_SSE(const ALfloat *data, ALuint OutChans, ALfloat (*restrict OutBuffer)
             for(;pos < BufferSize && pos < Counter;pos++)
             {
                 OutBuffer[c][OutPos+pos] += data[pos]*gain;
-                gain *= step;
+                gain += step;
             }
             if(pos == Counter)
                 gain = Gains[c].Target;
@@ -186,7 +196,7 @@ void Mix_SSE(const ALfloat *data, ALuint OutChans, ALfloat (*restrict OutBuffer)
                 OutBuffer[c][OutPos+pos] += data[pos]*gain;
         }
 
-        if(!(gain > GAIN_SILENCE_THRESHOLD))
+        if(!(fabsf(gain) > GAIN_SILENCE_THRESHOLD))
             continue;
         gain4 = _mm_set1_ps(gain);
         for(;BufferSize-pos > 3;pos += 4)

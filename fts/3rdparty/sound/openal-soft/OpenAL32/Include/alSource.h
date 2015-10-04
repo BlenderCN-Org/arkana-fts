@@ -11,6 +11,9 @@
 extern "C" {
 #endif
 
+struct ALbuffer;
+struct ALsource;
+
 extern enum Resampler DefaultResampler;
 
 extern const ALsizei ResamplerPadding[ResamplerMax];
@@ -24,11 +27,11 @@ typedef struct ALbufferlistitem {
 } ALbufferlistitem;
 
 
-typedef struct ALactivesource {
-    struct ALsource *Source;
+typedef struct ALvoice {
+    struct ALsource *volatile Source;
 
     /** Method to update mixing parameters. */
-    ALvoid (*Update)(struct ALactivesource *self, const ALCcontext *context);
+    ALvoid (*Update)(struct ALvoice *self, const struct ALsource *source, const ALCcontext *context);
 
     /** Current target parameters used for mixing. */
     ALint Step;
@@ -39,7 +42,7 @@ typedef struct ALactivesource {
 
     DirectParams Direct;
     SendParams Send[MAX_SENDS];
-} ALactivesource;
+} ALvoice;
 
 
 typedef struct ALsource {
@@ -54,9 +57,10 @@ typedef struct ALsource {
     volatile ALfloat   RefDistance;
     volatile ALfloat   MaxDistance;
     volatile ALfloat   RollOffFactor;
-    volatile ALfloat   Position[3];
-    volatile ALfloat   Velocity[3];
-    volatile ALfloat   Orientation[3];
+    aluVector Position;
+    aluVector Velocity;
+    aluVector Direction;
+    volatile ALfloat   Orientation[2][3];
     volatile ALboolean HeadRelative;
     volatile ALboolean Looping;
     volatile enum DistanceModel DistanceModel;

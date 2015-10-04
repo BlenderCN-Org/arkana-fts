@@ -13,8 +13,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  *  License along with this library; if not, write to the
- *  Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- *  Boston, MA  02111-1307, USA.
+ *  Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  * Or go to http://www.gnu.org/copyleft/lgpl.html
  */
 
@@ -55,10 +55,13 @@ DEFINE_GUID(CLSID_MMDeviceEnumerator, 0xbcde0395, 0xe52f, 0x467c, 0x8e,0x3d, 0xc
 DEFINE_GUID(IID_IMMDeviceEnumerator,  0xa95664d2, 0x9614, 0x4f35, 0xa7,0x46, 0xde,0x8d,0xb6,0x36,0x17,0xe6);
 DEFINE_GUID(IID_IAudioClient,         0x1cb9ad4c, 0xdbfa, 0x4c32, 0xb1,0x78, 0xc2,0xf5,0x68,0xa7,0x03,0xb2);
 DEFINE_GUID(IID_IAudioRenderClient,   0xf294acfc, 0x3146, 0x4483, 0xa7,0xbf, 0xad,0xdc,0xa7,0xc2,0x60,0xe2);
+DEFINE_GUID(IID_IAudioCaptureClient,  0xc8adbd64, 0xe71e, 0x48a0, 0xa4,0xde, 0x18,0x5c,0x39,0x5c,0xd3,0x17);
 
 #ifdef HAVE_MMDEVAPI
 #include <devpropdef.h>
+#include <propkeydef.h>
 DEFINE_DEVPROPKEY(DEVPKEY_Device_FriendlyName, 0xa45c254e, 0xdf1c, 0x4efd, 0x80,0x20, 0x67,0xd1,0x46,0xa8,0x50,0xe0, 14);
+DEFINE_PROPERTYKEY(PKEY_AudioEndpoint_FormFactor, 0x1da5d803, 0xd492, 0x4edd, 0x8c,0x23, 0xe0,0xc0,0xff,0xee,0x7f,0x0e, 0);
 #endif
 #endif
 #endif /* AL_NO_UID_DEFS */
@@ -198,13 +201,13 @@ void FillCPUCaps(ALuint capfilter)
     /* Assume support for whatever's supported if we can't check for it */
 #if defined(HAVE_SSE4_1)
 #warning "Assuming SSE 4.1 run-time support!"
-    capfilter |= CPU_CAP_SSE | CPU_CAP_SSE2 | CPU_CAP_SSE4_1;
+    caps |= CPU_CAP_SSE | CPU_CAP_SSE2 | CPU_CAP_SSE4_1;
 #elif defined(HAVE_SSE2)
 #warning "Assuming SSE 2 run-time support!"
-    capfilter |= CPU_CAP_SSE | CPU_CAP_SSE2;
+    caps |= CPU_CAP_SSE | CPU_CAP_SSE2;
 #elif defined(HAVE_SSE)
 #warning "Assuming SSE run-time support!"
-    capfilter |= CPU_CAP_SSE;
+    caps |= CPU_CAP_SSE;
 #endif
 #endif
 #ifdef HAVE_NEON
@@ -240,7 +243,7 @@ void *al_malloc(size_t alignment, size_t size)
     if(ret != NULL)
     {
         *(ret++) = 0x00;
-        while(((ALintptrEXT)ret&(alignment-1)) != 0)
+        while(((ptrdiff_t)ret&(alignment-1)) != 0)
             *(ret++) = 0x55;
     }
     return ret;
@@ -421,6 +424,111 @@ FILE *al_fopen(const char *fname, const char *mode)
     return file;
 }
 
+
+void al_print(const char *type, const char *func, const char *fmt, ...)
+{
+    char str[1024];
+    WCHAR *wstr;
+    va_list ap;
+
+    va_start(ap, fmt);
+    vsnprintf(str, sizeof(str), fmt, ap);
+    va_end(ap);
+
+    str[sizeof(str)-1] = 0;
+    wstr = FromUTF8(str);
+    if(!wstr)
+        fprintf(LogFile, "AL lib: %s %s: <UTF-8 error> %s", type, func, str);
+    else
+    {
+        fprintf(LogFile, "AL lib: %s %s: %ls", type, func, wstr);
+        free(wstr);
+        wstr = NULL;
+    }
+    fflush(LogFile);
+}
+
+
+static inline int is_slash(int c)
+{ return (c == '\\' || c == '/'); }
+
+FILE *OpenDataFile(const char *fname, const char *subdir)
+{
+    static const int ids[2] = { CSIDL_APPDATA, CSIDL_COMMON_APPDATA };
+    WCHAR *wname=NULL, *wsubdir=NULL;
+    FILE *f;
+    size_t i;
+
+    wname = FromUTF8(fname);
+    if(!wname)
+    {
+        ERR("Failed to convert UTF-8 filename: \"%s\"\n", fname);
+        return NULL;
+    }
+
+    /* If the path is absolute, open it directly. */
+    if(wname[0] != '\0' && wname[1] == ':' && is_slash(wname[2]))
+    {
+        f = _wfopen(wname, L"rb");
+        if(f) TRACE("Opened %s\n", fname);
+        else WARN("Could not open %s\n", fname);
+        free(wname);
+        return f;
+    }
+
+    /* Try the current directory first before the data directories. */
+    if((f=_wfopen(wname, L"rb")) != NULL)
+    {
+        TRACE("Opened %s\n", fname);
+        free(wname);
+        return f;
+    }
+
+    wsubdir = FromUTF8(subdir);
+    if(!wsubdir)
+    {
+        ERR("Failed to convert UTF-8 subdir: \"%s\"\n", subdir);
+        free(wname);
+        return NULL;
+    }
+
+    for(i = 0;i < COUNTOF(ids);i++)
+    {
+        WCHAR buffer[PATH_MAX];
+        size_t len;
+
+        if(SHGetSpecialFolderPathW(NULL, buffer, ids[i], FALSE) == FALSE)
+            continue;
+
+        len = lstrlenW(buffer);
+        if(len > 0 && is_slash(buffer[len-1]))
+            buffer[--len] = '\0';
+        _snwprintf(buffer+len, PATH_MAX-len, L"/%ls/%ls", wsubdir, wname);
+        len = lstrlenW(buffer);
+        while(len > 0)
+        {
+            --len;
+            if(buffer[len] == '/')
+                buffer[len] = '\\';
+        }
+
+        if((f=_wfopen(buffer, L"rb")) != NULL)
+        {
+            al_string filepath = AL_STRING_INIT_STATIC();
+            al_string_copy_wcstr(&filepath, buffer);
+            TRACE("Opened %s\n", al_string_get_cstr(filepath));
+            al_string_deinit(&filepath);
+            break;
+        }
+    }
+    free(wname);
+    free(wsubdir);
+
+    if(f == NULL)
+        WARN("Could not open %s\\%s\n", subdir, fname);
+    return f;
+}
+
 #else
 
 #ifdef HAVE_DLFCN_H
@@ -453,9 +561,7 @@ void *GetSymbol(void *handle, const char *name)
     return sym;
 }
 
-#endif
-#endif
-
+#endif /* HAVE_DLFCN_H */
 
 void al_print(const char *type, const char *func, const char *fmt, ...)
 {
@@ -469,76 +575,7 @@ void al_print(const char *type, const char *func, const char *fmt, ...)
     fflush(LogFile);
 }
 
-#ifdef _WIN32
-static inline int is_slash(int c)
-{ return (c == '\\' || c == '/'); }
 
-FILE *OpenDataFile(const char *fname, const char *subdir)
-{
-    static const int ids[2] = { CSIDL_APPDATA, CSIDL_COMMON_APPDATA };
-    WCHAR *wname=NULL, *wsubdir=NULL;
-    FILE *f;
-    int i;
-
-    /* If the path is absolute, open it directly. */
-    if(fname[0] != '\0' && fname[1] == ':' && is_slash(fname[2]))
-    {
-        if((f=al_fopen(fname, "rb")) != NULL)
-        {
-            TRACE("Opened %s\n", fname);
-            return f;
-        }
-        WARN("Could not open %s\n", fname);
-        return NULL;
-    }
-
-    /* If it's relative, try the current directory first before the data directories. */
-    if((f=al_fopen(fname, "rb")) != NULL)
-    {
-        TRACE("Opened %s\n", fname);
-        return f;
-    }
-    WARN("Could not open %s\n", fname);
-
-    wname = FromUTF8(fname);
-    wsubdir = FromUTF8(subdir);
-    if(!wname)
-        ERR("Failed to convert UTF-8 filename: \"%s\"\n", fname);
-    else if(!wsubdir)
-        ERR("Failed to convert UTF-8 subdir: \"%s\"\n", subdir);
-    else for(i = 0;i < 2;i++)
-    {
-        WCHAR buffer[PATH_MAX];
-        size_t len;
-
-        if(SHGetSpecialFolderPathW(NULL, buffer, ids[i], FALSE) == FALSE)
-            continue;
-
-        len = lstrlenW(buffer);
-        if(len > 0 && is_slash(buffer[len-1]))
-            buffer[--len] = '\0';
-        _snwprintf(buffer+len, PATH_MAX-len, L"/%ls/%ls", wsubdir, wname);
-        len = lstrlenW(buffer);
-        while(len > 0)
-        {
-            --len;
-            if(buffer[len] == '/')
-                buffer[len] = '\\';
-        }
-
-        if((f=_wfopen(buffer, L"rb")) != NULL)
-        {
-            TRACE("Opened %ls\n", buffer);
-            return f;
-        }
-        WARN("Could not open %ls\n", buffer);
-    }
-    free(wname);
-    free(wsubdir);
-
-    return NULL;
-}
-#else
 FILE *OpenDataFile(const char *fname, const char *subdir)
 {
     char buffer[PATH_MAX] = "";
@@ -561,7 +598,6 @@ FILE *OpenDataFile(const char *fname, const char *subdir)
         TRACE("Opened %s\n", fname);
         return f;
     }
-    WARN("Could not open %s\n", fname);
 
     if((str=getenv("XDG_DATA_HOME")) != NULL && str[0] != '\0')
         snprintf(buffer, sizeof(buffer), "%s/%s/%s", str, subdir, fname);
@@ -574,7 +610,6 @@ FILE *OpenDataFile(const char *fname, const char *subdir)
             TRACE("Opened %s\n", buffer);
             return f;
         }
-        WARN("Could not open %s\n", buffer);
     }
 
     if((str=getenv("XDG_DATA_DIRS")) == NULL || str[0] == '\0')
@@ -605,11 +640,12 @@ FILE *OpenDataFile(const char *fname, const char *subdir)
             TRACE("Opened %s\n", buffer);
             return f;
         }
-        WARN("Could not open %s\n", buffer);
     }
+    WARN("Could not open %s/%s\n", subdir, fname);
 
     return NULL;
 }
+
 #endif
 
 
@@ -638,25 +674,20 @@ void SetRTPriority(void)
 }
 
 
-ALboolean vector_reserve(char *ptr, size_t base_size, size_t obj_size, ALsizei obj_count, ALboolean exact)
+ALboolean vector_reserve(char *ptr, size_t base_size, size_t obj_size, size_t obj_count, ALboolean exact)
 {
     vector_ *vecptr = (vector_*)ptr;
-    if(obj_count < 0)
-        return AL_FALSE;
     if((*vecptr ? (*vecptr)->Capacity : 0) < obj_count)
     {
-        ALsizei old_size = (*vecptr ? (*vecptr)->Size : 0);
+        size_t old_size = (*vecptr ? (*vecptr)->Size : 0);
         void *temp;
 
         /* Use the next power-of-2 size if we don't need to allocate the exact
          * amount. This is preferred when regularly increasing the vector since
          * it means fewer reallocations. Though it means it also wastes some
          * memory. */
-        if(exact == AL_FALSE)
-        {
+        if(exact == AL_FALSE && obj_count < INT_MAX)
             obj_count = NextPowerOf2((ALuint)obj_count);
-            if(obj_count < 0) return AL_FALSE;
-        }
 
         /* Need to be explicit with the caller type's base size, because it
          * could have extra padding before the start of the array (that is,
@@ -671,11 +702,9 @@ ALboolean vector_reserve(char *ptr, size_t base_size, size_t obj_size, ALsizei o
     return AL_TRUE;
 }
 
-ALboolean vector_resize(char *ptr, size_t base_size, size_t obj_size, ALsizei obj_count)
+ALboolean vector_resize(char *ptr, size_t base_size, size_t obj_size, size_t obj_count)
 {
     vector_ *vecptr = (vector_*)ptr;
-    if(obj_count < 0)
-        return AL_FALSE;
     if(*vecptr || obj_count > 0)
     {
         if(!vector_reserve((char*)vecptr, base_size, obj_size, obj_count, AL_TRUE))
@@ -696,12 +725,12 @@ ALboolean vector_insert(char *ptr, size_t base_size, size_t obj_size, void *ins_
         ptrdiff_t numins = ((const char*)datend - (const char*)datstart) / obj_size;
 
         assert(numins > 0);
-        if(INT_MAX-VECTOR_SIZE(*vecptr) <= numins ||
+        if((size_t)numins + VECTOR_SIZE(*vecptr) < (size_t)numins ||
            !vector_reserve((char*)vecptr, base_size, obj_size, VECTOR_SIZE(*vecptr)+numins, AL_TRUE))
             return AL_FALSE;
 
         /* NOTE: ins_pos may have been invalidated if *vecptr moved. Use ins_elem instead. */
-        if(ins_elem < (*vecptr)->Size)
+        if((size_t)ins_elem < (*vecptr)->Size)
         {
             memmove((char*)(*vecptr) + base_size + ((ins_elem+numins)*obj_size),
                     (char*)(*vecptr) + base_size + ((ins_elem       )*obj_size),
@@ -709,14 +738,14 @@ ALboolean vector_insert(char *ptr, size_t base_size, size_t obj_size, void *ins_
         }
         memcpy((char*)(*vecptr) + base_size + (ins_elem*obj_size),
                datstart, numins*obj_size);
-        (*vecptr)->Size += (ALsizei)numins;
+        (*vecptr)->Size += numins;
     }
     return AL_TRUE;
 }
 
 
 extern inline void al_string_deinit(al_string *str);
-extern inline ALsizei al_string_length(const_al_string str);
+extern inline size_t al_string_length(const_al_string str);
 extern inline ALboolean al_string_empty(const_al_string str);
 extern inline const al_string_char_type *al_string_get_cstr(const_al_string str);
 
@@ -730,10 +759,10 @@ void al_string_clear(al_string *str)
     *VECTOR_ITER_END(*str) = 0;
 }
 
-static inline int al_string_compare(const al_string_char_type *str1, ALsizei str1len,
-                                    const al_string_char_type *str2, ALsizei str2len)
+static inline int al_string_compare(const al_string_char_type *str1, size_t str1len,
+                                    const al_string_char_type *str2, size_t str2len)
 {
-    ALsizei complen = mini(str1len, str2len);
+    size_t complen = (str1len < str2len) ? str1len : str2len;
     int ret = memcmp(str1, str2, complen);
     if(ret == 0)
     {
@@ -750,12 +779,12 @@ int al_string_cmp(const_al_string str1, const_al_string str2)
 int al_string_cmp_cstr(const_al_string str1, const al_string_char_type *str2)
 {
     return al_string_compare(&VECTOR_FRONT(str1), al_string_length(str1),
-                             str2, (ALsizei)strlen(str2));
+                             str2, strlen(str2));
 }
 
 void al_string_copy(al_string *str, const_al_string from)
 {
-    ALsizei len = VECTOR_SIZE(from);
+    size_t len = al_string_length(from);
     VECTOR_RESERVE(*str, len+1);
     VECTOR_RESIZE(*str, 0);
     VECTOR_INSERT(*str, VECTOR_ITER_END(*str), VECTOR_ITER_BEGIN(from), VECTOR_ITER_BEGIN(from)+len);

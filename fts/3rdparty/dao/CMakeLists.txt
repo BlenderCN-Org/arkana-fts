@@ -69,7 +69,11 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 else()
     message(STATUS "Configuring for release")
 endif()
-add_definitions(-DUNIX -DDAO_WITH_MACRO -DDAO_WITH_THREAD -DDAO_WITH_NUMARRAY)
+if(MSVC)
+    add_definitions(-DDAO_WITH_MACRO -DDAO_WITH_THREAD -DDAO_WITH_NUMARRAY -D_LIB -D_CRT_SECURE_NO_WARNINGS -DNO_FENV)
+else()
+    add_definitions(-DUNIX -DDAO_WITH_MACRO -DDAO_WITH_THREAD -DDAO_WITH_NUMARRAY)
+endif()
 
 # Add additional include search directories.
 include_directories("${dao_SOURCE_DIR}/src")
@@ -79,6 +83,8 @@ if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -fPIC -pg")
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall -fPIC")
 elseif(MSVC)
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /wd4018 /wd4244")
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /wd4018 /wd4244")
 endif()
 
 # And show the flags.

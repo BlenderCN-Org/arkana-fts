@@ -15,9 +15,7 @@ extern "C" {
  #endif
 #endif
 
-#if defined(AL_LIBTYPE_STATIC)
- #define AL_APIENTRY 
-#elif defined(_WIN32)
+#if defined(_WIN32)
  #define AL_APIENTRY __cdecl
 #else
  #define AL_APIENTRY

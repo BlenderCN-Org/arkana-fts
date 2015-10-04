@@ -36,7 +36,7 @@ endif()
 find_package(PCRE)
 if(${PCRE_FOUND} STREQUAL "NO")
     message(STATUS "TODO: Could not find PCRE installed on your system. Taking our own version.")
-#     add_definitions(-DPCRE_STATIC)
+    add_definitions(-DPCRE_STATIC)
 endif()
 
 find_package(FreeType)

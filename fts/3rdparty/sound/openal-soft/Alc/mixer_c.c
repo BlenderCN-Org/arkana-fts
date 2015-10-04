@@ -13,12 +13,11 @@ static inline ALfloat point32(const ALfloat *vals, ALuint UNUSED(frac))
 static inline ALfloat lerp32(const ALfloat *vals, ALuint frac)
 { return lerp(vals[0], vals[1], frac * (1.0f/FRACTIONONE)); }
 static inline ALfloat cubic32(const ALfloat *vals, ALuint frac)
-{ return cubic(vals[-1], vals[0], vals[1], vals[2], frac * (1.0f/FRACTIONONE)); }
+{ return cubic(vals[-1], vals[0], vals[1], vals[2], frac); }
 
 const ALfloat *Resample_copy32_C(const ALfloat *src, ALuint UNUSED(frac),
-  ALuint increment, ALfloat *restrict dst, ALuint numsamples)
+  ALuint UNUSED(increment), ALfloat *restrict dst, ALuint numsamples)
 {
-    assert(increment==FRACTIONONE);
 #if defined(HAVE_SSE) || defined(HAVE_NEON)
     /* Avoid copying the source data if it's aligned like the destination. */
     if((((intptr_t)src)&15) == (((intptr_t)dst)&15))
@@ -59,6 +58,18 @@ void ALfilterState_processC(ALfilterState *filter, ALfloat *restrict dst, const 
 }
 
 
+static inline void SetupCoeffs(ALfloat (*restrict OutCoeffs)[2],
+                               const HrtfParams *hrtfparams,
+                               ALuint IrSize, ALuint Counter)
+{
+    ALuint c;
+    for(c = 0;c < IrSize;c++)
+    {
+        OutCoeffs[c][0] = hrtfparams->Coeffs[c][0] - (hrtfparams->CoeffStep[c][0]*Counter);
+        OutCoeffs[c][1] = hrtfparams->Coeffs[c][1] - (hrtfparams->CoeffStep[c][1]*Counter);
+    }
+}
+
 static inline void ApplyCoeffsStep(ALuint Offset, ALfloat (*restrict Values)[2],
                                    const ALuint IrSize,
                                    ALfloat (*restrict Coeffs)[2],
@@ -90,9 +101,9 @@ static inline void ApplyCoeffs(ALuint Offset, ALfloat (*restrict Values)[2],
     }
 }
 
-#define SUFFIX C
+#define MixHrtf MixHrtf_C
 #include "mixer_inc.c"
-#undef SUFFIX
+#undef MixHrtf
 
 
 void Mix_C(const ALfloat *data, ALuint OutChans, ALfloat (*restrict OutBuffer)[BUFFERSIZE],
@@ -106,19 +117,19 @@ void Mix_C(const ALfloat *data, ALuint OutChans, ALfloat (*restrict OutBuffer)[B
         ALuint pos = 0;
         gain = Gains[c].Current;
         step = Gains[c].Step;
-        if(step != 1.0f && Counter > 0)
+        if(step != 0.0f && Counter > 0)
         {
             for(;pos < BufferSize && pos < Counter;pos++)
             {
                 OutBuffer[c][OutPos+pos] += data[pos]*gain;
-                gain *= step;
+                gain += step;
             }
             if(pos == Counter)
                 gain = Gains[c].Target;
             Gains[c].Current = gain;
         }
 
-        if(!(gain > GAIN_SILENCE_THRESHOLD))
+        if(!(fabsf(gain) > GAIN_SILENCE_THRESHOLD))
             continue;
         for(;pos < BufferSize;pos++)
             OutBuffer[c][OutPos+pos] += data[pos]*gain;
