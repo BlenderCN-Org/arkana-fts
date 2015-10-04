@@ -5,6 +5,7 @@
 #include "channel.h"
 #include "client.h"
 #include "db.h"
+#include "config.h"
 
 using namespace FTS;
 using namespace FTSSrv2;

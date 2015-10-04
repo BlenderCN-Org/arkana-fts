@@ -1,5 +1,6 @@
 #include "server_log.h"
 #include "constants.h"
+#include "config.h"
 #include <time.h>
 #include <errno.h>
 #include <string.h>

@@ -1,6 +1,7 @@
 #include "server_log.h"
 #include "db.h"
 #include "constants.h"
+#include "config.h"
 #if defined(_MSC_VER)
 #include <mysql.h>
 #include <errmsg.h>

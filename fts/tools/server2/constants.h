@@ -117,6 +117,4 @@
 /// The version of this server.
 #  define D_SERVER_VERSION_STR "0.9.12"
 
-#  include "config.h"
-
 #endif                          /* D_CONSTANTS_H */

@@ -10,6 +10,7 @@
 #include "utilities/GetOpt.h"
 
 #include "constants.h"
+#include "config.h"
 
 #include "server.h" // Move here to avoid including problems w/ main.h in net/connection.h 
 
