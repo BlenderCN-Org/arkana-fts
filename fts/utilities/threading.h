@@ -12,7 +12,6 @@
 #ifdef D_COMPILES_SERVER
 #  include "server.h"
 #else
-#  include "main.h"
 #endif
 
 namespace FTS {

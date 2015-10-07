@@ -8,7 +8,6 @@
 #ifndef D_DATA_CONTAINER_H
 #define D_DATA_CONTAINER_H
 
-#include "main.h"
 #include "utilities/PolymorphicCopyable.h"
 
 namespace FTS {

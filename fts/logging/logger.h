@@ -1,8 +1,6 @@
 #ifndef FTS_LOGGER_H
 #define FTS_LOGGER_H
 
-#include "main.h"
-
 #include "utilities/command.h"
 #include "dLib/dString/dString.h"
 #include "utilities/Singleton.h"

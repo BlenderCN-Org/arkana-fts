@@ -8,7 +8,6 @@
 #ifndef FTS_COMMAND_H
 #define FTS_COMMAND_H
 
-#include "main.h"
 
 #ifndef D_NOCEGUI
 #  include <CEGUIEvent.h>
@@ -51,7 +50,7 @@ protected:
     CommandBase *m_pCommand; ///< The execution command.
 
     /// Copy constructor blocked because of mem-free issues upon copy.
-    ConditionalCommand(const ConditionalCommand &);
+    ConditionalCommand(const ConditionalCommand &) = delete;
 
 public:
     ConditionalCommand(CommandBase *in_pCond, CommandBase *in_pCommand);
