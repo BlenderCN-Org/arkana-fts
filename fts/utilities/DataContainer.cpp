@@ -76,7 +76,7 @@ FTS::RawDataContainer::RawDataContainer(const DataContainer &o)
 
 FTS::RawDataContainer::~RawDataContainer()
 {
-    SAFE_FREE(m_pData);
+    delete m_pData;
     m_uiSize = 0;
 }
 
@@ -110,7 +110,8 @@ void FTS::RawDataContainer::resize(uint64_t in_uiNewSize)
 
 void FTS::RawDataContainer::destroy()
 {
-    SAFE_FREE(m_pData);
+    delete m_pData;
+    m_pData = nullptr;
     m_uiSize = 0;
 }
 
