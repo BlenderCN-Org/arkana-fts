@@ -18,18 +18,14 @@ FTS::Mutex::~Mutex()
 {
 }
 
-int FTS::Mutex::lock()
+void FTS::Mutex::lock()
 {
     m_mtx.lock();
-
-    return ERR_OK;
 }
 
-int FTS::Mutex::unlock()
+void FTS::Mutex::unlock()
 {
     m_mtx.unlock();
-
-    return ERR_OK;
 }
 
 FTS::Lock::Lock(Mutex& in_m)

@@ -26,8 +26,8 @@ public:
     Mutex();
     virtual ~Mutex();
 
-    int lock();
-    int unlock();
+    void lock();
+    void unlock();
 
 };
 
