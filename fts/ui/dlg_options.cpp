@@ -1,4 +1,5 @@
 #include <CEGUI.h>
+#include "connection.h" // To get the master server list
 
 #include "ui/dlg_options.h"
 
@@ -6,7 +7,6 @@
 #include "3d/Resolution.h"
 #include "input/input.h"
 #include "logging/ftslogger.h"
-#include "net/connection.h" // To get the master server list
 #include "scripting/DaoVm.h" // To load the menu sounds.
 #include "sound/fts_Snd.h"
 #include "ui/cegui_items/simple_list_item.h"

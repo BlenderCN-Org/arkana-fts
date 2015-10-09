@@ -5,7 +5,10 @@
  * \brief This file implements a dialog used to enter or view online account informations and create the account or modify the informations.
  **/
 
+#include <ctime>
+
 #include <CEGUI.h>
+#include "connection.h"
 
 #include "dlg_online_acctInfo.h"
 #include "ui/ui.h"
@@ -13,10 +16,8 @@
 #include "logging/ftslogger.h"
 #include "game/player.h"
 #include "input/input.h"
-#include "net/connection.h"
 #include "tools/server2/constants.h"
 
-#include <ctime>
 
 /// Default constructor
 /** This is the default constructor that creates the dialog, sets

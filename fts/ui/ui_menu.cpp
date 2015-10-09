@@ -6,6 +6,8 @@
  **/
 
 #include <CEGUI.h>
+#include "packet.h"
+#include "connection.h"
 
 #include "ui/ui.h"
 #include "ui/ui_menu.h"
@@ -14,7 +16,6 @@
 #include "ui/file_dialog.h"
 
 #include "map/map.h"
-#include "net/packet.h"
 #include "3d/camera.h"
 #include "3d/light.h"
 #include "3d/ModelManager.h"
@@ -25,7 +26,6 @@
 #include "utilities/DataContainer.h"
 #include "main/runlevels.h"
 #include "main/version.h"
-#include "net/connection.h"
 #include "mdlviewer/mdlviewer_main.h"
 #include "game/loadgame_rlv.h"
 #include "graphic/graphic.h"

@@ -9,11 +9,11 @@
 #include <CEGUI.h>
 #include <SDL_timer.h>
 #include <list>
+#include "connection.h"
 
 #include "game/player.h"
 
 #include "ui/ui_menu_online_main.h"
-#include "net/connection.h"
 #include "logging/logger.h"
 #include "utilities/utilities.h"
 #include "main/runlevels.h"
@@ -44,9 +44,9 @@ Connection *Player::og_getConnection()
  *
  * \author Pompei2
  */
-String FTS::Player::og_getMD5()
+std::string FTS::Player::og_getMD5()
 {
-    return m_sMD5;
+    return m_sMD5.str();
 }
 
 /// ONLINE GAMING - Connects to the master server.
@@ -78,7 +78,7 @@ int FTS::Player::og_connectMaster(uint32_t in_uiTimeoutMS)
     String sServer = conf.get("MasterServerName");
     int iPort = conf.getInt("MasterServerPort");
     FTSMSGDBG("  Connecting to the master server "+sServer+":"+String::nr(iPort), 3);
-    m_pcMasterServer = new TraditionalConnection(sServer, iPort, in_uiTimeoutMS);
+    m_pcMasterServer = new TraditionalConnection(sServer.c_str(), iPort, in_uiTimeoutMS);
     if(!m_pcMasterServer->isConnected()) {
         SAFE_DELETE(m_pcMasterServer);
         return -1;
@@ -145,9 +145,9 @@ int FTS::Player::og_accountCreate(const String & in_sNickname,
     // Create the signup packet.
     Packet *p = new Packet(DSRV_MSG_SIGNUP);
 
-    p->append(sNick);
-    p->append(sPMD5);
-    p->append(sMail);
+    p->append(sNick.c_str());
+    p->append(sPMD5.c_str());
+    p->append(sMail.c_str());
     if( FTSC_ERR::OK != m_pcMasterServer->mreq( p ) ) {
         SAFE_DELETE( p );
         return -3;
@@ -208,8 +208,8 @@ int FTS::Player::og_login(const String & in_sNickname,
 
     // Create the login packet.
     Packet *p = new Packet(DSRV_MSG_LOGIN);
-    p->append(sNick);
-    p->append(m_sMD5);
+    p->append(sNick.c_str());
+    p->append(m_sMD5.c_str());
 
     // And login.
     if( FTSC_ERR::OK != m_pcMasterServer->mreq( p ) ) {
@@ -256,7 +256,7 @@ int FTS::Player::og_logout()
 
     FTSMSGDBG("  Logging out", 3);
 
-    p->append(m_sMD5);
+    p->append(m_sMD5.c_str());
     if( FTSC_ERR::OK != m_pcMasterServer->mreq( p ) ) {
         SAFE_DELETE( p );
         goto logout;
@@ -311,9 +311,9 @@ int FTS::Player::og_accountSet(uint8_t in_cField, const String & in_sValue)
     // Create the packet.
     Packet *p = new Packet(DSRV_MSG_PLAYER_SET);
 
-    p->append(m_sMD5);
+    p->append(m_sMD5.c_str());
     p->append(in_cField);
-    p->append(in_sValue);
+    p->append(in_sValue.c_str());
     if( FTSC_ERR::OK != m_pcMasterServer->mreq( p ) ) {
         SAFE_DELETE( p );
         return -3;
@@ -360,7 +360,7 @@ int FTS::Player::og_accountSetInt(uint8_t in_cField, int in_iValue)
     // Create the packet.
     Packet *p = new Packet(DSRV_MSG_PLAYER_SET);
 
-    p->append(m_sMD5);
+    p->append(m_sMD5.c_str());
     p->append(in_cField);
     p->append(in_iValue);
     if( FTSC_ERR::OK != m_pcMasterServer->mreq( p ) ) {
@@ -406,7 +406,7 @@ int FTS::Player::og_accountSetFlag(uint32_t in_cFlag, bool in_bValue)
     // Create the packet.
     Packet *p = new Packet(DSRV_MSG_PLAYER_SET_FLAG);
 
-    p->append(m_sMD5);
+    p->append(m_sMD5.c_str());
     p->append(in_cFlag);
     p->append((uint8_t)(in_bValue ? 1 : 0));
     if( FTSC_ERR::OK != m_pcMasterServer->mreq( p ) ) {
@@ -453,9 +453,9 @@ String FTS::Player::og_accountGetFrom(uint8_t in_cField,
     // Create the packet.
     Packet *p = new Packet(DSRV_MSG_PLAYER_GET);
 
-    p->append(m_sMD5);
+    p->append(m_sMD5.c_str());
     p->append(in_cField);
-    p->append(in_sNickname);
+    p->append(in_sNickname.c_str());
     if( FTSC_ERR::OK != m_pcMasterServer->mreq( p ) ) {
         SAFE_DELETE( p );
         return String::EMPTY;
@@ -510,9 +510,9 @@ int FTS::Player::og_accountGetIntFrom(uint8_t in_cField,
     // Create the packet.
     Packet *p = new Packet(DSRV_MSG_PLAYER_GET);
 
-    p->append(m_sMD5);
+    p->append(m_sMD5.c_str());
     p->append(in_cField);
-    p->append(in_sNickname);
+    p->append(in_sNickname.c_str());
     if( FTSC_ERR::OK != m_pcMasterServer->mreq( p ) ) {
         SAFE_DELETE( p );
         return -3;
@@ -563,8 +563,8 @@ int FTS::Player::og_chatJoin(const String & in_sChannel)
 
     // Create the packet.
     Packet *p = new Packet(DSRV_MSG_CHAT_JOIN);
-    p->append(m_sMD5);
-    p->append(in_sChannel);
+    p->append(m_sMD5.c_str());
+    p->append(in_sChannel.c_str() );
 
     // Send the join message.
     // The server will make us leave the current channel if we are in one.
@@ -602,7 +602,7 @@ std::list<String> FTS::Player::og_chatMyChans()
 
     // Create the packet.
     Packet *p = new Packet(DSRV_MSG_CHAT_LIST_MY_CHANS);
-    p->append(m_sMD5);
+    p->append(m_sMD5.c_str() );
 
     // Send the message.
     if( FTSC_ERR::OK != m_pcMasterServer->mreq( p ) ) {
@@ -648,8 +648,8 @@ int FTS::Player::og_chatRemChan(const String & in_sChannel)
 
     // Create the packet.
     Packet *p = new Packet(DSRV_MSG_CHAT_DESTROY_CHAN);
-    p->append(m_sMD5);
-    p->append(in_sChannel);
+    p->append(m_sMD5.c_str() );
+    p->append(in_sChannel.c_str() );
 
     // Send the message.
     if( FTSC_ERR::OK != m_pcMasterServer->mreq( p ) ) {
@@ -684,7 +684,7 @@ String FTS::Player::og_chatGetCurChannel()
     }
 
     Packet *p = new Packet(DSRV_MSG_CHAT_IUNAI);
-    p->append(m_sMD5);
+    p->append(m_sMD5.c_str() );
 
     if( FTSC_ERR::OK != m_pcMasterServer->mreq( p ) ) {
         SAFE_DELETE(p);
@@ -721,11 +721,11 @@ int FTS::Player::og_chatSendMessage(const String & in_sMessage)
     }
 
     Packet *p = new Packet(DSRV_MSG_CHAT_SENDMSG);
-    p->append(m_sMD5);
+    p->append(m_sMD5.c_str() );
 
     p->append(DSRV_CHAT_TYPE_NORMAL);
     p->append((uint8_t)0);
-    p->append(in_sMessage);
+    p->append(in_sMessage.c_str() );
 
     if( FTSC_ERR::OK != m_pcMasterServer->mreq( p ) ) {
         SAFE_DELETE(p);
@@ -761,12 +761,12 @@ int FTS::Player::og_chatWhisp(const String &in_sPlayer, const String & in_sMessa
     }
 
     Packet *p = new Packet(DSRV_MSG_CHAT_SENDMSG);
-    p->append(m_sMD5);
+    p->append(m_sMD5.c_str() );
 
     p->append(DSRV_CHAT_TYPE_WHISPER);
     p->append((uint8_t)0);
-    p->append(in_sPlayer);
-    p->append(in_sMessage);
+    p->append(in_sPlayer.c_str() );
+    p->append(in_sMessage.c_str() );
 
     if( FTSC_ERR::OK != m_pcMasterServer->mreq( p ) ) {
         SAFE_DELETE(p);
@@ -862,7 +862,7 @@ int FTS::Player::og_chatGetPlayerList(std::list<String> &out_playerList)
     // And get a list of the currently logged in user names.
     Packet *p = new Packet(DSRV_MSG_CHAT_LIST);
 
-    p->append(m_sMD5);
+    p->append(m_sMD5.c_str() );
 
     if( FTSC_ERR::OK != m_pcMasterServer->mreq( p ) ) {
         SAFE_DELETE(p);
@@ -909,7 +909,7 @@ int FTS::Player::og_chatRefreshChannelInfo()
     // And get a list of the currently logged in user names.
     Packet *p = new Packet(DSRV_MSG_CHAT_MOTTO_GET);
 
-    p->append(m_sMD5);
+    p->append(m_sMD5.c_str() );
 
     if( FTSC_ERR::OK != m_pcMasterServer->mreq( p ) ) {
         SAFE_DELETE(p);
@@ -966,8 +966,8 @@ uint8_t FTS::Player::og_chatUserGet(const String & in_sUser)
 
     // Create the packet.
     Packet *p = new Packet(DSRV_MSG_CHAT_USER_GET);
-    p->append(m_sMD5);
-    p->append(in_sUser);
+    p->append(m_sMD5.c_str() );
+    p->append(in_sUser.c_str() );
 
     // Send the message.
     if( FTSC_ERR::OK != m_pcMasterServer->mreq( p ) ) {
@@ -1007,8 +1007,8 @@ int FTS::Player::og_chatSetMotto(const String & in_sMotto)
 
     // Create the packet.
     Packet *p = new Packet(DSRV_MSG_CHAT_MOTTO_SET);
-    p->append(m_sMD5);
-    p->append(in_sMotto);
+    p->append(m_sMD5.c_str() );
+    p->append(in_sMotto.c_str() );
 
     if( FTSC_ERR::OK != m_pcMasterServer->mreq( p ) ) {
         SAFE_DELETE(p);
@@ -1038,7 +1038,7 @@ int FTS::Player::og_chatSetMotto(const String & in_sMotto)
 String FTS::Player::og_chatGetMotto()
 {
     Packet *p = new Packet(DSRV_MSG_CHAT_MOTTO_GET);
-    p->append(m_sMD5);
+    p->append(m_sMD5.c_str() );
 
     // Send the message.
     if( FTSC_ERR::OK != m_pcMasterServer->mreq( p ) ) {
@@ -1080,8 +1080,8 @@ int FTS::Player::og_chatKick(const String &in_sName)
 
     // Create the packet.
     Packet *p = new Packet(DSRV_MSG_CHAT_KICK);
-    p->append(m_sMD5);
-    p->append(in_sName);
+    p->append(m_sMD5.c_str() );
+    p->append(in_sName.c_str() );
 
     if( FTSC_ERR::OK != m_pcMasterServer->mreq( p ) ) {
         SAFE_DELETE(p);
@@ -1119,8 +1119,8 @@ int FTS::Player::og_chatOp(const String &in_sName)
 
     // Create the packet.
     Packet *p = new Packet(DSRV_MSG_CHAT_OP);
-    p->append(m_sMD5);
-    p->append(in_sName);
+    p->append(m_sMD5.c_str() );
+    p->append(in_sName.c_str() );
 
     // Send the message. This message awaits no answer !
     if( FTSC_ERR::OK != m_pcMasterServer->mreq( p ) ) {
@@ -1158,8 +1158,8 @@ int FTS::Player::og_chatDeop(const String &in_sName)
 
     // Create the packet.
     Packet *p = new Packet(DSRV_MSG_CHAT_DEOP);
-    p->append(m_sMD5);
-    p->append(in_sName);
+    p->append(m_sMD5.c_str() );
+    p->append(in_sName.c_str() );
 
     // Send the message. This message awaits no answer !
     if( FTSC_ERR::OK != m_pcMasterServer->mreq( p ) ) {

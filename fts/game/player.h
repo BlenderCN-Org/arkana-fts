@@ -12,6 +12,7 @@
 #include "main.h"
 
 #include <list>
+#include <string>
 
 #include "dLib/dString/dString.h"
 
@@ -69,7 +70,7 @@ public:
     // ----------------------------- //
 
     Connection *og_getConnection();
-    String og_getMD5();
+    std::string og_getMD5();
     int og_connectMaster(uint32_t in_uiTimeoutMS = 10*1000);
     int og_login(const String & in_sNickname,
                  const String & in_sPassword);

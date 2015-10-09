@@ -1,11 +1,11 @@
 #include <CEGUI.h>
+#include "packet.h"
 
 #include "mapinfo.h"
 
 #include "dLib/dFile/dFile.h"
 #include "dLib/dArchive/dArchive.h"
 #include "logging/logger.h"
-#include "net/packet.h"
 #include "graphic/graphic.h"
 
 using namespace FTS;
@@ -80,13 +80,13 @@ int MapInfo::writeToPacket(Packet *out_pPacket) const
     if(!m_bLoaded)
         return -1;
 
-    out_pPacket->append(m_sName);
-    out_pPacket->append(m_sDesc);
+    out_pPacket->append(m_sName.str());
+    out_pPacket->append(m_sDesc.str());
     out_pPacket->append(m_cMinPlayers);
     out_pPacket->append(m_cMaxPlayers);
-    out_pPacket->append(m_sSuggPlayers);
-    out_pPacket->append(m_sAuthor);
-    out_pPacket->append(m_dtLastModif.toInternStr());
+    out_pPacket->append(m_sSuggPlayers.str() );
+    out_pPacket->append(m_sAuthor.str() );
+    out_pPacket->append(m_dtLastModif.toInternStr().str());
     out_pPacket->append(m_bStarted ? (uint8_t)1 : (uint8_t)0);
     out_pPacket->append(m_bPressBtnToStart ? (uint8_t)1 : (uint8_t)0);
     m_pPreview->writeToPacket(out_pPacket);
@@ -99,12 +99,12 @@ int MapInfo::readFromPacket(Packet *in_pPacket)
     if(m_bLoaded)
         this->unload();
 
-    in_pPacket->get(m_sName);
-    in_pPacket->get(m_sDesc);
+    in_pPacket->get(m_sName.str() );
+    in_pPacket->get(m_sDesc.str() );
     in_pPacket->get(m_cMinPlayers);
     in_pPacket->get(m_cMaxPlayers);
-    in_pPacket->get(m_sSuggPlayers);
-    in_pPacket->get(m_sAuthor);
+    in_pPacket->get(m_sSuggPlayers.str() );
+    in_pPacket->get(m_sAuthor.str() );
     m_dtLastModif.fromInternStr(in_pPacket->get_string());
     m_bStarted = in_pPacket->get() == 1;
     m_bPressBtnToStart = in_pPacket->get() == 1;

@@ -6,6 +6,7 @@
  **/
 
 #include <CEGUI.h>
+#include "connection.h"
 
 #include "ui/ui.h"
 #include "ui/cegui_items/chat.h"
@@ -23,7 +24,6 @@
 #include "utilities/parse.h"
 #include "utilities/utilities.h"
 #include "main/runlevels.h"
-#include "net/connection.h"
 #include "sound/fts_Snd.h"
 #include "tools/server2/constants.h"
 #include "dLib/dConf/configuration.h"

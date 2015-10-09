@@ -8,7 +8,7 @@
 
 #include "game/player.h"
 #include "logging/logger.h"
-#include "net/connection.h"
+#include "connection.h"
 
 using namespace FTS;
 

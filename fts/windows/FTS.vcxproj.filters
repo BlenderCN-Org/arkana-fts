@@ -303,13 +303,7 @@
     <ClCompile Include="..\logging\ftslogger.cpp">
       <Filter>Logging</Filter>
     </ClCompile>
-    <ClCompile Include="..\net\connection.cpp">
-      <Filter>Net</Filter>
-    </ClCompile>
     <ClCompile Include="..\tools\server2\checksum\md5.cpp">
-      <Filter>Net</Filter>
-    </ClCompile>
-    <ClCompile Include="..\net\packet.cpp">
       <Filter>Net</Filter>
     </ClCompile>
     <ClCompile Include="..\tools\server2\checksum\sha2.cpp">
@@ -734,13 +728,7 @@
     <ClInclude Include="..\logging\MsgType.h">
       <Filter>Logging</Filter>
     </ClInclude>
-    <ClInclude Include="..\net\connection.h">
-      <Filter>Net</Filter>
-    </ClInclude>
     <ClInclude Include="..\tools\server2\checksum\md5.h">
-      <Filter>Net</Filter>
-    </ClInclude>
-    <ClInclude Include="..\net\packet.h">
       <Filter>Net</Filter>
     </ClInclude>
     <ClInclude Include="..\tools\server2\checksum\sha2.h">

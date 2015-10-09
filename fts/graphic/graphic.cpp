@@ -1,3 +1,5 @@
+#include "packet.h"
+
 #include "3d/3d.h"
 
 #include "dLib/dFile/dFile.h"
@@ -10,7 +12,6 @@
 #include "logging/logger.h"
 #include "logging/Chronometer.h"
 #include "utilities/Math.h"
-#include "net/packet.h"
 
 #ifndef D_NOCEGUI
 #  include <CEGUI.h>

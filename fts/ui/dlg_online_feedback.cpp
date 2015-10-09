@@ -6,6 +6,7 @@
  **/
 
 #include <CEGUI.h>
+#include "connection.h"
 
 #include "dlg_online_feedback.h"
 
@@ -14,7 +15,6 @@
 #include "ui/ui_menu_online_main.h"
 #include "game/player.h"
 #include "logging/logger.h"
-#include "net/connection.h"
 
 using namespace FTS;
 
@@ -86,7 +86,7 @@ bool FTS::OnlineFeedbackWindow::cbSend(const CEGUI::EventArgs &)
     Connection *pCon = g_pMeHacky->og_getConnection();
     Packet p(DSRV_MSG_FEEDBACK);
     p.append(g_pMeHacky->og_getMD5());
-    p.append(sMessage);
+    p.append(sMessage.str());
 
     // Only close myself if everything was successful.
     if( pCon->mreq( &p ) == FTSC_ERR::OK && p.get() == ERR_OK ) {

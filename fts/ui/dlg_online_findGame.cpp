@@ -6,13 +6,13 @@
  **/
 
 #include <CEGUI.h>
+#include "connection.h"
 
 #include "dlg_online_findGame.h"
 #include "ui/cegui_items/imaged_list_item.h"
 #include "game/player.h"
 #include "graphic/graphic.h"
 #include "logging/logger.h"
-#include "net/connection.h"
 #include "dLib/dString/dTranslation.h"
 
 #define MAX_GAME_ICON_W 32
@@ -195,14 +195,14 @@ bool FTS::DlgOnlineFindGame::cbGameClicked(const CEGUI::EventArgs &)
     this->clearGameInfo();
 
     // Get the name of the selected game.
-    String sGameName;
+    std::string sGameName;
     try {
         FTSGetConvertWinMacro(CEGUI::Listbox, lbGames, "dlg_onlineFindGame/lbGames");
         CEGUI::ListboxItem *li = lbGames->getFirstSelectedItem();
         if(li == NULL)
             return true;
 
-        sGameName = li->getText();
+        sGameName = li->getText().c_str();
         if(sGameName.empty())
             return true;
 
@@ -217,9 +217,9 @@ bool FTS::DlgOnlineFindGame::cbGameClicked(const CEGUI::EventArgs &)
     }
 
     // Get the infos out of the packet.
-    p.get(m_sIP);
+    p.get(m_sIP.str());
     p.get(m_usPort);
-    p.get(m_sHost);
+    p.get(m_sHost.str());
     p.get(m_nPlayers);
     for(uint8_t i = 0; i<m_nPlayers ;i++) {
         m_sPlayers.push_back(p.get_string());

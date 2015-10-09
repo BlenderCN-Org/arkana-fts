@@ -6,6 +6,8 @@
  **/
 
 #include <CEGUI.h>
+#include "packet.h"
+#include "connection.h"
 
 #include "dlg_online_newGame.h"
 
@@ -17,8 +19,6 @@
 #include "ui/confirm_dialog.h"
 #include "ui/cegui_items/simple_list_item.h"
 
-#include "net/packet.h"
-#include "net/connection.h"
 #include "game/player.h"
 
 using namespace FTS;
@@ -148,7 +148,7 @@ bool FTS::DlgOnlineNewGame::cbOk(const CEGUI::EventArgs & in_ea)
     Packet p(DSRV_MSG_GAME_INS);
 
     p.append(g_pMeHacky->og_getMD5());
-    p.append(sGameName);
+    p.append(sGameName.str() );
     p.append((uint16_t)12345);
     m_pMapInfo->writeToPacket(&p);
 

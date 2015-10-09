@@ -6,6 +6,7 @@
  **/
 
 #include <CEGUI.h>
+#include "connection.h"
 
 #include "dlg_online_joinchannel.h"
 
@@ -14,7 +15,6 @@
 #include "ui/ui_menu_online_main.h"
 #include "game/player.h"
 #include "logging/logger.h"
-#include "net/connection.h"
 
 using namespace FTS;
 
