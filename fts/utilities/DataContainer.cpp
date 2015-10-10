@@ -5,9 +5,10 @@
  * \brief This file contains the implementation of a raw data container.
  **/
 
-#include "DataContainer.h"
-
+#include <cstring>
 #include <malloc.h>
+
+#include "DataContainer.h"
 
 using namespace FTS;
 

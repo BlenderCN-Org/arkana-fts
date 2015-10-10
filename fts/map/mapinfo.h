@@ -14,12 +14,12 @@ namespace FTS {
 class MapInfo {
 private:
     // From info.conf:
-    String m_sName;         ///< The name of the map.
-    String m_sDesc;         ///< A description of the map.
+    std::string m_sName;         ///< The name of the map.
+    std::string m_sDesc;         ///< A description of the map.
     uint8_t m_cMinPlayers;   ///< The minimum number of players needed to play this map.
     uint8_t m_cMaxPlayers;   ///< The maximum number of players allowed to play this map.
-    String m_sSuggPlayers;  ///< The suggested number of players (for example: "2v2 and 3v3").
-    String m_sAuthor;       ///< This is a string containing the name of the author of the map.
+    std::string m_sSuggPlayers;  ///< The suggested number of players (for example: "2v2 and 3v3").
+    std::string m_sAuthor;       ///< This is a string containing the name of the author of the map.
     DateTime m_dtLastModif; ///< When this map has been last modified.
     bool m_bStarted;         ///< Whether the game has beens tarted or not.
     Graphic *m_pPreview;     ///< The preview image that is associated with this map.

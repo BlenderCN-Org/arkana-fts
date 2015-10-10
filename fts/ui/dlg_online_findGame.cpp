@@ -217,9 +217,9 @@ bool FTS::DlgOnlineFindGame::cbGameClicked(const CEGUI::EventArgs &)
     }
 
     // Get the infos out of the packet.
-    p.get(m_sIP.str());
+    p.get(m_sIP);
     p.get(m_usPort);
-    p.get(m_sHost.str());
+    p.get(m_sHost);
     p.get(m_nPlayers);
     for(uint8_t i = 0; i<m_nPlayers ;i++) {
         m_sPlayers.push_back(p.get_string());
@@ -300,9 +300,9 @@ bool FTS::DlgOnlineFindGame::cbGameClicked(const CEGUI::EventArgs &)
 void FTS::DlgOnlineFindGame::clearGameInfo()
 {
     // Clear the data from the previously selected game.
-    m_sIP = String::EMPTY;
+    m_sIP = "";
     m_usPort = 0;
-    m_sHost = String::EMPTY;
+    m_sHost = "";
     m_nPlayers = 0;
     m_sPlayers.clear();
     m_mapInfo.unload();

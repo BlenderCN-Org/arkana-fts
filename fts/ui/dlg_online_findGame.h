@@ -27,11 +27,11 @@ private:
     // Infos of the currently selected map.
 
     /// The IPv4 address of the host (xxx.xxx.xxx.xxx) of the currently selected game.
-    String m_sIP;
+    std::string m_sIP;
     /// The portnumber on what you can connect to the host of the curr. sel. game.
     uint16_t m_usPort;
     /// The name of the player that crated the currently selected game.
-    String m_sHost;
+    std::string m_sHost;
     /// The number of players currently in the currently selected game.
     uint8_t m_nPlayers;
     /// The name of the players that are in the currently selected game.
