@@ -105,8 +105,6 @@ set(SOURCES_COMMON
     map/terrain.cpp
     map/tile.cpp
     mdlviewer/mdlviewer_main.cpp
-    net/connection.cpp
-    net/packet.cpp
     sound/sndobjpool.cpp
     sound/SndFile.cpp
     sound/SndGrp.cpp
@@ -343,6 +341,12 @@ add_subdirectory(${fts_SOURCE_DIR}/3rdparty/dao)
 add_definitions(-DDAO_DIRECT_API)
 list(APPEND FTS_INCLUDES "3rdparty/dao/src")
 list(APPEND FTS_LIBS "dao")
+
+# Add fts-networking stuff
+set(fts-networking_SOURCE_DIR CACHE STRING "Location of the FTS networking library.")
+add_subdirectory(${fts-networking_SOURCE_DIR} "${CMAKE_CURRENT_BINARY_DIR}/net")
+list(APPEND FTS_INCLUDES "${fts-networking_SOURCE_DIR}/include")
+list(APPEND FTS_LIBS "fts-net")
 
 # Add unit testing stuff
 set(ATEST_BUILD_EXAMPLES FALSE)

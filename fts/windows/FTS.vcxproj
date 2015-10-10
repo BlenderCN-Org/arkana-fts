@@ -159,7 +159,7 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <AdditionalIncludeDirectories>..;../3rdparty/CEGUI/include;../3rdparty/CEGUI;../3rdparty/sound/libogg/include;../3rdparty/sound/libvorbis/include;../3rdparty/sound/openal-soft/include;../3rdparty/sound/openal-soft/include/AL;../main;../3rdparty/sdl/include;../3rdparty/dao/src;../3rdparty/bouge/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..;../3rdparty/CEGUI/include;../3rdparty/CEGUI;../3rdparty/sound/libogg/include;../3rdparty/sound/libvorbis/include;../3rdparty/sound/openal-soft/include;../3rdparty/sound/openal-soft/include/AL;../main;../3rdparty/sdl/include;../3rdparty/dao/src;../3rdparty/bouge/include;../../../fts-network/include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;D_STRING_FTS_PATHS;D_USE_CEGUI;ALL_STATIC;CEGUI_STATIC;D_SND_SYS=1;DAO_DIRECT_API;DAO_SND_STATIC;BOUGE_STATIC;AL_LIBTYPE_STATIC</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
@@ -172,7 +172,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>freetype.lib;pcre.lib;OpenGL32.lib;glu32.lib;SDL.lib;SDLmain.lib;CEGUIBase.lib;CEGUIOpenGLRenderer.lib;CEGUIFalagardWRBase.lib;CEGUITinyXMLParser.lib;OpenAL32.lib;vorbis.lib;ogg.lib;dao.lib;bouge-s.lib;bouge-math-s.lib;bouge-tinyxml-s.lib;bouge-xml-common-s.lib;bouge-xmlio-s.lib;wsock32.lib;user32.lib;winmm.lib;dxguid.lib;dsound.lib;imm32.lib;version.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>../3rdparty/vclib/Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>../3rdparty/vclib/Release;../../../fts-network/lib/Debug%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <EnableUAC>false</EnableUAC>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <DelayLoadDLLs>%(DelayLoadDLLs)</DelayLoadDLLs>
