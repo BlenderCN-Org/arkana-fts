@@ -8,7 +8,8 @@
 #include <ctime>
 
 #include <CEGUI.h>
-#include "connection.h"
+#include <connection.h>
+#include <dsrv_constants.h>
 
 #include "dlg_online_acctInfo.h"
 #include "ui/ui.h"
@@ -16,7 +17,6 @@
 #include "logging/ftslogger.h"
 #include "game/player.h"
 #include "input/input.h"
-#include "tools/server2/constants.h"
 
 
 /// Default constructor

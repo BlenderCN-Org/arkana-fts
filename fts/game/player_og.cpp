@@ -9,7 +9,8 @@
 #include <CEGUI.h>
 #include <SDL_timer.h>
 #include <list>
-#include "connection.h"
+#include <connection.h>
+#include <dsrv_constants.h>
 
 #include "game/player.h"
 
@@ -18,7 +19,6 @@
 #include "utilities/utilities.h"
 #include "main/runlevels.h"
 #include "ui/ui_menu_online.h" // To get back there in og_chatCheckEvents.
-#include "tools/server2/constants.h"
 #include "dLib/dString/dString.h"
 #include "dLib/dConf/configuration.h"
 
