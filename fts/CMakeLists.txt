@@ -155,6 +155,8 @@ set(SOURCES_COMMON
     utilities/utilities.cpp
     utilities/threading.cpp
     utilities/DateTime.cpp
+    utilities/md5.cpp
+    utilities/sha2.cpp
     scripting/dao_snd.cpp
     scripting/dao_snd2.cpp
     scripting/dao_snd3.cpp

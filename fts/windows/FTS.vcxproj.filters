@@ -67,9 +67,6 @@
     <Filter Include="Logging">
       <UniqueIdentifier>{ca7c078d-25e5-4f96-92a5-72a97b956985}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Net">
-      <UniqueIdentifier>{83b24fd6-8aa1-48f7-9055-14030be257f1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Sound">
       <UniqueIdentifier>{92bccaed-092d-4fba-81ee-efa3cad184ae}</UniqueIdentifier>
     </Filter>
@@ -303,12 +300,6 @@
     <ClCompile Include="..\logging\ftslogger.cpp">
       <Filter>Logging</Filter>
     </ClCompile>
-    <ClCompile Include="..\tools\server2\checksum\md5.cpp">
-      <Filter>Net</Filter>
-    </ClCompile>
-    <ClCompile Include="..\tools\server2\checksum\sha2.cpp">
-      <Filter>Net</Filter>
-    </ClCompile>
     <ClCompile Include="..\sound\SndFile.cpp">
       <Filter>Sound</Filter>
     </ClCompile>
@@ -508,6 +499,12 @@
       <Filter>Tests</Filter>
     </ClCompile>
     <ClCompile Include="..\utilities\DateTime.cpp">
+      <Filter>Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\utilities\md5.cpp">
+      <Filter>Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\utilities\sha2.cpp">
       <Filter>Utilities</Filter>
     </ClCompile>
   </ItemGroup>
@@ -728,12 +725,6 @@
     <ClInclude Include="..\logging\MsgType.h">
       <Filter>Logging</Filter>
     </ClInclude>
-    <ClInclude Include="..\tools\server2\checksum\md5.h">
-      <Filter>Net</Filter>
-    </ClInclude>
-    <ClInclude Include="..\tools\server2\checksum\sha2.h">
-      <Filter>Net</Filter>
-    </ClInclude>
     <ClInclude Include="..\sound\fts_Snd.h">
       <Filter>Sound</Filter>
     </ClInclude>
@@ -919,6 +910,12 @@
     </ClInclude>
     <ClInclude Include="..\utilities\radix.h" />
     <ClInclude Include="..\utilities\console.h">
+      <Filter>Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\utilities\md5.h">
+      <Filter>Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\utilities\sha2.h">
       <Filter>Utilities</Filter>
     </ClInclude>
   </ItemGroup>

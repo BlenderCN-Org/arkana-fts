@@ -133,7 +133,7 @@
     </CustomBuildStep>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..;../3rdparty/CEGUI/include;../3rdparty/CEGUI;../3rdparty/sound/libogg/include;../3rdparty/sound/libvorbis/include;../3rdparty/sound/openal-soft/include;../3rdparty/sound/openal-soft/include/AL;../main;../3rdparty/sdl/include;../3rdparty/dao/src;../3rdparty/bouge/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..;../3rdparty/CEGUI/include;../3rdparty/CEGUI;../3rdparty/sound/libogg/include;../3rdparty/sound/libvorbis/include;../3rdparty/sound/openal-soft/include;../3rdparty/sound/openal-soft/include/AL;../main;../3rdparty/sdl/include;../3rdparty/dao/src;../3rdparty/bouge/include;../../../fts-network/include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;DEBUG;D_STRING_FTS_PATHS;D_USE_CEGUI;ALL_STATIC;CEGUI_STATIC;D_SND_SYS=1;DAO_DIRECT_API;DAO_SND_STATIC;BOUGE_STATIC;AL_LIBTYPE_STATIC</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -143,8 +143,8 @@
       <DisableSpecificWarnings>4018;4267;4129;4311;4313;4005;4521;4291;4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>freetype_d.lib;pcred.lib;OpenGL32.lib;glu32.lib;SDL_d.lib;SDLmain_d.lib;CEGUIBased_d.lib;CEGUIOpenGLRendererd_d.lib;CEGUIFalagardWRBased_d.lib;CEGUITinyXMLParserd_d.lib;OpenAL32_d.lib;vorbis_d.lib;ogg_d.lib;dao_d.lib;bouge-s-d.lib;bouge-math-s-d.lib;bouge-tinyxml-s-d.lib;bouge-xml-common-s-d.lib;bouge-xmlio-s-d.lib;wsock32.lib;User32.lib;winmm.lib;dsound.lib;dxguid.lib;imm32.lib;version.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>../3rdparty/vclib/debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>fts-net_d.lib;freetype_d.lib;pcred.lib;OpenGL32.lib;glu32.lib;SDL_d.lib;SDLmain_d.lib;CEGUIBased_d.lib;CEGUIOpenGLRendererd_d.lib;CEGUIFalagardWRBased_d.lib;CEGUITinyXMLParserd_d.lib;OpenAL32_d.lib;vorbis_d.lib;ogg_d.lib;dao_d.lib;bouge-s-d.lib;bouge-math-s-d.lib;bouge-tinyxml-s-d.lib;bouge-xml-common-s-d.lib;bouge-xmlio-s-d.lib;wsock32.lib;User32.lib;winmm.lib;dsound.lib;dxguid.lib;imm32.lib;version.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../3rdparty/vclib/debug;../../../fts-network/lib/Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <GenerateMapFile>false</GenerateMapFile>
@@ -191,7 +191,7 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <AdditionalIncludeDirectories>..;../3rdparty/CEGUI/include;../3rdparty/CEGUI;../3rdparty/sound/libogg/include;../3rdparty/sound/libvorbis/include;../3rdparty/sound/openal-soft/include;../3rdparty/sound/openal-soft/include/AL;../main;../3rdparty/sdl/include;../3rdparty/dao/src;../3rdparty/bouge/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..;../3rdparty/CEGUI/include;../3rdparty/CEGUI;../3rdparty/sound/libogg/include;../3rdparty/sound/libvorbis/include;../3rdparty/sound/openal-soft/include;../3rdparty/sound/openal-soft/include/AL;../main;../3rdparty/sdl/include;../3rdparty/dao/src;../3rdparty/bouge/include;../../../fts-network/include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;D_STRING_FTS_PATHS;D_USE_CEGUI;ALL_STATIC;CEGUI_STATIC;D_SND_SYS=1;DAO_DIRECT_API;DAO_SND_STATIC;BOUGE_STATIC;AL_LIBTYPE_STATIC</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
@@ -203,8 +203,8 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>freetype.lib;pcre.lib;OpenGL32.lib;glu32.lib;SDL.lib;SDLmain.lib;CEGUIBased.lib;CEGUIOpenGLRendererd.lib;CEGUIFalagardWRBased.lib;CEGUITinyXMLParserd.lib;OpenAL32.lib;vorbis.lib;ogg.lib;dao.lib;bouge-s.lib;bouge-math-s.lib;bouge-tinyxml-s.lib;bouge-xml-common-s.lib;bouge-xmlio-s.lib;wsock32.lib;user32.lib;winmm.lib;dxguid.lib;dsound.lib;imm32.lib;version.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>../3rdparty/vclib/Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>freetype.lib;pcre.lib;OpenGL32.lib;glu32.lib;SDL.lib;SDLmain.lib;CEGUIBase.lib;CEGUIOpenGLRenderer.lib;CEGUIFalagardWRBase.lib;CEGUITinyXMLParser.lib;OpenAL32.lib;vorbis.lib;ogg.lib;dao.lib;bouge-s.lib;bouge-math-s.lib;bouge-tinyxml-s.lib;bouge-xml-common-s.lib;bouge-xmlio-s.lib;wsock32.lib;user32.lib;winmm.lib;dxguid.lib;dsound.lib;imm32.lib;version.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../3rdparty/vclib/Release;../../../fts-network/lib/Debug%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <EnableUAC>false</EnableUAC>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <DelayLoadDLLs>%(DelayLoadDLLs)</DelayLoadDLLs>
@@ -308,8 +308,10 @@
     <ClCompile Include="..\utilities\DataContainer.cpp" />
     <ClCompile Include="..\utilities\DateTime.cpp" />
     <ClCompile Include="..\utilities\fps_calculator.cpp" />
+    <ClCompile Include="..\utilities\md5.cpp" />
     <ClCompile Include="..\utilities\parse.cpp" />
     <ClCompile Include="..\utilities\radix.cpp" />
+    <ClCompile Include="..\utilities\sha2.cpp" />
     <ClCompile Include="..\utilities\Singleton.cpp" />
     <ClCompile Include="..\utilities\StreamedDataContainer.cpp" />
     <ClCompile Include="..\utilities\threading.cpp" />
@@ -362,8 +364,6 @@
     <ClCompile Include="..\game\objects\tree.cpp" />
     <ClCompile Include="..\logging\chronometer.cpp" />
     <ClCompile Include="..\logging\ftslogger.cpp" />
-    <ClCompile Include="..\tools\server2\checksum\md5.cpp" />
-    <ClCompile Include="..\tools\server2\checksum\sha2.cpp" />
     <ClCompile Include="..\sound\SndFile.cpp" />
     <ClCompile Include="..\sound\SndGrp.cpp" />
     <ClCompile Include="..\sound\SndObjOpenAL.cpp" />
@@ -442,8 +442,10 @@
     <ClInclude Include="..\utilities\DataContainer.h" />
     <ClInclude Include="..\utilities\DateTime.h" />
     <ClInclude Include="..\utilities\fps_calculator.h" />
+    <ClInclude Include="..\utilities\md5.h" />
     <ClInclude Include="..\utilities\parse.h" />
     <ClInclude Include="..\utilities\radix.h" />
+    <ClInclude Include="..\utilities\sha2.h" />
     <ClInclude Include="..\utilities\Singleton.h" />
     <ClInclude Include="..\utilities\StreamedDataContainer.h" />
     <ClInclude Include="..\utilities\threading.h" />
@@ -501,8 +503,6 @@
     <ClInclude Include="..\logging\ftslogger.h" />
     <ClInclude Include="..\logging\logger.h" />
     <ClInclude Include="..\logging\MsgType.h" />
-    <ClInclude Include="..\tools\server2\checksum\md5.h" />
-    <ClInclude Include="..\tools\server2\checksum\sha2.h" />
     <ClInclude Include="..\sound\fts_Snd.h" />
     <ClInclude Include="..\sound\SndFile.h" />
     <ClInclude Include="..\sound\SndGrp.h" />

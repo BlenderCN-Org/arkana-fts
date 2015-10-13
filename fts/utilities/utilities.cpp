@@ -9,8 +9,8 @@
 
 #include "logging/logger.h"
 #include "dLib/dString/dTranslation.h"
-#include "tools/server2/checksum/md5.h"
-#include "tools/server2/checksum/sha2.h"
+#include "utilities/md5.h"
+#include "utilities/sha2.h"
 
 using namespace FTS;
 
