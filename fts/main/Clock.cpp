@@ -33,17 +33,17 @@ void FTS::Clock::tick()
 
 double FTS::Clock::getCurrentTime() const
 {
-    return std::chrono::duration_cast< std::chrono::milliseconds >( m_dCurrentTime - m_dStartTime ).count() / 1000.0;
+    return std::chrono::duration<double>( m_dCurrentTime - m_dStartTime ).count();
 }
 
 double FTS::Clock::getDeltaT() const
 {
-    return std::chrono::duration_cast< std::chrono::milliseconds >( m_dCurrentTime - m_dLastTick ).count() / 1000.0 ;
+    return std::chrono::duration<double>( m_dCurrentTime - m_dLastTick ).count();
 }
 
 double FTS::Clock::getTPS() const
 {
     // That's exactly how many ticks have been done in the last second.
-    return m_lastTicks.size();
+    return (double)m_lastTicks.size();
 }
 
