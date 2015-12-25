@@ -16,7 +16,7 @@ namespace FTS
 {
 EnhancedXMLDocument::EnhancedXMLDocument ( File& filename )
 {
-    int length = filename.getSize();
+    std::size_t length = filename.getSize();
     // If we have a file, assume it is all one big XML file, and read it in.
     // The document parser may decide the document ends sooner than the entire file, however.
     CEGUITinyXML::TIXML_STRING data;
