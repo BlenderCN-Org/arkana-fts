@@ -28,9 +28,9 @@ public:
     double getTPS() const;
 
 protected:
-    std::chrono::steady_clock::time_point m_dStartTime;
-    std::chrono::steady_clock::time_point m_dLastTick;
-    std::chrono::steady_clock::time_point m_dCurrentTime;
+    std::chrono::steady_clock::time_point m_startTime;
+    std::chrono::steady_clock::time_point m_lastTick;
+    std::chrono::steady_clock::time_point m_currentTime;
 
     std::list<std::chrono::steady_clock::time_point> m_lastTicks;
 
