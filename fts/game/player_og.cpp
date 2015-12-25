@@ -78,7 +78,7 @@ int FTS::Player::og_connectMaster(uint32_t in_uiTimeoutMS)
     String sServer = conf.get("MasterServerName");
     int iPort = conf.getInt("MasterServerPort");
     FTSMSGDBG("  Connecting to the master server "+sServer+":"+String::nr(iPort), 3);
-    m_pcMasterServer = new TraditionalConnection(sServer.c_str(), iPort, in_uiTimeoutMS);
+    m_pcMasterServer =  Connection::create(Connection::eConnectionType::D_CONNECTION_TRADITIONAL, sServer.c_str(), iPort, in_uiTimeoutMS);
     if(!m_pcMasterServer->isConnected()) {
         SAFE_DELETE(m_pcMasterServer);
         return -1;
