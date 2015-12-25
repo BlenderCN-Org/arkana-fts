@@ -19,6 +19,7 @@ v.i5
 *.opensdf
 *.psess
 *.vspx
+*.VC.opendb
 
 # Ignore the VC++ build folders
 Debug_Static/
@@ -35,7 +36,6 @@ dummy.*
 3rdparty/dao/Windows/*.sln
 3rdparty/pcre/linux/
 3rdparty/vclib/*
-
 
 # Ignore KDevelop-specific folders too
 .kdev*
