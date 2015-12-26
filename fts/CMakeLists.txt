@@ -1,9 +1,5 @@
 # Bla
-cmake_minimum_required(VERSION 2.6)
-
-# The following lines will be used later :-)
-# set(CMAKE_CXX_COMPILER "g++-4.6")
-# set(CMAKE_C_COMPILER "gcc-4.6")
+cmake_minimum_required(VERSION 3.0)
 
 project(fts)
 
@@ -39,8 +35,6 @@ endif()
 set(SOURCES_COMMON
     3rdparty/scrap.cpp
     3rdparty/lodepng.cpp
-    tools/server2/checksum/md5.cpp
-    tools/server2/checksum/sha2.cpp
     3d/math/AxisAlignedBoundingBox.cpp
     3d/Movers/Mover.cpp
     3d/Movers/Orbiter.cpp
