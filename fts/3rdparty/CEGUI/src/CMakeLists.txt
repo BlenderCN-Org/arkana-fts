@@ -209,6 +209,7 @@ include_directories(${CEGUIBase_SOURCE_DIR}/include
                     ${_CEGUIBase_CEGUI_INCLUDE_DIR}
                     ${PCRE_INCLUDE_DIR}
                     ${FreeType_INCLUDE_DIR}
+                    ${FreeType_INCLUDE_DIR}/..
                    )
 
 # Compiler-dependent and build-dependend flags:
