@@ -1,4 +1,8 @@
 #include "main.h"
+#include <CEGUI.h>
+#include <SDL.h>
+#include <time.h>
+#include <fts-net.h>
 
 #include "ui/ui.h"
 #include "logging/ftslogger.h"
@@ -21,10 +25,6 @@
 #include "dLib/dMem/dMem.h"
 #include "dLib/dFile/dFile.h"
 
-#include <CEGUI.h>
-#include <SDL.h>
-
-#include <time.h>
 
 using namespace FTS;
 
@@ -120,6 +120,7 @@ int main(int argc, char *argv[])
         return 0;
     }
 #endif
+    FTS::NetworkLibInit( 3 ); // dbg level set to 1.
 
     if(!FileUtils::dirExists(DATA)) {
         std::cout << "FTS not running in the correct directory: " << std::endl
