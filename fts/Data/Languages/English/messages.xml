@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+﻿<?xml version="1.0" encoding="UTF-8" ?>
 <messages>
   <SDL_Query value="SDL: Video query failed: {1}"/>
   <SDL_Init value="SDL: initialization: {1}"/>
@@ -132,8 +132,8 @@ Taking the default value ({3})"/>
           * You have not yet signed up (Please sign up now)
           * Somebody else is already logged in with your nickname (Please wait until he logs out)
           * Somebody that has the same IP and the same password as you is already logged in. (Please wait until he logs out)"/>
-  <Ogm_set_err value="Server-error while setting an account property ! (often a programmer error, field"/>
-  <Ogm_get_err value="Server-error while getting an account property ! (often a programmer error, field"/>
+  <Ogm_set_err value="Server-error while setting an account property ! (often a programmer error, field {1}, NickName {2} "/>
+  <Ogm_get_err value="Server-error while getting an account property ! (often a programmer error, field {1}, NickName {2}"/>
   <Ogm_set_flag_err value="Server-error while setting an account flag ! (often a programmer error, flag"/>
   <Ogm_chat_iunai value="Error finding out in what channel I am"/>
   <Ogm_chat_join_miss value="You have to type the name of the channel you want to join"/>

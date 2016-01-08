@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+﻿<?xml version="1.0" encoding="UTF-8" ?>
 <messages>
   <SDL_Query value="SDL: Demande vidéo a échoué: {1}"/>
   <SDL_Init value="SDL: initialisation: {1}"/>
@@ -131,8 +131,8 @@ Veuillez vous déconnecter pour créer un compte"/>
           * Vous n'êtes pas encore inscrit (Veuillez vous inscrire)
           * Une autre personne est déjà connectée avec votre surnom (Veuillez attendre qu'elle se déconnecte)
           * Une autre personne ayant la même addresse IP et le même mot de passe que vous est déjà connectée (Veuillez attendre qu'elle se déconnecte)"/>
-  <Ogm_set_err value="Erreur du serveur lors de la modification d'une propriété d'un compte ! (souvent une erreur de programmeur, field"/>
-  <Ogm_get_err value="Erreur du serveur lors de la demande d'une propriété d'un compte ! (souvent une erreur de programmeur, field"/>
+  <Ogm_set_err value="Erreur du serveur lors de la modification d'une propriété d'un compte ! (souvent une erreur de programmeur, field {1}, NickName {2}"/>
+  <Ogm_get_err value="Erreur du serveur lors de la demande d'une propriété d'un compte ! (souvent une erreur de programmeur, field {1}, NickName {2}"/>
   <Ogm_set_flag_err value="Erreur du serveur lors de la modification d'un drapeau d'un compte ! (souvent une erreur de programmeur, flag"/>
   <Ogm_chat_iunai value="Erreur lors de la recherche de la salle courante"/>
   <Ogm_chat_join_miss value="Vous devez spécifier le nom de la salle à laquelle vous voulez accéder"/>
