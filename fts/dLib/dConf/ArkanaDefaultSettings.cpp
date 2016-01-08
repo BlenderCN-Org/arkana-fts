@@ -54,6 +54,8 @@ ArkanaDefaultSettings::ArkanaDefaultSettings()
     add("DefaultChannel", "Talk To Survive (main channel)");
     add("MaxShaderQuality", "Best");
     add("ModelRenderTechnique", "Shader");
+    add("ConnectionConnectTimeOut", 10000 );
+    add("ConnectionTimeOut", 100 );
 }
 
 ArkanaDefaultSettings::~ArkanaDefaultSettings(void)

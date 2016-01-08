@@ -77,13 +77,14 @@ int FTS::Player::og_connectMaster(uint32_t in_uiTimeoutMS)
 
     String sServer = conf.get("MasterServerName");
     int iPort = conf.getInt("MasterServerPort");
+    unsigned long timeout= conf.getInt( "ConnectionConnectTimeOut" );
     FTSMSGDBG("  Connecting to the master server "+sServer+":"+String::nr(iPort), 3);
-    m_pcMasterServer =  Connection::create(Connection::eConnectionType::D_CONNECTION_TRADITIONAL, sServer.c_str(), iPort, in_uiTimeoutMS);
+    m_pcMasterServer =  Connection::create(Connection::eConnectionType::D_CONNECTION_TRADITIONAL, sServer.c_str(), iPort, timeout);
     if(!m_pcMasterServer->isConnected()) {
         SAFE_DELETE(m_pcMasterServer);
         return -1;
     }
-
+    m_pcMasterServer->setMaxWaitMillisec( conf.getInt( "ConnectionTimeOut" ) );
     return ERR_OK;
 }
 
@@ -212,7 +213,8 @@ int FTS::Player::og_login(const String & in_sNickname,
     p->append(m_sMD5.c_str());
 
     // And login.
-    if( FTSC_ERR::OK != m_pcMasterServer->mreq( p ) ) {
+    auto errorCode = m_pcMasterServer->mreq( p );
+    if( FTSC_ERR::OK != errorCode ) {
         SAFE_DELETE( p );
         return -3;
     }
@@ -514,6 +516,7 @@ int FTS::Player::og_accountGetIntFrom(uint8_t in_cField,
     p->append(in_cField);
     p->append(in_sNickname.c_str());
     if( FTSC_ERR::OK != m_pcMasterServer->mreq( p ) ) {
+        FTSMSGDBG( "Receive error master request for DSRV_MSG_PLAYER_GET", 3 );
         SAFE_DELETE( p );
         return -3;
     }
