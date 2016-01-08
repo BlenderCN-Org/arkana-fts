@@ -254,8 +254,9 @@ bool FTS::LoginMenuRlv::cbLogin(const CEGUI::EventArgs & in_ea)
     }
 
     // First: Log me in.
-    if(ERR_OK != g_pMeHacky->og_login(sNick, sPass))
-        return true;
+    auto errorCode = g_pMeHacky->og_login( sNick, sPass );
+    if(ERR_OK != errorCode )
+        return false;
 
     // Second: TODO: start a keepalive thread.
 

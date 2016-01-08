@@ -443,8 +443,7 @@ int FTS::Player::og_accountSetFlag(uint32_t in_cFlag, bool in_bValue)
  *
  * \author Pompei2
  */
-String FTS::Player::og_accountGetFrom(uint8_t in_cField,
-                                      const String & in_sNickname)
+String FTS::Player::og_accountGetFrom(uint8_t in_cField, const String & in_sNickname)
 {
     // Can't get something when not online.
     if( !m_bOnline ) {
@@ -453,34 +452,32 @@ String FTS::Player::og_accountGetFrom(uint8_t in_cField,
     }
 
     // Create the packet.
-    Packet *p = new Packet(DSRV_MSG_PLAYER_GET);
+    Packet p(DSRV_MSG_PLAYER_GET);
 
-    p->append(m_sMD5.c_str());
-    p->append(in_cField);
-    p->append(in_sNickname.c_str());
-    if( FTSC_ERR::OK != m_pcMasterServer->mreq( p ) ) {
-        SAFE_DELETE( p );
+    p.append(m_sMD5.c_str());
+    p.append(in_cField);
+    p.append(in_sNickname.c_str());
+    auto mreqError = m_pcMasterServer->mreq( &p );
+    if( FTSC_ERR::OK != mreqError ) {
+        FTSMSGDBG( "Receive error master request for DSRV_MSG_PLAYER_GET {1}", 3, String::nr( (int) mreqError ) );
         return String::EMPTY;
     }
-    if(!p || (p->get() != ERR_OK)) {
-        SAFE_DELETE(p);
+    auto packetError = p.get();
+    if( packetError != ERR_OK ) {
+        FTSMSGDBG( "Receive error master request for DSRV_MSG_PLAYER_GET ret = {1}", 3, String::nr( packetError ) );
         FTS18N("Ogm_get_err", MsgType::Error, String::nr(in_cField), in_sNickname);
         return String::EMPTY;
     }
 
-    if(p->get() != in_cField) {
-        SAFE_DELETE(p);
+    auto recvField = p.get();
+    if( recvField != in_cField ) {
+        FTSMSGDBG( "Receive error master request for DSRV_MSG_PLAYER_GET expected field {1} , received {2}", 3, String::nr( in_cField ), String::nr( recvField ) );
         FTS18N("Ogm_get_err", MsgType::Error, String::nr(in_cField), in_sNickname);
         return String::EMPTY;
     }
 
     // Extract the information.
-    String sRet = p->get_string();
-
-
-    // Don't need it anymore.
-    SAFE_DELETE(p);
-    return sRet;
+    return p.get_string();
 }
 
 /// ONLINE GAMING - Gets a property of an account.
@@ -500,8 +497,7 @@ String FTS::Player::og_accountGetFrom(uint8_t in_cField,
  *
  * \author Pompei2
  */
-int FTS::Player::og_accountGetIntFrom(uint8_t in_cField,
-                                     const String & in_sNickname)
+int FTS::Player::og_accountGetIntFrom(uint8_t in_cField, const String & in_sNickname)
 {
     // Can't get something when not online.
     if( !m_bOnline ) {
@@ -510,34 +506,33 @@ int FTS::Player::og_accountGetIntFrom(uint8_t in_cField,
     }
 
     // Create the packet.
-    Packet *p = new Packet(DSRV_MSG_PLAYER_GET);
+    Packet p(DSRV_MSG_PLAYER_GET);
 
-    p->append(m_sMD5.c_str());
-    p->append(in_cField);
-    p->append(in_sNickname.c_str());
-    if( FTSC_ERR::OK != m_pcMasterServer->mreq( p ) ) {
-        FTSMSGDBG( "Receive error master request for DSRV_MSG_PLAYER_GET", 3 );
-        SAFE_DELETE( p );
+    p.append(m_sMD5.c_str());
+    p.append(in_cField);
+    p.append(in_sNickname.c_str());
+    auto mreqError = m_pcMasterServer->mreq( &p );
+    if( FTSC_ERR::OK != mreqError ) {
+        FTSMSGDBG( "Receive error master request for DSRV_MSG_PLAYER_GET {1}", 3, String::nr((int)mreqError) );
         return -3;
     }
-    if(!p || (p->get() != ERR_OK)) {
-        SAFE_DELETE(p);
+    auto packetError = p.get();
+    if(packetError != ERR_OK) {
+        FTSMSGDBG( "Receive error master request for DSRV_MSG_PLAYER_GET ret = {1}", 3, String::nr(packetError) );
         FTS18N("Ogm_get_err", MsgType::Error, String::nr(in_cField), in_sNickname);
         return -4;
     }
 
-    if(p->get() != in_cField) {
-        SAFE_DELETE(p);
+    auto recvField = p.get();
+    if(recvField != in_cField) {
+        FTSMSGDBG( "Receive error master request for DSRV_MSG_PLAYER_GET expected field {1} , received {2}", 3, String::nr( in_cField ), String::nr(recvField) );
         FTS18N("Ogm_get_err", MsgType::Error, String::nr(in_cField), in_sNickname);
         return -5;
     }
 
     // Extract the information.
     int iRet;
-
-    p->get(iRet);
-    // Don't need it anymore.
-    SAFE_DELETE(p);
+    p.get(iRet);
     return iRet;
 }
 
@@ -822,7 +817,7 @@ int FTS::Player::og_chatCheckEvents()
 
     // Get up to five packets that are left here for us.
     for(int i = 0; i < 5 ; i++) {
-        Packet *pPack = m_pcMasterServer->getPacketIfPresent();
+        Packet *pPack = m_pcMasterServer->getReceivedPacketIfAny();
         if(pPack == NULL)
             break;
 
