@@ -5,44 +5,47 @@
 #include <elements/CEGUIListboxTextItem.h>
 #include <CEGUIcolour.h>
 
+#include "dsrv_constants.h"
+
 #define D_MAX_CHAT_ENTRIES 100
 
 namespace CEGUI {
-    class String;
-    class Listbox;
-    class Combobox;
-    class Size;
-    class Image;
-    class Vector3;
-    class Rect;
-    class RenderCache;
+class String;
+class Listbox;
+class Combobox;
+class Size;
+class Image;
+class Vector3;
+class Rect;
+class RenderCache;
 }
 
 #include "dLib/dString/dString.h"
 
 namespace FTS {
 
-class ChatMembersListItem : public CEGUI::ListboxTextItem {
+class ChatMembersListItem : public CEGUI::ListboxTextItem
+{
 private:
     String m_sName;
-    float m_fSkillPercent;
-    char  m_cState;
+    float m_fSkillPercent = 0.0f;
+    DSRV_CHAT_USER m_cState = DSRV_CHAT_USER::UNKNOWN;
 
 public:
-    ChatMembersListItem(const String & in_sName,
-                        CEGUI::uint in_uiItemID = 0,
-                        void *in_pItemData = 0,
-                        bool in_bDisabled = false,
-                        bool in_bAutoDelete = true);
+    ChatMembersListItem( const String & in_sName,
+                         CEGUI::uint in_uiItemID = 0,
+                         void *in_pItemData = 0,
+                         bool in_bDisabled = false,
+                         bool in_bAutoDelete = true );
     virtual ~ChatMembersListItem();
 
-    void setAsDefault(CEGUI::Listbox * in_pLB);
-    void addAsDefault(CEGUI::Listbox * in_pLB);
+    void setAsDefault( CEGUI::Listbox * in_pLB );
+    void addAsDefault( CEGUI::Listbox * in_pLB );
 
-    void setState(char in_cState);
-    char getState() const;
+    void setState( DSRV_CHAT_USER in_cState );
+    DSRV_CHAT_USER getState() const;
 
-    void setSkillPercent(float in_fSkill);
+    void setSkillPercent( float in_fSkill );
     float getSkillPercent() const;
 
     String getName() const;
@@ -51,9 +54,11 @@ public:
     CEGUI::Size getPixelSize() const;
 };
 
-class ChatMsgListItem : public CEGUI::ListboxItem {
+class ChatMsgListItem : public CEGUI::ListboxItem
+{
 public:
-    enum Use {
+    enum Use
+    {
         Normal,
         System,
         RecvWhisp,
@@ -77,62 +82,64 @@ private:
     Use m_eUse;  ///< What kind of message this should be.
 
 public:
-    ChatMsgListItem(const String & in_sFrom,
-                    const String & in_sMessage,
-                    CEGUI::uint in_uiItemID = 0,
-                    void *in_pItemData = 0,
-                    bool in_bDisabled = false,
-                    bool in_bAutoDelete = true);
+    ChatMsgListItem( const String & in_sFrom,
+                     const String & in_sMessage,
+                     CEGUI::uint in_uiItemID = 0,
+                     void *in_pItemData = 0,
+                     bool in_bDisabled = false,
+                     bool in_bAutoDelete = true );
     virtual ~ChatMsgListItem();
 
-    void addLast(CEGUI::Listbox * in_pLB);
+    void addLast( CEGUI::Listbox * in_pLB );
 
     CEGUI::Size getPixelSize() const;
-    void draw(const CEGUI::Vector3 & in_position,
-              float in_fAlpha, const CEGUI::Rect & in_clipper) const;
-    void draw(CEGUI::RenderCache & in_cache,
-              const CEGUI::Rect & in_targetRect,
-              float in_fZBase,
-              float in_fAlpha, const CEGUI::Rect * in_pClipper) const;
+    void draw( const CEGUI::Vector3 & in_position,
+               float in_fAlpha, const CEGUI::Rect & in_clipper ) const;
+    void draw( CEGUI::RenderCache & in_cache,
+               const CEGUI::Rect & in_targetRect,
+               float in_fZBase,
+               float in_fAlpha, const CEGUI::Rect * in_pClipper ) const;
 
-    inline ChatMsgListItem *setNickCol(const CEGUI::colour &in_col)
+    inline ChatMsgListItem *setNickCol( const CEGUI::colour &in_col )
     {
         m_nickCol = in_col;
         this->buildText();
         return this;
     };
 
-    inline ChatMsgListItem *setTimeCol(const CEGUI::colour &in_col)
+    inline ChatMsgListItem *setTimeCol( const CEGUI::colour &in_col )
     {
         m_timeCol = in_col;
         this->buildText();
         return this;
     };
 
-    inline ChatMsgListItem *setTextCol(const CEGUI::colour &in_col)
+    inline ChatMsgListItem *setTextCol( const CEGUI::colour &in_col )
     {
-        m_textCols.setColours(in_col);
+        m_textCols.setColours( in_col );
         this->buildText();
         return this;
     };
 
-    inline ChatMsgListItem *setWithTime(bool b) {
+    inline ChatMsgListItem *setWithTime( bool b )
+    {
         m_bWithTime = b;
         this->buildText();
         return this;
     }
 
-    inline bool getWithTime() {return m_bWithTime;};
+    inline bool getWithTime() { return m_bWithTime; };
 
-    inline ChatMsgListItem *setUse(Use in_eUse) {
+    inline ChatMsgListItem *setUse( Use in_eUse )
+    {
         m_eUse = in_eUse;
-        if(m_eUse == System)
-            this->setTextCol(CEGUI::colour(0xFF404040));
+        if( m_eUse == System )
+            this->setTextCol( CEGUI::colour( 0xFF404040 ) );
         this->buildText();
         return this;
     }
 
-    inline Use getUse() {return m_eUse;};
+    inline Use getUse() { return m_eUse; };
 
 private:
     String buildText();
@@ -142,4 +149,4 @@ private:
 
 #endif                          /* D_CEGUICHATITEMS_H */
 
- /* EOF */
+/* EOF */

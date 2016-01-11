@@ -644,7 +644,7 @@ bool FTS::OnlineMenuRlv::cbListClick(const CEGUI::EventArgs & in_ea)
         GUI::getSingleton().openPopupMenu(pm);
 
         // Get some info about the user who was clicked on.
-        char cMyState = g_pMeHacky->og_chatUserGet(g_pMeHacky->getName());
+        auto cMyState = g_pMeHacky->og_chatUserGet(g_pMeHacky->getName());
         bool bItsMe = g_pMeHacky->getName() == cli->getName();
 
         if(bItsMe) {
@@ -655,21 +655,21 @@ bool FTS::OnlineMenuRlv::cbListClick(const CEGUI::EventArgs & in_ea)
             pm->getChild("menu_online_main/pmUser/op")->disable();
             pm->getChild("menu_online_main/pmUser/deop")->disable();
         } else {
-            if(cMyState == 2) { // Channel Admin.
+            if(cMyState == DSRV_CHAT_USER::ADMIN) { // Channel Admin.
                 pm->getChild("menu_online_main/pmUser/mute")->enable();
                 pm->getChild("menu_online_main/pmUser/unmute")->enable();
                 pm->getChild("menu_online_main/pmUser/kick")->enable();
-                if(cli->getState() == 0) {
+                if(cli->getState() == DSRV_CHAT_USER::NORMAL) {
                     pm->getChild("menu_online_main/pmUser/op")->enable();
                     pm->getChild("menu_online_main/pmUser/deop")->disable();
                 } else {
                     pm->getChild("menu_online_main/pmUser/op")->disable();
                     pm->getChild("menu_online_main/pmUser/deop")->enable();
                 }
-            } else if(cMyState == 1) { // Operator.
+            } else if(cMyState == DSRV_CHAT_USER::OPERATOR) { // Operator.
                 pm->getChild("menu_online_main/pmUser/mute")->enable();
                 pm->getChild("menu_online_main/pmUser/unmute")->enable();
-                if(cli->getState() == 2) { // Operator can't kick admin.
+                if(cli->getState() == DSRV_CHAT_USER::ADMIN) { // Operator can't kick admin.
                     pm->getChild("menu_online_main/pmUser/kick")->disable();
                 } else {
                     pm->getChild("menu_online_main/pmUser/kick")->enable();
@@ -1044,7 +1044,6 @@ int FTS::OnlineMenuRlv::addPlayer(const String & in_sName)
 {
     ChatMembersListItem *cli = nullptr;
     float fSkillPercent = 0.0f;
-    uint8_t cState = 0; // 0 = normal 1 = operator 2 = admin.
 
     // First, calculate it's skill percent.
     fSkillPercent =
@@ -1052,7 +1051,7 @@ int FTS::OnlineMenuRlv::addPlayer(const String & in_sName)
                      g_pMeHacky->og_accountGetIntFrom(DSRV_TBL_USR_DRAWS, in_sName),
                      g_pMeHacky->og_accountGetIntFrom(DSRV_TBL_USR_LOOSES,in_sName));
 
-    cState = g_pMeHacky->og_chatUserGet(in_sName);
+    auto cState = g_pMeHacky->og_chatUserGet(in_sName);
 
     try {
         // Then crate the according list item and set its properties.
@@ -1067,7 +1066,7 @@ int FTS::OnlineMenuRlv::addPlayer(const String & in_sName)
         // operators and other users are sorted by skill points.
 
         // If it is the admin, insert at the beginning (there is only 1 admin/channel)
-        if(cState == DSRV_CHAT_USER_ADMIN) {
+        if(cState == DSRV_CHAT_USER::ADMIN) {
             if(pLB->getItemCount() > 0) {
                 pLB->insertItem(cli, pLB->getListboxItemFromIndex(0));
             } else {

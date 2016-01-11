@@ -15,6 +15,7 @@
 #include <string>
 
 #include "dLib/dString/dString.h"
+#include "dsrv_constants.h"
 
 namespace FTS {
     class Connection;
@@ -94,7 +95,7 @@ public:
     int og_chatCheckEvents();
     int og_chatGetPlayerList(std::list<String> &out_playerList);
     int og_chatRefreshChannelInfo();
-    uint8_t og_chatUserGet(const String & in_sUser);
+    DSRV_CHAT_USER og_chatUserGet(const String & in_sUser);
     int og_chatSetMotto(const String & in_sMotto);
     String og_chatGetMotto();
     int og_chatKick(const String &in_sName);

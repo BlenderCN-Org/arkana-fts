@@ -948,41 +948,38 @@ int FTS::Player::og_chatRefreshChannelInfo()
  *
  * \param in_sUser The name of the user to get the state.
  *
- * \return If successful: 0 = normal user, 1 = channel operator, 2 = channel admin.
- * \return If failed:     An error code <0
+ * \return If successful: DSRV_CHAT_USER (0 = normal user, 1 = channel operator, 2 = channel admin).
+ * \return If failed:     DSRV_CHAT_USER::UNKNOWN
  *
  * \note The players list CEGUI::Listbox has to be present for this function to work !
  *
  * \author Pompei2
  */
-uint8_t FTS::Player::og_chatUserGet(const String & in_sUser)
+DSRV_CHAT_USER FTS::Player::og_chatUserGet(const String & in_sUser)
 {
     if( !m_bOnline ) {
         FTS18N("Ogm_offline", MsgType::Error, "og_chatUserGet");
-        return -2;
+        return DSRV_CHAT_USER::UNKNOWN;
     }
 
     // Create the packet.
-    Packet *p = new Packet(DSRV_MSG_CHAT_USER_GET);
-    p->append(m_sMD5.c_str() );
-    p->append(in_sUser.c_str() );
+    Packet p(DSRV_MSG_CHAT_USER_GET);
+    p.append(m_sMD5.c_str() );
+    p.append(in_sUser.c_str() );
 
     // Send the message.
-    if( FTSC_ERR::OK != m_pcMasterServer->mreq( p ) ) {
-        SAFE_DELETE(p);
-        return -3;
+    if( FTSC_ERR::OK != m_pcMasterServer->mreq( &p ) ) {
+        return DSRV_CHAT_USER::UNKNOWN;
     }
 
-    if(!p || (p->get() != ERR_OK)) {
+    if(p.get() != ERR_OK) {
         FTS18N("Ogm_chat_userget_err", MsgType::Error, in_sUser);
-        SAFE_DELETE(p);
-        return -4;
+        return DSRV_CHAT_USER::UNKNOWN;
     }
 
-    char cState = p->get();
-    SAFE_DELETE(p);
+    char cState = p.get();
 
-    return cState;
+    return (DSRV_CHAT_USER)cState;
 }
 
 /// Sets the motto of a channel (if allowed).

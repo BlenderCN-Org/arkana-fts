@@ -49,7 +49,7 @@ FTS::ChatMembersListItem::ChatMembersListItem(const String & in_sName,
         this->setSelectionBrushImage("ArkanaLook", "ListSelectionBrush");
         this->setSelectionColours(CEGUI::colour(1.0f, 1.0f, 1.0f, 1.0f));
         m_fSkillPercent = 0.0f;
-        m_cState = 0;
+        m_cState = DSRV_CHAT_USER::UNKNOWN;
         m_sName = in_sName;
 
         this->recalcText();
@@ -153,7 +153,7 @@ String FTS::ChatMembersListItem::getName() const
  *
  * \author Pompei2
  */
-void FTS::ChatMembersListItem::setState(char in_cState)
+void FTS::ChatMembersListItem::setState(DSRV_CHAT_USER in_cState)
 {
     String sSuffix;
     m_cState = in_cState;
@@ -170,7 +170,7 @@ void FTS::ChatMembersListItem::setState(char in_cState)
  *
  * \author Pompei2
  */
-char FTS::ChatMembersListItem::getState() const
+DSRV_CHAT_USER FTS::ChatMembersListItem::getState() const
 {
     return m_cState;
 }
@@ -197,9 +197,9 @@ void FTS::ChatMembersListItem::recalcText()
     }
 
     Translation trans("ui");
-    if( m_cState == 1 ) {
+    if( m_cState == DSRV_CHAT_USER::OPERATOR ) {
         sText += trans.get("Chat_Op_suffix");
-    } else if( m_cState == 2 ) {
+    } else if( m_cState == DSRV_CHAT_USER::ADMIN ) {
         sText += trans.get("Chat_Admin_suffix");
     }
 
