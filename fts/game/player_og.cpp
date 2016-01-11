@@ -721,7 +721,7 @@ int FTS::Player::og_chatSendMessage(const String & in_sMessage)
     Packet *p = new Packet(DSRV_MSG_CHAT_SENDMSG);
     p->append(m_sMD5.c_str() );
 
-    p->append(DSRV_CHAT_TYPE_NORMAL);
+    p->append(DSRV_CHAT_TYPE::NORMAL);
     p->append((uint8_t)0);
     p->append(in_sMessage.c_str() );
 
@@ -761,7 +761,7 @@ int FTS::Player::og_chatWhisp(const String &in_sPlayer, const String & in_sMessa
     Packet *p = new Packet(DSRV_MSG_CHAT_SENDMSG);
     p->append(m_sMD5.c_str() );
 
-    p->append(DSRV_CHAT_TYPE_WHISPER);
+    p->append(DSRV_CHAT_TYPE::WHISPER);
     p->append((uint8_t)0);
     p->append(in_sPlayer.c_str() );
     p->append(in_sMessage.c_str() );

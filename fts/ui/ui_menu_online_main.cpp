@@ -1281,12 +1281,12 @@ bool FTS::OnlineMenuRlv::handleMessage(Packet &in_pack)
     case DSRV_MSG_CHAT_GETMSG:
     {
         // A message came either in the channel or to us.
-        uint8_t cMessageType;
+        DSRV_CHAT_TYPE MessageType;
         uint8_t cFlags;
-        in_pack.get(cMessageType);
+        in_pack.get(MessageType);
         in_pack.get(cFlags);
 
-        if(cMessageType == DSRV_CHAT_TYPE_SYSTEM) {
+        if(MessageType == DSRV_CHAT_TYPE::SYSTEM) {
             // The message we got came from the system.
             // That means the server needs to tell us something.
             String sMessageID = in_pack.get_string();
@@ -1308,7 +1308,7 @@ bool FTS::OnlineMenuRlv::handleMessage(Packet &in_pack)
             String sMessage = in_pack.get_string();
 
             // It may be a whispered message or a normal message.
-            if(cMessageType == DSRV_CHAT_TYPE_WHISPER)
+            if(MessageType == DSRV_CHAT_TYPE::WHISPER)
                 this->gotOrSentWhispMessage(sNick, sMessage, true);
             else
                 this->gotNormalMessage(sNick, sMessage);
