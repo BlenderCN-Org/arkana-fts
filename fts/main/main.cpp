@@ -299,6 +299,9 @@ int enterMainLoop()
     SDL_Event sdlEvent;
     bool bCont = true;
 
+    // Enter the initial run level.
+    pRlv = RunlevelManager::getSingleton().realEnterRunlevel();
+
     Clock c;
 
     while(bCont) {

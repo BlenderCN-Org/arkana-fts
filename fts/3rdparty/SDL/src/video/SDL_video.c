@@ -1,6 +1,6 @@
 /*
     SDL - Simple DirectMedia Layer
-    Copyright (C) 1997-2006 Sam Lantinga
+    Copyright (C) 1997-2012 Sam Lantinga
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -63,6 +63,9 @@ static VideoBootStrap *bootstrap[] = {
 #if SDL_VIDEO_DRIVER_PS2GS
 	&PS2GS_bootstrap,
 #endif
+#if SDL_VIDEO_DRIVER_PS3
+	&PS3_bootstrap,
+#endif
 #if SDL_VIDEO_DRIVER_GGI
 	&GGI_bootstrap,
 #endif
@@ -119,6 +122,9 @@ static VideoBootStrap *bootstrap[] = {
 #endif
 #if SDL_VIDEO_DRIVER_AALIB
 	&AALIB_bootstrap,
+#endif
+#if SDL_VIDEO_DRIVER_CACA
+	&CACA_bootstrap,
 #endif
 #if SDL_VIDEO_DRIVER_DUMMY
 	&DUMMY_bootstrap,
@@ -503,7 +509,9 @@ static void SDL_ClearSurface(SDL_Surface *surface)
 		SDL_Flip(surface);
 		SDL_FillRect(surface, NULL, black);
 	}
-	SDL_Flip(surface);
+	if (surface->flags&SDL_FULLSCREEN) {
+		SDL_Flip(surface);
+	}
 }
 
 /*
@@ -565,6 +573,10 @@ static void SDL_CreateShadowSurface(int depth)
     #include <sys/neutrino.h>
 #endif /* __QNXNTO__ */
 
+#ifdef WIN32
+	extern int sysevents_mouse_pressed;
+#endif
+
 /*
  * Set the requested video mode, allocating a shadow buffer if necessary.
  */
@@ -577,6 +589,10 @@ SDL_Surface * SDL_SetVideoMode (int width, int height, int bpp, Uint32 flags)
 	int video_bpp;
 	int is_opengl;
 	SDL_GrabMode saved_grab;
+
+	#ifdef WIN32
+		sysevents_mouse_pressed = 0;
+	#endif
 
 	/* Start up the video driver, if necessary..
 	   WARNING: This is the only function protected this way!
@@ -634,6 +650,7 @@ SDL_Surface * SDL_SetVideoMode (int width, int height, int bpp, Uint32 flags)
 	/* Reset the keyboard here so event callbacks can run */
 	SDL_ResetKeyboard();
 	SDL_ResetMouse();
+	SDL_SetMouseRange(width, height);
 	SDL_cursorstate &= ~CURSOR_USINGSW;
 
 	/* Clean up any previous video mode */
@@ -970,6 +987,11 @@ SDL_Surface *SDL_DisplayFormatAlpha(SDL_Surface *surface)
 		if ( (vf->Rmask == 0xff) && (vf->Bmask == 0xff0000) ) {
 			rmask = 0xff;
 			bmask = 0xff0000;
+		} else if ( vf->Rmask == 0xFF00 && (vf->Bmask == 0xFF000000) ) {
+			amask = 0x000000FF;
+			rmask = 0x0000FF00;
+			gmask = 0x00FF0000;
+			bmask = 0xFF000000;
 		}
 		break;
 
@@ -1667,6 +1689,9 @@ void SDL_GL_Unlock()
 #endif
 }
 
+
+void SDL_Audio_SetCaption(const char *caption);
+
 /*
  * Sets/Gets the title and icon text of the display window, if any.
  */
@@ -1692,7 +1717,11 @@ void SDL_WM_SetCaption (const char *title, const char *icon)
 			video->SetCaption(this, video->wm_title,video->wm_icon);
 		}
 	}
+
+	/* PulseAudio can make use of this information. */
+	SDL_Audio_SetCaption(title);
 }
+
 void SDL_WM_GetCaption (char **title, char **icon)
 {
 	SDL_VideoDevice *video = current_video;
