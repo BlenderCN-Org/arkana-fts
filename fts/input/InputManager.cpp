@@ -567,11 +567,11 @@ bool InputManager::handleEvent(const SDL_Event& ev)
     case SDL_KEYDOWN:
         if(ev.key.keysym.sym != SDLK_UNKNOWN) {
             // TODO There is no unicode utf-16 key code.
-            this->handleKeyDown(static_cast<Key::Enum>(ev.key.keysym.sym), 0);
+            this->handleKeyDown(static_cast<Key::Enum>(ev.key.keysym.scancode), 0);
         }
         return true;
     case SDL_KEYUP:
-        this->handleKeyUp(static_cast<Key::Enum>(ev.key.keysym.sym));
+        this->handleKeyUp(static_cast<Key::Enum>(ev.key.keysym.scancode));
         return true;
     case SDL_MOUSEMOTION:
         this->handleMouseMove(ev.motion.x, ev.motion.y);
