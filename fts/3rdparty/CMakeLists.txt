@@ -76,10 +76,12 @@ else(WIN32)
 endif(WIN32)
 
 add_subdirectory(CEGUI)
+
+message(STATUS "================")
+message(STATUS "CONFIGURING SDL2")
+message(STATUS "================")
 # This options will be needed w/ SDL2.
-#set(DIRECTX FALSE)
-#set(SDL_SHARED OFF)
-add_subdirectory(SDL)
-
-
-
+set(DIRECTX OFF)
+set(SDL_SHARED OFF)
+set(SDL_STATIC ON)
+add_subdirectory(SDL2)

@@ -21,19 +21,21 @@ public:
         // We need an OpenGL context, of course!
         if(SDL_Init(SDL_INIT_VIDEO) < 0)
             throw std::runtime_error("Could not initialize SDL");
-
-        if(!SDL_SetVideoMode(800, 600, 32, SDL_OPENGL))
+        m_pWindow = SDL_CreateWindow("Test SDL screen", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, SDL_WindowFlags::SDL_WINDOW_OPENGL);
+        if(!m_pWindow)
             throw std::runtime_error("Could not open OpenGL window");
-
+        m_glContext = SDL_GL_CreateContext(m_pWindow);
         m_bHasShaderIncludeExtension = glHasExtension("GL_ARB_shader_include");
     };
 
     void teardown()
     {
+        SDL_GL_DeleteContext(m_pWindow);
         SDL_Quit();
         delete Logger::getSingletonPtr();
     };
-
+    SDL_Window* m_pWindow = nullptr;
+    SDL_GLContext m_glContext;
     bool m_bHasShaderIncludeExtension;
 };
 

@@ -312,7 +312,7 @@ int drawCursor(const FTS::Clock&, const FTS::PCursor in_pCursor);
 /* ====================== */
 CEGUI::uint FTSKeyToCEGUIKey(FTS::Key::Enum key);
 FTS::MouseButton::Enum SDLMouseToFTSMouse(int btn);
-FTS::MouseScroll::Enum SDLMouseToFTSScroll(int btn);
+FTS::MouseScroll::Enum SDLMouseToFTSScroll(const SDL_MouseWheelEvent& ev);
 /// Returns the keycode as a readable string.
 /** This function converts a \c Key into a human readable string.
  *

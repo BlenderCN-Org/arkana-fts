@@ -1,6 +1,7 @@
 #include "Resolution.h"
 
 #include "3d/Math.h"
+#include "3d/Renderer.h"
 
 #include "dLib/dString/dString.h"
 
@@ -46,13 +47,14 @@ FTS::Resolution::Resolution()
     // Get the current screen resolution.
     // Not taking the one from the config so that it even works before we have
     // a window. Useful when there is no config yet.
-    const SDL_VideoInfo* info = SDL_GetVideoInfo();
-    w = info ? info->current_w : 1;
-    h = info ? info->current_h : 1;
+    SDL_DisplayMode info;
+    if (SDL_GetCurrentDisplayMode(0, &info) == 0) {
+        w = info.w;
+        h = info.h;
+    } else {
+        w = h = 1;
+    }
 
-    // SDL won't tell us the current fullscreen mode.
-    // Don't take it from configuration file as the configuration class
-    // itself uses this to get the default resolution.
     fs = true;
 }
 #endif // D_NO_SDL

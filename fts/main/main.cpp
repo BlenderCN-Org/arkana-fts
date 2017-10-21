@@ -97,140 +97,139 @@ String PRINT_FUN =
 int main(int argc, char *argv[])
 {
     try {
-    printf("CWD: %s\n", Path::wd().c_str());
+        printf("CWD: %s\n", Path::wd().c_str());
 
 #ifdef SIGPIPE
-    signal(SIGPIPE, SIG_IGN); /* Ignore broken pipe */
+        signal(SIGPIPE, SIG_IGN); /* Ignore broken pipe */
 #endif /* SIGPIPE */
 
-    // In debug mode, always run the tests on startup!
+        // In debug mode, always run the tests on startup!
 #ifdef DEBUG
-    // The -tDaoVm disables the DaoVm tests, as currently the Dao VM cannot be
-    // initialized more than one time. This is the fault of Dao, not Arkana.
-    const char* test_argv[] = {"./tests", "fts", "-tDaoVm", "-Shaders"};
-    int failures = run_tests(sizeof(test_argv)/sizeof(test_argv[0]), test_argv);
-    if(failures > 0) {
-        Console::Pause();
-        return failures;
-    }
+        // The -tDaoVm disables the DaoVm tests, as currently the Dao VM cannot be
+        // initialized more than one time. This is the fault of Dao, not Arkana.
+        const char* test_argv[] = {"./tests", "fts", "-tDaoVm", "-Shaders"};
+        int failures = run_tests(sizeof(test_argv)/sizeof(test_argv[0]), test_argv);
+        if(failures > 0) {
+            Console::Pause();
+            return failures;
+        }
 
-    if ( argc == 2 && std::string(argv[1]) == "run-test-only" )
-    {
-        Console::Pause();
-        return 0;
-    }
+        if( argc == 2 && std::string(argv[1]) == "run-test-only" ) {
+            Console::Pause();
+            return 0;
+        }
 #endif
-    FTS::NetworkLibInit( 3 ); // dbg level set to 4.
+        FTS::NetworkLibInit( 3 ); // dbg level set to 4.
 
-    if(!FileUtils::dirExists(DATA)) {
-        std::cout << "FTS not running in the correct directory: " << std::endl
-                  << "no data (" DATA ") directory found !" << std::endl
-                  << std::endl
-                  << "You are most probably a developer using Visual C++ but " << std::endl
-                  << "you forgot to change the project's working directory." << std::endl
-                  << std::endl
-                  << "You have to set it to '..' (without the quotes)" << std::endl
-                  << std::endl
-                  << "Press any key to quit ... ";
-        std::cin.get();
-        return 0;
-    }
+        if(!FileUtils::dirExists(DATA)) {
+            std::cout << "FTS not running in the correct directory: " << std::endl
+                      << "no data (" DATA ") directory found !" << std::endl
+                      << std::endl
+                      << "You are most probably a developer using Visual C++ but " << std::endl
+                      << "you forgot to change the project's working directory." << std::endl
+                      << std::endl
+                      << "You have to set it to '..' (without the quotes)" << std::endl
+                      << std::endl
+                      << "Press any key to quit ... ";
+            std::cin.get();
+            return 0;
+        }
 
-    // If we do this, we get problems with SDL unicode keys.
-    //      setlocale( LC_ALL, globals->pLocalAcc->getOptString( _S("Language"), _S("English") ).c_str( ) );
-    setlocale(LC_NUMERIC, "C");
-    Console::EnableUTF8();
-    fputs("\x00\xe9", stdout);
+        // If we do this, we get problems with SDL unicode keys.
+        //      setlocale( LC_ALL, globals->pLocalAcc->getOptString( _S("Language"), _S("English") ).c_str( ) );
+        setlocale(LC_NUMERIC, "C");
+        Console::EnableUTF8();
+        fputs("\x00\xe9", stdout);
 
-    srand((unsigned)time(NULL));
+        srand((unsigned)time(NULL));
 
-    // We need this one ready here already in order to be able to get things
-    // like timer, best video mode, ...
-    if(-1 == SDL_Init(SDL_INIT_VIDEO | SDL_INIT_NOPARACHUTE)) {
-        FTS18N("SDL_Init", MsgType::Error, SDL_GetError());
-        return -1;
-    }
+        // We need this one ready here already in order to be able to get things
+        // like timer, best video mode, ...
+        if(-1 == SDL_Init(SDL_INIT_VIDEO)) {
+            FTS18N("SDL_Init", MsgType::Error, SDL_GetError());
+            return -1;
+        }
 
-    // Init the logging system and test it right away.
-    DefaultLogger* pDefLog = new DefaultLogger;
-    FTSMSG("Version {1}\n", MsgType::Raw, getFTSVersionString());
+        // Init the logging system and test it right away.
+        DefaultLogger* pDefLog = new DefaultLogger;
+        FTSMSG("Version {1}\n", MsgType::Raw, getFTSVersionString());
 
-    // MAKE TESTS HERE
+        // MAKE TESTS HERE
 #ifdef DEBUG
 
-#define SIZEOF_TEST(type) FTSMSG("sizeof({1}) = {2}\n", MsgType::MessageNoMB, # type, String::nr(sizeof(type)))
-    SIZEOF_TEST(int8_t);
-    SIZEOF_TEST(uint8_t);
-    SIZEOF_TEST(int16_t);
-    SIZEOF_TEST(uint16_t);
-    SIZEOF_TEST(int32_t);
-    SIZEOF_TEST(uint32_t);
-    SIZEOF_TEST(int64_t);
-    SIZEOF_TEST(uint64_t);
-    SIZEOF_TEST(char);
-    SIZEOF_TEST(unsigned char);
-    SIZEOF_TEST(short);
-    SIZEOF_TEST(unsigned short);
-    SIZEOF_TEST(int);
-    SIZEOF_TEST(unsigned int);
-    SIZEOF_TEST(long);
-    SIZEOF_TEST(unsigned long);
-    SIZEOF_TEST(long long);
-    SIZEOF_TEST(unsigned long long);
-    SIZEOF_TEST(void *);
-    SIZEOF_TEST(float);
-    SIZEOF_TEST(double);
-    SIZEOF_TEST(long double);
+    #define SIZEOF_TEST(type) FTSMSG("sizeof({1}) = {2}\n", MsgType::MessageNoMB, # type, String::nr(sizeof(type)))
+        SIZEOF_TEST(int8_t);
+        SIZEOF_TEST(uint8_t);
+        SIZEOF_TEST(int16_t);
+        SIZEOF_TEST(uint16_t);
+        SIZEOF_TEST(int32_t);
+        SIZEOF_TEST(uint32_t);
+        SIZEOF_TEST(int64_t);
+        SIZEOF_TEST(uint64_t);
+        SIZEOF_TEST(char);
+        SIZEOF_TEST(unsigned char);
+        SIZEOF_TEST(short);
+        SIZEOF_TEST(unsigned short);
+        SIZEOF_TEST(int);
+        SIZEOF_TEST(unsigned int);
+        SIZEOF_TEST(long);
+        SIZEOF_TEST(unsigned long);
+        SIZEOF_TEST(long long);
+        SIZEOF_TEST(unsigned long long);
+        SIZEOF_TEST(void *);
+        SIZEOF_TEST(float);
+        SIZEOF_TEST(double);
+        SIZEOF_TEST(long double);
 #endif
-    // STOP TESTS.
+        // STOP TESTS.
 
-    // We have to make that after glfwInit because glfwInit registers an atexit
-    // that destroys the OpenGL context.
-    atexit(exitfunc);
+        // We have to make that after glfwInit because glfwInit registers an atexit
+        // that destroys the OpenGL context.
+        atexit(exitfunc);
 
-    // Counter-intuitively, this does NOT create a GUI. Hehe.
-    // It is more a helper-glue-class for gui-related stuff.
-    new GUI();
+        // Counter-intuitively, this does NOT create a GUI. Hehe.
+        // It is more a helper-glue-class for gui-related stuff.
+        new GUI();
 
-    // The arguments loop.
-    for(int i = 1; i < argc; i++) {
-        if(argv[i][0] == '-') {
-            switch (argv[i][1]) {
-                // The arg begins with a --
-            case '-':
-                // The user needs help
-                if(!strcmp("help", &argv[i][2])) {
+        // The arguments loop.
+        for(int i = 1; i < argc; i++) {
+            if(argv[i][0] == '-') {
+                switch (argv[i][1]) {
+                    // The arg begins with a --
+                case '-':
+                    // The user needs help
+                    if(!strcmp("help", &argv[i][2])) {
+                        printCmdHelp(argv[0]);
+                        // Set the debug level to the number given in the next arg.
+                    } else if(!strcmp("debug", &argv[i][2])) {
+                        pDefLog->setGDLL(atoi(argv[++i]));
+                    }
+                    break;
+                    // The user needs help
+                case 'h':
+                case 'H':
                     printCmdHelp(argv[0]);
+                    break;
                     // Set the debug level to the number given in the next arg.
-                } else if(!strcmp("debug", &argv[i][2])) {
-                    pDefLog->setGDLL(atoi(argv[++i]));
+                case 'd':
+                    if(argc >= i + 1)
+                        pDefLog->setGDLL(atoi(argv[++i]));
+                    break;
                 }
-                break;
-                // The user needs help
-            case 'h':
-            case 'H':
-                printCmdHelp(argv[0]);
-                break;
-                // Set the debug level to the number given in the next arg.
-            case 'd':
-                if(argc >= i + 1)
-                    pDefLog->setGDLL(atoi(argv[++i]));
-                break;
             }
         }
-    }
 
-    // Load the debug level from the logger.
-    Logger::getSingleton().loadConfig();
+        // Load the debug level from the logger.
+        Logger::getSingleton().loadConfig();
 
-    // Print a lil nice message.
-    printf(PRINT_FUN.c_str());
+        // Print a lil nice message.
+        printf(PRINT_FUN.c_str());
 
-    // And get the stone rolling ...
-    new RunlevelManager();
-    RunlevelManager::getSingleton().prepareRunlevelEntrance(new LoadFTSRlv());
+        // And get the stone rolling ...
+        new RunlevelManager();
+        RunlevelManager::getSingleton().prepareRunlevelEntrance(new LoadFTSRlv());
 
-    enterMainLoop();
+        enterMainLoop();
     } catch(const std::exception& ex) {
         std::cout << "Uncaught exception: " << ex.what() << std::endl;
         std::ofstream fCritLog("CriticalError.txt");
@@ -311,14 +310,12 @@ int enterMainLoop()
 
             // Not handled by the input manager?
             switch (sdlEvent.type) {
-            case SDL_VIDEORESIZE:
+            case SDL_WINDOWEVENT:
                 break;
             case SDL_QUIT:
                 bCont = false;
                 break;
             case SDL_SYSWMEVENT:
-                break;
-            case SDL_VIDEOEXPOSE:
                 break;
             case SDL_USEREVENT:
                 break;
@@ -344,7 +341,7 @@ int enterMainLoop()
 
         glFinish();
         glFlush();
-        SDL_GL_SwapBuffers();
+        SDL_GL_SwapWindow(Renderer::getSingleton().getWindow());
         verifGL("Main");
     }
 

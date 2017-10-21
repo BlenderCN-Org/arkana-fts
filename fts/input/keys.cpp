@@ -225,11 +225,6 @@ CEGUI::uint FTSKeyToCEGUIKey(Key::Enum in_key)
     return 0;
 }
 
-bool SDLIsMouseScroll(int btn)
-{
-    return btn == SDL_BUTTON_WHEELUP || btn == SDL_BUTTON_WHEELDOWN;
-}
-
 MouseButton::Enum SDLMouseToFTSMouse(int btn)
 {
     switch(btn) {
@@ -252,16 +247,15 @@ MouseButton::Enum SDLMouseToFTSMouse(int btn)
     }
 }
 
-MouseScroll::Enum SDLMouseToFTSScroll(int btn)
+MouseScroll::Enum SDLMouseToFTSScroll(const SDL_MouseWheelEvent& ev)
 {
-    switch(btn) {
-    case SDL_BUTTON_WHEELUP:
+    if (ev.y == 1) {
         return MouseScroll::Up;
-    case SDL_BUTTON_WHEELDOWN:
+    } else if (ev.y == -1) {
         return MouseScroll::Down;
-    default:
-        return MouseScroll::NoScroll;
     }
+
+    return MouseScroll::NoScroll;
 }
 
 const char *getFTSKeyName(Key::Enum in_Key)

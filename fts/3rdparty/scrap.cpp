@@ -50,7 +50,7 @@ static void (*Unlock_Display)(void);
 
 #elif defined(WIN_SCRAP)
 /* * */
-static HWND SDL_Window;
+static HWND sdlWindow;
 
 #elif defined(QNX_SCRAP)
 /* * */
@@ -254,7 +254,7 @@ PRIVATE int clipboard_filter(const SDL_Event *event);
 #endif
 
 PUBLIC int
-init_scrap(void)
+init_scrap(void * pWindow)
 {
   SDL_SysWMinfo info;
   int retval;
@@ -264,7 +264,7 @@ init_scrap(void)
   SDL_SetError("SDL is not running on known window manager");
 
   SDL_VERSION(&info.version);
-  if ( SDL_GetWMInfo(&info) )
+  if ( SDL_GetWindowWMInfo(static_cast<SDL_Window*>(pWindow), &info) )
     {
       /* Save the information for later use */
 #if defined(X11_SCRAP)
@@ -289,7 +289,7 @@ init_scrap(void)
 
 #elif defined(WIN_SCRAP)
 /* * */
-      SDL_Window = info.window;
+      sdlWindow = info.info.win.window;
       retval = 0;
 
 #elif defined(QNX_SCRAP)
@@ -315,7 +315,7 @@ lost_scrap(void)
 
 #elif defined(WIN_SCRAP)
 /* * */
-  retval = ( GetClipboardOwner() != SDL_Window );
+  retval = ( GetClipboardOwner() != sdlWindow );
 
 #elif defined(QNX_SCRAP)
 /* * */
@@ -353,7 +353,7 @@ put_scrap(int type, int srclen, const char *src)
 
 #elif defined(WIN_SCRAP)
 /* * */
-  if ( OpenClipboard(SDL_Window) )
+  if ( OpenClipboard(sdlWindow) )
     {
       HANDLE hMem;
 
@@ -498,7 +498,7 @@ get_scrap(int type, int *dstlen, char **dst)
 
 #elif defined(WIN_SCRAP)
 /* * */
-  if ( IsClipboardFormatAvailable(format) && OpenClipboard(SDL_Window) )
+  if ( IsClipboardFormatAvailable(format) && OpenClipboard(sdlWindow) )
     {
       HANDLE hMem;
       char *src;

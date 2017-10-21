@@ -69,19 +69,19 @@ void FTS::Renderer::createSDLWindow(const Resolution& in_res)
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
     // And disable vsync, so we can see the exact FPS.
-    SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 0);
+    SDL_GL_SetSwapInterval(0);
 
     // First check, to avoid screen kills.
-    if(0 == SDL_VideoModeOK(in_res.w, in_res.h, 32, iVideoFlags)) {
-        throw HardwareLimitException("Screen resolution " + in_res.toString(true), 0, 0);
-    }
+    //if(0 == SDL_VideoModeOK(in_res.w, in_res.h, 32, iVideoFlags)) {
+    //    throw HardwareLimitException("Screen resolution " + in_res.toString(true), 0, 0);
+    //}
 
     // get a SDL surface
-    m_pScreen = SDL_SetVideoMode(in_res.w, in_res.h, 32, iVideoFlags);
+    m_pScreen = SDL_CreateWindow(FTS_WINDOW_TITLE, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, in_res.w, in_res.h, iVideoFlags);
     if(!m_pScreen) {
         throw HardwareLimitException("Screen resolution " + in_res.toString(true), 0, 0);
     }
-
+    auto context = SDL_GL_CreateContext(m_pScreen);
     String sVersion = glGetString(GL_VERSION);
     std::vector<String> versions;
     sVersion.split(std::inserter(versions, versions.begin()), ".");
@@ -90,7 +90,6 @@ void FTS::Renderer::createSDLWindow(const Resolution& in_res)
         throw TooOldOpenGLException(sVersion, "3.0");
     }
 
-    SDL_WM_SetCaption(FTS_WINDOW_TITLE, NULL);
     verifGL("Renderer::createSDLWindow end");
 }
 
@@ -107,31 +106,33 @@ uint32_t FTS::Renderer::calcSDLVideoFlags(bool in_bFullscreen)
     uint32_t iVideoFlags = 0;
 
     // Fetch the video info, if possible
-    const SDL_VideoInfo *pVideoInfo = SDL_GetVideoInfo();
+    // TODO May be using SDL_GetRenderInfo
+    //const SDL_VideoInfo *pVideoInfo = SDL_GetVideoInfo();
 
     // The flags to pass to SDL_SetVideoMode
-    iVideoFlags  = SDL_OPENGL;          // Enable OpenGL in SDL
-    iVideoFlags |= SDL_GL_DOUBLEBUFFER; // Enable double buffering
-    iVideoFlags |= SDL_HWPALETTE;       // Store the palette in hardware
+    iVideoFlags  = SDL_WINDOW_OPENGL;          // Enable OpenGL in SDL
+    // is default by SDL2 and can be set with SDL_GL_SetAttribute       iVideoFlags |= SDL_GL_DOUBLEBUFFER; // Enable double buffering
+    // TODO didn't find in SDL2 iVideoFlags |= SDL_HWPALETTE;       // Store the palette in hardware
 
     // Maybe we want it in fullscreen ?
     if(in_bFullscreen)
-        iVideoFlags |= SDL_FULLSCREEN;
+        iVideoFlags |= SDL_WINDOW_FULLSCREEN;
 
-    if(pVideoInfo) {
-        if(pVideoInfo->hw_available)
-            iVideoFlags |= SDL_HWSURFACE;
-        else
-            iVideoFlags |= SDL_SWSURFACE;
+    // TODO Where to get these infos? See above
+    //if(pVideoInfo) {
+    //    if(pVideoInfo->hw_available)
+    //        iVideoFlags |= SDL_HWSURFACE;
+    //    else
+    //        iVideoFlags |= SDL_SWSURFACE;
 
-        if(pVideoInfo->blit_hw)
-            iVideoFlags |= SDL_HWACCEL;
-    } else {
-        // VideoInfo is null for example before SDL init.
-        // Any modern hardware that wants to run a game must support that...
-        iVideoFlags |= SDL_HWSURFACE;
-        iVideoFlags |= SDL_HWACCEL;
-    }
+    //    if(pVideoInfo->blit_hw)
+    //        iVideoFlags |= SDL_HWACCEL;
+    //} else {
+    //    // VideoInfo is null for example before SDL init.
+    //    // Any modern hardware that wants to run a game must support that...
+    //    iVideoFlags |= SDL_HWSURFACE;
+    //    iVideoFlags |= SDL_HWACCEL;
+    //}
 
     return iVideoFlags;
 }
@@ -174,7 +175,7 @@ void FTS::Renderer::init()
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
-    // We don't want that fucking culling, that makes avery primitive
+    // We don't want that fucking culling, that makes every primitive
     // That is specified counter-clockwise disappear ! It drives me crazy.
 //     glDisable(GL_CULL_FACE);
 
@@ -189,6 +190,7 @@ void FTS::Renderer::init()
 void FTS::Renderer::deinit()
 {
     LightSystem::deinit();
+    SDL_GL_DeleteContext(m_Context);
 }
 
 /// This function enters into the 2D drawing mode.
@@ -341,38 +343,21 @@ std::list<Resolution> FTS::Renderer::getSupportedResolutions()
     // Then, we sort em out: one thing is we don't care about BPP, so sort out
     // those that appear with different BPPs.
     std::set< std::pair<int, int> > resols;
-
-    SDL_Rect **pModes = SDL_ListModes(NULL, Renderer::calcSDLVideoFlags(true));
-    if(pModes == (SDL_Rect **) 0) {
-    } else if(pModes == (SDL_Rect **) -1) { // -1 means any works.
-#ifdef DEBUG
-        ret.push_back(Resolution(800, 600, true));
-#endif
-        ret.push_back(Resolution(1024, 768, true));
-        ret.push_back(Resolution(1152, 864, true));
-        ret.push_back(Resolution(1280, 720, true));
-        ret.push_back(Resolution(1280, 768, true));
-        ret.push_back(Resolution(1280, 960, true));
-        ret.push_back(Resolution(1280, 1024, true));
-    } else {
-        for(int i = 0; pModes[i]; i++) {
-#ifdef DEBUG
-            // We don't support modes below 800x600.
-            if(pModes[i]->w < 800 || pModes[i]->h < 600)
-                continue;
-#else
-            // We don't support modes below 1024x768 or 1280x720.
-            if(pModes[i]->w < 1024 || pModes[i]->h < 720)
-                continue;
-#endif
-
-            // Already got that one? go ahead to the next one.
-            if(resols.find(std::make_pair(pModes[i]->w, pModes[i]->h)) != resols.end())
-                continue;
-
-            ret.push_back(Resolution(pModes[i]->w, pModes[i]->h, true));
-            resols.insert(std::make_pair(pModes[i]->w, pModes[i]->h));
+    SDL_DisplayMode displayMode = { SDL_PIXELFORMAT_UNKNOWN, 0, 0, 0, 0 };
+    for (int i = 0; i < SDL_GetNumDisplayModes(0); ++i) {
+        auto rc = SDL_GetDisplayMode(0, i, &displayMode);
+        if (rc < 0) {
+            FTS18N("Display mode query error {1}", FTS::MsgType::Error, SDL_GetError());
+            break;
         }
+        // We don't support modes below 1024x768 or 1280x720.
+        if (displayMode.w < 1024 || displayMode.h < 720)
+            continue;
+        // Already got that one? go ahead to the next one.
+        if (resols.find(std::make_pair(displayMode.w, displayMode.h)) != resols.end())
+            continue;
+        resols.insert(std::make_pair(displayMode.w, displayMode.h));
+        ret.push_back(Resolution(displayMode.w, displayMode.h, true));
     }
 
     return ret;

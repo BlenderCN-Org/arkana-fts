@@ -548,7 +548,6 @@ InputManager::InputManager()
 {
     m_ComboMgr = new InputComboManager();
     // m_keyTab being initialized correctly by its constructor.
-    SDL_EnableUNICODE(SDL_ENABLE);
     SDL_ShowCursor(SDL_DISABLE);
 
     UpdateableManager::getSingleton().add("Input Manager", this);
@@ -566,12 +565,9 @@ bool InputManager::handleEvent(const SDL_Event& ev)
 {
     switch(ev.type) {
     case SDL_KEYDOWN:
-        // Got some UTF16 key?
-        if(ev.key.keysym.unicode != 0) {
-            this->handleUTF16(ev.key.keysym.unicode);
-        }
         if(ev.key.keysym.sym != SDLK_UNKNOWN) {
-            this->handleKeyDown(static_cast<Key::Enum>(ev.key.keysym.sym), ev.key.keysym.unicode);
+            // TODO There is no unicode utf-16 key code.
+            this->handleKeyDown(static_cast<Key::Enum>(ev.key.keysym.sym), 0);
         }
         return true;
     case SDL_KEYUP:
@@ -581,18 +577,16 @@ bool InputManager::handleEvent(const SDL_Event& ev)
         this->handleMouseMove(ev.motion.x, ev.motion.y);
         return true;
     case SDL_MOUSEBUTTONDOWN:
-        // Handle scrolling separately.
-        if(SDLMouseToFTSScroll(ev.button.button) != MouseScroll::NoScroll) {
-            this->handleMouseScroll(SDLMouseToFTSScroll(ev.button.button));
-        } else {
-            this->handleMouseButtonPress(SDLMouseToFTSMouse(ev.button.button));
-        }
+        this->handleMouseButtonPress(SDLMouseToFTSMouse(ev.button.button));
         return true;
     case SDL_MOUSEBUTTONUP:
         // Note: we get this message for mouse scrolling too.
         // nonsense but so what ... the mouse button release looks
         // for invalid inputs.
         this->handleMouseButtonRelease(SDLMouseToFTSMouse(ev.button.button));
+        return true;
+    case SDL_MOUSEWHEEL:
+        this->handleMouseScroll(SDLMouseToFTSScroll(ev.wheel));
         return true;
     default:
         return false;
@@ -603,7 +597,7 @@ bool InputManager::handleEvent(const SDL_Event& ev)
  *
  * \param in_k The key you want to check.
  *
- * \return Wether the key is being held down at the moment or not.
+ * \return Whether the key is being held down at the moment or not.
  *
  * \author Pompei2
  */
@@ -1262,7 +1256,7 @@ void InputManager::handleMouseButtonRelease(MouseButton::Enum in_button)
  */
 void InputManager::simulateMouseMove(uint16_t in_iX, uint16_t in_iY)
 {
-    SDL_WarpMouse(in_iX, in_iY);
+    SDL_WarpMouseGlobal(in_iX, in_iY);
 }
 
 void InputManager::simulateMouseClick(FTS::MouseButton::Enum in_button)

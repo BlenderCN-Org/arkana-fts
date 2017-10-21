@@ -774,11 +774,11 @@ FTS::String FTS::CopyCutCmdBase::extractText() const
 // Some statics for the clipboard laying around here...
 String FTS::ClipboardBase::m_sOwnClipboard;
 bool FTS::ClipboardBase::m_bClipboardReady = false;
-
+#include "3d/Renderer.h" // TDOD Make it possible to get the SDL_window w/o the renderer.
 bool FTS::ClipboardBase::initClipboardIfNeeded()
 {
     if(!m_bClipboardReady || lost_scrap()) {
-        if(init_scrap() < 0) {
+        if(init_scrap(Renderer::getSingleton().getWindow()) < 0) {
             // No message box in the warning, we might over-repeat ourselves.
             FTS18N("SDL_Clipboard", MsgType::WarningNoMB, SDL_GetError());
             return false;

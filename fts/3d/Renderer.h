@@ -15,7 +15,7 @@
 
 #include <list>
 
-struct SDL_Surface;
+struct SDL_Window;
 
 namespace FTS {
     struct Resolution;
@@ -29,8 +29,8 @@ class Renderer : public Singleton<Renderer> {
     Camera m_default3DCam;
 
     /// SDL: The screen surface.
-    SDL_Surface *m_pScreen;
-
+    SDL_Window *m_pScreen;
+    void * m_Context;
     // Graphics mode creation methods.
     void createSDLWindow(const Resolution& in_res);
     static uint32_t calcSDLVideoFlags(bool in_bFullscreen);
@@ -49,6 +49,7 @@ public:
 
     inline Camera& getDefault2DCamera() {return m_default2DCam;};
     inline Camera& getDefault3DCamera() {return m_default3DCam;};
+    inline SDL_Window* getWindow() { return m_pScreen; }
 };
 
 } // namespace FTS
