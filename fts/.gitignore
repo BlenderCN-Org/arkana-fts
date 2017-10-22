@@ -47,7 +47,7 @@ dummy.*
 # Ignore CMake build files
 build/
 CMakeFiles
-linux
+/linux
 
 # Ignore profiler and debugger files
 gmon.out
