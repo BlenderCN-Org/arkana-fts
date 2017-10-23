@@ -44,9 +44,7 @@ typedef uint32_t scrap_type;
 #if defined(X11_SCRAP)
 /* * */
 static Display *SDL_Display;
-static Window SDL_Window;
-static void (*Lock_Display)(void);
-static void (*Unlock_Display)(void);
+static Window sdlWindow;
 
 #elif defined(WIN_SCRAP)
 /* * */
@@ -250,7 +248,7 @@ convert_scrap(int type, char *dst, char *src, int srclen)
 
 #if defined(X11_SCRAP)
 /* The system message filter function -- handle clipboard messages */
-PRIVATE int clipboard_filter(const SDL_Event *event);
+PRIVATE int clipboard_filter(void * , SDL_Event *event);
 #endif
 
 PUBLIC int
@@ -272,13 +270,11 @@ init_scrap(void * pWindow)
       if ( info.subsystem == SDL_SYSWM_X11 )
         {
           SDL_Display = info.info.x11.display;
-          SDL_Window = info.info.x11.window;
-          Lock_Display = info.info.x11.lock_func;
-          Unlock_Display = info.info.x11.unlock_func;
+          sdlWindow = info.info.x11.window;
 
           /* Enable the special window hook events */
           SDL_EventState(SDL_SYSWMEVENT, SDL_ENABLE);
-          SDL_SetEventFilter(clipboard_filter);
+          SDL_SetEventFilter(clipboard_filter, nullptr);
 
           retval = 0;
         }
@@ -309,9 +305,7 @@ lost_scrap(void)
 
 #if defined(X11_SCRAP)
 /* * */
-  Lock_Display();
-  retval = ( XGetSelectionOwner(SDL_Display, XA_PRIMARY) != SDL_Window );
-  Unlock_Display();
+  retval = ( XGetSelectionOwner(SDL_Display, XA_PRIMARY) != sdlWindow );
 
 #elif defined(WIN_SCRAP)
 /* * */
@@ -341,14 +335,12 @@ put_scrap(int type, int srclen, const char *src)
   dst = (char *)malloc(dstlen);
   if ( dst != NULL )
     {
-      Lock_Display();
       convert_data(type, dst, src, srclen);
       XChangeProperty(SDL_Display, DefaultRootWindow(SDL_Display),
         XA_CUT_BUFFER0, format, 8, PropModeReplace, (unsigned char*)dst, dstlen);
       free(dst);
       if ( lost_scrap() )
-        XSetSelectionOwner(SDL_Display, XA_PRIMARY, SDL_Window, CurrentTime);
-      Unlock_Display();
+        XSetSelectionOwner(SDL_Display, XA_PRIMARY, sdlWindow, CurrentTime);
     }
 
 #elif defined(WIN_SCRAP)
@@ -445,10 +437,8 @@ get_scrap(int type, int *dstlen, char **dst)
     unsigned long overflow;
     char *src;
 
-    Lock_Display();
     owner = XGetSelectionOwner(SDL_Display, XA_PRIMARY);
-    Unlock_Display();
-    if ( (owner == None) || (owner == SDL_Window) )
+    if ( (owner == None) || (owner == sdlWindow) )
       {
         owner = DefaultRootWindow(SDL_Display);
         selection = XA_CUT_BUFFER0;
@@ -458,18 +448,16 @@ get_scrap(int type, int *dstlen, char **dst)
         int selection_response = 0;
         SDL_Event event;
 
-        owner = SDL_Window;
-        Lock_Display();
+        owner = sdlWindow;
         selection = XInternAtom(SDL_Display, "SDL_SELECTION", False);
         XConvertSelection(SDL_Display, XA_PRIMARY, format,
                                         selection, owner, CurrentTime);
-        Unlock_Display();
         while ( ! selection_response )
           {
             SDL_WaitEvent(&event);
             if ( event.type == SDL_SYSWMEVENT )
               {
-                XEvent xevent = event.syswm.msg->event.xevent;
+                XEvent xevent = event.syswm.msg->msg.x11.event;
 
                 if ( (xevent.type == SelectionNotify) &&
                      (xevent.xselection.requestor == owner) )
@@ -477,7 +465,6 @@ get_scrap(int type, int *dstlen, char **dst)
               }
           }
       }
-    Lock_Display();
     if ( XGetWindowProperty(SDL_Display, owner, selection, 0, INT_MAX/4,
                             False, format, &seln_type, &seln_format,
                        &nbytes, &overflow, (unsigned char **)&src) == Success )
@@ -494,7 +481,6 @@ get_scrap(int type, int *dstlen, char **dst)
         XFree(src);
       }
     }
-    Unlock_Display();
 
 #elif defined(WIN_SCRAP)
 /* * */
@@ -579,7 +565,7 @@ get_scrap(int type, int *dstlen, char **dst)
 }
 
 #if defined(X11_SCRAP)
-PRIVATE int clipboard_filter(const SDL_Event *event)
+PRIVATE int clipboard_filter(void * , SDL_Event *event)
 {
   /* Post all non-window manager specific events */
   if ( event->type != SDL_SYSWMEVENT ) {
@@ -587,7 +573,7 @@ PRIVATE int clipboard_filter(const SDL_Event *event)
   }
 
   /* Handle window-manager specific clipboard events */
-  switch (event->syswm.msg->event.xevent.type) {
+  switch (event->syswm.msg->msg.x11.event.type) {
     /* Copy the selection from XA_CUT_BUFFER0 to the requested property */
     case SelectionRequest: {
       XSelectionRequestEvent *req;
@@ -597,7 +583,7 @@ PRIVATE int clipboard_filter(const SDL_Event *event)
       unsigned long overflow;
       unsigned char *seln_data;
 
-      req = &event->syswm.msg->event.xevent.xselectionrequest;
+      req = &event->syswm.msg->msg.x11.event.xselectionrequest;
       sevent.xselection.type = SelectionNotify;
       sevent.xselection.display = req->display;
       sevent.xselection.selection = req->selection;
