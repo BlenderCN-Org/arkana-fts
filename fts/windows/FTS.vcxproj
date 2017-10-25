@@ -142,6 +142,7 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DisableSpecificWarnings>4018;4267;4129;4311;4313;4005;4521;4291;4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <AdditionalDependencies>fts-net_d.lib;freetype_d.lib;pcred.lib;OpenGL32.lib;glu32.lib;SDL2_d.lib;SDL2main_d.lib;CEGUIBased_d.lib;CEGUIOpenGLRendererd_d.lib;CEGUIFalagardWRBased_d.lib;CEGUITinyXMLParserd_d.lib;OpenAL32_d.lib;vorbis_d.lib;ogg_d.lib;dao_d.lib;bouge-s-d.lib;bouge-math-s-d.lib;bouge-tinyxml-s-d.lib;bouge-xml-common-s-d.lib;bouge-xmlio-s-d.lib;wsock32.lib;User32.lib;winmm.lib;dsound.lib;dxguid.lib;imm32.lib;version.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -371,7 +372,6 @@
     <ClCompile Include="..\sound\SndPlayList.cpp" />
     <ClCompile Include="..\sound\SndSys.cpp" />
     <ClCompile Include="..\sound\SndSysOpenAL.cpp" />
-    <ClCompile Include="..\3rdparty\scrap.cpp" />
     <ClCompile Include="..\mdlviewer\mdlviewer_main.cpp" />
     <ClCompile Include="..\Scripting\dao_snd.cpp" />
     <ClCompile Include="..\Scripting\dao_snd2.cpp" />
@@ -512,13 +512,9 @@
     <ClInclude Include="..\sound\SndSys.h" />
     <ClInclude Include="..\sound\SndSysOpenAL.h" />
     <ClInclude Include="..\sound\SndTypes.h" />
-    <ClInclude Include="..\3rdparty\scrap.h" />
     <ClInclude Include="..\mdlviewer\mdlviewer_main.h" />
     <ClInclude Include="..\Scripting\dao_snd.h" />
     <ClInclude Include="..\Scripting\DaoVm.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ClassDiagramSound.cd" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="icon.rc" />

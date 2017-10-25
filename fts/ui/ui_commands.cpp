@@ -4,9 +4,8 @@
 #include "main/runlevels.h"
 #include "logging/logger.h"
 
-#include "3rdparty/scrap.h"
-
 #include <CEGUI.h>
+#include <SDL.h>
 
 using namespace FTS;
 
@@ -619,7 +618,7 @@ find:
         uiMinRequired = pLowest->getID();
         pLowest = this->findFirstChildRecursive(pLowest);
 
-        // If the first was a container, but had no good childs, find the next one here.
+        // If the first was a container, but had no good child, find the next one here.
         if(pLowest == NULL) {
             uiLowestID = static_cast<uint32_t>(-1);
             // uiMinRequired was adapted above, so we will find the next if we restart.
@@ -631,7 +630,7 @@ find:
 }
 
 /// Finds the next (in tab order) widget in this window.
-/** This function goes trough all visible and enabled childs of
+/** This function goes trough all visible and enabled children of
  *  the window, to find the next widget in tab order and returns it.
  *  It may return null if it reaches the end.
  *
@@ -680,8 +679,8 @@ CEGUI::Window *FTS::TabNavigationCmd::findNextChild(CEGUI::Window *in_pParent, C
 }
 
 /// Finds the next (in tab order) widget in this window, recursing into child windows.
-/** This function goes trough all visible and enabled childs of
- *  the window and also their childs, to find the next widget in
+/** This function goes trough all visible and enabled children of
+ *  the window and also their children, to find the next widget in
  *  tab order and returns it.
  *  It may return null if it reaches the end of all.
  *
@@ -771,52 +770,17 @@ FTS::String FTS::CopyCutCmdBase::extractText() const
     return String::EMPTY;
 }
 
-// Some statics for the clipboard laying around here...
-String FTS::ClipboardBase::m_sOwnClipboard;
-bool FTS::ClipboardBase::m_bClipboardReady = false;
-#include "3d/Renderer.h" // TDOD Make it possible to get the SDL_window w/o the renderer.
-bool FTS::ClipboardBase::initClipboardIfNeeded()
-{
-    if(!m_bClipboardReady || lost_scrap()) {
-        if(init_scrap(Renderer::getSingleton().getWindow()) < 0) {
-            // No message box in the warning, we might over-repeat ourselves.
-            FTS18N("SDL_Clipboard", MsgType::WarningNoMB, SDL_GetError());
-            return false;
-        }
-        m_bClipboardReady = true;
-    }
-
-    return true;
-}
-
 void FTS::ClipboardBase::setClipboard(const String& in_s)
 {
-    if(this->initClipboardIfNeeded()) {
-        put_scrap(T('T','E','X','T'), in_s.len(), in_s.c_str());
-    }
-
-    m_sOwnClipboard = in_s;
+    SDL_SetClipboardText(in_s.c_str());
 }
 
 String FTS::ClipboardBase::getClipboard()
 {
-    if(!this->initClipboardIfNeeded()) {
-        return m_sOwnClipboard;
+    if (SDL_HasClipboardText()) {
+        return SDL_GetClipboardText();
     }
-
-    char *pszScrap = NULL;
-    int iScraplen = 0;
-    get_scrap(T('T','E','X','T'), &iScraplen, &pszScrap);
-
-    // If there is nothing in the clipboard, it may be the system's didn't
-    // work. Use our own one then.
-    if(pszScrap && pszScrap[0] != 0) {
-        String sText(pszScrap, 0, iScraplen);
-        free(pszScrap);
-        return sText;
-    } else {
-        return m_sOwnClipboard;
-    }
+    return "";
 }
 
 bool FTS::CopyCmd::exec()
@@ -877,7 +841,7 @@ bool FTS::PasteCmd::exec()
     //CEGUI::String s((const CEGUI::utf8 *)pszScrap);
     CEGUI::String s(sNewText);
 
-    // And now inject each charachter, so it get placed into the editbox.
+    // And now inject each character, so it get placed into the editbox.
     for(size_t i = 0 ; i < s.size() ; i++) {
         if(s[i] == '\n') {
             CEGUI::System::getSingleton().injectKeyDown(CEGUI::Key::Return);

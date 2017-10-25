@@ -12,8 +12,6 @@
 #include "main/runlevels.h"
 #include "main/Clock.h"
 
-#include "3rdparty/scrap.h"
-
 #include <CEGUISystem.h>
 #include <CEGUIExceptions.h>
 #include <elements/CEGUICheckbox.h>

@@ -186,10 +186,6 @@ class ClipboardBase {
 protected:
     void setClipboard(const String& in_s);
     String getClipboard();
-private:
-    bool initClipboardIfNeeded();
-    static bool m_bClipboardReady;
-    static String m_sOwnClipboard;
 };
 
 /// This is the class that holds the common points between cut and copy, namely

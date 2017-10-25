@@ -315,9 +315,6 @@
     <ClCompile Include="..\sound\SndSysOpenAL.cpp">
       <Filter>Sound</Filter>
     </ClCompile>
-    <ClCompile Include="..\3rdparty\scrap.cpp">
-      <Filter>3dparty</Filter>
-    </ClCompile>
     <ClCompile Include="..\mdlviewer\mdlviewer_main.cpp">
       <Filter>MdlViewer</Filter>
     </ClCompile>
@@ -749,9 +746,6 @@
     <ClInclude Include="..\sound\SndTypes.h">
       <Filter>Sound</Filter>
     </ClInclude>
-    <ClInclude Include="..\3rdparty\scrap.h">
-      <Filter>3dparty</Filter>
-    </ClInclude>
     <ClInclude Include="..\mdlviewer\mdlviewer_main.h">
       <Filter>MdlViewer</Filter>
     </ClInclude>
@@ -918,9 +912,6 @@
     <ClInclude Include="..\utilities\sha2.h">
       <Filter>Utilities</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ClassDiagramSound.cd" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="icon.rc" />

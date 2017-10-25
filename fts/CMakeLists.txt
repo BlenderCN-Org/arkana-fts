@@ -33,7 +33,6 @@ endif()
 # Put all sourcefiles into one variable. #
 ##########################################
 set(SOURCES_COMMON
-    3rdparty/scrap.cpp
     3rdparty/lodepng.cpp
     3d/math/AxisAlignedBoundingBox.cpp
     3d/Movers/Mover.cpp
