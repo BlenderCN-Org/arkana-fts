@@ -64,7 +64,7 @@ InputCombo::InputCombo(const String &in_sName, const Key::Enum &in_k, CommandBas
     , m_specialKey(SpecialKey::NoSpecial)
     , m_mouseButton(MouseButton::NoButton)
     , m_mouseScroll(MouseScroll::NoScroll)
-    , m_pModified(NULL)
+    , m_pModified(nullptr)
     , m_pCommand(in_pCommand)
     , m_sName(in_sName)
     , m_bOnPress(in_bOnPress)
@@ -77,7 +77,7 @@ InputCombo::InputCombo(const String &in_sName, const SpecialKey::Enum &in_k, Com
     , m_specialKey(in_k)
     , m_mouseButton(MouseButton::NoButton)
     , m_mouseScroll(MouseScroll::NoScroll)
-    , m_pModified(NULL)
+    , m_pModified(nullptr)
     , m_pCommand(in_pCommand)
     , m_sName(in_sName)
     , m_bOnPress(in_bOnPress)
@@ -90,7 +90,7 @@ InputCombo::InputCombo(const String &in_sName, const MouseButton::Enum &in_k, Co
     , m_specialKey(SpecialKey::NoSpecial)
     , m_mouseButton(in_k)
     , m_mouseScroll(MouseScroll::NoScroll)
-    , m_pModified(NULL)
+    , m_pModified(nullptr)
     , m_pCommand(in_pCommand)
     , m_sName(in_sName)
     , m_bOnPress(in_bOnPress)
@@ -103,7 +103,7 @@ InputCombo::InputCombo(const String &in_sName, const MouseScroll::Enum &in_k, Co
     , m_specialKey(SpecialKey::NoSpecial)
     , m_mouseButton(MouseButton::NoButton)
     , m_mouseScroll(in_k)
-    , m_pModified(NULL)
+    , m_pModified(nullptr)
     , m_pCommand(in_pCommand)
     , m_sName(in_sName)
     , m_bOnPress(in_bOnPress)
@@ -114,16 +114,16 @@ InputCombo::~InputCombo()
 {
     while(!m_pModifiers.empty()) {
         InputCombo *pFront = m_pModifiers.front();
-        SAFE_DELETE(pFront);
+        delete pFront;
         m_pModifiers.pop_front();
     }
 
-    SAFE_DELETE(m_pCommand);
+    delete m_pCommand;
 }
 
 InputCombo *InputCombo::addModifier(InputCombo *out_pCombo)
 {
-    if(out_pCombo == NULL) {
+    if(out_pCombo == nullptr) {
         FTS18N("InvParam", MsgType::Horror, "InputCombo::addModifier(NULL)");
         return this;
     }
@@ -174,25 +174,25 @@ InputCombo *InputCombo::getHighestActiveModifier(uint32_t &out_uiLevel, const Mo
         if(m_specialKey == SpecialKey::Any) {
             // Check if any key activates.
             if(InputManager::getSingleton().isKeyPressed(SpecialKey::Any) != m_bOnPress)
-                return NULL;
+                return nullptr;
         } else if(m_specialKey == SpecialKey::NoSpecial) {
             if(m_mouseButton == MouseButton::Any) {
                 // Check if any mouse button activates.
                 if(InputManager::getSingleton().isMousePressed(MouseButton::Any) != m_bOnPress)
-                    return NULL;
+                    return nullptr;
             } else if(m_mouseButton == MouseButton::NoButton) {
                 // check if we are asking for mouse scrolling.
                 if(m_mouseScroll == MouseScroll::NoScroll) {
-                    return NULL;
+                    return nullptr;
                 } else {
                     if(m_mouseScroll != in_scroll) {
-                        return NULL;
+                        return nullptr;
                     }
                 }
             } else {
                 // Check if we are asking for a mouse button.
                 if(InputManager::getSingleton().isMousePressed(m_mouseButton) != m_bOnPress)
-                    return NULL;
+                    return nullptr;
             }
         } else {
             // Check if one of both alt, ctrl or shift keys activates.
@@ -202,20 +202,20 @@ InputCombo *InputCombo::getHighestActiveModifier(uint32_t &out_uiLevel, const Mo
             case SpecialKey::Control: k1 = Key::LeftControl; k2 = Key::RightControl; break;
             case SpecialKey::Shift: k1 = Key::LeftShift; k2 = Key::RightShift; break;
             case SpecialKey::Enter: k1 = Key::Return; k2 = Key::NumpadEnter; break;
-            default: return NULL;
+            default: return nullptr;
             }
 
             // None of both keys activate?
             if((InputManager::getSingleton().isKeyPressed(k1) != m_bOnPress) &&
                (InputManager::getSingleton().isKeyPressed(k2) != m_bOnPress)
               ) {
-                return NULL; // If none is, we're out.
+                return nullptr; // If none is, we're out.
             }
         }
     } else {
         // Check if the key activates this part of the combo. If not, leave.
         if(InputManager::getSingleton().isKeyPressed(m_key) != m_bOnPress) {
-            return NULL;
+            return nullptr;
         }
     }
 
@@ -227,20 +227,20 @@ InputCombo *InputCombo::getHighestActiveModifier(uint32_t &out_uiLevel, const Mo
     }
 
     // Try all of my modifiers to see who goes the highest.
-    uint32_t uiMax = 0, uiNow = 0;
-    InputCombo *pMax = NULL, *pNow = NULL;
+    uint32_t uiMax = 0;
+    InputCombo *pMax = nullptr;
     for(std::list<InputCombo *>::const_iterator i = m_pModifiers.begin() ; i != m_pModifiers.end() ; ++i) {
-        uiNow = out_uiLevel;
-        pNow = (*i)->getHighestActiveModifier(uiNow, in_scroll);
+        auto uiNow = out_uiLevel;
+        auto pNow = (*i)->getHighestActiveModifier(uiNow, in_scroll);
         // We got a new highest active modifier. >= To give priority to the
         // one that was added the last in case of a duelling.
-        if((pNow != NULL) && (uiNow >= uiMax)) {
+        if((pNow != nullptr) && (uiNow >= uiMax)) {
             uiMax = uiNow;
             pMax = pNow;
         }
     }
 
-    if(pMax == NULL) {
+    if(pMax == nullptr) {
         return this;
     } else {
         out_uiLevel += uiMax;
@@ -292,7 +292,7 @@ InputComboManager::~InputComboManager()
     for(int k = 0 ; k < MouseScroll::NoScroll ; ++k) {
         while(!m_pCombosArray[k].empty()) {
             InputCombo *pComb = *(m_pCombosArray[k].begin());
-            SAFE_DELETE(pComb);
+            delete pComb;
             m_pCombosArray[k].erase(m_pCombosArray[k].begin());
         }
     }
@@ -322,7 +322,7 @@ int InputComboManager::addNamedRecursively(InputCombo *in_pCombo)
 
 int InputComboManager::add(InputCombo *in_pCombo)
 {
-    if(in_pCombo == NULL) {
+    if(in_pCombo == nullptr) {
         FTS18N("InvParam", MsgType::Horror, "InputComboManager::add(NULL)");
         return ERR_OK;
     }
@@ -337,7 +337,7 @@ int InputComboManager::add(InputCombo *in_pCombo)
 
     for(std::list<String>::iterator i = lComboNames.begin() ; i != lComboNames.end() ; ++i) {
         // If one is already in it, stop immediately.
-        if(this->get(*i) != NULL) {
+        if(this->get(*i) != nullptr) {
             FTS18N("DoubleShortcut", MsgType::Horror, *i);
             return -1;
         }
@@ -358,7 +358,7 @@ int InputComboManager::rem(const String &in_sName)
 {
     InputCombo *pToRem = this->get(in_sName);
 
-    if(pToRem == NULL) {
+    if(pToRem == nullptr) {
         // No need for an error, a log is enough.
         FTSMSGDBG("InvParam", 3, "InputComboManager::rem: "+in_sName+" not existent.");
         return ERR_OK;
@@ -381,7 +381,7 @@ int InputComboManager::rem(const String &in_sName)
     InputCombo *pBase = pToRem->getBase();
 
     // We need an extra treatment if the combo we want to remove is the base:
-    std::list<InputCombo *> *l = NULL;
+    std::list<InputCombo *> *l = nullptr;
     if(pToRem == pBase) {
         // Need to remove it from the combos array.
         l = &m_pCombosArray[pToRem->getNumber()];
@@ -400,7 +400,7 @@ int InputComboManager::rem(const String &in_sName)
     }
 
     // Now we may delete it.
-    SAFE_DELETE(pToRem);
+    delete pToRem;
     return ERR_OK;
 }
 
@@ -408,7 +408,7 @@ void InputComboManager::detach(const String &in_sName)
 {
     InputCombo *pToDetach= this->get(in_sName);
 
-    if(pToDetach == NULL) {
+    if(pToDetach == nullptr) {
         // No need for an error, a log is enough.
         FTSMSGDBG("InvParam", 3, "InputComboManager::detach: "+in_sName+" not existent.");
         return ;
@@ -419,7 +419,7 @@ void InputComboManager::detach(const String &in_sName)
     InputCombo *pBase = pToDetach->getBase();
 
     // We need an extra treatment if the combo we want to remove is the base:
-    std::list<InputCombo *> *l = NULL;
+    std::list<InputCombo *> *l = nullptr;
     if(pToDetach == pBase) {
         // Need to remove it from the combos array.
         l = &m_pCombosArray[pToDetach->getNumber()];
@@ -449,7 +449,7 @@ InputCombo *InputComboManager::get(const String &in_sName)
 {
     std::map<String,InputCombo *>::iterator i = m_pCombosMap.find(in_sName);
 
-    return (i == m_pCombosMap.end()) ? NULL : i->second;
+    return (i == m_pCombosMap.end()) ? nullptr : i->second;
 }
 
 bool InputComboManager::handle(const Key::Enum &in_k)
@@ -770,83 +770,72 @@ bool InputManager::handleKeyDownGUI(Key::Enum in_Key)
     CEGUI::Window *pW = GUI::getSingleton().getActiveWidget();
 
     // If we have no active widget, all other key presses get ignored.
-    if(pW == NULL)
+    if(pW == nullptr)
         return false;
 
     bool bUsed = false;
     CEGUI::String sType = pW->getType();
-
-    switch(in_Key) {
-    case Key::ArrowDown:
-        try {
-            // Move a static text's scrollbar up by one page.
-            if(sType.find(CEGUI::String("StaticText")) != CEGUI::String::npos) {
-                CEGUI::String sVertSBName = pW->getName() + "__auto_vscrollbar__";
-                CEGUI::Scrollbar *pC = (CEGUI::Scrollbar *)CEGUI::WindowManager::getSingleton().getWindow(sVertSBName);
-                pC->setScrollPosition(pC->getScrollPosition() + pC->getStepSize());
-                bUsed = true;
-            }
-        } catch(CEGUI::Exception & e) {
-            FTS18N("CEGUI", MsgType::Error, e.getMessage());
+    try {
+        switch(in_Key) {
+            case Key::ArrowDown:
+                // Move a static text's scrollbar up by one page.
+                if(sType.find(CEGUI::String("StaticText")) != CEGUI::String::npos) {
+                    CEGUI::String sVertSBName = pW->getName() + "__auto_vscrollbar__";
+                    CEGUI::Scrollbar *pC = (CEGUI::Scrollbar *)CEGUI::WindowManager::getSingleton().getWindow(sVertSBName);
+                    pC->setScrollPosition(pC->getScrollPosition() + pC->getStepSize());
+                    bUsed = true;
+                }
+                break;
+            case Key::ArrowUp:
+                // Move a static text's scrollbar up by one page.
+                if(sType.find(CEGUI::String("StaticText")) != CEGUI::String::npos) {
+                    CEGUI::String sVertSBName = pW->getName() + "__auto_vscrollbar__";
+                    CEGUI::Scrollbar *pC = (CEGUI::Scrollbar *)CEGUI::WindowManager::getSingleton().getWindow(sVertSBName);
+                    pC->setScrollPosition(pC->getScrollPosition() - pC->getStepSize());
+                    bUsed = true;
+                }
+                break;
+            case Key::PageUp:
+                // Move a static text's and listbox's scrollbar up by one page.
+                if(sType.find(CEGUI::String("StaticText")) != CEGUI::String::npos
+                   || sType.find(CEGUI::String("Listbox")) != CEGUI::String::npos
+                   ) {
+                    CEGUI::String sVertSBName = pW->getName() + "__auto_vscrollbar__";
+                    CEGUI::Scrollbar *pC = (CEGUI::Scrollbar *)CEGUI::WindowManager::getSingleton().getWindow(sVertSBName);
+                    pC->setScrollPosition(pC->getScrollPosition() - pC->getPageSize());
+                    bUsed = true;
+                    // Move a combobx's scrollbar up by one page.
+                }
+                else if(sType.find(CEGUI::String("Combobox")) != CEGUI::String::npos) {
+                    CEGUI::String sVertSBName = pW->getName() + "__auto_droplist____auto_vscrollbar__";
+                    CEGUI::Scrollbar *pC = (CEGUI::Scrollbar *)CEGUI::WindowManager::getSingleton().getWindow(sVertSBName);
+                    pC->setScrollPosition(pC->getScrollPosition() - pC->getPageSize());
+                    bUsed = true;
+                }
+                break;
+            case Key::PageDown:
+                // Move a static text's and listbox's scrollbar down by one page.
+                if(sType.find(CEGUI::String("StaticText")) != CEGUI::String::npos
+                   || sType.find(CEGUI::String("Listbox")) != CEGUI::String::npos
+                   ) {
+                    CEGUI::String sVertSBName = pW->getName() + "__auto_vscrollbar__";
+                    CEGUI::Scrollbar *pC = (CEGUI::Scrollbar *)CEGUI::WindowManager::getSingleton().getWindow(sVertSBName);
+                    pC->setScrollPosition(pC->getScrollPosition() + pC->getPageSize());
+                    bUsed = true;
+                    // Move a combobx's scrollbar down by one page.
+                }
+                else if(sType.find(CEGUI::String("Combobox")) != CEGUI::String::npos) {
+                    CEGUI::String sVertSBName = pW->getName() + "__auto_droplist____auto_vscrollbar__";
+                    CEGUI::Scrollbar *pC = (CEGUI::Scrollbar *)CEGUI::WindowManager::getSingleton().getWindow(sVertSBName);
+                    pC->setScrollPosition(pC->getScrollPosition() + pC->getPageSize());
+                    bUsed = true;
+                }
+                break;
+            default:
+                break;
         }
-        break;
-    case Key::ArrowUp:
-        try {
-            // Move a static text's scrollbar up by one page.
-            if(sType.find(CEGUI::String("StaticText")) != CEGUI::String::npos) {
-                CEGUI::String sVertSBName = pW->getName() + "__auto_vscrollbar__";
-                CEGUI::Scrollbar *pC = (CEGUI::Scrollbar *)CEGUI::WindowManager::getSingleton().getWindow(sVertSBName);
-                pC->setScrollPosition(pC->getScrollPosition() - pC->getStepSize());
-                bUsed = true;
-            }
-        } catch(CEGUI::Exception & e) {
-            FTS18N("CEGUI", MsgType::Error, e.getMessage());
-        }
-        break;
-    case Key::PageUp:
-        try {
-            // Move a static text's and listbox's scrollbar up by one page.
-            if(sType.find(CEGUI::String("StaticText")) != CEGUI::String::npos
-                      || sType.find(CEGUI::String("Listbox")) != CEGUI::String::npos
-                     ) {
-                CEGUI::String sVertSBName = pW->getName() + "__auto_vscrollbar__";
-                CEGUI::Scrollbar *pC = (CEGUI::Scrollbar *)CEGUI::WindowManager::getSingleton().getWindow(sVertSBName);
-                pC->setScrollPosition(pC->getScrollPosition() - pC->getPageSize());
-                bUsed = true;
-            // Move a combobx's scrollbar up by one page.
-            } else if(sType.find(CEGUI::String("Combobox")) != CEGUI::String::npos) {
-                CEGUI::String sVertSBName = pW->getName() + "__auto_droplist____auto_vscrollbar__";
-                CEGUI::Scrollbar *pC = (CEGUI::Scrollbar *)CEGUI::WindowManager::getSingleton().getWindow(sVertSBName);
-                pC->setScrollPosition(pC->getScrollPosition() - pC->getPageSize());
-                bUsed = true;
-            }
-        } catch(CEGUI::Exception & e) {
-            FTS18N("CEGUI", MsgType::Error, e.getMessage());
-        }
-        break;
-    case Key::PageDown:
-        try {
-            // Move a static text's and listbox's scrollbar down by one page.
-            if(sType.find(CEGUI::String("StaticText")) != CEGUI::String::npos
-                      || sType.find(CEGUI::String("Listbox")) != CEGUI::String::npos
-                     ) {
-                CEGUI::String sVertSBName = pW->getName() + "__auto_vscrollbar__";
-                CEGUI::Scrollbar *pC = (CEGUI::Scrollbar *)CEGUI::WindowManager::getSingleton().getWindow(sVertSBName);
-                pC->setScrollPosition(pC->getScrollPosition() + pC->getPageSize());
-                bUsed = true;
-            // Move a combobx's scrollbar down by one page.
-            } else if(sType.find(CEGUI::String("Combobox")) != CEGUI::String::npos) {
-                CEGUI::String sVertSBName = pW->getName() + "__auto_droplist____auto_vscrollbar__";
-                CEGUI::Scrollbar *pC = (CEGUI::Scrollbar *)CEGUI::WindowManager::getSingleton().getWindow(sVertSBName);
-                pC->setScrollPosition(pC->getScrollPosition() + pC->getPageSize());
-                bUsed = true;
-            }
-        } catch(CEGUI::Exception & e) {
-            FTS18N("CEGUI", MsgType::Error, e.getMessage());
-        }
-        break;
-    default:
-        break;
+    } catch(CEGUI::Exception & e) {
+        FTS18N("CEGUI", MsgType::Error, e.getMessage());
     }
 
     return bUsed;
@@ -1104,7 +1093,7 @@ void InputManager::handleMouseScroll(MouseScroll::Enum in_direction)
     CEGUI::System *pSys = CEGUI::System::getSingletonPtr();
 
     // No CEGUI existing yet.
-    if(pSys == NULL)
+    if(pSys == nullptr)
         return ;
 
     switch(in_direction) {
@@ -1134,7 +1123,7 @@ bool InputManager::injectToCEGUI(MouseButton::Enum in_button, bool in_bPress)
     CEGUI::System *pSys = CEGUI::System::getSingletonPtr();
 
     // No CEGUI existing yet.
-    if(pSys == NULL)
+    if(pSys == nullptr)
         return false;
 
     bool bUsed = false;
@@ -1166,7 +1155,7 @@ bool InputManager::injectToCEGUI(MouseButton::Enum in_button, bool in_bPress)
 
     // If a popup menu is currently opened, maybe we must close it.
     try {
-        if(in_button == MouseButton::Left && GUI::getSingleton().getCurrentPopupMenu() != NULL) {
+        if(in_button == MouseButton::Left && GUI::getSingleton().getCurrentPopupMenu() != nullptr) {
             if(!GUI::getSingleton().getCurrentPopupMenu()->getPixelRect()
                     .isPointInRect(CEGUI::Point((float)m_uiCursorX, (float)m_uiCursorY))) {
                 GUI::getSingleton().closeCurrentPopupMenu();
@@ -1178,7 +1167,7 @@ bool InputManager::injectToCEGUI(MouseButton::Enum in_button, bool in_bPress)
     // CEGUI element (clicked in no element) or at the window background.
     // This act deselects the currently active widget.
     if(!bUsed && GUI::getSingletonPtr() && in_bPress == true) {
-        GUI::getSingleton().setActiveWidget(NULL);
+        GUI::getSingleton().setActiveWidget(nullptr);
     }
 
     return bUsed;
@@ -1199,8 +1188,8 @@ void InputManager::handleMouseButtonPress(MouseButton::Enum in_button)
     m_pressedButtons.insert(in_button);
 
 #ifdef DEBUG_INPUT_MGR
-    FTSMSGDBG("  Mouse Button pressed:  "+String(getFTSButtonName(in_button))+" ("+String::nr(idx)+", "+String::b(m_keyTab[idx].bRepeating)+","+String::nr(m_uiCursorX)+","+String::nr(m_uiCursorY)+")\n", 5);
-    String sPressedButtons = "Currently Pressed buttons = [ ";
+    FTSMSGDBG("Mouse Button pressed:  "+String(getFTSButtonName(in_button))+" ("+String::nr(idx)+", "+String::b(m_keyTab[idx].bRepeating)+","+String::nr(m_uiCursorX)+","+String::nr(m_uiCursorY)+")\n", 5);
+    String sPressedButtons = "  Currently Pressed buttons = [ ";
     for(std::set<MouseButton::Enum>::iterator i = m_pressedButtons.begin() ; i != m_pressedButtons.end() ; ++i) {
         sPressedButtons += getFTSButtonName(*i) + String(",");
     }
@@ -1210,7 +1199,7 @@ void InputManager::handleMouseButtonPress(MouseButton::Enum in_button)
 
     PCursor pCurrCursor = RunlevelManager::getSingleton().getCurrRunlevel()->getActiveCursor();
 
-    if(pCurrCursor != NULL) {
+    if(pCurrCursor != nullptr) {
         // Restart the cursor animation (if one).
         for(int i = 0; i < FTS_CURSOR_IMAGES; i++) {
             if(pCurrCursor->bAnimated[i])
@@ -1252,8 +1241,8 @@ void InputManager::handleMouseButtonRelease(MouseButton::Enum in_button)
     m_pressedButtons.erase(in_button);
 
 #ifdef DEBUG_INPUT_MGR
-    FTSMSGDBG("  Mouse Button released:  "+String(getFTSButtonName(in_button))+" ("+String::nr(idx)+","+String::nr(m_uiCursorX)+","+String::nr(m_uiCursorY)+")\n", 5);
-    String sPressedButtons = "Currently Pressed buttons = [ ";
+    FTSMSGDBG("Mouse Button released:  "+String(getFTSButtonName(in_button))+" ("+String::nr(idx)+","+String::nr(m_uiCursorX)+","+String::nr(m_uiCursorY)+")\n", 5);
+    String sPressedButtons = "  Currently Pressed buttons = [ ";
     for(std::set<MouseButton::Enum>::iterator i = m_pressedButtons.begin() ; i != m_pressedButtons.end() ; ++i) {
         sPressedButtons += getFTSButtonName(*i) + String(",");
     }
@@ -1264,7 +1253,7 @@ void InputManager::handleMouseButtonRelease(MouseButton::Enum in_button)
     PCursor pCurrCursor = RunlevelManager::getSingleton().getCurrRunlevel()->getActiveCursor();
 
     // set the current cursor state for the animation.
-    if(pCurrCursor != NULL) {
+    if(pCurrCursor != nullptr) {
         pCurrCursor->pbState[in_button - SpecialKey::NoSpecial + 1] = false;
     }
 

@@ -87,7 +87,7 @@ public:
      *
      *  \author Pompei2
      */
-//     virtual _SCursor_ *getActiveCursor() {return m_pDefCursor;};
+//     virtual SCursor *getActiveCursor() {return m_pDefCursor;};
 
     /* This method may be overloaded. It has to return a pointer to the
      *  runlevel's main cursor. That must not be the currently active cursor.
@@ -99,7 +99,7 @@ public:
      *
      *  \author Pompei2
      */
-//     virtual _SCursor_ *getMainCursor() {return m_pDefCursor;};
+//     virtual SCursor *getMainCursor() {return m_pDefCursor;};
 
     inline Map *getMap() {return m_pMap;};
     inline void giveMapArchive(Archive *in_pArch) {if(m_pMapArchive == NULL) m_pMapArchive = in_pArch;};

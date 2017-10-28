@@ -26,7 +26,7 @@ class Anim;
 #define FTS_CURSOR_IMAGES 4
 
 /// This structure defines a cursor.
-typedef struct _SCursor_ {
+struct SCursor {
     /** If the cursor is animated, this contains the animations.
      *  This is an array because you can specify a different animation
      *  For the different states.
@@ -47,7 +47,8 @@ typedef struct _SCursor_ {
      *  FTSMouseButton enum. true means that the button is pressed.
      */
     bool      pbState[MouseButton::NoButton - SpecialKey::NoSpecial];
-} SCursor, *PCursor;
+};
+using PCursor = SCursor*;
 
 /// This class represents a key combination. It is a recursive data type, thus
 /// one object of this class may either represent the base-key (for example 'a')

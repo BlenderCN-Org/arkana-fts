@@ -15,7 +15,7 @@ int enterMainLoop();
 
 namespace FTS {
 
-struct _SCursor_;
+struct SCursor;
 class Packet;
 class Camera;
 
@@ -26,7 +26,7 @@ private:
     Runlevel(const Runlevel &) {};
 
     /// A default cursor.
-    _SCursor_ *m_pDefCursor;
+    SCursor *m_pDefCursor;
     class Translation* m_translation;
 protected:
     /// Private constructor.
@@ -129,7 +129,7 @@ public:
      *
      *  \author Pompei2
      */
-    virtual _SCursor_ *getActiveCursor() {return m_pDefCursor;};
+    virtual SCursor *getActiveCursor() {return m_pDefCursor;};
 
     /** This method may be overloaded. It has to return a pointer to the
      *  runlevel's main cursor. That must not be the currently active cursor.
@@ -141,7 +141,7 @@ public:
      *
      *  \author Pompei2
      */
-    virtual _SCursor_ *getMainCursor() {return m_pDefCursor;};
+    virtual SCursor *getMainCursor() {return m_pDefCursor;};
 
     /** This method may be overloaded. It will get called everytime the mouse
      *  moves, and may do whatever it wants with this information.
