@@ -910,6 +910,43 @@ void InputManager::handleUTF32(uint32_t in_iCharcode)
     }
 }
 
+bool InputManager::needForwardToCEGUI(Key::Enum k)
+{
+    // CEGUI eats up our enter, tab and keypad enter keys if an edit box has the
+    // focus. This is to validate the edit box. We do not want this, as enter
+    // will likely be the keyboard shortcut to validate the whole dialog.
+    // So if an edit box is selected and the input would be one of these,
+    // we just don't send them down to CEGUI.
+    // Exception for multi line edit boxes, the need the enter and tab key.
+    if(k == Key::Return || k == Key::Tab || k == Key::NumpadEnter) {
+        CEGUI::Window *pW = GUI::getSingleton().getActiveWidget();
+        if(pW) {
+            String t = pW->getType();
+
+            bool bIsEditbox = t.lower().contains("editbox");
+            bool bIsMulti = t.lower().contains("multiline");
+
+            // Now we still need to check if its active child might be such
+            // a monster. This is for example the ase in spinners.
+            if(pW->getActiveChild()) {
+                String t = pW->getActiveChild()->getType();
+                bIsEditbox |= t.lower().contains("editbox");
+                bIsMulti |= t.lower().contains("multiline");
+            }
+
+            // Single-line editboxes get no enter and no tab,
+            if(bIsEditbox && !bIsMulti) {
+                return false;
+            }
+            // Multilines get the enter but no tab.
+            if(bIsEditbox && bIsMulti && (k == Key::Tab)) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
 /** The callback function called if a key was pressed.
  *
  * \param in_Key: The key that was pressed.
@@ -951,47 +988,13 @@ void InputManager::handleKeyDown(Key::Enum in_Key)
     FTSMSGDBG(sPressedKeys, 5);
 #endif
 
-    // CEGUI eats up our enter, tab and keypad enter keys if an editbox has the
-    // focus. This is to validate the editbox. We do not want this, as enter
-    // will likely be the keyboard shortcut to validate the whole dialog.
-    // So if an editbox is selected and the input would be one of these,
-    // we just don't send them down to CEGUI.
-    // Exception for multiline editboxes, the need the enter and tab key.
-    if(k == Key::Return || k == Key::Tab || k == Key::NumpadEnter) {
-        CEGUI::Window *pW = GUI::getSingleton().getActiveWidget();
-        if(pW) {
-            String t = pW->getType();
-
-            bool bIsEditbox = t.lower().contains("editbox");
-            bool bIsMulti = t.lower().contains("multiline");
-
-            // Now we still need to check if its active child might be such
-            // a monster. This is for example the ase in spinners.
-            if(pW->getActiveChild()) {
-                String t = pW->getActiveChild()->getType();
-                bIsEditbox |= t.lower().contains("editbox");
-                bIsMulti |= t.lower().contains("multiline");
-            }
-
-            // Single-line editboxes get no enter and no tab,
-            if(bIsEditbox && !bIsMulti) {
-                // I know, this is an ugly workaround ...
-                goto after_cegui;
-            }
-            // Multilines get the enter but no tab.
-            if(bIsEditbox && bIsMulti && (k == Key::Tab)) {
-                // This too.
-                goto after_cegui;
-            }
+    if(needForwardToCEGUI(k)) {
+        // to tell CEGUI that a key was pressed, we inject the scan code.
+        if(CEGUI::System::getSingletonPtr() != nullptr) {
+            bProcessed = CEGUI::System::getSingletonPtr()->injectKeyDown(FTSKeyToCEGUIKey(k));
         }
     }
 
-    // to tell CEGUI that a key was pressed, we inject the scan code.
-    if(CEGUI::System::getSingletonPtr() != nullptr) {
-        bProcessed = CEGUI::System::getSingletonPtr()->injectKeyDown(FTSKeyToCEGUIKey(k));
-    }
-
-after_cegui:
     if( RunlevelManager::getSingletonPtr() != nullptr ) {
         if(RunlevelManager::getSingleton().getCurrRunlevel()->getName() != "Game") {
             bProcessed = this->handleKeyDownGUI(k) || bProcessed;

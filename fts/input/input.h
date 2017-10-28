@@ -288,6 +288,7 @@ protected:
     bool injectToCEGUI(MouseButton::Enum in_button, bool in_bPress);
 
 private:
+    bool needForwardToCEGUI(Key::Enum k);
     std::stack<InputComboManager*> m_ctxInputComboManagers;
     Key::Enum m_LastPressedKey = Key::Last ;
 };
