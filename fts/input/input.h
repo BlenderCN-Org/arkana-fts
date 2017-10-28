@@ -256,7 +256,7 @@ protected:
         /// The last time this key has been triggered.
         double dLastTrigger = 0.;
         /// The unicode-character that was triggered by this key.
-        uint16_t utf16 = 0;
+        uint32_t utf32 = 0;
 
         bool checkForRepeat(double in_currTime);
     };
@@ -276,7 +276,7 @@ protected:
     /// The keyboard shortcuts manager that I use to handle shortcuts.
     InputComboManager* m_ComboMgr;
 
-    void handleUTF16(int in_iCharcode);
+    void handleUTF32(uint32_t in_iCharcode);
     void handleKeyDown(Key::Enum in_Key);
     void handleKeyUp(Key::Enum in_Key);
     bool handleKeyDownGUI(Key::Enum in_Key);
@@ -289,6 +289,7 @@ protected:
 
 private:
     std::stack<InputComboManager*> m_ctxInputComboManagers;
+    Key::Enum m_LastPressedKey = Key::Last ;
 };
 
 } // namespace FTS

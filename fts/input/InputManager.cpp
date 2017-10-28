@@ -612,8 +612,9 @@ bool InputManager::handleEvent(const SDL_Event& ev)
         // This character is utf8 coded and can be at max 4 bytes big.
         // It must be converted to utf32 so that CEGUI can handle it.
         auto unicode = utf8_32({ (uint8_t)ev.text.text[0] ,(uint8_t)ev.text.text[1],(uint8_t)ev.text.text[2],(uint8_t)ev.text.text[3] });
-        FTSMSGDBG("  Text: " + String(ev.text.text) + " / "  + String::nr(unicode, 0, ' ', std::ios::hex) + "\n", 5);
-        CEGUI::System::getSingletonPtr()->injectChar(unicode);
+        FTSMSGDBG("  Text: " + String(ev.text.text) + "\n", 5);
+        m_keyTab[m_LastPressedKey].utf32 = unicode;
+        this->handleUTF32(unicode);
     }
         break;
     default:
@@ -641,7 +642,7 @@ bool InputManager::isKeyPressed(Key::Enum in_k) const
  *
  * \param in_k The key you want to check.
  *
- * \return Wether the key is being held down at the moment or not.
+ * \return Whether the key is being held down at the moment or not.
  *
  * \author Pompei2
  */
@@ -881,7 +882,7 @@ bool InputManager::update(const Clock& in_c)
         if(m_keyTab[*i].checkForRepeat(in_c.getCurrentTime())) {
             // And fake a keydown for the repetition.
             this->handleKeyDown(*i);
-            this->handleUTF16(m_keyTab[*i].utf16);
+            this->handleUTF32(m_keyTab[*i].utf32);
         }
     }
 
@@ -896,12 +897,12 @@ bool InputManager::update(const Clock& in_c)
  *
  * \author Pompei2
  */
-void InputManager::handleUTF16(int in_iCharcode)
+void InputManager::handleUTF32(uint32_t in_iCharcode)
 {
     if(in_iCharcode == 0)
         return;
 
-    FTSMSGDBG("  Key UTF16: " + String::nr(in_iCharcode, 0, ' ', std::ios::hex) + "\n", 5);
+    FTSMSGDBG("  Key UTF32: " + String::nr(in_iCharcode, 0, ' ', std::ios::hex) + "\n", 5);
 
     if(CEGUI::System::getSingletonPtr()) {
         CEGUI::System::getSingletonPtr()->injectChar(in_iCharcode);
@@ -934,14 +935,15 @@ void InputManager::handleKeyDown(Key::Enum in_Key)
         m_keyTab[k].bPressed = true;
         m_keyTab[k].bRepeating = false;
         m_pressedKeys.insert(k);
+        m_LastPressedKey = k;
     }
 
     // Mark last trigger as being *now*, will be updated in the next update run.
     m_keyTab[k].dLastTrigger = 0.0;
 
 #ifdef DEBUG_INPUT_MGR
-    FTSMSGDBG("  Key pressed:  "+String(getFTSKeyName(k))+" ("+String::nr(k)+", "+String::b(m_keyTab[k].bRepeating)+")\n", 5);
-    String sPressedKeys = "Currently Pressed keys = [ ";
+    FTSMSGDBG("Key pressed:  "+String(getFTSKeyName(k))+" ("+String::nr(k)+", "+String::b(m_keyTab[k].bRepeating)+")\n", 5);
+    String sPressedKeys = "  Currently Pressed keys = [ ";
     for(std::set<Key::Enum>::iterator i = m_pressedKeys.begin() ; i != m_pressedKeys.end() ; ++i) {
         sPressedKeys += getFTSKeyName(*i) + String(",");
     }
@@ -984,7 +986,7 @@ void InputManager::handleKeyDown(Key::Enum in_Key)
         }
     }
 
-    // to tell CEGUI that a key was pressed, we inject the scancode.
+    // to tell CEGUI that a key was pressed, we inject the scan code.
     if(CEGUI::System::getSingletonPtr() != nullptr) {
         bProcessed = CEGUI::System::getSingletonPtr()->injectKeyDown(FTSKeyToCEGUIKey(k));
     }
@@ -1023,11 +1025,12 @@ void InputManager::handleKeyUp(Key::Enum in_Key)
     // Adjust our keystates.
     m_keyTab[k].bPressed = false;
     m_keyTab[k].bRepeating = false;
+    m_keyTab[k].utf32 = 0;
     m_pressedKeys.erase(k);
 
 #ifdef DEBUG_INPUT_MGR
-    FTSMSGDBG("  Key released: "+String(getFTSKeyName(k))+" ("+String::nr(k)+")\n", 5);
-    String sPressedKeys = "Currently Pressed keys = [ ";
+    FTSMSGDBG("Key released: "+String(getFTSKeyName(k))+" ("+String::nr(k)+")\n", 5);
+    String sPressedKeys = "  Currently Pressed keys = [ ";
     for(std::set<Key::Enum>::iterator i = m_pressedKeys.begin() ; i != m_pressedKeys.end() ; ++i) {
         sPressedKeys += getFTSKeyName(*i) + String(",");
     }
