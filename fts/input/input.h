@@ -49,7 +49,7 @@ typedef struct _SCursor_ {
     bool      pbState[MouseButton::NoButton - SpecialKey::NoSpecial];
 } SCursor, *PCursor;
 
-/// This class represents a key combination. It is a recursive datatype, thus
+/// This class represents a key combination. It is a recursive data type, thus
 /// one object of this class may either represent the base-key (for example 'a')
 /// or a modifier key applied to it (for example 'Ctrl'+a) or a modifier key for
 /// another modifier (for example 'Shift'+Ctrl+a) etc.
@@ -155,7 +155,7 @@ protected:
     MouseButton::Enum m_mouseButton; ///< Or a mouse button ?
     MouseScroll::Enum m_mouseScroll; ///< Or even a mouse scroll?
 
-    /// If I am a modifyer, this is NON-NULL and points to the Key-combo I do
+    /// If I am a modifier, this is NON-NULL and points to the Key-combo I do
     /// modify. For example: if I am Ctrl+Up, this points to Up, as I am Ctrl
     /// and I do modify Up.
     InputCombo *m_pModified;
@@ -246,26 +246,17 @@ public:
 protected:
     struct InputInfo {
         /// True if that key is currently being hold down by the user, false else.
-        bool bPressed;
+        bool bPressed = false;
         /// If it has already been repeated or not.
-        bool bRepeating;
+        bool bRepeating = false;
         /// How much sec to wait before starting the first key repetition.
-        double dRepeatDelay;
+        double dRepeatDelay = 0.5;
         /// How much sec to wait between every key repetition.
-        double dRepeatInterval;
+        double dRepeatInterval =0.05;
         /// The last time this key has been triggered.
-        double dLastTrigger;
+        double dLastTrigger = 0.;
         /// The unicode-character that was triggered by this key.
-        uint16_t utf16;
-        /// Constructor initing to default values.
-        InputInfo() {
-            bPressed = false;
-            bRepeating = false;
-            dRepeatDelay = 0.5;
-            dRepeatInterval = 0.05;
-            dLastTrigger = 0.0;
-            utf16 = 0;
-        };
+        uint16_t utf16 = 0;
 
         bool checkForRepeat(double in_currTime);
     };
@@ -286,7 +277,7 @@ protected:
     InputComboManager* m_ComboMgr;
 
     void handleUTF16(int in_iCharcode);
-    void handleKeyDown(Key::Enum in_Key, uint16_t in_utf16 = 0);
+    void handleKeyDown(Key::Enum in_Key);
     void handleKeyUp(Key::Enum in_Key);
     bool handleKeyDownGUI(Key::Enum in_Key);
     void handleMouseButtonPress(MouseButton::Enum in_button);
@@ -313,12 +304,12 @@ int drawCursor(const FTS::Clock&, const FTS::PCursor in_pCursor);
 CEGUI::uint FTSKeyToCEGUIKey(FTS::Key::Enum key);
 FTS::MouseButton::Enum SDLMouseToFTSMouse(int btn);
 FTS::MouseScroll::Enum SDLMouseToFTSScroll(const SDL_MouseWheelEvent& ev);
-/// Returns the keycode as a readable string.
+/// Returns the key code as a readable string.
 /** This function converts a \c Key into a human readable string.
  *
  * \param in_Key The \c Key whose name to get.
  *
- * \return If successfull: The keycode.
+ * \return If successful: The key code.
  * \return If failed:      "Unknown key code".
  *
  * \note The returned value is sometimes more then one word: "left shift"
@@ -327,12 +318,12 @@ FTS::MouseScroll::Enum SDLMouseToFTSScroll(const SDL_MouseWheelEvent& ev);
  */
 const char *getFTSKeyName(FTS::Key::Enum in_Key);
 
-/// Returns the keycode as a readable string.
+/// Returns the key code as a readable string.
 /** This function converts a \c SpecialKey into a human readable string.
  *
  * \param in_Key The \c SpecialKey whose name to get.
  *
- * \return If successfull: The keycode.
+ * \return If successful: The key code.
  * \return If failed:      "Unknown key code".
  *
  * \note The returned value is sometimes more then one word: "left shift"

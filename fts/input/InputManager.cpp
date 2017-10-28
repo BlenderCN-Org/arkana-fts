@@ -24,6 +24,7 @@
 #include <elements/CEGUIPopupMenu.h>
 
 #include <algorithm>
+#include <array>
 
 using namespace FTS;
 
@@ -559,13 +560,32 @@ InputManager::~InputManager()
     delete m_ComboMgr;
 }
 
+static std::uint32_t utf8_32(std::array<uint8_t,4> buf)
+{
+    if(!(buf[0] & 0x80)) {
+        return buf[0];
+    }
+
+    auto followers = 0;
+    auto ch = buf[0];
+    while (ch & 0x80) { followers++; ch <<= 1; }
+    followers--;
+    if(followers == 1) {
+        return (buf[1] & 0x3f) | ((buf[0] & 0x1f) << 6);
+    } else if(followers == 2) {
+        return (buf[2] & 0x3f) | ((buf[1] & 0x3f) << 6) | ((buf[0] & 0x0f) << 12);
+    } else if(followers == 3) {
+        return (buf[3] & 0x3f) | ((buf[2] & 0x3f) << 6) | ((buf[1] & 0x3f) << 12) | ((buf[0] & 0x7) << 18);
+    }
+    return 0xffffffff;
+}
+
 bool InputManager::handleEvent(const SDL_Event& ev)
 {
     switch(ev.type) {
     case SDL_KEYDOWN:
         if(ev.key.keysym.sym != SDLK_UNKNOWN) {
-            // TODO There is no unicode utf-16 key code.
-            this->handleKeyDown(static_cast<Key::Enum>(ev.key.keysym.scancode), 0);
+            this->handleKeyDown(static_cast<Key::Enum>(ev.key.keysym.scancode));
         }
         return true;
     case SDL_KEYUP:
@@ -586,6 +606,16 @@ bool InputManager::handleEvent(const SDL_Event& ev)
     case SDL_MOUSEWHEEL:
         this->handleMouseScroll(SDLMouseToFTSScroll(ev.wheel));
         return true;
+    case SDL_TEXTINPUT:
+    {
+        // Assumption: This event here delivers only one keyboard character at a time.
+        // This character is utf8 coded and can be at max 4 bytes big.
+        // It must be converted to utf32 so that CEGUI can handle it.
+        auto unicode = utf8_32({ (uint8_t)ev.text.text[0] ,(uint8_t)ev.text.text[1],(uint8_t)ev.text.text[2],(uint8_t)ev.text.text[3] });
+        FTSMSGDBG("  Text: " + String(ev.text.text) + " / "  + String::nr(unicode, 0, ' ', std::ios::hex) + "\n", 5);
+        CEGUI::System::getSingletonPtr()->injectChar(unicode);
+    }
+        break;
     default:
         return false;
     }
@@ -875,7 +905,7 @@ void InputManager::handleUTF16(int in_iCharcode)
 
     if(CEGUI::System::getSingletonPtr()) {
         CEGUI::System::getSingletonPtr()->injectChar(in_iCharcode);
-        return ;
+        return;
     }
 }
 
@@ -885,7 +915,7 @@ void InputManager::handleUTF16(int in_iCharcode)
  *
  * \author Pompei2
  */
-void InputManager::handleKeyDown(Key::Enum in_Key, uint16_t in_utf16)
+void InputManager::handleKeyDown(Key::Enum in_Key)
 {
     CEGUI::EventArgs ea;
     bool bProcessed = false;
@@ -903,7 +933,6 @@ void InputManager::handleKeyDown(Key::Enum in_Key, uint16_t in_utf16)
         // Adjust our keystates.
         m_keyTab[k].bPressed = true;
         m_keyTab[k].bRepeating = false;
-        m_keyTab[k].utf16 = in_utf16;
         m_pressedKeys.insert(k);
     }
 
