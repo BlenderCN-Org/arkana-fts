@@ -1,5 +1,4 @@
-# Bla
-cmake_minimum_required(VERSION 2.4)
+cmake_minimum_required(VERSION 3.1)
 
 project(aTest)
 
@@ -51,20 +50,14 @@ endif()
 
 # Compiler-dependent and build-dependend flags:
 if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -g -pg")
-    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall")
+    add_definitions("-Wall")
+    if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+        add_definitions("-pg")
+    endif()
 elseif(MSVC)
     set(SOURCES ${SOURCES} TestResultDebugOut.cpp)
 endif()
-
-# And show the flags.
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    message(STATUS "CXX Flags for the aTest (Debug) are: ${CMAKE_CXX_FLAGS_DEBUG}")
-    set(OUT_NAME "aTest")
-else()
-    message(STATUS "CXX Flags for the aTest (Release) are: ${CMAKE_CXX_FLAGS_RELEASE}")
-    set(OUT_NAME "aTest")
-endif()
+set(OUT_NAME "aTest")
 
 enable_testing()
 

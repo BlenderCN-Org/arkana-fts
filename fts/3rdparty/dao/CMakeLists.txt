@@ -1,5 +1,3 @@
-#
-
 project(dao)
 
 message(STATUS "               ")
@@ -80,21 +78,15 @@ include_directories("${dao_SOURCE_DIR}/src")
 
 # Compiler-dependent and build-dependend flags:
 if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -fPIC -pg")
-    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall -fPIC")
+    add_definitions("-Wall -fPIC")
+    if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+        add_definitions("-pg -O0")
+    endif()
 elseif(MSVC)
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /wd4018 /wd4244")
-    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /wd4018 /wd4244")
+    add_definitions("/wd4018 /wd4244")
 endif()
 
-# And show the flags.
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    message(STATUS "CXX Flags for the dao (Debug) are: ${CMAKE_CXX_FLAGS_DEBUG}")
-    set(OUT_NAME "dao")
-else()
-    message(STATUS "CXX Flags for the dao (Release) are: ${CMAKE_CXX_FLAGS_RELEASE}")
-    set(OUT_NAME "dao")
-endif()
+set(OUT_NAME "dao")
 
 # The compiling process. #
 ##########################

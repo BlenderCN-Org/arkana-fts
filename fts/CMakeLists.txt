@@ -1,5 +1,4 @@
-# Bla
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.1)
 
 project(fts)
 
@@ -12,16 +11,14 @@ message(STATUS "               ")
 # Setup the make environement. #
 ################################
 
-
-
 # Setup the cmake directory containing numerous cmake scripts and macros.
 set(CMAKE_MODULE_PATH "${fts_SOURCE_DIR}/cmake")
 
 # Allow else() and endif() constructs (with empty paranthesis)
 set(CMAKE_ALLOW_LOOSE_LOOP_CONSTRUCTS true)
 
-# Activate very verbose makefiles.
-set(CMAKE_VERBOSE_MAKEFILE ON)
+# De-Activate very verbose makefiles.
+set(CMAKE_VERBOSE_MAKEFILE OFF)
 
 # Disallow in-source builds. #
 ##############################
@@ -168,29 +165,24 @@ endif()
 # Check for various language-stuff and compiler versions #
 ##########################################################
 
-# GCC does not yet support nullptr. Later we need to make this version-dependent.
-# Compiler-dependent and build-dependend flags:
-if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
-    execute_process(COMMAND ${CMAKE_CXX_COMPILER} -dumpversion OUTPUT_VARIABLE GCC_VERSION)
-    string(STRIP "${GCC_VERSION}" GCC_VERSION)
-    message(STATUS "GCC Version ${GCC_VERSION} detected")
-    message(STATUS "GCC is ${CMAKE_CXX_COMPILER} detected")
-
-    # GCC below 4.4 does not have C++0x features we use.
-    if(${GCC_VERSION} VERSION_LESS "4.4")
-        message(FATAL_ERROR "You need at least GCC version 4.4 in order to compile Arkana-FTS")
-    endif()
-elseif(MSVC)
-endif()
 
 # Compiler-dependent and build-dependend flags. Doing this before adding any 3rd party lib
 # In order to have them built with the same flags.
 if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
-# -Wextra -Wold-style-cast -Wfloat-equal -Wswitch-enum -Wundef -Wpointer-arith -Wcast-align
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -std=c++14 -Wno-non-virtual-dtor -Wall -O0 -pg -fstack-protector-all -Winvalid-pch")
-    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -std=c++14 -Wall -s -O2 -Winvalid-pch")
+    add_definitions("-Wall -Winvalid-pch")
+    if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+        add_definitions("-O0 -pg -fstack-protector-all")
+	if(CMAKE_COMPILER_IS_GNUCXX)
+	    add_definitions("-Wno-non-virtual-dtor")
+	endif()
+    else()
+	add_definitions("-s")
+    endif()
 elseif(MSVC)
 endif()
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 
 # Debug or release ?
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -205,13 +197,6 @@ endif()
 
 set(FTS_LIBS)
 set(FTS_INCLUDES)
-
-# The std:: namespace.
-include(${CMAKE_ROOT}/Modules/TestForSTDNamespace.cmake)
-
-if(${CMAKE_NO_STD_NAMESPACE})
-    message(SEND_ERROR "No std:: Namespace is available, This usually means you have no c++ support or no libstdc++")
-endif()
 
 # The different standard libraries already supported by CMake.
 find_package(Threads REQUIRED)
@@ -254,7 +239,7 @@ else()
     list(APPEND FTS_LIBS ${FreeType_LIBRARIES})
 endif()
 
-# X11 is required (at least) by scrap.cpp. I'm sure there's more.
+# X11 is required (at least). I'm sure there's more.
 set(X11_FIND_QUIETLY 1)
 find_package(X11)
 if(${X11_FOUND} STREQUAL "NO")
@@ -361,13 +346,9 @@ add_definitions(-DD_STRING_FTS_PATHS)
 
 # And show the flags.
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    message(STATUS "CXX Flags for FTS (Debug) are: ${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_DEBUG}")
-    # set the flags which are needed by the macro ADD_PCH_RULE
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG}" )
+    message(STATUS "CXX Flags for FTS (Debug) are: ${CMAKE_CXX_FLAGS_DEBUG}")
 else()
-    message(STATUS "CXX Flags for FTS (Release) are: ${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_RELEASE}")
-    # set the flags which are needed by the macro ADD_PCH_RULE
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_RELEASE}" )
+    message(STATUS "CXX Flags for FTS (Release) are: ${CMAKE_CXX_FLAGS_RELEASE}")
 endif()
 
 # The compiling process. #
