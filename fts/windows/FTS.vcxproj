@@ -262,6 +262,7 @@
     <ClCompile Include="..\dLib\aTest\TestResultNiceOutput.cpp" />
     <ClCompile Include="..\dLib\aTest\TestResultSQL.cpp" />
     <ClCompile Include="..\dLib\aTest\TestSuite.cpp" />
+    <ClCompile Include="..\dLib\dBrowse\dBrowse.cpp" />
     <ClCompile Include="..\dLib\dConf\ArkanaDefaultSettings.cpp" />
     <ClCompile Include="..\dLib\dConf\configuration.cpp" />
     <ClCompile Include="..\dLib\dConf\DefaultOptions.cpp" />
@@ -296,6 +297,7 @@
     <ClCompile Include="..\tests\3d\ShaderTest.cpp" />
     <ClCompile Include="..\tests\Configuration\FTSConfiguration.cpp" />
     <ClCompile Include="..\tests\Configuration\Settings.cpp" />
+    <ClCompile Include="..\tests\dLib\dBrowseTest.cpp" />
     <ClCompile Include="..\tests\dLib\dFile\dFileArchiveTest.cpp" />
     <ClCompile Include="..\tests\dLib\dString\dPathTest.cpp" />
     <ClCompile Include="..\tests\dLib\dString\dStringTest.cpp" />
@@ -343,7 +345,6 @@
     <ClCompile Include="..\3d\light.cpp" />
     <ClCompile Include="..\3d\Renderer.cpp" />
     <ClCompile Include="..\input\keys.cpp" />
-    <ClCompile Include="..\dLib\dBrowse\windows.cpp" />
     <ClCompile Include="..\dLib\dFile\dFile.cpp" />
     <ClCompile Include="..\dLib\dProcess\dProcess.cpp" />
     <ClCompile Include="..\dLib\dString\dPath.cpp" />

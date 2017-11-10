@@ -18,6 +18,9 @@
 #include "dLib/dFile/dFile.h"
 #include "dLib/dString/dTranslation.h"
 #include "input/input.h"
+#include <experimental/filesystem>
+
+namespace fs = std::experimental::filesystem;
 
 using namespace FTS;
 
@@ -34,11 +37,8 @@ FTS::InterpretDirWithEntryAsFile::InterpretDirWithEntryAsFile(const String& in_s
 
 bool FTS::InterpretDirWithEntryAsFile::operator()(const Path& in_dir)
 {
-    PDBrowseInfo pdbi = dBrowse_Open(in_dir);
-    String sEntry = dBrowse_GetNextWithWildcard(pdbi, m_sPattern);
-    dBrowse_Close(pdbi);
-
-    return !sEntry.empty();
+    auto files = dBrowse(in_dir, m_sPattern);
+    return !files.empty();
 }
 
 /** Constructor for the file dialog item. */
@@ -372,65 +372,46 @@ bool compare_dirfile_list(ImagedListItem *first, ImagedListItem *second)
 void FTS::FileDlg::fillLB(void)
 {
     // If we aren't able to open the directory, go back one.
-    PDBrowseInfo pDBI = dBrowse_Open(m_sRoot);
-    if(NULL == pDBI) {
+    auto state = fs::status(m_sRoot.c_str());
+    if((state.type() != fs::file_type::regular) && (state.type() != fs::file_type::directory)) {
         this->chdir("..");
         return;
     }
 
-    // Empty the list.
-    CEGUI::Listbox * pLB = (CEGUI::Listbox *) m_pDlg->getChild("file_dlg/FList");
-    pLB->resetList();
+    try {
+        // Empty the list.
+        CEGUI::Listbox * pLB = (CEGUI::Listbox *) m_pDlg->getChild("file_dlg/FList");
+        pLB->resetList();
 
-    std::list<ImagedListItem *> listOfFilesAndDirs;
+        std::list<ImagedListItem *> listOfFilesAndDirs;
 
-    // Get all files and put them in a sorted list.
-    while(true) {
-        Path sPath(dBrowse_GetNext(pDBI));
-
-        if(sPath.empty())
-            break;
-
-        // Ignore the current directory (".")
-        if(sPath == ".")
-            continue;
-
-        // Only take files that correspond to the pattern, but all directories.
-        if( (!sPath.matchesPattern(m_sFilter) && (dBrowse_GetType(pDBI) != DB_DIR)) )
-            continue;
-
-        try {
-
-        // Create the listbox item.
-        ImagedListItem *pLTI = NULL;
-        if((dBrowse_GetType(pDBI) == DB_DIR) && (m_dirIsFile ? !(*m_dirIsFile)(Path(pDBI->currDir) + Path(sPath)) : true)) {
-            // The 1 at the end means it is a directory.
-            if(sPath == "..") {
-                pLTI = new ImagedListItem(sPath.basename(), "FTSUI", "BackIcon", (void *)1UL);
-            } else {
-                pLTI = new ImagedListItem(sPath.basename(), "FTSUI", "DirIcon", (void *)1UL);
-            }
-        } else {
-            // The 0 at the end means it is a file.
-            pLTI = new ImagedListItem(sPath.basename(), "FTSUI", "FileIcon", (void *)0UL);
-        }
-
+        // Get all files and put them in a sorted list.
+        ImagedListItem *pLTI = new ImagedListItem("..", "FTSUI", "BackIcon", (void *)1UL);
         listOfFilesAndDirs.push_back(pLTI);
-        } catch(CEGUI::Exception & e) {
-            FTS18N("CEGUI_Init", MsgType::Error, e.getMessage());
-            return ;
+        for(auto& p : fs::directory_iterator(m_sRoot.c_str())) {
+            if(fs::is_directory(p.path())) {
+                pLTI = new ImagedListItem(p.path().stem().string(), "FTSUI", "DirIcon", (void *)1UL);
+            } else {
+                FTS::String sPath = p.path().filename().generic_string();
+                // Only take files that correspond to the pattern, but all directories.
+                if(sPath.matchesPattern(m_sFilter)) {
+                    pLTI = new ImagedListItem(p.path().stem().string(), "FTSUI", "FileIcon", (void *)0UL);
+                }
+            }
+            listOfFilesAndDirs.push_back(pLTI);
         }
+        // Sort the list now.
+        listOfFilesAndDirs.sort(compare_dirfile_list);
+
+        // And insert the sorted items into the listbox.
+        for(std::list<ImagedListItem *>::iterator i = listOfFilesAndDirs.begin(); i != listOfFilesAndDirs.end(); ++i) {
+            pLB->addItem(*i);
+        }
+    } catch(CEGUI::Exception & e) {
+        FTS18N("CEGUI_Init", MsgType::Error, e.getMessage());
+        return ;
     }
 
-    dBrowse_Close(pDBI);
-
-    // Sort the list now.
-    listOfFilesAndDirs.sort(compare_dirfile_list);
-
-    // And insert the sorted items into the listbox.
-    for(std::list<ImagedListItem *>::iterator i = listOfFilesAndDirs.begin() ; i != listOfFilesAndDirs.end() ; ++i) {
-        pLB->addItem(*i);
-    }
 }
 
 /// Private function to change into a directory.
@@ -438,7 +419,7 @@ void FTS::FileDlg::fillLB(void)
  *
  * \param in_sAdd The directory to add to the current one.
  *
- * \return If successfull: ERR_OK
+ * \return If successful: ERR_OK
  * \return If failed:      Error code < 0
  *
  * \note If ".." is the selected directory, this will really

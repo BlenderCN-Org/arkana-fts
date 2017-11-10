@@ -30,7 +30,7 @@ namespace FTS {
 /// To decide whether a directory should be interpreted as a file or not, an
 /// instance of this class is called with the path to the directory.
 /// Note that this base-class never interprets a directory as a file and thus
-/// represents the default behaviour.
+/// represents the default behavior.
 class InterpretDirAsFileBase {
 public:
     /// \param in_dir The path to the directory to decide whether it should be

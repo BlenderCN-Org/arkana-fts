@@ -50,6 +50,7 @@ set(SOURCES_COMMON
     3d/Shader.cpp
     3d/VertexArrayObject.cpp
     dLib/dArchive/dArchive.cpp
+	dLib/dBrowse/dBrowse.cpp
     dLib/dConf/configuration.cpp
     dLib/dConf/ArkanaDefaultSettings.cpp
     dLib/dConf/DefaultOptions.cpp
@@ -104,8 +105,9 @@ set(SOURCES_COMMON
     sound/SndPlayList.cpp
     tests/mainNice.cpp
     tests/3d/ResolutionTest.cpp
-    tests/dLib/dFile/dFileArchiveTest.cpp
     tests/Scripting/DaoVmTest.cpp
+    tests/dLib/dFile/dFileArchiveTest.cpp
+    tests/dLib/dBrowseTest.cpp
     tests/dLib/dString/dPathTest.cpp
     tests/dLib/dString/dStringTest.cpp
     tests/dLib/dString/dTranslationTest.cpp
@@ -156,12 +158,6 @@ set(SOURCES_COMMON
     scripting/hotkey.cpp
 )
 
-if(UNIX)
-    set(SOURCES_COMMON ${SOURCES_COMMON} dLib/dBrowse/linux.cpp)
-else()
-    set(SOURCES_COMMON ${SOURCES_COMMON} dLib/dBrowse/windows.cpp)
-endif()
-
 # Check for various language-stuff and compiler versions #
 ##########################################################
 
@@ -180,7 +176,7 @@ if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
     endif()
 elseif(MSVC)
 endif()
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 
@@ -353,7 +349,10 @@ endif()
 
 # The compiling process. #
 ##########################
-message(STATUS ${FTS_LIBS})
+if(CMAKE_COMPILER_IS_GNUCXX)
+	# gcc (even 7.2) needs to link a special lib for the filesystem support.
+	list(APPEND FTS_LIBS stdc++fs)
+endif()
 
 include(${fts_SOURCE_DIR}/cmake/PCH_GCC4_v2.cmake)
 ADD_PCH_RULE(${fts_SOURCE_DIR}/3d/3d.h SOURCES_COMMON)

@@ -1032,22 +1032,20 @@ FTS::ShaderManager::ShaderManager()
     }
 
     // We need to preload all the include files we can find.
-    Path path;
-    PDBrowseInfo dbi = dBrowse_Open(Path::datadir(D_SHADERS_DIRNAME));
-    while(!(path = dBrowse_GetNextWithWildcard(dbi, "*.vertinc")).empty()) {
-        this->loadShader(path);
+    std::vector<String> fileNames = dBrowse(Path::datadir(D_SHADERS_DIRNAME), "*.vertinc");
+    for(auto&& sFile : fileNames) {
+        this->loadShader(Path(sFile));
     }
-    dBrowse_Close(dbi);
-    dbi = dBrowse_Open(Path::datadir(D_SHADERS_DIRNAME));
-    while(!(path = dBrowse_GetNextWithWildcard(dbi, "*.fraginc")).empty()) {
-        this->loadShader(path);
+
+    fileNames = dBrowse(Path::datadir(D_SHADERS_DIRNAME), "*.fraginc");
+    for(auto&& sFile : fileNames) {
+        this->loadShader(Path(sFile));
     }
-    dBrowse_Close(dbi);
-    dbi = dBrowse_Open(Path::datadir(D_SHADERS_DIRNAME));
-    while(!(path = dBrowse_GetNextWithWildcard(dbi, "*.geominc")).empty()) {
-        this->loadShader(path);
+
+    fileNames = dBrowse(Path::datadir(D_SHADERS_DIRNAME), "*.geominc");
+    for(auto&& sFile : fileNames) {
+        this->loadShader(Path(sFile));
     }
-    dBrowse_Close(dbi);
 
     // Already load, compile and link the default shader.
     this->loadShaderCode(DefaultVertexShader, sErrorVert);

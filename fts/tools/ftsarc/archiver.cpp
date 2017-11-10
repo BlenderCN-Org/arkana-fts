@@ -4,11 +4,14 @@
 
 #include "logging/logger.h"
 #include "dLib/dArchive/dArchive.h"
+#include <filesystem>
+
 #include "dLib/dCompressor/dCompressor.h"
 #include "dLib/dBrowse/dBrowse.h"
 
 using namespace FTSArc;
 using namespace FTS;
+namespace fs = std::experimental::filesystem;
 
 ArchiverBase::ArchiverBase(const FTS::Path& in_sOutName, Compressor::Ptr in_pComp, bool in_bRecurse)
     : m_sOutName(in_sOutName)
@@ -24,32 +27,15 @@ ArchiverBase::~ArchiverBase()
 
 bool ArchiverBase::addDirectoryRecursive(const FTS::Path& in_sDir)
 {
-    // Check if the current "file" is a directory.
-    PDBrowseInfo pdbi = dBrowse_Open(in_sDir, false);
-    if(pdbi == NULL || !m_bRecurse)
-        return false;
-
-    // It is a directory and we want to recurse into it.
-    for(FTS::Path sElem = dBrowse_GetNext(pdbi) ; !sElem.empty() ; sElem = dBrowse_GetNext(pdbi)) {
-#if !WINDOOF
-        // If it is hidden, do not add it.
-        if(sElem.getCharAt(0) == '.')
-            continue;
-#endif
-        switch(dBrowse_GetType(pdbi)) {
-        // If it is a file, add it to the file list
-        case DB_FILE:
-            m_lFilesToHandle.push_back(in_sDir.appendWithSeparator(sElem));
-            break;
-        // If it is a directory, recurse into it again.
-        case DB_DIR:
-            addDirectoryRecursive(in_sDir.appendWithSeparator(sElem));
-            break;
-        default: continue;
+    for(auto& p : fs::directory_iterator(in_sDir.c_str())) {
+        if(fs::is_directory(p.path())) {
+            // If it is a directory, recurse into it again.
+            addDirectoryRecursive(Path(p.path().string()));
+        } else {
+            // If it is a file, add it to the file list
+            m_lFilesToHandle.push_back(Path(p.path().string()));
         }
     }
-
-    dBrowse_Close(pdbi);
     return true;
 }
 

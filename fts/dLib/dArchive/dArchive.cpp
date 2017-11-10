@@ -1,7 +1,9 @@
 #include "dArchive.h"
-
+#include <experimental/filesystem>
 #include "dLib/dCompressor/dCompressor.h"
 #include "logging/logger.h"
+
+namespace fs = std::experimental::filesystem;
 
 using namespace FTS;
 
@@ -390,44 +392,37 @@ Archive::Archive(File& out_file, const String &in_sChunkPrefix)
  * \param PDBrowseInfo The directory to read the archive from. It will be deleted.
  * \param in_sChunkPrefix A prefix to give all chunk's names.
  */
-Archive::Archive(PDBrowseInfo out_dbi, const String &in_sChunkPrefix)
+Archive::Archive(const Path& in_Path, const String &in_sChunkPrefix)
 {
+
     // Get the original compressor and filename.
     m_pOrigComp.reset(new NoCompressor());
-    m_sFileName = out_dbi->currDir;
+    m_sFileName = in_Path;
 
     // Log something.
-    FTSMSGDBG("Loading archive from directory "+out_dbi->currDir, 2);
+    FTSMSGDBG("Loading archive from directory "+in_Path, 2);
 
     // We recursively enter each subdirectory and we read out every file as
     // a chunk if we encounter one.
-    this->makeChunksFromDir(out_dbi, "", in_sChunkPrefix);
+    this->makeChunksFromDir(in_Path, "", in_sChunkPrefix);
 
     // Another log.
     FTSMSGDBG("Done loading the archive with "+String::nr(this->getChunkCount())+" chunks.", 2);
 }
 
-void FTS::Archive::makeChunksFromDir(PDBrowseInfo out_dbi, const Path& in_sSubdir, const String &in_sChunkPrefix)
+void FTS::Archive::makeChunksFromDir(const Path& in_Path, const Path& in_sSubdir, const String &in_sChunkPrefix)
 {
-    for(Path sEntry = dBrowse_GetNext(out_dbi) ; !sEntry.empty() ; sEntry = dBrowse_GetNext(out_dbi)) {
-        // Skip the stupid ones..
-        if(sEntry == "." || sEntry == "..")
-            continue ;
-
-        // If it is a directory, recurse into it.
-        if(FileUtils::dirExists(Path(out_dbi->currDir) + sEntry)) {
-            PDBrowseInfo pdbi = dBrowse_Open(Path(out_dbi->currDir) + sEntry);
-            this->makeChunksFromDir(pdbi, in_sSubdir + sEntry, in_sChunkPrefix);
-        } else {
+    for(auto& p : fs::directory_iterator(in_Path.c_str())) {
+        if(fs::is_directory(p.path())) {
+            // If it is a directory, recurse into it.
+            this->makeChunksFromDir(Path(p.path().string()), in_sSubdir + Path(p.path().filename().string()), in_sChunkPrefix);
+        }  else {
             // It is most probably a file, create a chunk for it.
-            Chunk* pChunk = new FileChunk(File::open(Path(out_dbi->currDir) + sEntry, File::Insert), in_sSubdir + sEntry);
+            Chunk* pChunk = new FileChunk(File::open(Path(p.path().string()), File::Insert), in_sSubdir + Path(p.path().filename().string()));
             pChunk->prefix(in_sChunkPrefix);
             m_mChunks[pChunk->getName()] = pChunk;
         }
     }
-
-    // And after we're done with this directory, delete it.
-    dBrowse_Close(out_dbi);
 }
 
 /** Constructs an archive object, reading every chunk out of the given file.\n
@@ -448,11 +443,7 @@ Archive *Archive::loadArchive(const Path &in_sFileName, const String &in_sChunkP
 {
     // We may open a directory as an archive.
     if(FTS::FileUtils::dirExists(in_sFileName)) {
-        PDBrowseInfo dbi = dBrowse_Open(in_sFileName);
-        if(dbi)
-            return new Archive(dbi, in_sChunkPrefix);
-        else
-            throw CorruptDataException(in_sFileName, "Bad directory to open archive");
+        return new Archive(in_sFileName, in_sChunkPrefix);
     } else {
         File::Ptr f = File::open(in_sFileName, File::Read);
         return new Archive(*f, in_sChunkPrefix);

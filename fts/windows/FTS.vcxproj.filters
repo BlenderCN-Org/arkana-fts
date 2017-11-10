@@ -231,9 +231,6 @@
     <ClCompile Include="..\input\keys.cpp">
       <Filter>Input</Filter>
     </ClCompile>
-    <ClCompile Include="..\dLib\dBrowse\windows.cpp">
-      <Filter>dLib\dBrowse</Filter>
-    </ClCompile>
     <ClCompile Include="..\dLib\dFile\dFile.cpp">
       <Filter>dLib\dFile</Filter>
     </ClCompile>
@@ -503,6 +500,12 @@
     </ClCompile>
     <ClCompile Include="..\utilities\sha2.cpp">
       <Filter>Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\tests\dLib\dBrowseTest.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dLib\dBrowse\dBrowse.cpp">
+      <Filter>dLib\dBrowse</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

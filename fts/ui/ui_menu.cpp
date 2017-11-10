@@ -93,11 +93,10 @@ bool FTS::MainMenuRlv::load()
 
     // Find the correct menu background image.
     std::list<Resolution> lAvail;
-    PDBrowseInfo dbi = dBrowse_Open(Path::datadir("Graphics/ui/menubg"));
-    for(String file = dBrowse_GetNextWithWildcard(dbi, "*.png") ; !file.empty() ; file = dBrowse_GetNextWithWildcard(dbi, "*.png")) {
+    std::vector<String> fileNames = dBrowse(Path::datadir("Graphics/ui/menubg"), "*.png");
+    for(auto&& file : fileNames) {
         lAvail.push_back(Resolution(Path(file).withoutExt()));
     }
-    dBrowse_Close(dbi);
 
     String sClosestMatch = Resolution().bestFit(lAvail).toString(false);
 

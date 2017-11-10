@@ -269,8 +269,7 @@ bool FTS::MenuOptions::cbOptions_btnVidOption(const CEGUI::EventArgs & in_ea)
 
 int FTS::MenuOptions::loadGeneral()
 {
-    SimpleListItem *sli = NULL;
-    PDBrowseInfo dbi = NULL;
+    SimpleListItem *sli = nullptr;
     String sLang;
 
     // Load the layout.
@@ -289,24 +288,11 @@ int FTS::MenuOptions::loadGeneral()
     try {
         // Fill the listbox for the language choice.
         FTSGetConvertWinMacro(CEGUI::Combobox, cb, "dlg_options/btnGeneral/cbLang");
-
-        dbi = dBrowse_Open(Path::datadir("Languages"));
-        while(true) {
-            sLang = dBrowse_GetNext(dbi);
-
-            if(sLang.empty())
-                break;
-
-            if((dBrowse_GetType(dbi) != DB_DIR) ||
-               sLang == "." ||
-               sLang == ".." ||
-               sLang == ".svn"
-              )
-                continue;
+        std::vector<String> fileNames = dBrowse(Path::datadir("Languages"));
+        for(auto&& sLang : fileNames) {
             sli = new SimpleListItem(sLang);
             cb->addItem(sli);
         }
-        dBrowse_Close(dbi);
 
         String sLanguage = m_pConf->get("Language");
         sli = dynamic_cast<SimpleListItem *>(cb->findItemWithText(sLanguage, NULL));

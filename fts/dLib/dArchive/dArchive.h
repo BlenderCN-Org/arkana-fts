@@ -13,7 +13,7 @@
 namespace FTS {
     class StreamedDataContainer;
 
-/// This is the baseclass for any chunk. It is used to read a chunk's header
+/// This is the base class for any chunk. It is used to read a chunk's header
 /// that is the same for all chunks.
 class Chunk {
 private:
@@ -138,13 +138,13 @@ private:
     Path m_sFileName;
 
     Archive(File& out_file, const String& in_sFileChunkPrefix = String::EMPTY);
-    Archive(const Path& in_sFileName, Compressor* in_pComp = NULL);
-    Archive(PDBrowseInfo out_dbi, const String& in_sChunkPrefix);
+    Archive(const Path& in_sFileName, Compressor* in_pComp = nullptr);
+    Archive(const Path& in_Path, const String& in_sChunkPrefix);
 
-    void makeChunksFromDir(PDBrowseInfo out_dbi, const Path& in_sSubdir, const String& in_sChunkPrefix);
+    void makeChunksFromDir(const Path& in_Path, const Path& in_sSubdir, const String& in_sChunkPrefix);
 
 public:
-    static Archive* createEmptyArchive(const Path& in_sFileName, Compressor* in_pComp = NULL);
+    static Archive* createEmptyArchive(const Path& in_sFileName, Compressor* in_pComp = nullptr);
     static Archive* loadArchive(const Path& in_sFileName, const String& in_sFileChunkPrefix = String::EMPTY);
     static Archive* loadArchive(File& out_file, const String& in_sFileChunkPrefix = String::EMPTY);
     static bool isValidArchive(const String& in_sFileName);

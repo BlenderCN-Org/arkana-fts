@@ -46,7 +46,7 @@ FTS::LoginMenuRlv::~LoginMenuRlv()
 }
 
 /** This method will be called during the loading of the runlevel.\n
- *  The GUI is loaded here, other stuff is initialised too.
+ *  The GUI is loaded here, other stuff is initialized too.
  *
  *  \return This method should return true only if it successfully loaded
  *          the whole runlevel. If it returns false, the previous runlevel
@@ -62,11 +62,10 @@ bool FTS::LoginMenuRlv::load()
 
     // Find the correct menu background image.
     std::list<Resolution> lAvail;
-    PDBrowseInfo dbi = dBrowse_Open(Path::datadir("Graphics/ui/menubg"));
-    for(String file = dBrowse_GetNextWithWildcard(dbi, "*.png") ; !file.empty() ; file = dBrowse_GetNextWithWildcard(dbi, "*.png")) {
+    std::vector<String> fileNames = dBrowse(Path::datadir("Graphics/ui/menubg"), "*.png");
+    for(auto&& file : fileNames) {
         lAvail.push_back(Resolution(Path(file).withoutExt()));
     }
-    dBrowse_Close(dbi);
 
     String sClosestMatch = Resolution().bestFit(lAvail).toString(false);
 
