@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Source Files\fts">
+      <UniqueIdentifier>{1a60e768-888f-4af6-806c-1eb6fca6a7be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\FtpLib">
+      <UniqueIdentifier>{a186c5df-34d8-4251-bccd-cac76e13da56}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\myLib">
+      <UniqueIdentifier>{6ee1ab0d-d59d-46a1-b876-eb2b343bff22}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\myLib\dProcess">
+      <UniqueIdentifier>{7a2d9283-a916-4973-b62b-bb27140cde4e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="conf.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ConfigFileUpdate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="crc32.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="log.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="setup.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UIActionList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="utils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\myLib\dBrowse\wildcard.cpp">
+      <Filter>Source Files\fts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\myLib\dBrowse\windows.cpp">
+      <Filter>Source Files\fts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\windows\3rd_party\ftplib\ftplib.c">
+      <Filter>Source Files\FtpLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\myLib\dProcess\dProcess.cpp">
+      <Filter>Source Files\myLib\dProcess</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\windows\3rd_party\ftplib\ftplib.h">
+      <Filter>Source Files\FtpLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\myLib\dProcess\dProcess.h">
+      <Filter>Source Files\myLib\dProcess</Filter>
+    </ClInclude>
+    <ClInclude Include="ConfigFileUpdate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="log.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="main.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="setup.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UIActionList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

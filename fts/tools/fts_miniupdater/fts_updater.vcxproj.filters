@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Source Files\fts">
+      <UniqueIdentifier>{6d3fcf6a-65c4-4702-9d32-7b4bc65ac4c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\FtpLib">
+      <UniqueIdentifier>{6174efa6-93c4-4951-bd67-fc0d8347bbd9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\myLib">
+      <UniqueIdentifier>{7a3e738b-1914-4aee-8df6-1dc0b5b28b2d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\myLib\dProcess">
+      <UniqueIdentifier>{c1df02da-7696-4944-bcb6-a27d73ab9dff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="conf.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="crc32.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="log.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="setup.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="utils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\myLib\dBrowse\wildcard.cpp">
+      <Filter>Source Files\fts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\myLib\dBrowse\windows.cpp">
+      <Filter>Source Files\fts</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\windows\3rd_party\ftplib\ftplib.c">
+      <Filter>Source Files\FtpLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\myLib\dProcess\dProcess.cpp">
+      <Filter>Source Files\myLib\dProcess</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\myLib\dProcess\dProcess.h">
+      <Filter>Source Files\myLib\dProcess</Filter>
+    </ClInclude>
+    <ClInclude Include="log.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="main.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="setup.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
