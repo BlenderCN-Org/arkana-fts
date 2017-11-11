@@ -740,6 +740,7 @@ int FTS::MenuOptions::saveVideo(bool &out_bReloadMenu)
     // The values.
     Resolution res;
     int mod = 2;
+    int tex = 2;
 
     try {
         String sTmp(m_pVideo->getChild("dlg_options/btnVideo/cbResol")->getText());
@@ -757,7 +758,7 @@ int FTS::MenuOptions::saveVideo(bool &out_bReloadMenu)
 
     try {
         FTSGetConvertWinMacro(CEGUI::Combobox, cb, "dlg_options/btnVideo/cbFilt");
-        int tex = (size_t)cb->findItemWithText(cb->getText(), NULL)->getUserData();
+        tex = (size_t)cb->findItemWithText(cb->getText(), NULL)->getUserData();
     } catch(CEGUI::Exception & e) {
         FTS18N("CEGUI", MsgType::Error, e.getMessage());
     }
@@ -768,6 +769,7 @@ int FTS::MenuOptions::saveVideo(bool &out_bReloadMenu)
     } catch(CEGUI::Exception & e) {
         FTS18N("CEGUI", MsgType::Error, e.getMessage());
     }
+    m_pConf->set("TextureFilter", tex);
     m_pConf->set("ModelDetails", mod);
     m_pConf->save();
 
