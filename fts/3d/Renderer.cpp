@@ -81,7 +81,7 @@ void FTS::Renderer::createSDLWindow(const Resolution& in_res)
     if(!m_pScreen) {
         throw HardwareLimitException("Screen resolution " + in_res.toString(true), 0, 0);
     }
-    auto context = SDL_GL_CreateContext(m_pScreen);
+    m_Context = SDL_GL_CreateContext(m_pScreen);
     String sVersion = glGetString(GL_VERSION);
     std::vector<String> versions;
     sVersion.split(std::inserter(versions, versions.begin()), ".");
