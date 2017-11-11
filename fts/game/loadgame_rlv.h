@@ -62,6 +62,7 @@ public:
     class ILoadGameState
     {
     public:
+        virtual ~ILoadGameState() = default;
         virtual void doLoad(LoadGameRlv * context) = 0;
         virtual float getStatePercentage() = 0 ;
     };

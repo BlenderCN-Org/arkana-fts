@@ -6,6 +6,7 @@
 class IHotkey 
 {
 public:
+    virtual ~IHotkey() = default;
     virtual int exec() = 0 ;
 };
 
