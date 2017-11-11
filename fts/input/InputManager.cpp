@@ -587,25 +587,25 @@ bool InputManager::handleEvent(const SDL_Event& ev)
         if(ev.key.keysym.sym != SDLK_UNKNOWN) {
             this->handleKeyDown(static_cast<Key::Enum>(ev.key.keysym.scancode));
         }
-        return true;
+        break;
     case SDL_KEYUP:
         this->handleKeyUp(static_cast<Key::Enum>(ev.key.keysym.scancode));
-        return true;
+        break;
     case SDL_MOUSEMOTION:
         this->handleMouseMove(ev.motion.x, ev.motion.y);
-        return true;
+        break;
     case SDL_MOUSEBUTTONDOWN:
         this->handleMouseButtonPress(SDLMouseToFTSMouse(ev.button.button));
-        return true;
+        break;
     case SDL_MOUSEBUTTONUP:
         // Note: we get this message for mouse scrolling too.
         // nonsense but so what ... the mouse button release looks
         // for invalid inputs.
         this->handleMouseButtonRelease(SDLMouseToFTSMouse(ev.button.button));
-        return true;
+        break;
     case SDL_MOUSEWHEEL:
         this->handleMouseScroll(SDLMouseToFTSScroll(ev.wheel));
-        return true;
+        break;
     case SDL_TEXTINPUT:
     {
         // Assumption: This event here delivers only one keyboard character at a time.
@@ -620,6 +620,8 @@ bool InputManager::handleEvent(const SDL_Event& ev)
     default:
         return false;
     }
+
+    return true;
 }
 
 /** Checks if a key is currently pressed or not.
