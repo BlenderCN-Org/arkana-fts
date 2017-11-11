@@ -46,7 +46,7 @@
 // declare module
 #define CEGUI_DECLARE_WR_MODULE( moduleName )\
 \
-class CEGUI::WindowRendererFactory;\
+namespace CEGUI { class WindowRendererFactory; }\
 \
 extern "C" CEGUIWRMODULE_API void registerFactoryFunction(const CEGUI::String& type_name);\
 extern "C" CEGUIWRMODULE_API CEGUI::uint registerAllFactoriesFunction(void);\
