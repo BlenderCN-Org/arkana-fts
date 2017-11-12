@@ -16,12 +16,10 @@
 
 namespace FTS {
 
-namespace CameraDrawMode {
-    enum Enum {
-        Dont,
-        Axes,
-    };
-}
+enum class CameraDrawMode {
+    Dont,
+    Axes
+};
 
 /// This class represents a camera in Arkana-FTS.
 /// One important thing to note is that all functions taking angles as parameters
@@ -29,8 +27,8 @@ namespace CameraDrawMode {
 /// rotation in the sense of a right-handed coordinate system.
 class Camera {
 public:
-    Camera();
-    virtual ~Camera();
+    Camera() = default;
+    virtual ~Camera() = default;
 
     Vector getPos() const;
     Vector getFront() const;
@@ -101,7 +99,7 @@ private:
     /// The mutex to protect myself.
     mutable Mutex m_Mutex;
 
-    CameraDrawMode::Enum m_mode = CameraDrawMode::Dont;
+    CameraDrawMode m_mode = CameraDrawMode::Dont;
 
     /// The width of this camera's view port.
     float m_fW = -1.f;
@@ -111,7 +109,7 @@ private:
 
 class CameraCmdBase : public CommandBase {
 private:
-    Camera *m_pCam;
+    Camera *m_pCam = nullptr;
 protected:
     CameraCmdBase(Camera *in_pCam) : m_pCam(in_pCam) {};
 public:
@@ -124,12 +122,8 @@ class CameraPosCmd : public CameraCmdBase {
 private:
     Vector m_pos;
 public:
-    CameraPosCmd(const Vector &in_pos)
-        : CameraCmdBase(NULL),
-          m_pos(in_pos) {};
-    CameraPosCmd(Camera *in_pCam, const Vector &in_pos)
-        : CameraCmdBase(in_pCam),
-          m_pos(in_pos) {};
+    CameraPosCmd(const Vector &in_pos) : CameraCmdBase(nullptr), m_pos(in_pos) {};
+    CameraPosCmd(Camera *in_pCam, const Vector &in_pos) : CameraCmdBase(in_pCam), m_pos(in_pos) {};
     virtual ~CameraPosCmd() {};
     bool exec();
 };
@@ -138,12 +132,8 @@ class CameraLookAtCmd : public CameraCmdBase {
 private:
     Vector m_tgt;
 public:
-    CameraLookAtCmd(const Vector &in_tgt)
-        : CameraCmdBase(NULL),
-          m_tgt(in_tgt) {};
-    CameraLookAtCmd(Camera *in_pCam, const Vector &in_tgt)
-        : CameraCmdBase(in_pCam),
-          m_tgt(in_tgt) {};
+    CameraLookAtCmd(const Vector &in_tgt) : CameraCmdBase(nullptr), m_tgt(in_tgt) {};
+    CameraLookAtCmd(Camera *in_pCam, const Vector &in_tgt) : CameraCmdBase(in_pCam), m_tgt(in_tgt) {};
     virtual ~CameraLookAtCmd() {};
     bool exec();
 };
@@ -151,7 +141,7 @@ public:
 // Some command classes to control the camera.
 class CameraCmd : public CameraCmdBase {
 public:
-    typedef enum {
+    enum class D_CAMERA_ACTION {
         moveRight = 1,
         moveUp,
         moveFront,
@@ -167,16 +157,10 @@ public:
         rotateGlobalX,
         rotateGlobalY,
         rotateGlobalZ,
-    } D_CAMERA_ACTION;
+    } ;
 
-    CameraCmd(D_CAMERA_ACTION in_act, float in_fAmount)
-        : CameraCmdBase(NULL),
-          m_fAmount(in_fAmount),
-          m_act(in_act) {};
-    CameraCmd(Camera *in_pCam, D_CAMERA_ACTION in_act, float in_fAmount)
-        : CameraCmdBase(in_pCam),
-          m_fAmount(in_fAmount),
-          m_act(in_act) {};
+    CameraCmd(D_CAMERA_ACTION in_act, float in_fAmount) : CameraCmdBase(nullptr), m_fAmount(in_fAmount), m_act(in_act) {};
+    CameraCmd(Camera *in_pCam, D_CAMERA_ACTION in_act, float in_fAmount) : CameraCmdBase(in_pCam), m_fAmount(in_fAmount), m_act(in_act) {};
     virtual ~CameraCmd() {};
     bool exec();
 

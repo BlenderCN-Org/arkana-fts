@@ -19,16 +19,6 @@
 
 using namespace FTS;
 
-/// Constructor
-FTS::Camera::Camera()
-{
-}
-
-/// Destructor
-FTS::Camera::~Camera()
-{
-}
-
 Camera& FTS::Camera::reset(float in_fNewW, float in_fNewH)
 {
     if(in_fNewW < 1.0f || in_fNewH < 1.0f) {
@@ -621,7 +611,7 @@ General4x4Matrix Camera::getViewProjectionMatrix() const
 
 Camera *CameraCmdBase::getCam()
 {
-    if(m_pCam != NULL) {
+    if(m_pCam != nullptr) {
         return m_pCam;
     }
 
@@ -630,7 +620,7 @@ Camera *CameraCmdBase::getCam()
 
 bool CameraPosCmd::exec()
 {
-    if(this->getCam() == NULL)
+    if(this->getCam() == nullptr)
         return false;
 
     this->getCam()->position(m_pos);
@@ -639,7 +629,7 @@ bool CameraPosCmd::exec()
 
 bool CameraLookAtCmd::exec()
 {
-    if(this->getCam() == NULL)
+    if(this->getCam() == nullptr)
         return false;
 
     this->getCam()->lookAt(m_tgt);
@@ -648,25 +638,25 @@ bool CameraLookAtCmd::exec()
 
 bool CameraCmd::exec()
 {
-    if(this->getCam() == NULL)
+    if(this->getCam() == nullptr)
         return false;
 
     switch(m_act) {
-    case moveRight: this->getCam()->moveRight(m_fAmount); break;
-    case moveUp: this->getCam()->moveUp(m_fAmount); break;
-    case moveFront: this->getCam()->moveFront(m_fAmount); break;
-    case moveGlobalX: this->getCam()->moveGlobalX(m_fAmount); break;
-    case moveGlobalY: this->getCam()->moveGlobalY(m_fAmount); break;
-    case moveGlobalZ: this->getCam()->moveGlobalZ(m_fAmount); break;
-    case moveFrontParralelToGlobalXY: this->getCam()->moveFrontParralelToGlobalXY(m_fAmount); break;
-    case moveFrontParralelToGlobalXZ: this->getCam()->moveFrontParralelToGlobalXZ(m_fAmount); break;
-    case moveFrontParralelToGlobalYZ: this->getCam()->moveFrontParralelToGlobalYZ(m_fAmount); break;
-    case rotateX: this->getCam()->rotateX(m_fAmount); break;
-    case rotateY: this->getCam()->rotateY(m_fAmount); break;
-    case rotateZ: this->getCam()->rotateZ(m_fAmount); break;
-    case rotateGlobalX: this->getCam()->rotateGlobalX(m_fAmount); break;
-    case rotateGlobalY: this->getCam()->rotateGlobalY(m_fAmount); break;
-    case rotateGlobalZ: this->getCam()->rotateGlobalZ(m_fAmount); break;
+    case D_CAMERA_ACTION::moveRight: this->getCam()->moveRight(m_fAmount); break;
+    case D_CAMERA_ACTION::moveUp: this->getCam()->moveUp(m_fAmount); break;
+    case D_CAMERA_ACTION::moveFront: this->getCam()->moveFront(m_fAmount); break;
+    case D_CAMERA_ACTION::moveGlobalX: this->getCam()->moveGlobalX(m_fAmount); break;
+    case D_CAMERA_ACTION::moveGlobalY: this->getCam()->moveGlobalY(m_fAmount); break;
+    case D_CAMERA_ACTION::moveGlobalZ: this->getCam()->moveGlobalZ(m_fAmount); break;
+    case D_CAMERA_ACTION::moveFrontParralelToGlobalXY: this->getCam()->moveFrontParralelToGlobalXY(m_fAmount); break;
+    case D_CAMERA_ACTION::moveFrontParralelToGlobalXZ: this->getCam()->moveFrontParralelToGlobalXZ(m_fAmount); break;
+    case D_CAMERA_ACTION::moveFrontParralelToGlobalYZ: this->getCam()->moveFrontParralelToGlobalYZ(m_fAmount); break;
+    case D_CAMERA_ACTION::rotateX: this->getCam()->rotateX(m_fAmount); break;
+    case D_CAMERA_ACTION::rotateY: this->getCam()->rotateY(m_fAmount); break;
+    case D_CAMERA_ACTION::rotateZ: this->getCam()->rotateZ(m_fAmount); break;
+    case D_CAMERA_ACTION::rotateGlobalX: this->getCam()->rotateGlobalX(m_fAmount); break;
+    case D_CAMERA_ACTION::rotateGlobalY: this->getCam()->rotateGlobalY(m_fAmount); break;
+    case D_CAMERA_ACTION::rotateGlobalZ: this->getCam()->rotateGlobalZ(m_fAmount); break;
     }
     return true;
 }

@@ -1331,54 +1331,54 @@ int InputManager::registerDefaultMenuShortcuts(bool in_bWithCamera)
 
     if(in_bWithCamera) {
         // Create the up key shortcut.
-        InputCombo *up = new InputCombo("cam/up", Key::ArrowUp, new CameraCmd(CameraCmd::moveUp, 0.5f));
+        InputCombo *up = new InputCombo("cam/up", Key::ArrowUp, new CameraCmd(CameraCmd::D_CAMERA_ACTION::moveUp, 0.5f));
         // Add left/right ctrl to the up key.
-        pCtrlModif = new InputCombo("cam/up/rot", SpecialKey::Control, new CameraCmd(CameraCmd::rotateGlobalX, deg2rad*1.0f));
+        pCtrlModif = new InputCombo("cam/up/rot", SpecialKey::Control, new CameraCmd(CameraCmd::D_CAMERA_ACTION::rotateGlobalX, deg2rad*1.0f));
         up->addModifier(pCtrlModif);
         // Add left/right shift to the up key.
-        up->addModifier(new InputCombo("cam/up/slow", SpecialKey::Shift, new CameraCmd(CameraCmd::moveUp, 0.05f)));
+        up->addModifier(new InputCombo("cam/up/slow", SpecialKey::Shift, new CameraCmd(CameraCmd::D_CAMERA_ACTION::moveUp, 0.05f)));
         // Add left/right shift to the left/right ctrl + up key combo.
-        pCtrlModif->addModifier(new InputCombo("cam/up/rot/slow", SpecialKey::Shift, new CameraCmd(CameraCmd::rotateX, deg2rad*0.05f)));
+        pCtrlModif->addModifier(new InputCombo("cam/up/rot/slow", SpecialKey::Shift, new CameraCmd(CameraCmd::D_CAMERA_ACTION::rotateX, deg2rad*0.05f)));
         this->add(up);    // Add the whole set to the manager.
 
         // Create the up key shortcut.
-        InputCombo *down = new InputCombo("cam/down", Key::ArrowDown, new CameraCmd(CameraCmd::moveUp, -0.5f));
-        pCtrlModif = new InputCombo("cam/down/rot", SpecialKey::Control, new CameraCmd(CameraCmd::rotateGlobalX, deg2rad*-1.0f));
+        InputCombo *down = new InputCombo("cam/down", Key::ArrowDown, new CameraCmd(CameraCmd::D_CAMERA_ACTION::moveUp, -0.5f));
+        pCtrlModif = new InputCombo("cam/down/rot", SpecialKey::Control, new CameraCmd(CameraCmd::D_CAMERA_ACTION::rotateGlobalX, deg2rad*-1.0f));
         down->addModifier(pCtrlModif);
-        down->addModifier(new InputCombo("cam/down/slow", SpecialKey::Shift, new CameraCmd(CameraCmd::moveUp, -0.05f)));
-        pCtrlModif->addModifier(new InputCombo("cam/down/rot/slow", SpecialKey::Shift, new CameraCmd(CameraCmd::rotateX, deg2rad*-0.05f)));
+        down->addModifier(new InputCombo("cam/down/slow", SpecialKey::Shift, new CameraCmd(CameraCmd::D_CAMERA_ACTION::moveUp, -0.05f)));
+        pCtrlModif->addModifier(new InputCombo("cam/down/rot/slow", SpecialKey::Shift, new CameraCmd(CameraCmd::D_CAMERA_ACTION::rotateX, deg2rad*-0.05f)));
         this->add(down);
 
         // Create the left key shortcut set.
-        InputCombo *left = new InputCombo("cam/left", Key::ArrowLeft, new CameraCmd(CameraCmd::moveRight, -0.5f));
-        pCtrlModif = new InputCombo("cam/left/rot", SpecialKey::Control, new CameraCmd(CameraCmd::rotateGlobalY, deg2rad*1.0f));
+        InputCombo *left = new InputCombo("cam/left", Key::ArrowLeft, new CameraCmd(CameraCmd::D_CAMERA_ACTION::moveRight, -0.5f));
+        pCtrlModif = new InputCombo("cam/left/rot", SpecialKey::Control, new CameraCmd(CameraCmd::D_CAMERA_ACTION::rotateGlobalY, deg2rad*1.0f));
         left->addModifier(pCtrlModif);
-        left->addModifier(new InputCombo("cam/left/slow", SpecialKey::Shift, new CameraCmd(CameraCmd::moveRight, -0.05f)));
-        pCtrlModif->addModifier(new InputCombo("cam/left/rot/slow", SpecialKey::Shift, new CameraCmd(CameraCmd::rotateY, deg2rad*0.05f)));
+        left->addModifier(new InputCombo("cam/left/slow", SpecialKey::Shift, new CameraCmd(CameraCmd::D_CAMERA_ACTION::moveRight, -0.05f)));
+        pCtrlModif->addModifier(new InputCombo("cam/left/rot/slow", SpecialKey::Shift, new CameraCmd(CameraCmd::D_CAMERA_ACTION::rotateY, deg2rad*0.05f)));
         this->add(left);
 
         // Create the right key shortcut set.
-        InputCombo *right = new InputCombo("cam/right", Key::ArrowRight, new CameraCmd(CameraCmd::moveRight, 0.5f));
-        pCtrlModif = new InputCombo("cam/right/rot", SpecialKey::Control, new CameraCmd(CameraCmd::rotateGlobalY, deg2rad*-1.0f));
+        InputCombo *right = new InputCombo("cam/right", Key::ArrowRight, new CameraCmd(CameraCmd::D_CAMERA_ACTION::moveRight, 0.5f));
+        pCtrlModif = new InputCombo("cam/right/rot", SpecialKey::Control, new CameraCmd(CameraCmd::D_CAMERA_ACTION::rotateGlobalY, deg2rad*-1.0f));
         right->addModifier(pCtrlModif);
-        right->addModifier(new InputCombo("cam/right/slow", SpecialKey::Shift, new CameraCmd(CameraCmd::moveRight, 0.05f)));
-        pCtrlModif->addModifier(new InputCombo("cam/right/rot/slow", SpecialKey::Shift, new CameraCmd(CameraCmd::rotateY, deg2rad*-0.05f)));
+        right->addModifier(new InputCombo("cam/right/slow", SpecialKey::Shift, new CameraCmd(CameraCmd::D_CAMERA_ACTION::moveRight, 0.05f)));
+        pCtrlModif->addModifier(new InputCombo("cam/right/rot/slow", SpecialKey::Shift, new CameraCmd(CameraCmd::D_CAMERA_ACTION::rotateY, deg2rad*-0.05f)));
         this->add(right);
 
         // Create the page up key shortcut set.
-        InputCombo *pgup = new InputCombo("cam/pgup", Key::PageUp, new CameraCmd(CameraCmd::moveFront, 0.5f));
-        pCtrlModif = new InputCombo("cam/pgup/rot", SpecialKey::Control, new CameraCmd(CameraCmd::rotateGlobalZ, deg2rad*1.0f));
+        InputCombo *pgup = new InputCombo("cam/pgup", Key::PageUp, new CameraCmd(CameraCmd::D_CAMERA_ACTION::moveFront, 0.5f));
+        pCtrlModif = new InputCombo("cam/pgup/rot", SpecialKey::Control, new CameraCmd(CameraCmd::D_CAMERA_ACTION::rotateGlobalZ, deg2rad*1.0f));
         pgup->addModifier(pCtrlModif);
-        pgup->addModifier(new InputCombo("cam/pgup/slow", SpecialKey::Shift, new CameraCmd(CameraCmd::moveFront, 0.05f)));
-        pCtrlModif->addModifier(new InputCombo("cam/pgup/rot/slow", SpecialKey::Shift, new CameraCmd(CameraCmd::rotateZ, deg2rad*0.05f)));
+        pgup->addModifier(new InputCombo("cam/pgup/slow", SpecialKey::Shift, new CameraCmd(CameraCmd::D_CAMERA_ACTION::moveFront, 0.05f)));
+        pCtrlModif->addModifier(new InputCombo("cam/pgup/rot/slow", SpecialKey::Shift, new CameraCmd(CameraCmd::D_CAMERA_ACTION::rotateZ, deg2rad*0.05f)));
         this->add(pgup);
 
         // Create the page down key shortcut set.
-        InputCombo *pgdown = new InputCombo("cam/pgdown", Key::PageDown, new CameraCmd(CameraCmd::moveFront, -0.5f));
-        pCtrlModif = new InputCombo("cam/pgdown/rot", SpecialKey::Control, new CameraCmd(CameraCmd::rotateGlobalZ, deg2rad*-1.0f));
+        InputCombo *pgdown = new InputCombo("cam/pgdown", Key::PageDown, new CameraCmd(CameraCmd::D_CAMERA_ACTION::moveFront, -0.5f));
+        pCtrlModif = new InputCombo("cam/pgdown/rot", SpecialKey::Control, new CameraCmd(CameraCmd::D_CAMERA_ACTION::rotateGlobalZ, deg2rad*-1.0f));
         pgdown->addModifier(pCtrlModif);
-        pgdown->addModifier(new InputCombo("cam/pgdown/slow", SpecialKey::Shift, new CameraCmd(CameraCmd::moveFront, -0.05f)));
-        pCtrlModif->addModifier(new InputCombo("cam/pgdown/rot/slow", SpecialKey::Shift, new CameraCmd(CameraCmd::rotateZ, deg2rad*-0.05f)));
+        pgdown->addModifier(new InputCombo("cam/pgdown/slow", SpecialKey::Shift, new CameraCmd(CameraCmd::D_CAMERA_ACTION::moveFront, -0.05f)));
+        pCtrlModif->addModifier(new InputCombo("cam/pgdown/rot/slow", SpecialKey::Shift, new CameraCmd(CameraCmd::D_CAMERA_ACTION::rotateZ, deg2rad*-0.05f)));
         this->add(pgdown);
 
         // Create the 1 keyboard shortcut.
