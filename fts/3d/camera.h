@@ -29,8 +29,7 @@ namespace CameraDrawMode {
 /// rotation in the sense of a right-handed coordinate system.
 class Camera {
 public:
-    Camera(float in_fViewportW = -1.0f, float in_fViewportH = -1.0f,
-           const CameraDrawMode::Enum& in_mode = CameraDrawMode::Dont);
+    Camera();
     virtual ~Camera();
 
     Vector getPos() const;
@@ -78,7 +77,7 @@ public:
     Camera& perspectiveProjection(float in_fFoV,
                                   float in_fNearPlane = 2.5f, float in_fFarPlane = 1000.0f);
 
-    Camera& reset(float in_fNewW, float in_fNewH);
+    Camera& reset(float in_fNewW = -1.f, float in_fNewH = -1.f);
 
     const Camera& use() const;
 
@@ -102,12 +101,12 @@ private:
     /// The mutex to protect myself.
     mutable Mutex m_Mutex;
 
-    CameraDrawMode::Enum m_mode;
+    CameraDrawMode::Enum m_mode = CameraDrawMode::Dont;
 
-    /// The width of this camera's viewport.
-    float m_fW;
-    /// The height of this camera's viewport.
-    float m_fH;
+    /// The width of this camera's view port.
+    float m_fW = -1.f;
+    /// The height of this camera's view port.
+    float m_fH = 1.f;
 };
 
 class CameraCmdBase : public CommandBase {

@@ -20,11 +20,8 @@
 using namespace FTS;
 
 /// Constructor
-FTS::Camera::Camera(float in_fViewportW, float in_fViewportH,
-                    const CameraDrawMode::Enum& in_mode)
-    : m_mode(in_mode)
+FTS::Camera::Camera()
 {
-    this->reset(in_fViewportW, in_fViewportH);
 }
 
 /// Destructor

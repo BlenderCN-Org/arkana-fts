@@ -29,8 +29,8 @@ class Renderer : public Singleton<Renderer> {
     Camera m_default3DCam;
 
     /// SDL: The screen surface.
-    SDL_Window *m_pScreen;
-    void * m_Context;
+    SDL_Window *m_pScreen = nullptr;
+    void * m_Context = nullptr;
     // Graphics mode creation methods.
     void createSDLWindow(const Resolution& in_res);
     static uint32_t calcSDLVideoFlags(bool in_bFullscreen);

@@ -16,9 +16,9 @@ namespace FTS {
     class String;
 
 struct Resolution {
-    uint16_t w;
-    uint16_t h;
-    bool fs;
+    uint16_t w = 1;
+    uint16_t h = 1;
+    bool fs = false;
 
 #ifndef D_NO_SDL
     Resolution();
@@ -29,9 +29,9 @@ struct Resolution {
     String toString(bool in_bFS) const;
     float aspectRatio() const;
     Resolution bestFit(const std::list<Resolution>& in_res) const;
-
+    
     /// To allow sorting a list of resolutions. The width is compared first, then
-    /// the height, then windowed mode is considered smaller than fullscreen mode.
+    /// the height, then windowed mode is considered smaller than full screen mode.
     bool operator<(const Resolution&) const;
 };
 

@@ -38,10 +38,14 @@ using namespace FTS;
 
 FTS::Renderer::Renderer()
 {
-    m_default2DCam.ortho2DProjection();
 
     Configuration conf ("conf.xml", ArkanaDefaultSettings());
     this->changeResolution(Resolution(conf.getInt("HRes"), conf.getInt("VRes"), conf.getBool("Fullscreen")));
+
+    // Initialize the Camera object after the SDL window is initialized.
+    m_default2DCam.reset();
+    m_default3DCam.reset();
+    m_default2DCam.ortho2DProjection();
 }
 
 FTS::Renderer::~Renderer()

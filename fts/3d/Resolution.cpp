@@ -44,18 +44,34 @@ FTS::Resolution::Resolution(const String& in_s)
 #ifndef D_NO_SDL
 FTS::Resolution::Resolution()
 {
-    // Get the current screen resolution.
+    if(Renderer::getSingletonPtr() == nullptr) {
+        // If called before the singleton is created (before the fts video init) return.
+        return;
+    }
+
+    // If the SDL window is not initialized yet, return.
+    auto window = Renderer::getSingleton().getWindow();
+    if(window == nullptr) {
+        return;
+    }
+
+    // Get the current window resolution.
     // Not taking the one from the config so that it even works before we have
     // a window. Useful when there is no config yet.
     SDL_DisplayMode info;
-    if (SDL_GetCurrentDisplayMode(0, &info) == 0) {
+    if(SDL_GetWindowDisplayMode(window, &info) == 0) {
         w = info.w;
         h = info.h;
     } else {
         w = h = 1;
     }
 
-    fs = true;
+    auto flags = SDL_GetWindowFlags(window);
+    if(flags & SDL_WINDOW_FULLSCREEN) {
+        fs = true;
+    } else {
+        fs = false;
+    }
 }
 #endif // D_NO_SDL
 
