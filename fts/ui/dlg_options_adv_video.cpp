@@ -220,12 +220,12 @@ bool FTS::AdvVideoDlg::cbShadersChanged(const CEGUI::EventArgs & in_ea)
 
 void FTS::AdvVideoDlg::detectMaxVBOSize(int in_mode, double &out_lastOk, double &out_last)
 {
-    uint32_t uiVBO = 0;
     out_lastOk = 0;
     out_last = 0;
     bool bHitSupremum = false;
 
     /// \TODO GL32
+//     uint32_t uiVBO = 0;
 //     glGenBuffersARB(1, &uiVBO);
 //     glBindBufferARB(GL_ARRAY_BUFFER_ARB, uiVBO);
 //     for(out_last = 1.0 * 1024.0 * 1024.0 ; out_last * 2.0 < std::numeric_limits<int>::max() - 1.0 ; out_last *= 2.0/*+= 64.0 * 1024.0 * 1024.0*/) {
@@ -248,11 +248,11 @@ void FTS::AdvVideoDlg::detectMaxVBOSize(int in_mode, double &out_lastOk, double 
 
 bool FTS::AdvVideoDlg::cbTestGL(const CEGUI::EventArgs & in_ea)
 {
-    int iVal = 0, i2Vals[] = {0, 0};
     String sResults = "";
 
     /// \TODO: GL32
     /*
+    int iVal = 0, i2Vals[] = {0, 0};
     sResults += "Texturing:\n";
     glGetIntegerv(GL_MAX_TEXTURE_SIZE, &iVal);
     sResults += "    Max texture size: "+String::nr(iVal)+"\n";
