@@ -33,7 +33,6 @@ endif()
 # Put all sourcefiles into one variable. #
 ##########################################
 set(SOURCES lib/analysis.c
-            lib/barkmel.c
             lib/bitrate.c
             lib/block.c
             lib/codebook.c

@@ -27,6 +27,23 @@ if("${CURR_DIR}" STREQUAL "${fts_SOURCE_DIR}\n")
     message(FATAL_ERROR "In-source-builds are not allowed to build the Arkana-FTS server. Please go into the \"linux\" directory and type \"cmake ..\" there.\nThank you.")
 endif()
 
+if(MSVC)
+    FOREACH(flag_var
+        CMAKE_C_FLAGS CMAKE_C_FLAGS_DEBUG CMAKE_C_FLAGS_RELEASE
+        )
+        IF(${flag_var} MATCHES "/MD")
+            STRING(REGEX REPLACE "/MD" "/MT" ${flag_var} "${${flag_var}}")
+        ENDIF()
+    ENDFOREACH(flag_var)
+    FOREACH(flag_var
+        CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE
+        )
+        IF(${flag_var} MATCHES "/MD")
+            STRING(REGEX REPLACE "/MD" "/MT" ${flag_var} "${${flag_var}}")
+        ENDIF()
+    ENDFOREACH(flag_var)
+endif()
+
 # Put all sourcefiles into one variable. #
 ##########################################
 set(SOURCES_COMMON
@@ -50,7 +67,7 @@ set(SOURCES_COMMON
     3d/Shader.cpp
     3d/VertexArrayObject.cpp
     dLib/dArchive/dArchive.cpp
-	dLib/dBrowse/dBrowse.cpp
+    dLib/dBrowse/dBrowse.cpp
     dLib/dConf/configuration.cpp
     dLib/dConf/ArkanaDefaultSettings.cpp
     dLib/dConf/DefaultOptions.cpp
@@ -168,11 +185,11 @@ if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
     add_definitions("-Wall -Winvalid-pch")
     if(CMAKE_BUILD_TYPE STREQUAL "Debug")
         add_definitions("-O0 -pg -fstack-protector-all")
-	if(CMAKE_COMPILER_IS_GNUCXX)
-	    add_definitions("-Wno-non-virtual-dtor")
-	endif()
+    if(CMAKE_COMPILER_IS_GNUCXX)
+        add_definitions("-Wno-non-virtual-dtor")
+    endif()
     else()
-	add_definitions("-s")
+    add_definitions("-s")
     endif()
 elseif(MSVC)
 endif()
@@ -183,8 +200,16 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Debug or release ?
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     message(STATUS "Configuring for debug")
-    add_definitions(-DDEBUG=1)
+    if(WIN32)
+        add_definitions(-D_DEBUG)
+        link_directories("3rdparty/vclib/")
+    else()
+        add_definitions(-DDEBUG=1)
+    endif()
 else()
+    if(WIN32)
+        add_definitions(-DNDEBUG)
+    endif()
     message(STATUS "Configuring for release")
 endif()
 
@@ -201,122 +226,167 @@ list(APPEND FTS_LIBS ${CMAKE_THREAD_LIBS_INIT})
 find_package(OpenGL REQUIRED)
 list(APPEND FTS_LIBS ${OPENGL_LIBRARIES})
 list(APPEND FTS_INCLUDES ${OPENGL_INCLUDE_DIR})
+if(WIN32)
+    add_subdirectory(${fts_SOURCE_DIR}/3rdparty)
+    list(APPEND FTS_INCLUDES ${fts_SOURCE_DIR}/3rdparty/CEGUI/include)
+    list(APPEND FTS_INCLUDES ${fts_SOURCE_DIR}/3rdparty/CEGUI)
+    list(APPEND FTS_INCLUDES ${fts_SOURCE_DIR}/3rdparty/sound/libogg/include)
+    list(APPEND FTS_INCLUDES ${fts_SOURCE_DIR}/3rdparty/sound/libvorbis/include)
+    list(APPEND FTS_INCLUDES ${fts_SOURCE_DIR}/3rdparty/sound/openal-soft/include)
+    list(APPEND FTS_INCLUDES ${fts_SOURCE_DIR}/3rdparty/sound/openal-soft/include/AL)
+    list(APPEND FTS_INCLUDES ${fts_SOURCE_DIR}/3rdparty/SDL2/include)
+    list(APPEND FTS_INCLUDES ${fts_SOURCE_DIR}/3rdparty/dao/src)
+    list(APPEND FTS_INCLUDES ${fts_SOURCE_DIR}/3rdparty/bouge/include)
 
-find_package(SDL2)
-if(${SDL2_FOUND} STREQUAL "NO")
-    message(FATAL_ERROR "Could not find SDL installed on your system. This means you have to install the SDL development files. This can be done by installing a package called something in the lines of SDL-devel or SDL-dev.")
+#..;../3rdparty/CEGUI/include;../3rdparty/CEGUI;../3rdparty/sound/libogg/include;../3rdparty/sound/libvorbis/include;../3rdparty/sound/openal-soft/include;
+#../3rdparty/sound/openal-soft/include/AL;../main;../3rdparty/sdl/include;../3rdparty/dao/src;../3rdparty/bouge/include;../../../fts-network/include
+#freetype_d.lib;pcred.lib;OpenGL32.lib;glu32.lib;SDL2_d.lib;SDL2main_d.lib;CEGUIBased_d.lib;CEGUIOpenGLRendererd_d.lib;CEGUIFalagardWRBased_d.lib;
+
+    if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+        list(APPEND FTS_LIBS OpenAL32_d.lib)
+        list(APPEND FTS_LIBS vorbis_d.lib)
+        list(APPEND FTS_LIBS ogg_d.lib)
+        list(APPEND FTS_LIBS dao_d.lib)
+        list(APPEND FTS_LIBS bouge-s-d.lib)
+        list(APPEND FTS_LIBS bouge-math-s-d.lib)
+        list(APPEND FTS_LIBS bouge-tinyxml-s-d.lib)
+        list(APPEND FTS_LIBS bouge-xml-common-s-d.lib)
+        list(APPEND FTS_LIBS bouge-xmlio-s-d.lib)
+        list(APPEND FTS_LIBS freetype_d.lib)
+        list(APPEND FTS_LIBS pcred.lib)
+        list(APPEND FTS_LIBS SDL2_d.lib)
+        list(APPEND FTS_LIBS SDL2main_d.lib)
+        list(APPEND FTS_LIBS CEGUIBased_d.lib)
+        list(APPEND FTS_LIBS CEGUITinyXMLParserd_d.lib)
+        list(APPEND FTS_LIBS CEGUIOpenGLRendererd_d.lib)
+        list(APPEND FTS_LIBS CEGUIFalagardWRBased_d.lib)
+    else()
+        list(APPEND FTS_LIBS OpenAL32.lib)
+        list(APPEND FTS_LIBS vorbis.lib)
+        list(APPEND FTS_LIBS ogg.lib)
+        list(APPEND FTS_LIBS dao.lib)
+        list(APPEND FTS_LIBS bouge-s.lib)
+        list(APPEND FTS_LIBS bouge-math-s.lib)
+        list(APPEND FTS_LIBS bouge-tinyxml-s.lib)
+        list(APPEND FTS_LIBS bouge-xml-common-s.lib)
+        list(APPEND FTS_LIBS bouge-xmlio-s.lib)
+        list(APPEND FTS_LIBS freetype.lib)
+        list(APPEND FTS_LIBS pcre.lib)
+        list(APPEND FTS_LIBS SDL2.lib)
+        list(APPEND FTS_LIBS SDL2main.lib)
+        list(APPEND FTS_LIBS CEGUIBased.lib)
+        list(APPEND FTS_LIBS CEGUITinyXMLParserd.lib)
+        list(APPEND FTS_LIBS CEGUIOpenGLRendererd.lib)
+        list(APPEND FTS_LIBS CEGUIFalagardWRBased.lib)
+    endif()
+    list(APPEND FTS_LIBS wsock32.lib)
+    list(APPEND FTS_LIBS winmm.lib)
+    list(APPEND FTS_LIBS dsound.lib)
+    list(APPEND FTS_LIBS dxguid.lib)
+    list(APPEND FTS_LIBS imm32.lib)
+    list(APPEND FTS_LIBS version.lib)
 else()
-    message(STATUS "Found SDL in ${SDL2_INCLUDE_DIR}: ${SDL2_LIBRARY}")
+    set(SDL2_FIND_QUIETLY 1)
+    find_package(SDL2)
+    if(NOT SDL2_FOUND)
+        message(FATAL_ERROR "Could not find SDL installed on your system. This means you have to install the SDL development files. This can be done by installing a package called something in the lines of SDL-devel or SDL-dev.")
+    else()
+        message(STATUS "Found SDL in ${SDL2_INCLUDE_DIR}: ${SDL2_LIBRARY}")
+    endif()
     list(APPEND FTS_INCLUDES ${SDL2_INCLUDE_DIR})
     list(APPEND FTS_LIBS ${SDL2_LIBRARY})
-endif()
 
-set(PCRE_FIND_QUIETLY 1)
-find_package(PCRE)
-if(${PCRE_FOUND} STREQUAL "NO")
-    message(WARNING "Could not find PCRE installed on your system. Using the bundled PCRE version. You may want to install the PCRE development files by installing a package called something in the lines of PCRE-devel or PCRE-dev.")
-    set(PCRE_SUPPORT_UTF8 ON CACHE BOOL "Enable support for the Unicode UTF-8 encoding.")
-    set(PCRE_SUPPORT_UNICODE_PROPERTIES ON CACHE BOOL "Enable support for Unicode properties. (If set, UTF-8 support will be enabled as well)")
-    option(PCRE_BUILD_PCRECPP "Build the PCRE C++ library (pcrecpp)." OFF)
-    add_subdirectory(${fts_SOURCE_DIR}/3rdparty/pcre)
-    set(PCRE_INCLUDE_DIR "${PCRE_BINARY_DIR}")
-    set(PCRE_LIBRARIES "pcre")
-else()
-    message(STATUS "Found PCRE in ${PCRE_INCLUDE_DIR}: ${PCRE_LIBRARY}")
-endif()
+    set(PCRE_FIND_QUIETLY 1)
+    find_package(PCRE)
+    if(NOT PCRE_FOUND)
+        message(WARNING "Could not find PCRE installed on your system. Using the bundled PCRE version. You may want to install the PCRE development files by installing a package called something in the lines of PCRE-devel or PCRE-dev.")
+        set(PCRE_SUPPORT_UTF8 ON CACHE BOOL "Enable support for the Unicode UTF-8 encoding.")
+        set(PCRE_SUPPORT_UNICODE_PROPERTIES ON CACHE BOOL "Enable support for Unicode properties. (If set, UTF-8 support will be enabled as well)")
+        option(PCRE_BUILD_PCRECPP "Build the PCRE C++ library (pcrecpp)." OFF)
+        add_subdirectory(${fts_SOURCE_DIR}/3rdparty/pcre)
+        set(PCRE_INCLUDE_DIR "${PCRE_BINARY_DIR}")
+        set(PCRE_LIBRARIES "pcre")
+    else()
+        message(STATUS "Found PCRE in ${PCRE_INCLUDE_DIR}: ${PCRE_LIBRARY}")
+    endif()
 
-set(FreeType_FIND_QUIETLY 1)
-find_package(FreeType)
-if(${FreeType_FOUND} STREQUAL "NO")
-    message(FATAL_ERROR "Could not find FreeType installed on your system. This means you have to install the FreeType development files. This can be done by installing a package called something in the lines of FreeType-devel or FreeType-dev.")
-else()
-    message(STATUS "Found FreeType in ${FreeType_INCLUDE_DIR}: ${FreeType_LIBRARY}")
+    set(FreeType_FIND_QUIETLY 1)
+    find_package(FreeType)
+    if(NOT FreeType_FOUND)
+        message(FATAL_ERROR "Could not find FreeType installed on your system. This means you have to install the FreeType development files. This can be done by installing a package called something in the lines of FreeType-devel or FreeType-dev.")
+    else()
+        message(STATUS "Found FreeType in ${FreeType_INCLUDE_DIR}: ${FreeType_LIBRARY}")
+    endif()
     list(APPEND FTS_INCLUDES ${FreeType_INCLUDE_DIR})
     list(APPEND FTS_LIBS ${FreeType_LIBRARIES})
+
+    # X11 is required (at least). I'm sure there's more.
+        set(X11_FIND_QUIETLY 1)
+        find_package(X11)
+        if(${X11_FOUND} STREQUAL "NO")
+            message(FATAL_ERROR "Could not find X11 libraries on your system. This means you have to install the x11/xorg development files. This can be done by installing a package called something along the lines of xorg-x11-dev.")
+        else()
+            message(STATUS "Found X11 in ${X11_INCLUDE_DIR}: ${X11_LIBRARIES}")
+            list(APPEND FTS_INCLUDES ${X11_INCLUDE_DIR})
+            list(APPEND FTS_LIBS ${X11_LIBRARIES})
+        endif()
+
+    # Add the different subdirectories needed for CEGUI. #
+    ######################################################
+
+    # Add our own CEGUI.
+    add_subdirectory(${fts_SOURCE_DIR}/3rdparty/CEGUI)
+    list(APPEND FTS_INCLUDES "3rdparty/CEGUI/include" "3rdparty/CEGUI")
+    list(APPEND FTS_LIBS "dl")
+    if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+        list(APPEND FTS_LIBS "CEGUIOpenGLRendererd"
+                             "CEGUIBased"
+                             "CEGUITinyXMLParserd"
+                             "CEGUIFalagardWRBased"
+            )
+    else()
+        list(APPEND FTS_LIBS "CEGUIOpenGLRenderer"
+                             "CEGUIBase"
+                             "CEGUITinyXMLParser"
+                             "CEGUIFalagardWRBase"
+            )
+    endif()
+
+    # Add PCRE, needs to be added after CEGUI because CEGUI depends on it.
+    list(APPEND FTS_INCLUDES ${PCRE_INCLUDE_DIR})
+    list(APPEND FTS_LIBS ${PCRE_LIBRARIES})
+
+    # Add bouge
+    set(BOUGE_BUILD_EXAMPLES FALSE)
+    set(BOUGE_BUILD_STATICCRT TRUE)
+    set(BOUGE_BUILD_CAL3DXMLIO FALSE)
+    set(BOUGE_COMPILE_FLAGS ${CMAKE_CXX_FLAGS})
+    add_subdirectory(${fts_SOURCE_DIR}/3rdparty/bouge)
+    list(APPEND FTS_INCLUDES "3rdparty/bouge/include")
+    list(APPEND FTS_LIBS "bouge" "bouge-xmlio" "bouge-tinyxml" "bouge-math")
+    unset(BOUGE_COMPILE_FLAGS)
+    unset(BOUGE_BUILD_CAL3DXMLIO)
+    unset(BOUGE_BUILD_STATICCRT)
+    unset(BOUGE_BUILD_EXAMPLES)
+
+    # Add OpenAL-soft.
+    add_subdirectory(${fts_SOURCE_DIR}/3rdparty/sound/openal-soft)
+    add_definitions(-DD_SND_SYS=1)
+    list(APPEND FTS_INCLUDES "3rdparty/sound/openal-soft/include")
+    list(APPEND FTS_LIBS "openal")
+
+    # Add libogg and libvorbis
+    add_subdirectory(${fts_SOURCE_DIR}/3rdparty/sound/libogg)
+    add_subdirectory(${fts_SOURCE_DIR}/3rdparty/sound/libvorbis)
+    list(APPEND FTS_INCLUDES "3rdparty/sound/libogg/include" "3rdparty/sound/libvorbis/include")
+    list(APPEND FTS_LIBS "vorbis" "ogg")
+
+    # Add Dao scripting stuff
+    add_definitions(-DDAO_DIRECT_API)
+    add_subdirectory(${fts_SOURCE_DIR}/3rdparty/dao)
+    list(APPEND FTS_INCLUDES "3rdparty/dao/src")
+    list(APPEND FTS_LIBS "dao")
 endif()
-
-# X11 is required (at least). I'm sure there's more.
-set(X11_FIND_QUIETLY 1)
-find_package(X11)
-if(${X11_FOUND} STREQUAL "NO")
-    message(FATAL_ERROR "Could not find X11 libraries on your system. This means you have to install the x11/xorg development files. This can be done by installing a package called something along the lines of xorg-x11-dev.")
-else()
-    message(STATUS "Found X11 in ${X11_INCLUDE_DIR}: ${X11_LIBRARIES}")
-    list(APPEND FTS_INCLUDES ${X11_INCLUDE_DIR})
-    list(APPEND FTS_LIBS ${X11_LIBRARIES})
-endif()
-
-#
-# In debug mode, look for the google perf tools. #
-##################################################
-# Does crash before entering main on my 64bit machine ...
-
-# if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-#     set(GOOGLEPERFMEM_FIND_QUIETLY 1)
-#     find_package(GooglePerfMem)
-#     if(${GOOGLEPERFMEM_FOUND} STREQUAL "NO")
-#         message(STATUS "No google performance memory tools found on your system, not using them.")
-#     else()
-#         message(STATUS "Found google performance memory tools as ${GOOGLEPERFMEM_LIBRARY}")
-#         list(APPEND FTS_LIBS ${GOOGLEPERFMEM_LIBRARY})
-#     endif()
-# endif()
-
-# Add the different subdirectories needed for CEGUI. #
-######################################################
-
-# Add our own CEGUI.
-add_subdirectory(${fts_SOURCE_DIR}/3rdparty/CEGUI)
-list(APPEND FTS_INCLUDES "3rdparty/CEGUI/include" "3rdparty/CEGUI")
-list(APPEND FTS_LIBS "dl")
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    list(APPEND FTS_LIBS "CEGUIOpenGLRendererd"
-                         "CEGUIBased"
-                         "CEGUITinyXMLParserd"
-                         "CEGUIFalagardWRBased"
-        )
-else()
-    list(APPEND FTS_LIBS "CEGUIOpenGLRenderer"
-                         "CEGUIBase"
-                         "CEGUITinyXMLParser"
-                         "CEGUIFalagardWRBase"
-        )
-endif()
-
-# Add PCRE, needs to be added after CEGUI because CEGUI depends on it.
-list(APPEND FTS_INCLUDES ${PCRE_INCLUDE_DIR})
-list(APPEND FTS_LIBS ${PCRE_LIBRARIES})
-
-# Add bouge
-set(BOUGE_BUILD_EXAMPLES FALSE)
-set(BOUGE_BUILD_STATICCRT TRUE)
-set(BOUGE_BUILD_CAL3DXMLIO FALSE)
-set(BOUGE_COMPILE_FLAGS ${CMAKE_CXX_FLAGS})
-add_subdirectory(${fts_SOURCE_DIR}/3rdparty/bouge)
-list(APPEND FTS_INCLUDES "3rdparty/bouge/include")
-list(APPEND FTS_LIBS "bouge" "bouge-xmlio" "bouge-tinyxml" "bouge-math")
-unset(BOUGE_COMPILE_FLAGS)
-unset(BOUGE_BUILD_CAL3DXMLIO)
-unset(BOUGE_BUILD_STATICCRT)
-unset(BOUGE_BUILD_EXAMPLES)
-
-# Add OpenAL-soft.
-add_subdirectory(${fts_SOURCE_DIR}/3rdparty/sound/openal-soft)
-add_definitions(-DD_SND_SYS=1)
-list(APPEND FTS_INCLUDES "3rdparty/sound/openal-soft/include")
-list(APPEND FTS_LIBS "openal")
-
-# Add libogg and libvorbis
-add_subdirectory(${fts_SOURCE_DIR}/3rdparty/sound/libogg)
-add_subdirectory(${fts_SOURCE_DIR}/3rdparty/sound/libvorbis)
-list(APPEND FTS_INCLUDES "3rdparty/sound/libogg/include" "3rdparty/sound/libvorbis/include")
-list(APPEND FTS_LIBS "vorbis" "ogg")
-
-# Add Dao scripting stuff
-add_subdirectory(${fts_SOURCE_DIR}/3rdparty/dao)
-add_definitions(-DDAO_DIRECT_API)
-list(APPEND FTS_INCLUDES "3rdparty/dao/src")
-list(APPEND FTS_LIBS "dao")
 
 # Add fts-networking stuff
 set(fts-networking_SOURCE_DIR CACHE STRING "Location of the FTS networking library.")
@@ -339,7 +409,17 @@ include_directories(${FTS_INCLUDES})
 add_definitions(-DD_STRING_FTS_LIBS)
 add_definitions(-DD_USE_CEGUI)
 add_definitions(-DD_STRING_FTS_PATHS)
-
+if(WIN32)
+    add_definitions(-DDAO_DIRECT_API)
+    add_definitions(-DDAO_SND_STATIC)
+    add_definitions(-DD_SND_SYS=1)
+    add_definitions(-DBOUGE_STATIC)
+    add_definitions(-DAL_LIBTYPE_STATIC)
+    add_definitions(-DD_USE_CEGUI)
+    add_definitions(-DALL_STATIC)
+    add_definitions(-DCEGUI_STATIC)
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+endif()
 # And show the flags.
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     message(STATUS "CXX Flags for FTS (Debug) are: ${CMAKE_CXX_FLAGS_DEBUG}")
@@ -350,14 +430,14 @@ endif()
 # The compiling process. #
 ##########################
 if(CMAKE_COMPILER_IS_GNUCXX)
-	# gcc (even 7.2) needs to link a special lib for the filesystem support.
-	list(APPEND FTS_LIBS stdc++fs)
+    # gcc (even 7.2) needs to link a special lib for the filesystem support.
+    list(APPEND FTS_LIBS stdc++fs)
+    # Pre compiled header
+    include(${fts_SOURCE_DIR}/cmake/PCH_GCC4_v2.cmake)
+    ADD_PCH_RULE(${fts_SOURCE_DIR}/3d/3d.h SOURCES_COMMON)
+    ADD_PCH_RULE(${fts_SOURCE_DIR}/dLib/dString/dString.h SOURCES_COMMON)
+    ADD_PCH_RULE(${fts_SOURCE_DIR}/main/main.h SOURCES_GAME)
 endif()
-
-include(${fts_SOURCE_DIR}/cmake/PCH_GCC4_v2.cmake)
-ADD_PCH_RULE(${fts_SOURCE_DIR}/3d/3d.h SOURCES_COMMON)
-ADD_PCH_RULE(${fts_SOURCE_DIR}/dLib/dString/dString.h SOURCES_COMMON)
-ADD_PCH_RULE(${fts_SOURCE_DIR}/main/main.h SOURCES_GAME)
 
 execute_process(COMMAND git describe --dirty WORKING_DIRECTORY ${fts_SOURCE_DIR} RESULT_VARIABLE FTS_VERSION_RESULT OUTPUT_VARIABLE FTS_VERSION_FULL_RAW)
 if(${FTS_VERSION_RESULT} EQUAL 0)
@@ -373,7 +453,9 @@ target_link_libraries(fts ${FTS_LIBS} )
 
 # copy the executable as a post-build step. #
 #############################################
-add_custom_command(TARGET fts POST_BUILD COMMAND cp ${fts_BINARY_DIR}/fts ${fts_SOURCE_DIR} VERBATIM)
+if(NOT WIN32)
+    add_custom_command(TARGET fts POST_BUILD COMMAND cp ${fts_BINARY_DIR}/fts ${fts_SOURCE_DIR} VERBATIM)
+endif()
 
 # installation to the system. #
 #    OUTDATED AND UNTESTED    #

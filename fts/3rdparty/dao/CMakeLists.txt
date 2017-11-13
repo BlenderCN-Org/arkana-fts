@@ -33,7 +33,6 @@ endif()
 set(SOURCES src/daoType.c
         src/daoNamespace.c
         src/daoGC.c
-        src/daoMaindl.c
         src/daoClass.c
         src/daoLexer.c
         src/daoParser.c
