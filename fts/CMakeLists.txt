@@ -46,8 +46,10 @@ endif()
 
 # Put all sourcefiles into one variable. #
 ##########################################
-set(SOURCES_COMMON
+set(SRC_3rdparty
     3rdparty/lodepng.cpp
+    )
+set(SRC_3D
     3d/math/AxisAlignedBoundingBox.cpp
     3d/Movers/Mover.cpp
     3d/Movers/Orbiter.cpp
@@ -66,6 +68,8 @@ set(SOURCES_COMMON
     3d/Resolution.cpp
     3d/Shader.cpp
     3d/VertexArrayObject.cpp
+    )
+set(SRC_dLib
     dLib/dArchive/dArchive.cpp
     dLib/dBrowse/dBrowse.cpp
     dLib/dConf/configuration.cpp
@@ -79,24 +83,34 @@ set(SOURCES_COMMON
     dLib/dCompressor/dCompressor.cpp
     dLib/dCompressor/minilzo/minilzo.c
     dLib/dCompressor/minilzo_compressor.cpp
+    )
+set(SRC_game
     game/objects/objects.cpp
     game/objects/tree.cpp
     game/game_rlv.cpp
     game/loadgame_rlv.cpp
     game/player.cpp
     game/player_og.cpp
+    )
+set(SRC_graphic
     graphic/anim.cpp
     graphic/cegui_ftsimg_codec.cpp
     graphic/errtex.cpp
     graphic/graphic.cpp
     graphic/image.cpp
     graphic/Color.cpp
+    )
+set(SRC_input
     input/Cursor.cpp
     input/InputManager.cpp
     input/keys.cpp
+    )
+set(SRC_logging
     logging/Chronometer.cpp
     logging/ftslogger.cpp
     logging/logger.cpp
+    )
+set(SRC_main
     main/main.cpp
     main/Clock.cpp
     main/Exception.cpp
@@ -104,6 +118,8 @@ set(SOURCES_COMMON
     main/runlevels.cpp
     main/Updateable.cpp
     main/version.cpp
+    )
+set(SRC_map
     map/DecorativeMO.cpp
     map/forest.cpp
     map/map.cpp
@@ -112,7 +128,11 @@ set(SOURCES_COMMON
     map/quad.cpp
     map/terrain.cpp
     map/tile.cpp
+    )
+set(SRC_mdlviewer
     mdlviewer/mdlviewer_main.cpp
+    )
+set(SRC_sound
     sound/sndobjpool.cpp
     sound/SndFile.cpp
     sound/SndGrp.cpp
@@ -120,6 +140,8 @@ set(SOURCES_COMMON
     sound/SndSys.cpp
     sound/SndSysOpenAL.cpp
     sound/SndPlayList.cpp
+    )
+set(SRC_tests
     tests/mainNice.cpp
     tests/3d/ResolutionTest.cpp
     tests/Scripting/DaoVmTest.cpp
@@ -131,6 +153,8 @@ set(SOURCES_COMMON
     tests/Configuration/Settings.cpp
     tests/Configuration/FTSConfiguration.cpp
     tests/main/ClockTest.cpp
+    )
+set(SRC_ui
     ui/cegui_items/progressbar/ArkanaProgressBarWR.cpp
     ui/cegui_items/progressbar/ArkanaProgressBarWRProperties.cpp
     ui/cegui_items/ArkanaResourceProvider.cpp
@@ -153,6 +177,8 @@ set(SOURCES_COMMON
     ui/ui_menu_online_main.cpp
     ui/ui.cpp
     ui/ScriptConsole.cpp
+    )
+set(SRC_utilities
     utilities/DataContainer.cpp
     utilities/Singleton.cpp
     utilities/StreamedDataContainer.cpp
@@ -166,6 +192,8 @@ set(SOURCES_COMMON
     utilities/DateTime.cpp
     utilities/md5.cpp
     utilities/sha2.cpp
+    )
+set(SRC_scripting
     scripting/dao_snd.cpp
     scripting/dao_snd2.cpp
     scripting/dao_snd3.cpp
@@ -174,6 +202,29 @@ set(SOURCES_COMMON
     scripting/DaoFunction.cpp
     scripting/hotkey.cpp
 )
+
+set(SOURCES_COMMON ${SRC_3rdparty} ${SRC_3D} ${SRC_dLib} ${SRC_game} ${SRC_graphic} ${SRC_input} 
+                   ${SRC_logging} ${SRC_main} ${SRC_map} ${SRC_mdlviewer} ${SRC_sound} 
+                   ${SRC_tests} ${SRC_ui} ${SRC_utilities} ${SRC_scripting}
+                   )
+
+if(MSVC)
+    source_group( 3rdparty FILES ${SRC_3rdparty} )
+    source_group( 3d FILES ${SRC_3D} )
+    source_group( dLib FILES ${SRC_dLib} )
+    source_group( game FILES ${SRC_game} )
+    source_group( graphic FILES ${SRC_graphic} )
+    source_group( input FILES ${SRC_input} )
+    source_group( logging FILES ${SRC_logging} )
+    source_group( main FILES ${SRC_main} )
+    source_group( map FILES ${SRC_map} )
+    source_group( mdlviewer FILES ${SRC_mdlviewer} )
+    source_group( sound FILES ${SRC_sound} )
+    source_group( test FILES ${SRC_tests} )
+    source_group( ui FILES ${SRC_ui} )
+    source_group( utilities FILES ${SRC_utility} )
+    source_group( scripting FILES ${SRC_scripting} )
+endif()
 
 # Check for various language-stuff and compiler versions #
 ##########################################################
@@ -237,10 +288,6 @@ if(WIN32)
     list(APPEND FTS_INCLUDES ${fts_SOURCE_DIR}/3rdparty/SDL2/include)
     list(APPEND FTS_INCLUDES ${fts_SOURCE_DIR}/3rdparty/dao/src)
     list(APPEND FTS_INCLUDES ${fts_SOURCE_DIR}/3rdparty/bouge/include)
-
-#..;../3rdparty/CEGUI/include;../3rdparty/CEGUI;../3rdparty/sound/libogg/include;../3rdparty/sound/libvorbis/include;../3rdparty/sound/openal-soft/include;
-#../3rdparty/sound/openal-soft/include/AL;../main;../3rdparty/sdl/include;../3rdparty/dao/src;../3rdparty/bouge/include;../../../fts-network/include
-#freetype_d.lib;pcred.lib;OpenGL32.lib;glu32.lib;SDL2_d.lib;SDL2main_d.lib;CEGUIBased_d.lib;CEGUIOpenGLRendererd_d.lib;CEGUIFalagardWRBased_d.lib;
 
     if(CMAKE_BUILD_TYPE STREQUAL "Debug")
         list(APPEND FTS_LIBS OpenAL32_d.lib)
@@ -321,15 +368,15 @@ else()
     list(APPEND FTS_LIBS ${FreeType_LIBRARIES})
 
     # X11 is required (at least). I'm sure there's more.
-        set(X11_FIND_QUIETLY 1)
-        find_package(X11)
-        if(${X11_FOUND} STREQUAL "NO")
-            message(FATAL_ERROR "Could not find X11 libraries on your system. This means you have to install the x11/xorg development files. This can be done by installing a package called something along the lines of xorg-x11-dev.")
-        else()
-            message(STATUS "Found X11 in ${X11_INCLUDE_DIR}: ${X11_LIBRARIES}")
-            list(APPEND FTS_INCLUDES ${X11_INCLUDE_DIR})
-            list(APPEND FTS_LIBS ${X11_LIBRARIES})
-        endif()
+    set(X11_FIND_QUIETLY 1)
+    find_package(X11)
+    if(${X11_FOUND} STREQUAL "NO")
+        message(FATAL_ERROR "Could not find X11 libraries on your system. This means you have to install the x11/xorg development files. This can be done by installing a package called something along the lines of xorg-x11-dev.")
+    else()
+        message(STATUS "Found X11 in ${X11_INCLUDE_DIR}: ${X11_LIBRARIES}")
+        list(APPEND FTS_INCLUDES ${X11_INCLUDE_DIR})
+        list(APPEND FTS_LIBS ${X11_LIBRARIES})
+    endif()
 
     # Add the different subdirectories needed for CEGUI. #
     ######################################################
@@ -415,7 +462,6 @@ if(WIN32)
     add_definitions(-DD_SND_SYS=1)
     add_definitions(-DBOUGE_STATIC)
     add_definitions(-DAL_LIBTYPE_STATIC)
-    add_definitions(-DD_USE_CEGUI)
     add_definitions(-DALL_STATIC)
     add_definitions(-DCEGUI_STATIC)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
