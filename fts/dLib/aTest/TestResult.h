@@ -26,13 +26,13 @@ public:
     virtual void suiteWasSkipped (const TestSuite& suite);
     virtual void endSuite(const TestSuite& suite);
 
-    int getFailureCount() const { return failureCount; }
-    int getSkipCount() const { return skipCount; }
+    size_t getFailureCount() const { return failureCount; }
+    size_t getSkipCount() const { return skipCount; }
 
 protected:
-	int failureCount;
-	int testCount;
-    int skipCount;
+    size_t failureCount;
+    size_t testCount;
+    size_t skipCount;
     time_t startTime;
     time_t secondsElapsed;
 };

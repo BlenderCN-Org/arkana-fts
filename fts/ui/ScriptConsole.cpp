@@ -171,7 +171,7 @@ namespace FTS {
     FTS::String ScriptConsoleHistory::next()
     {
         ++m_position;
-        if( m_position >= (int)m_history.size() ) {
+        if( m_position >= m_history.size() ) {
             m_position = 0 ;
         }
         return m_history[m_position];

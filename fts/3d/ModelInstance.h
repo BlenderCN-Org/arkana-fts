@@ -66,8 +66,8 @@ public:
     bouge::CoreAnimationPtrC getMove(const String& in_sName);
 
     // Some informations about the model.
-    uint32_t vertexCount() const;
-    uint32_t faceCount() const;
+    size_t vertexCount() const;
+    size_t faceCount() const;
     AxisAlignedBoundingBox restAABB() const;
 
 protected:

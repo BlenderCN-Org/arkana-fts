@@ -174,7 +174,7 @@ void String::fromStringWithLength(const char* in_pszString, std::string::size_ty
     // If we stopped to count because we encountered a 0 char, there's no
     // problem, just use the stl string constructor.
     p = advance(in_pszString, in_iStart);
-    int iLength = in_iLength ;
+    size_t iLength = in_iLength ;
     if(iLen < startPlusLen) {
         iLength = iLen - in_iStart;
     }

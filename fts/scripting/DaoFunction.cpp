@@ -4,7 +4,7 @@ namespace FTS {
 template<> 
 int getDValue(DValue d) { return (int)d.v.i;}
 template<> 
-long getDValue(DValue d) { return d.v.i;}
+long getDValue(DValue d) { return (long)d.v.i;}
 template<> 
 String getDValue(DValue d) { return DString_GetMBS(d.v.s);}
 template<> 

@@ -808,13 +808,13 @@ bool FTS::Program::setUniformSampler(const String& in_sUniformName, uint8_t in_i
     return true;
 }
 
-bool FTS::Program::setUniformArrayElement(const String& in_sUniformName, uint16_t in_iArrayIdx, const Vector& in_v)
+bool FTS::Program::setUniformArrayElement(const String& in_sUniformName, size_t in_iArrayIdx, const Vector& in_v)
 {
     auto i = m_uniforms.find(in_sUniformName);
     if(i == m_uniforms.end())
         return false;
 
-    if(in_iArrayIdx >= i->second.size) {
+    if((GLint)in_iArrayIdx >= i->second.size) {
         FTSMSG("Program::setUniformArrayElement("+in_sUniformName+", "+String::nr(in_iArrayIdx)+"): index out of bounds (max is "+String::nr(i->second.size)+")\n", MsgType::WarningNoMB);
         return false;
     }
@@ -839,13 +839,13 @@ bool FTS::Program::setUniformArrayElement(const String& in_sUniformName, uint16_
     return true;
 }
 
-bool FTS::Program::setUniformArrayElement(const String& in_sUniformName, uint16_t in_iArrayIdx, const AffineMatrix& in_mat, bool in_transpose)
+bool FTS::Program::setUniformArrayElement(const String& in_sUniformName, size_t in_iArrayIdx, const AffineMatrix& in_mat, bool in_transpose)
 {
     auto i = m_uniforms.find(in_sUniformName);
     if(i == m_uniforms.end())
         return false;
 
-    if(in_iArrayIdx >= i->second.size) {
+    if( (GLint)in_iArrayIdx >= i->second.size) {
         FTSMSG("Program::setUniformArrayElement("+in_sUniformName+", "+String::nr(in_iArrayIdx)+"): index out of bounds (max is "+String::nr(i->second.size)+")\n", MsgType::WarningNoMB);
         return false;
     }
@@ -864,13 +864,13 @@ bool FTS::Program::setUniformArrayElement(const String& in_sUniformName, uint16_
     return true;
 }
 
-bool FTS::Program::setUniformArrayElementInverse(const String& in_sUniformName, uint16_t in_iArrayIdx, const AffineMatrix& in_mat, bool in_transpose)
+bool FTS::Program::setUniformArrayElementInverse(const String& in_sUniformName, size_t in_iArrayIdx, const AffineMatrix& in_mat, bool in_transpose)
 {
     auto i = m_uniforms.find(in_sUniformName);
     if(i == m_uniforms.end())
         return false;
 
-    if(in_iArrayIdx >= i->second.size) {
+    if((GLint)in_iArrayIdx >= i->second.size) {
         FTSMSG("Program::setUniformArrayElement("+in_sUniformName+", "+String::nr(in_iArrayIdx)+"): index out of bounds (max is "+String::nr(i->second.size)+")\n", MsgType::WarningNoMB);
         return false;
     }

@@ -79,7 +79,7 @@ namespace FTS {
         String previous();
     private:
         std::vector<String> m_history;
-        int m_position;
+        size_t m_position;
 
     };
 }

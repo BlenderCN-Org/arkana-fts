@@ -353,8 +353,8 @@ bool compare_dirfile_list(ImagedListItem *first, ImagedListItem *second)
     if(second->getText() == "..")
         return false;
 
-    bool bFirstIsDir = reinterpret_cast<unsigned long>(first->getUserData()) == 1UL;
-    bool bSecondIsDir = reinterpret_cast<unsigned long>(second->getUserData()) == 1UL;
+    bool bFirstIsDir = reinterpret_cast<size_t>(first->getUserData()) == 1UL;
+    bool bSecondIsDir = reinterpret_cast<size_t>(second->getUserData()) == 1UL;
     if(bFirstIsDir && !bSecondIsDir)
         return true;
     if(!bFirstIsDir && bSecondIsDir)

@@ -18,7 +18,9 @@
 /* ================================================ */
 #  if defined(_MSC_VER)
 #    define VC_EXTRALEAN 1
-#    define WIN32_LEAN_AND_MEAN 1
+#    ifndef WIN32_LEAN_AND_MEAN
+#      define WIN32_LEAN_AND_MEAN 1
+#    endif
 #    define _CRT_SECURE_NO_DEPRECATE
 #    if _MSC_VER < 1600
 #      define EISCONN WSAEISCONN

@@ -164,12 +164,12 @@ float FTS::ModelInstance::speed(const FTS::String& in_sAnimName) const
     return m_pModel->speed(in_sAnimName.str());
 }
 
-uint32_t FTS::ModelInstance::vertexCount() const
+size_t FTS::ModelInstance::vertexCount() const
 {
     return m_pHwModel->vertexCount();
 }
 
-uint32_t FTS::ModelInstance::faceCount() const
+size_t FTS::ModelInstance::faceCount() const
 {
     return m_pHwModel->faceCount();
 }

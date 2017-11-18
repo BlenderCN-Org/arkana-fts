@@ -739,8 +739,8 @@ int FTS::MenuOptions::saveVideo(bool &out_bReloadMenu)
 {
     // The values.
     Resolution res;
-    int mod = 2;
-    int tex = 2;
+    size_t mod = 2;
+    size_t tex = 2;
 
     try {
         String sTmp(m_pVideo->getChild("dlg_options/btnVideo/cbResol")->getText());
@@ -769,8 +769,8 @@ int FTS::MenuOptions::saveVideo(bool &out_bReloadMenu)
     } catch(CEGUI::Exception & e) {
         FTS18N("CEGUI", MsgType::Error, e.getMessage());
     }
-    m_pConf->set("TextureFilter", tex);
-    m_pConf->set("ModelDetails", mod);
+    m_pConf->set("TextureFilter", (int)tex);
+    m_pConf->set("ModelDetails", (int)mod);
     m_pConf->save();
 
     if(m_bVideoChange) {

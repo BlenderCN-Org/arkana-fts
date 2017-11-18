@@ -66,9 +66,9 @@ public:
     bool setUniformInverse(const String& in_sUniformName, const General4x4Matrix& in_mat, bool in_transpose = false);
     bool setUniformInverse(const String& in_sUniformName, const AffineMatrix& in_mat, bool in_transpose = false);
     bool setUniformSampler(const String& in_sUniformName, uint8_t in_iTexUnit);
-    bool setUniformArrayElement(const String& in_sUniformName, uint16_t in_iArrayIdx, const Vector& in_v);
-    bool setUniformArrayElement(const String& in_sUniformName, uint16_t in_iArrayIdx, const AffineMatrix& in_mat, bool in_transpose = false);
-    bool setUniformArrayElementInverse(const String& in_sUniformName, uint16_t in_iArrayIdx, const AffineMatrix& in_mat, bool in_transpose = false);
+    bool setUniformArrayElement(const String& in_sUniformName, size_t in_iArrayIdx, const Vector& in_v);
+    bool setUniformArrayElement(const String& in_sUniformName, size_t in_iArrayIdx, const AffineMatrix& in_mat, bool in_transpose = false);
+    bool setUniformArrayElementInverse(const String& in_sUniformName, size_t in_iArrayIdx, const AffineMatrix& in_mat, bool in_transpose = false);
 
     void bind();
     static void unbind();

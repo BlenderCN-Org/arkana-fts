@@ -30,5 +30,5 @@ int run_tests(int argc, const char *argv[])
     TestResultCombiner result2(result, debugOut);
     TestRegistry::runAllTests(result2);
 
-    return (result.getFailureCount());
+    return int(result.getFailureCount());
 }

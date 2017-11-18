@@ -35,8 +35,8 @@ public:
     const std::set<String>& skins() const;
     const std::set<FTS::String>& anims() const;
 
-    uint32_t vertexCount() const;
-    uint32_t faceCount() const;
+    size_t vertexCount() const;
+    size_t faceCount() const;
     AxisAlignedBoundingBox restAABB() const;
 
     bool isStatic() const;

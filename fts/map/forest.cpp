@@ -153,7 +153,7 @@ int Forest::plantForest(int in_iQuadID, float in_fQuadX, float in_fQuadY)
         if(((float)random(0,100) / 100.0f) <= m_fDiversity) {
             // Pick a random tree.
             std::vector<String> vsAllTrees = Forest::getExistingTreeList();
-            sTreeName = vsAllTrees[random<int>(0,vsAllTrees.size()-1)];
+            sTreeName = vsAllTrees[random<int>(0,(int)vsAllTrees.size()-1)];
         }
 
         // Calculate a random position in the quad, but keep some distance from the other trees.

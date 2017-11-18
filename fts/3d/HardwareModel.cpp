@@ -381,15 +381,15 @@ void FTS::HardwareModel::createHardwareMesh()
     m_pHardwareModel->writeBoneIndices(&data[offset], stride);
     offset += m_pHardwareModel->boneIndicesPerVertex();
 
-    // But all other attributes can be handled homogenely
+    // But all other attributes can be handled homogeneously
     for(auto attrib = m_pHardwareModel->attribs().begin() ; attrib != m_pHardwareModel->attribs().end() ; ++attrib) {
         m_pHardwareModel->writeAttrib(attrib->first, &data[offset], stride);
         offset += attrib->second;
     }
 
     // Upload that data to the graphics card
-    m_vbo.reset(new VertexBufferObject(data, floatsPerVertex));
-    m_pVtxIdxVBO.reset(new ElementsBufferObject(m_pHardwareModel->faceIndices(), m_pHardwareModel->indicesPerFace()));
+    m_vbo.reset(new VertexBufferObject(data, (GLint)floatsPerVertex));
+    m_pVtxIdxVBO.reset(new ElementsBufferObject(m_pHardwareModel->faceIndices(), (GLint)m_pHardwareModel->indicesPerFace()));
 }
 
 void FTS::HardwareModel::setupVAO(FTS::MaterialUserData& in_ud) const
@@ -400,16 +400,16 @@ void FTS::HardwareModel::setupVAO(FTS::MaterialUserData& in_ud) const
 
     // Setup all of the vertex attributes, again vertex coords, weights and indices are special.
     std::size_t offset = 0;
-    in_ud.prog->setVertexAttribute("aVertexPosition", *m_vbo, m_pHardwareModel->coordsPerVertex(), offset);
+    in_ud.prog->setVertexAttribute("aVertexPosition", *m_vbo, (GLint)m_pHardwareModel->coordsPerVertex(), offset);
     offset += m_pHardwareModel->coordsPerVertex();
-    in_ud.prog->setVertexAttribute("aWeights", *m_vbo, m_pHardwareModel->weightsPerVertex(), offset);
+    in_ud.prog->setVertexAttribute("aWeights", *m_vbo, (GLint)m_pHardwareModel->weightsPerVertex(), offset);
     offset += m_pHardwareModel->weightsPerVertex();
-    in_ud.prog->setVertexAttribute("aIndices", *m_vbo, m_pHardwareModel->boneIndicesPerVertex(), offset);
+    in_ud.prog->setVertexAttribute("aIndices", *m_vbo, (GLint)m_pHardwareModel->boneIndicesPerVertex(), offset);
     offset += m_pHardwareModel->boneIndicesPerVertex();
 
     // For the rest just use attributes of the same name.
     for(auto attrib = m_pHardwareModel->attribs().begin() ; attrib != m_pHardwareModel->attribs().end() ; ++attrib) {
-        in_ud.prog->setVertexAttribute(attrib->first, *m_vbo, m_pHardwareModel->attribCoordsPerVertex(attrib->first), offset);
+        in_ud.prog->setVertexAttribute(attrib->first, *m_vbo, (GLint)m_pHardwareModel->attribCoordsPerVertex(attrib->first), offset);
         offset += attrib->second;
     }
 
@@ -454,12 +454,12 @@ const std::set<FTS::String>& FTS::HardwareModel::anims() const
     return m_anims;
 }
 
-uint32_t FTS::HardwareModel::vertexCount() const
+size_t FTS::HardwareModel::vertexCount() const
 {
     return m_pHardwareModel->vertexCount();
 }
 
-uint32_t FTS::HardwareModel::faceCount() const
+size_t FTS::HardwareModel::faceCount() const
 {
     return m_pHardwareModel->faceCount();
 }
@@ -549,7 +549,7 @@ void FTS::HardwareModel::render(const AffineMatrix& in_modelMatrix, const Color&
             texUnit++;
         }
 
-        glDrawElements(pUD->drawMode, submesh.faceCount() * m_pHardwareModel->indicesPerFace(), BOUGE_FACE_INDEX_TYPE_GL, (const GLvoid*)(submesh.startIndex()*sizeof(BOUGE_FACE_INDEX_TYPE)));
+        glDrawElements(pUD->drawMode, (GLsizei)(submesh.faceCount() * m_pHardwareModel->indicesPerFace()), BOUGE_FACE_INDEX_TYPE_GL, (const GLvoid*)(submesh.startIndex()*sizeof(BOUGE_FACE_INDEX_TYPE)));
 
         pUD->vao.unbind();
         Program::unbind();

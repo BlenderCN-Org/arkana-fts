@@ -134,7 +134,7 @@ int FTS::Player::og_accountCreate(const String & in_sNickname,
     // Encrypt the password.
     char buffMD5[32];
 
-    md5Encode(in_sPassword.c_str(), in_sPassword.len(), buffMD5);
+    md5Encode(in_sPassword.c_str(), (int)in_sPassword.len(), buffMD5);
 
     // Cut all the data to the right size.
     String sNick(in_sNickname);
@@ -199,7 +199,7 @@ int FTS::Player::og_login(const String & in_sNickname,
     // Encrypt the password.
     char buffMD5[32];
 
-    md5Encode(in_sPassword.c_str(), in_sPassword.len(), buffMD5);
+    md5Encode(in_sPassword.c_str(), (int)in_sPassword.len(), buffMD5);
 
     // Cut all the data to the right size and store the MD5 hash.
     String sNick(in_sNickname);

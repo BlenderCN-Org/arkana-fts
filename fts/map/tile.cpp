@@ -404,7 +404,7 @@ int LowerTileset::addTile(Tile * in_pTile)
  * \param in_cBottomRight The bottom right tile used to create it.
  * \param in_cBlendmask   The blendmask used to create it.
  *
- * \return Wether the (uncompiled) tile is present or not.
+ * \return Whether the (uncompiled) tile is present or not.
  *
  * \note This function searches the UNCOMPILED list, not the compiled one !
  *
@@ -422,9 +422,9 @@ bool LowerTileset::isUncompiledTilePresent(uint8_t in_cTopLeft, uint8_t in_cTopR
 /// This compiles the extended tileset.
 /** Compile the extended tileset means draw all tiles on one big texture,
  *  with power of 2 sizes, and save the texture coordinates that will be
- *  used to acces every single tile.
+ *  used to access every single tile.
  *
- * \return If successfull: ERR_OK
+ * \return If successful: ERR_OK
  * \return If failed:      Error code < 0
  *
  * \note After the compilation, every tile's memory is freed !
@@ -437,7 +437,7 @@ int LowerTileset::compile()
     uint16_t iTileMapPixelW = 0;
     uint16_t iTileMapPixelH = 0;
     uint8_t *pData = NULL;
-    int nTiles = m_TileInfos.size();
+    auto nTiles = m_TileInfos.size();
 
     // Calculate the size of the texture we need, based on the number of tiles.
     iTileMapSize = (uint16_t)sqrtf((float)nTiles);

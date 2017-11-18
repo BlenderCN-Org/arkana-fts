@@ -118,7 +118,7 @@ FTS::SndFile::SndFile(const Path& in_sName)
         size_t remainingSize = m_size;
         PCMDATA* currentPCMptr = &pcm[0];
         while(!eof){
-            long ret=ov_read(&vf,(char*)currentPCMptr,remainingSize ,0,2,1,&current_section);
+            long ret=ov_read(&vf,(char*)currentPCMptr,(int)remainingSize ,0,2,1,&current_section);
             if (ret == 0) {
                 /* EOF */
                 eof=1;
@@ -140,7 +140,7 @@ FTS::SndFile::SndFile(const Path& in_sName)
         if(m_alBuffer == 0)
             throw OpenALException(sCompleteFilename);
 
-        alBufferData(m_alBuffer ,vi->channels == 2 ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16, &pcm[0], m_size, m_samplingRate);
+        alBufferData(m_alBuffer ,vi->channels == 2 ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16, &pcm[0], (int)m_size, m_samplingRate);
         ov_clear(&vf);
     } else {
         // No more .wav/.ao

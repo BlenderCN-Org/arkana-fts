@@ -1529,10 +1529,10 @@ void GraphicManager::reinitFrame()
     /// \TODO: Ideally, there is no more need to do this _if_ we draw
     ///        _anything_ using our own shaders, just as OpenGL 3.x wants it.
     ///        currently, the 2D rendering still doesn't do that.
-    for(uint8_t iTexUnit = m_vSelectedTextures.size() - 1 ; iTexUnit > 0 && m_vSelectedTextures.size() > 0 ; iTexUnit--) {
+    for(auto iTexUnit = m_vSelectedTextures.size() - 1 ; (iTexUnit > 0) && (m_vSelectedTextures.size() > 0) ; --iTexUnit) {
         if(m_vSelectedTextures[iTexUnit] != 0) {
             m_vSelectedTextures[iTexUnit] = 0;
-            glActiveTexture(GL_TEXTURE0 + iTexUnit);
+            glActiveTexture(GL_TEXTURE0 + (GLenum)iTexUnit);
             glBindTexture(GL_TEXTURE_2D, 0);
         }
     }

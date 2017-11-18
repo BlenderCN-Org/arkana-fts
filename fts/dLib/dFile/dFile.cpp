@@ -469,7 +469,7 @@ int FileUtils::mkdirIfNeeded(const Path& in_sPath, const bool in_bWithFile)
 #if WINDOOF
     String sCmd = "mkdir \"" + sDirPath + "\"";
 
-    int i = 0;
+    size_t i = 0;
 
     // Put in only backslashes for fu*king windows.
     while(-1 != (i = sCmd.find("/")))
