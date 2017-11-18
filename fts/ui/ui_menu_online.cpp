@@ -25,7 +25,7 @@
 #include "3d/Resolution.h"
 
 #include "dLib/dConf/configuration.h"
-#include "dLib/dBrowse/dBrowse.h"
+#include "dLib/dFile/dBrowse.h"
 
 using namespace FTS;
 

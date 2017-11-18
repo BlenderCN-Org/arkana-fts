@@ -1,7 +1,7 @@
 #include "dLib/aTest/TestHarness.h"
 
 #include "dLib/dString/dPath.h"
-#include "dLib/dBrowse/dBrowse.h"
+#include "dLib/dFile/dBrowse.h"
 
 using namespace FTS;
 

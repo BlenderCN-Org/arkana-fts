@@ -14,7 +14,7 @@
 #include "ui/confirm_dialog.h"
 #include "logging/logger.h"
 #include "utilities/utilities.h"
-#include "dLib/dBrowse/dBrowse.h"
+#include "dLib/dFile/dBrowse.h"
 #include "dLib/dFile/dFile.h"
 #include "dLib/dString/dTranslation.h"
 #include "input/input.h"

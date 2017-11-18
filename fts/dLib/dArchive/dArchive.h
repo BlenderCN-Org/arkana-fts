@@ -8,7 +8,7 @@
 
 #include "dLib/dString/dString.h"
 #include "dLib/dFile/dFile.h"
-#include "dLib/dBrowse/dBrowse.h"
+#include "dLib/dFile/dBrowse.h"
 
 namespace FTS {
     class StreamedDataContainer;

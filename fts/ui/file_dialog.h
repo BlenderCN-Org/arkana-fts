@@ -10,7 +10,6 @@
 
 #include "main.h"
 
-#include "dLib/dBrowse/dBrowse.h"
 #include "dLib/dString/dPath.h"
 
 #include <CEGUIEvent.h>

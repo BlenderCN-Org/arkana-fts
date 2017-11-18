@@ -7,7 +7,7 @@
 #include "utilities/NonCopyable.h"
 #include "utilities/utilities.h"
 #include "graphic/Color.h"
-#include "dLib/dBrowse/dBrowse.h"
+#include "dLib/dFile/dBrowse.h"
 #include "dLib/dFile/dFile.h"
 
 #include <iterator>

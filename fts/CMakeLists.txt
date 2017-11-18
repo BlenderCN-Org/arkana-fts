@@ -49,6 +49,7 @@ endif()
 set(SRC_3rdparty
     3rdparty/lodepng.cpp
     )
+
 set(SRC_3D
     3d/math/AxisAlignedBoundingBox.cpp
     3d/Movers/Mover.cpp
@@ -69,13 +70,14 @@ set(SRC_3D
     3d/Shader.cpp
     3d/VertexArrayObject.cpp
     )
+
 set(SRC_dLib
     dLib/dArchive/dArchive.cpp
-    dLib/dBrowse/dBrowse.cpp
     dLib/dConf/configuration.cpp
     dLib/dConf/ArkanaDefaultSettings.cpp
     dLib/dConf/DefaultOptions.cpp
     dLib/dFile/dFile.cpp
+    dLib/dfile/dBrowse.cpp
     dLib/dProcess/dProcess.cpp
     dLib/dString/dString.cpp
     dLib/dString/dPath.cpp
@@ -84,6 +86,7 @@ set(SRC_dLib
     dLib/dCompressor/minilzo/minilzo.c
     dLib/dCompressor/minilzo_compressor.cpp
     )
+
 set(SRC_game
     game/objects/objects.cpp
     game/objects/tree.cpp
@@ -92,6 +95,7 @@ set(SRC_game
     game/player.cpp
     game/player_og.cpp
     )
+
 set(SRC_graphic
     graphic/anim.cpp
     graphic/cegui_ftsimg_codec.cpp
@@ -100,16 +104,19 @@ set(SRC_graphic
     graphic/image.cpp
     graphic/Color.cpp
     )
+
 set(SRC_input
     input/Cursor.cpp
     input/InputManager.cpp
     input/keys.cpp
     )
+
 set(SRC_logging
     logging/Chronometer.cpp
     logging/ftslogger.cpp
     logging/logger.cpp
     )
+
 set(SRC_main
     main/main.cpp
     main/Clock.cpp
@@ -119,6 +126,7 @@ set(SRC_main
     main/Updateable.cpp
     main/version.cpp
     )
+
 set(SRC_map
     map/DecorativeMO.cpp
     map/forest.cpp
@@ -129,9 +137,11 @@ set(SRC_map
     map/terrain.cpp
     map/tile.cpp
     )
+
 set(SRC_mdlviewer
     mdlviewer/mdlviewer_main.cpp
     )
+
 set(SRC_sound
     sound/sndobjpool.cpp
     sound/SndFile.cpp
@@ -141,6 +151,7 @@ set(SRC_sound
     sound/SndSysOpenAL.cpp
     sound/SndPlayList.cpp
     )
+
 set(SRC_tests
     tests/mainNice.cpp
     tests/3d/ResolutionTest.cpp
@@ -154,6 +165,7 @@ set(SRC_tests
     tests/Configuration/FTSConfiguration.cpp
     tests/main/ClockTest.cpp
     )
+
 set(SRC_ui
     ui/cegui_items/progressbar/ArkanaProgressBarWR.cpp
     ui/cegui_items/progressbar/ArkanaProgressBarWRProperties.cpp
@@ -178,6 +190,7 @@ set(SRC_ui
     ui/ui.cpp
     ui/ScriptConsole.cpp
     )
+
 set(SRC_utilities
     utilities/DataContainer.cpp
     utilities/Singleton.cpp
@@ -193,6 +206,7 @@ set(SRC_utilities
     utilities/md5.cpp
     utilities/sha2.cpp
     )
+
 set(SRC_scripting
     scripting/dao_snd.cpp
     scripting/dao_snd2.cpp

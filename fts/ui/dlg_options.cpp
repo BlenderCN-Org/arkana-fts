@@ -16,7 +16,7 @@
 #include "ui/ui_menu.h"
 #include "utilities/utilities.h"
 
-#include "dLib/dBrowse/dBrowse.h"
+#include "dLib/dFile/dBrowse.h"
 #include "dLib/dConf/configuration.h"
 #include "dLib/dString/dTranslation.h"
 
