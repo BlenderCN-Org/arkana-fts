@@ -390,15 +390,21 @@ void FTS::FileDlg::fillLB(void)
         listOfFilesAndDirs.push_back(pLTI);
         for(auto& p : fs::directory_iterator(m_sRoot.c_str())) {
             if(fs::is_directory(p.path())) {
-                pLTI = new ImagedListItem(p.path().stem().string(), "FTSUI", "DirIcon", (void *)1UL);
+                auto isDirAsFile = m_dirIsFile ? (*m_dirIsFile)(Path(p.path().string().c_str())) : false;
+                if(isDirAsFile) {
+                    pLTI = new ImagedListItem(p.path().filename().string(), "FTSUI", "FileIcon", (void *)0UL);
+                } else {
+                    pLTI = new ImagedListItem(p.path().filename().string(), "FTSUI", "DirIcon", (void *)1UL);
+                }
+                listOfFilesAndDirs.push_back(pLTI);
             } else {
-                FTS::String sPath = p.path().filename().generic_string();
-                // Only take files that correspond to the pattern, but all directories.
+                FTS::String sPath = p.path().filename().string();
+                // Only take files that correspond to the pattern.
                 if(sPath.matchesPattern(m_sFilter)) {
-                    pLTI = new ImagedListItem(p.path().stem().string(), "FTSUI", "FileIcon", (void *)0UL);
+                    pLTI = new ImagedListItem(p.path().filename().string(), "FTSUI", "FileIcon", (void *)0UL);
+                    listOfFilesAndDirs.push_back(pLTI);
                 }
             }
-            listOfFilesAndDirs.push_back(pLTI);
         }
         // Sort the list now.
         listOfFilesAndDirs.sort(compare_dirfile_list);
