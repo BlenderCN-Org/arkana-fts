@@ -4,7 +4,7 @@
  * \date 6 Jan 2009
  * \brief This file contains the implementation of the file handling class.
  **/
-
+#include <experimental/filesystem>
 #include "dFile.h"
 
 #include "logging/logger.h"
@@ -17,6 +17,7 @@ std::map<FTS::String, FTS::Archive*> FTS::File::m_lArchivesToLook;
 #include <sys/stat.h>
 
 using namespace FTS;
+namespace fs = std::experimental::filesystem;
 
 UnknownProtocolException::UnknownProtocolException(const Path& in_sFile) throw()
     : LoggableException(new I18nLoggerCmd("UnknownProtocol", MsgType::Error, in_sFile.protocol(), in_sFile))
@@ -372,11 +373,14 @@ void File::autoRemArchiveToLook(Archive *in_pArch)
 
 uint64_t File::getSize(const Path &in_sFileName)
 {
-    std::FILE *pFile = fopen(in_sFileName.c_str(), "rb");
-    uint64_t uiLen = File::getSize(pFile);
-    SAFE_FCLOSE(pFile);
-
-    return uiLen;
+    try {
+        auto file = fs::path(in_sFileName.c_str());
+        uint64_t uiLen = fs::file_size(file);
+        return uiLen;
+    } catch(fs::filesystem_error& ec) {
+        throw SyscallException(String(ec.what()) + " Error Code : "+ String::nr(ec.code().value()));
+    }
+    return 0;
 }
 
 uint64_t File::getSize(std::FILE *in_pFile)
@@ -437,9 +441,6 @@ int File::write(const String &in)
 
 int FileUtils::mkdirIfNeeded(const Path& in_sPath, const bool in_bWithFile)
 {
-    struct stat buf;
-    int ret = 0;
-
     if(in_sPath.empty()) {
         FTS18N("InvParam", MsgType::Horror, "mkdirIfNeeded(in_sPath = empty)");
         return -1;
@@ -457,84 +458,57 @@ int FileUtils::mkdirIfNeeded(const Path& in_sPath, const bool in_bWithFile)
     }
 
     // Ignore the current and upper directory (. and ..).
-    if(sDirPath == "." || sDirPath == ".." ||
-       sDirPath == "./" || sDirPath == "../")
+    if(sDirPath == "." || sDirPath == ".." || sDirPath == "./" || sDirPath == "../")
         return ERR_OK;
 
-    // If the path already exists, all is ok.
-    if((ret = stat(sDirPath.c_str(), &buf)) == 0)
+    auto dir = fs::path(sDirPath.c_str());
+    std::error_code ec;
+    if(fs::exists(dir, ec)) {
         return ERR_OK;
+    }
+    auto rc = fs::create_directories(fs::path(sDirPath.c_str()), ec);
+    return rc ? ERR_OK : -5;
+}
 
-    // Create the command to execute, depending on OS.
-#if WINDOOF
-    String sCmd = "mkdir \"" + sDirPath + "\"";
-
-    size_t i = 0;
-
-    // Put in only backslashes for fu*king windows.
-    while(-1 != (i = sCmd.find("/")))
-        sCmd[i] = '\\';
-
-    // TODO: evaluate return value. what is the return value of the command O.o ?
-    system(sCmd.c_str());
-
-    return ERR_OK;
-#else
-    return system(("mkdir -p \"" + sDirPath + "\"").c_str()) == 0 ? ERR_OK : -5;
-#endif
+int FileUtils::rmdir(const Path& in_dPath)
+{
+    std::error_code ec;
+    auto rc = fs::remove_all(fs::path(in_dPath.c_str()), ec);
+    return rc < 0 ? -1 : ERR_OK;
 }
 
 bool FileUtils::fileExists(const Path& in_sFileName, const File::WriteMode& in_mode)
 {
-    const char *pszOpenString = "rb";
+    std::error_code ec;
+    auto fileName = fs::path(in_sFileName.c_str());
+    if(!fs::exists(fileName, ec)) {
+        return false;
+    }
+    auto perm = fs::status(fileName).permissions();
 
     if(in_mode == File::Insert)
-        pszOpenString = "wb";
+        return (perm & fs::perms::owner_write) != fs::perms::none ;
     else if(in_mode == File::Overwrite)
-        pszOpenString = "w+b";
+        return (perm & fs::perms::owner_write) != fs::perms::none;
 
-    // Check if we have the rights.
-    std::FILE *pFile = NULL;
-    if(NULL != (pFile = fopen(in_sFileName.c_str(), pszOpenString))) {
-        SAFE_FCLOSE(pFile);
-        return true;
-    }
-
-    return false;
+    return true;
 }
 
 bool FileUtils::dirExists(const Path& in_sDirName)
 {
-    struct stat buf;
-
     if(!in_sDirName) {
         FTS18N("InvParam", MsgType::Horror, "DirExists");
         return false;
     }
 
-    // Ignore the current and upper directory (. and ..).
-    // we could rewrite this now that we have the Path class...
-    if(in_sDirName == "." || in_sDirName == ".." ||
-       in_sDirName == ".\\" || in_sDirName == "..\\" ||
-       in_sDirName == "./" || in_sDirName == "../")
-        return true;
-
-    // Remove the trailing / or \ if there is one.
-    String sFinalDirName = in_sDirName;
-    if(in_sDirName.right(1) == "/" || in_sDirName.right(1) == "\\") {
-        sFinalDirName = in_sDirName.left(in_sDirName.len()-1);
+    auto dirName = fs::path(in_sDirName.c_str());
+    std::error_code ec;
+    if(fs::exists(dirName, ec)) {
+        if(fs::is_directory(dirName, ec)) {
+            return true;
+        }
     }
-
-    if(stat(sFinalDirName.c_str(), &buf) != 0)
-        return false;
-
-#if WINDOOF
-    if((buf.st_mode & _S_IFDIR) != 0)
-#else
-    if(S_ISDIR(buf.st_mode))
-#endif
-        return true;
-
+    
     return false;
 }
 
@@ -554,32 +528,21 @@ int FileUtils::fileCopy(const Path& in_sFrom, const Path& in_sTo, bool in_bOverw
         return -1;
     }
 
+    std::error_code ec;
+    auto from = fs::path(in_sFrom.c_str());
+    auto to = fs::path(in_sTo.c_str());
     // The source file doesn't exist.
-    if(!fileExists(in_sFrom, File::Read))
+    if(!fs::exists(from, ec)) {
         return -1;
+    }
 
     // The dest file already exists and we don't want to overwrite it.
-    if(fileExists(in_sTo, File::Read) && !in_bOverwrite)
+    if(!in_bOverwrite && fs::exists(to, ec)) {
         return ERR_OK;
+    }
 
     // Now copy it over.
-    lLength = File::getSize(in_sFrom);
-    if(lLength == (std::size_t)-1)
-        return -2;
-
-    pData = new char[lLength + 1];
-    pFile = fopen(in_sFrom.c_str(), "rb");
-    fread(pData, lLength, 1, pFile);
-    pData[lLength] = '\0';
-
-    pFile = freopen(in_sTo.c_str(), "wb+", pFile);
-    if(pFile == NULL) {
-        SAFE_DELETE_ARR(pData);
-        return -3;
-    }
-    fwrite(pData, lLength, 1, pFile);
-    fclose(pFile);
-    SAFE_DELETE_ARR(pData);
+    fs::copy(from, to, fs::copy_options::overwrite_existing, ec);
 
     return ERR_OK;
 }

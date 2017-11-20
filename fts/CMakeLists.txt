@@ -115,6 +115,7 @@ set(SRC_logging
     logging/Chronometer.cpp
     logging/ftslogger.cpp
     logging/logger.cpp
+    logging/MinimalLogger.cpp
     )
 
 set(SRC_main
@@ -164,6 +165,7 @@ set(SRC_tests
     tests/Configuration/Settings.cpp
     tests/Configuration/FTSConfiguration.cpp
     tests/main/ClockTest.cpp
+    tests/dLib/dFile/dFileTest.cpp
     )
 
 set(SRC_ui

@@ -65,6 +65,12 @@ FTS::Path::Path(const String& in_s)
     this->cleanup();
 }
 
+FTS::Path::Path(const std::string& in_s)
+    : String(in_s)
+{
+    this->cleanup();
+}
+
 FTS::Path::~Path()
 {
 }

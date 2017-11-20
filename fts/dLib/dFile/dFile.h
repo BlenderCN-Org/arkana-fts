@@ -52,7 +52,7 @@ public:
         /// Opens the file in overwrite mode. Unless the cursor reaches the end
         /// of the file, everything you write to the file won't make the file
         /// grow, it will just overwrite the current content.
-        /// Like in the default mode of most hexeditors.\n
+        /// Like in the default mode of most hex editors.\n
         /// If the cursor is at the end of the file, it will add what you write
         /// to the file and thus make the file grow.\n
         Overwrite,
@@ -72,11 +72,11 @@ public:
     typedef std::unique_ptr<File> Ptr;
 
 protected:
-    Path m_sName;     ///< This is the name of the file.
-    WriteMode m_mode; ///< How we should write data into this file.
-    SaveMode m_saveMode; ///< How to save the file by default later (overwrite?)
+    Path m_sName;           ///< This is the name of the file.
+    WriteMode m_mode;       ///< How we should write data into this file.
+    SaveMode m_saveMode;    ///< How to save the file by default later (overwrite?)
 
-    StreamedDataContainer* m_pSDC; ///< The content of the file.
+    StreamedDataContainer* m_pSDC = nullptr; ///< The content of the file.
 
     /// The compressor that was used to open the file. Is never NULL.
     Compressor::Ptr m_pOriginalCompressor;
@@ -102,10 +102,6 @@ protected:
     String m_sMyArchiveID;
 #endif
 
-    std::size_t readRaw(void* out_ptr, std::size_t in_size);
-    int insert(const void* in_ptr, std::size_t in_size);
-    int writeRaw(const std::uint8_t* const in_ptr, std::size_t in_size);
-
     /// This constructs a FTS::File object that just makes a copy of all that data
     /// for itself and decompresses it if necessary. Only for internal use by the
     /// named constructors.
@@ -127,7 +123,7 @@ public:
     /// Destroys the file object. CARE: This will not save the file before doing so.
     virtual ~File();
 
-    /// This not only looks if the file really exists on the harddisk, but it also
+    /// This not only looks if the file really exists on the hard disk, but it also
     /// checks its availability in an opened archive-to-be-watched or over a
     /// protocol (for example over http, if the address exists).
     ///
@@ -231,7 +227,7 @@ public:
     static File::Ptr overwrite(const Path& in_sFileName, const WriteMode& in_mode);
 
     /// This method creates an empty file, but only in memory. Nothing whatsoever
-    /// is done on the harddisk in this constructor. Rather, the file will be
+    /// is done on the hard disk in this constructor. Rather, the file will be
     /// created on the disk during a call to \a save and the like. Thus this named
     /// constructor will not fail.\n
     /// Later on, if you call the \a save method, it will fail in case the file
@@ -246,7 +242,7 @@ public:
     static File::Ptr createDelayed(const Path& in_sFileName, const WriteMode& in_mode);
 
     /// This method creates an empty file, but only in memory. Nothing whatsoever
-    /// is done on the harddisk in this constructor. Rather, the file will be
+    /// is done on the hard disk in this constructor. Rather, the file will be
     /// created on the disk during a call to \a save and the like. Thus this named
     /// constructor will not fail.\n
     /// Later on, if you call the \a save method, it will \e overwrite any already
@@ -278,7 +274,7 @@ public:
     ///
     ///\return a reference to this, allowing chaining.
     ///
-    ///\note If the file-name is the pipe ("-"), the file's content will be fushed
+    ///\note If the file-name is the pipe ("-"), the file's content will be flushed
     ///      to the standard output.
     const File& save() const;
 
@@ -296,12 +292,12 @@ public:
     ///
     ///\return a reference to this, allowing chaining.
     ///
-    ///\note If the file-name is the pipe ("-"), the file's content will be fushed
+    ///\note If the file-name is the pipe ("-"), the file's content will be flushed
     ///      to the standard output.
     const File& save(const Compressor& in_pComp) const;
 
     /// This method saves the content of the file onto the disk but with another name.
-    /// In case the file already exists, the behaviour of this method is controlled
+    /// In case the file already exists, the behavior of this method is controlled
     /// by the parameter \a in_mode .\n
     /// If it is impossible to finish (maybe because of insufficient access rights),
     /// this method throws an exception.\n
@@ -375,7 +371,7 @@ public:
     /// \return An object that can be used to write data to the file or NULL if
     ///         the file is opened in read only mode.
     inline WriteableStream* getWriter() { return this->isReadOnly() ? NULL : dynamic_cast<WriteableStream*>(m_pSDC);};
-    /// \return The readable and writeable stream that this file holds.
+    /// \return The readable and writable stream that this file holds.
     inline StreamedDataContainer* getStream() { return m_pSDC;};
     /// \return The data container that corresponds to this file. You can access
     ///         the raw data using this one, but in read-only!
@@ -602,16 +598,25 @@ namespace FileUtils {
     /// \param in_sPath     The path to create.
     /// \param in_bWithFile Whether there is a filename appended to the path or not.
     ///
-    /// \return If successfull: ERR_OK
-    /// \return If failed:      Error code < 0
+    /// \return If successful: ERR_OK
+    /// \return If failed:     Error code < 0
     int mkdirIfNeeded(const Path& in_dPath, const bool bWithFile);
+
+    /// This function removes an entire directory.
+    ///
+    /// \param in_sPath     The directory to remove.
+    ///
+    /// \return If successful: ERR-OK
+    /// \return If failed:     Error code < 0
+    int rmdir(const Path& in_dPath);
+
 
     /// Checks if the file \a in_sFileName exists and can be accessed with mode \a in_mode.
     ///
     /// \param in_sFileName The file to look for.
     /// \param in_mode      The mode to test accessing to the file. If it is
     ///                     File::Read, we only check if it is readable/openable. If
-    ///                     it is something else, also check if it is writeable.
+    ///                     it is something else, also check if it is writable.
     ///
     /// \return true If file seems to exist and you have the asked rights on it.
     /// \return false If file doesn't exist or you don't have the asked rights on it
@@ -619,18 +624,18 @@ namespace FileUtils {
     ///
     /// \Note The test depends on the permission of the directories and/or symlinks
     ///       in the path of \a in_pszFileName. \n
-    ///       If a directory is found as writeable, it means that we can create files
+    ///       If a directory is found as writable, it means that we can create files
     ///       in the directory, but we aren't 100 % sure to be able to write the
     ///       directory with directory - handling functions or system( ... ) calls.\n
     bool fileExists(const Path& in_sFileName, const File::WriteMode& in_mode = File::Read);
 
-    /// Checks if the direcotry \a in_sDirName exists.
+    /// Checks if the directory \a in_sDirName exists.
     /// \param in_sDirName The directory to look for.
     /// \return True if the directory exist, false if not.
     bool dirExists(const Path& in_sDirName);
 
     /// Checks if the given path exists, whether it is a directory or a file doesn't matter.
-    /// \param in_sPathname The path to check for existance.
+    /// \param in_sPathname The path to check for existence.
     /// \return true if the path exists, false if not.
     bool exists(const Path& in_sPathname);
 
@@ -641,7 +646,7 @@ namespace FileUtils {
     /// \param in_sTo   The destination filename
     /// \param in_bOverwrite Whether to overwrite the destination or not, if it already exists.
     ///
-    /// \return If successfull: ERR_OK
+    /// \return If successful: ERR_OK
     /// \return If failed:      Error code < 0
     int fileCopy(const Path& in_sFrom, const Path & in_sTo, bool in_bOverwrite = true);
 

@@ -2,9 +2,6 @@
 #  define FTS_DEFINES_H
 
 #  if defined(MSDOS) || defined(OS2) || defined(WIN32) || defined(_WIN32) || defined(_WIN32_) || defined(__CYGWIN__)
-#    if 0
-#      define MS_VISUAL 1
-#    endif
 #    define WINDOOF 1
 #    define NOMINMAX
 #  else

@@ -1,6 +1,7 @@
 #ifndef D_PATH_H
 #define D_PATH_H
 
+#include <string>
 #include "dString.h"
 
 namespace FTS {
@@ -14,6 +15,7 @@ public:
     Path();
     Path(const char* in_s);
     Path(const String& in_s);
+    Path(const std::string& in_s);
     static Path wd();
     static Path datadir(const Path& in_sSubdir = "");
     static Path userdir(const Path& in_sSubdir = "");
