@@ -1,11 +1,6 @@
 #include "dPath.h"
-
-#if WINDOOF
-#  include <direct.h>
-#else
-#  include <unistd.h>
-#endif
-
+#include <experimental/filesystem>
+#include <cstdlib>
 
 using namespace FTS;
 
@@ -16,11 +11,8 @@ FTS::Path::Path()
 
 FTS::Path FTS::Path::wd()
 {
-    char *pszCWD = getcwd(NULL, 0);
-
-    FTS::Path ret(pszCWD);
-    SAFE_FREE(pszCWD);
-
+    auto cwd = std::experimental::filesystem::current_path();
+    FTS::Path ret(cwd.string());
     return ret;
 }
 
@@ -34,10 +26,10 @@ FTS::Path FTS::Path::userdir(const Path& in_sSubdir)
 {
     Path path;
 #if defined(_MSC_VER)
-    path = getenv ( "APPDATA" );
+    path = std::getenv ( "APPDATA" );
     path = path + Path ( "arkana-fts" ) ;
 #else
-    path = getenv ( "HOME" );
+    path = std::getenv ( "HOME" );
     path = path + Path ( ".arkana-fts" ) ;
 #endif
     return path + in_sSubdir;
