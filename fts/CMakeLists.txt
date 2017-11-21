@@ -77,7 +77,7 @@ set(SRC_dLib
     dLib/dConf/ArkanaDefaultSettings.cpp
     dLib/dConf/DefaultOptions.cpp
     dLib/dFile/dFile.cpp
-    dLib/dfile/dBrowse.cpp
+    dLib/dFile/dBrowse.cpp
     dLib/dProcess/dProcess.cpp
     dLib/dString/dString.cpp
     dLib/dString/dPath.cpp
