@@ -9,6 +9,7 @@
 #include <thread>
 
 #include <CEGUI.h>
+#include <fts-net.h>
 
 #include "main/load_fts_rlv.h"
 
@@ -35,9 +36,6 @@
 
 #include <RendererModules/OpenGLGUIRenderer/openglrenderer.h>
 #include <SDL.h>
-#if WINDOOF
-#  include<winsock2.h>
-#endif
 
 using namespace FTS;
 
@@ -222,13 +220,7 @@ bool FTS::LoadFTSRlv::update(const Clock&)
         break;
     case LoadNetwork:
         FTS18NDBG("NetDrvL", 1);
-#if WINDOOF
-        // And the windows sockets.
-        WSADATA wsaData;
-        if(WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)
-            FTSMSGDBG("Winsock version {1}.{2} initialized ", 2,
-                String::nr(LOBYTE(wsaData.wVersion)), String::nr(HIBYTE(wsaData.wVersion)));
-#endif
+        FTS::NetworkLibInit(3); // dbg level set to 4.
         Logger::getSingletonPtr()->doneConsoleMessage();
         m_eNextTodo = LoadFinal;
         break;
