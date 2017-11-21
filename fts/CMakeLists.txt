@@ -481,6 +481,7 @@ if(WIN32)
     add_definitions(-DALL_STATIC)
     add_definitions(-DCEGUI_STATIC)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+    add_definitions(-D_CRT_SECURE_NO_DEPRECATE)
 endif()
 # And show the flags.
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")

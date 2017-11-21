@@ -1,9 +1,9 @@
 #ifndef FTS_DEFINES_H
 #  define FTS_DEFINES_H
 
-#  if defined(MSDOS) || defined(OS2) || defined(WIN32) || defined(_WIN32) || defined(_WIN32_) || defined(__CYGWIN__)
+#  if defined(_WIN32) || defined(__CYGWIN__)
 #    define WINDOOF 1
-#    define NOMINMAX
+#    define NOMINMAX    // Avoiding the MSC min/max defines.
 #  else
 #    define WINDOOF 0
 #  endif
@@ -18,44 +18,9 @@
 #    ifndef WIN32_LEAN_AND_MEAN
 #      define WIN32_LEAN_AND_MEAN 1
 #    endif
-#    define _CRT_SECURE_NO_DEPRECATE
-#    if _MSC_VER < 1600
-#      define EISCONN WSAEISCONN
-#      define EINPROGRESS WSAEINPROGRESS
-#      define EALREADY WSAEALREADY
-#    endif
-#    if _MSC_VER < 1500
-#      define vsnprintf _vsnprintf
-#    endif
-#    if _MSC_VER < 1900
-#      define snprintf _snprintf
-#      define strdup _strdup
-#      define strcasecmp _stricmp
-#      define strncasecmp _strnicmp
-#      define unlink _unlink
-#    endif
 #  endif
 
-////////////////////////////////////////////////////////////
-// Identify if C++0x can be used.
-////////////////////////////////////////////////////////////
-#ifdef _MSC_VER
-#  if _MSC_VER >= 1600  // Visual Studio 2010 or newer
-#    define D_CPP0X 1
-#  else
-#    define D_CPP0X 0
-#  endif
-#elif defined(__GXX_EXPERIMENTAL_CXX0X__) // Thank you, Gcc
-#  define D_CPP0X 1
-#else
-#  define D_CPP0X 0
-#endif
-
-#if !D_CPP0X
-#  error A C++0x compiler is required!
-#endif
-
-/* When a function returns this, no error occured.
+/* When a function returns this, no error occurred.
  * If your function want to return an error, return NEGATIVE values.
  */
 #  define ERR_OK (int)0

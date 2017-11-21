@@ -13,7 +13,6 @@
 /* -------------------------- */
 #  include "main/support.h"
 #  include "main/defines.h"
-#  include "main/workarounds.h"
 
 #ifdef D_ARKANA_TESTING
 #  ifndef GAME_MAIN
