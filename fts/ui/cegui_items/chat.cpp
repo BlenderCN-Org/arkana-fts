@@ -4,7 +4,7 @@
  * \date 04 July 2007
  * \brief This file implements all custom CEGUI items that have something to do with chatting.
  **/
-
+#include <ctime>
 #include <CEGUI.h>
 
 #include "ui/cegui_items/chat.h"

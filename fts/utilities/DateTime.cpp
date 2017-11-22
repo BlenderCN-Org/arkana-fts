@@ -4,7 +4,7 @@
 * \date unknown (very old)
 * \brief This file implements general functions.
 **/
-
+#include <ctime>
 #include "DateTime.h"
 
 #include "dLib/dString/dTranslation.h"

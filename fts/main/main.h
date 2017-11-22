@@ -11,7 +11,6 @@
 /* -------------------------- */
 /* Includes                   */
 /* -------------------------- */
-#  include "main/support.h"
 #  include "main/defines.h"
 
 #ifdef D_ARKANA_TESTING
@@ -30,25 +29,8 @@
 #  endif // TEST_MAIN
 #endif
 
-#  define _USE_MATH_DEFINES // needed for math constants like M_PI (under windows)
-#  include <sys/stat.h>
-#  include <string.h>
-#  include <stdlib.h>
-#  include <stdarg.h>
-#  include <stdio.h>
-#  include <ctype.h>
-#  include <errno.h>
-#  include <time.h>
-#  include <math.h>
-#  include <cstdint>
-
 #  if WINDOOF
 #    include <windows.h>
-#    if !defined(_MSC_VER)
-#      include <unistd.h>
-#    else
-#      include <direct.h>
-#    endif
 #  endif
 
 #  include "dLib/dMem/dMem.h"

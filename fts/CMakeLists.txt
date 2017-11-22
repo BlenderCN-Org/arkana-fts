@@ -48,6 +48,7 @@ endif()
 ##########################################
 set(SRC_3rdparty
     3rdparty/lodepng.cpp
+    3rdparty/freetype_debug.cpp
     )
 
 set(SRC_3D
@@ -238,7 +239,7 @@ if(MSVC)
     source_group( map FILES ${SRC_map} )
     source_group( mdlviewer FILES ${SRC_mdlviewer} )
     source_group( sound FILES ${SRC_sound} )
-    source_group( utilities FILES ${SRC_utility} )
+    source_group( utilities FILES ${SRC_utilities} )
     source_group( scripting FILES ${SRC_scripting} )
 endif()
 
@@ -270,9 +271,8 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     if(WIN32)
         add_definitions(-D_DEBUG)
         link_directories("3rdparty/vclib/")
-    else()
-        add_definitions(-DDEBUG=1)
     endif()
+    add_definitions(-DDEBUG=1)
 else()
     if(WIN32)
         add_definitions(-DNDEBUG)
@@ -472,6 +472,8 @@ include_directories(${FTS_INCLUDES})
 add_definitions(-DD_STRING_FTS_LIBS)
 add_definitions(-DD_USE_CEGUI)
 add_definitions(-DD_STRING_FTS_PATHS)
+add_definitions(-D_USE_MATH_DEFINES) # Using M_PI etc.
+add_definitions(-DHAVE_M_PI) # Avoid redefinition through SDL_stdinc.h
 if(WIN32)
     add_definitions(-DDAO_DIRECT_API)
     add_definitions(-DDAO_SND_STATIC)
@@ -482,6 +484,8 @@ if(WIN32)
     add_definitions(-DCEGUI_STATIC)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
     add_definitions(-D_CRT_SECURE_NO_DEPRECATE)
+    add_definitions(-DWIN32_LEAN_AND_MEAN=1)
+    add_definitions(-DNOMINMAX)
 endif()
 # And show the flags.
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")

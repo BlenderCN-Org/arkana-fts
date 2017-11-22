@@ -4,8 +4,9 @@
  * \date 28 May 2008
  * \brief This file declares everything for the global light (sun, moon, ...).
  **/
-#include "3d/light.h"
+#include <cmath>
 
+#include "3d/light.h"
 using namespace FTS;
 
 bool Light::m_bUsedGLLights[8] = {false, false, false, false, false, false, false, false};

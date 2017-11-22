@@ -9,8 +9,6 @@
 #include <string>
 #include <tuple>
 
-#include "main/defines.h"
-
 #ifdef D_STRING_STD_ONLY
 #  ifdef D_USE_CEGUI
 #    undef D_USE_CEGUI
@@ -20,6 +18,9 @@
 #ifdef D_USE_CEGUI
 #  include <CEGUIString.h>
 #endif
+
+/// Whether in a wildcard expression a questionmark ('?') can be no match or not.
+#  define D_QUEST_CAN_BE_NONE	1
 
 #include "main.h"
 #include <typeinfo>

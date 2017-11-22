@@ -3,22 +3,12 @@
 
 #  if defined(_WIN32) || defined(__CYGWIN__)
 #    define WINDOOF 1
-#    define NOMINMAX    // Avoiding the MSC min/max defines.
 #  else
 #    define WINDOOF 0
 #  endif
 
 /// This is the delta used to round.
 #define D_FTS_DELTA (float)(1e-5)
-
-/* Defines to get it compiling on windows ......... */
-/* ================================================ */
-#  if defined(_MSC_VER)
-#    define VC_EXTRALEAN 1
-#    ifndef WIN32_LEAN_AND_MEAN
-#      define WIN32_LEAN_AND_MEAN 1
-#    endif
-#  endif
 
 /* When a function returns this, no error occurred.
  * If your function want to return an error, return NEGATIVE values.
@@ -36,6 +26,8 @@
 
 //#define FTS_WINDOW_TITLE "FTS Version "FTS_VERSION_STRING" by Pompei2"
 #  define FTS_WINDOW_TITLE "FTS by Pompei2"
+#  define FTS_UI_SKIN_FILE "ArkanaLook.scheme"
+#  define FTS_UI_SKIN      "ArkanaLook"
 
 /* The Macros */
 /* ========== */
@@ -54,5 +46,4 @@
 #  define D_DEFAULT_SERVER_PORT 0xAF75
 
 #endif                          /* FTS_DEFINES_H */
-
- /* EOF */
+/* EOF */
