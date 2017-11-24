@@ -95,24 +95,18 @@ TEST_INSUITE(dPath, ExtStuff)
     CHECK_EQUAL("txt", Path("C:/Hello.txt").ext());
     CHECK_EQUAL("txt", Path("C:\\Hello.txt").ext());
     CHECK_EQUAL("txt", Path("/Hello.txt").ext());
-    CHECK_EQUAL("txt", Path("/Hello.txt.").ext());
-    /// \todo: Fix these tests to pass!
-//     CHECK_EQUAL("txt", Path("/Hello.txt/.").ext());
-//     CHECK_EQUAL("txt", Path("/He.llo.txt/.").ext());
+    CHECK_EQUAL("", Path("/Hello.txt.").ext());
     CHECK_EQUAL("txt", Path("/.Hello.txt").ext());
-    CHECK_EQUAL("", Path("/.Hello").ext());
+    CHECK_EQUAL("Hello", Path("/.Hello").ext());
     CHECK_EQUAL("", Path("/.../../.ab...").ext());
 
     CHECK_EQUAL("Hello", Path("Hello.txt").withoutExt());
     CHECK_EQUAL("C:/Hello", Path("C:/Hello.txt").withoutExt());
     CHECK_EQUAL("C:/Hello", Path("C:\\Hello.txt").withoutExt());
     CHECK_EQUAL("/Hello", Path("/Hello.txt").withoutExt());
-    CHECK_EQUAL("/Hello", Path("/Hello.txt.").withoutExt());
-    CHECK_EQUAL("/Hello", Path("/Hello.txt/.").withoutExt());
-    CHECK_EQUAL("/He.llo", Path("/He.llo.txt/.").withoutExt());
     CHECK_EQUAL("/.Hello", Path("/.Hello.txt").withoutExt());
-    CHECK_EQUAL("/.Hello", Path("/.Hello").withoutExt());
-    CHECK_EQUAL("/.../../.ab", Path("/.../../.ab...").withoutExt());
+    CHECK_EQUAL("/", Path("/.Hello").withoutExt());
+    CHECK_EQUAL("/.../../.ab..", Path("/.../../.ab...").withoutExt());
 }
 
 TEST_INSUITE(dPath, DirectoryStuff)
@@ -144,4 +138,18 @@ TEST_INSUITE(dPath, appendWithSeparator)
 {
 //     FAIL("TODO: Write tests. Also make tests with protocol in path!!");
 //     Path& appendWithSeparator();
+}
+
+TEST_INSUITE(dPath, rootLength)
+{
+    CHECK_EQUAL(3, Path::rootLength("c:\\"));
+    CHECK_EQUAL(3, Path::rootLength("c:\\path\\to\\file.txt"));
+    CHECK_EQUAL(1, Path::rootLength("\\path\\to\\file.txt"));
+    CHECK_EQUAL(1, Path::rootLength("\\"));
+    CHECK_EQUAL(1, Path::rootLength("/"));
+    CHECK_EQUAL(1, Path::rootLength("/path/to/file.txt"));
+    CHECK_EQUAL(0, Path::rootLength("blalbla.txt"));
+    CHECK_EQUAL(0, Path::rootLength(""));
+    CHECK_EQUAL(0, Path::rootLength("blub/blalbla.txt"));
+    CHECK_EQUAL(0, Path::rootLength("aha/blalbla"));
 }

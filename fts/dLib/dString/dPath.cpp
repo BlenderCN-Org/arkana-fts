@@ -3,6 +3,7 @@
 #include <cstdlib>
 
 using namespace FTS;
+namespace fs = std::experimental::filesystem;
 
 FTS::Path::Path()
     : String()
@@ -96,7 +97,7 @@ Path* Path::cleanup()
 
     // Removes all beginning ./
 //     while(this->ncmp("./", 2)) {
-        // Remove these two first charachters.
+        // Remove these two first characters.
 //         this->removeChar(0).removeChar(0);
 //     }
 
@@ -106,7 +107,7 @@ Path* Path::cleanup()
 
     // Removes all ending /.
 //     while(this->right(2).ncmp("/.", 2) && this->len() > Path::rootLength(*this)) {
-        // Remove these two first charachters.
+        // Remove these two first characters.
 //         this->removeChar(-1).removeChar(-1);
 //     }
 
@@ -151,7 +152,7 @@ void Path::escape()
     }
 }
 
-/// Returns wether the filename would be escaped or not.
+/// Returns whether the filename would be escaped or not.
 /** This looks if this filename would be escaped by the escapeFile method.
  *
  * \param in_sPath The filename to check.
@@ -180,7 +181,7 @@ bool Path::wouldEscapeFile(const String& in_sFile)
     return false;
 }
 
-/// Returns wether the pathname would be escaped.
+/// Returns whether the pathname would be escaped.
 /** This looks if this pathname would be escaped by the escapePath function.
  *
  * \param in_sPath The name of the path.
@@ -213,19 +214,15 @@ bool Path::wouldEscapePath(const String& in_sPath)
 
 size_t Path::rootLength(const String& s)
 {
-    if(s.getCharAt(0) == '/')
-        return 1;
-    else if(s.getCharAt(1) == ':' && (s.getCharAt(2) == '/' || s.getCharAt(2) == '\\') && isalpha(s.getCharAt(0)))
-        return 3;
-    else
-        return 0;
+    auto p = fs::path(s.c_str());
+    return p.root_path().string().size();
 }
 
-/// returns the basename of this path (like the linux command).
-/** Gives you the last component of a path. Works just like the linux basename
+/// returns the base name of this path (like the Linux command).
+/** Gives you the last component of a path. Works just like the Linux base name
  *  command.
  *
- * \return a new path, containing the basename.
+ * \return a new path, containing the base name.
  *
  * Example:\n \code
  *  Path path("c:\\Program Files\\FTS\\data.conf");
@@ -237,25 +234,16 @@ size_t Path::rootLength(const String& s)
  */
 Path Path::basename() const
 {
-    size_t pos = 0;
-
-    for(int i = (int)this->len()-1 ; i>=0 ; i--) {
-       if( FTS_IS_DIR_SEPARATOR(this->getCharAt(i)) ) {
-          pos = i + 1;
-          break;
-        }
-    }
-
-    String str(&this->c_str()[pos]);
-    return Path(str);
+    auto p = fs::path(this->c_str());
+    return p.filename().string();
 }
 
 /// Returns a string containing the extension of the filename this string represents.
-/** This creates a new string wich contains everything that is behind the last
+/** This creates a new string which contains everything that is behind the last
  *  point of this string. If this string is a filename, \a ext will give the
  *  file's extension back, hence the name of this method.
  *
- * \Note All leading and trailing points in the basename are removed!
+ * \Note All leading and trailing points in the base name are removed!
  *
  * \return The extension of the file (w/o the dot). If there is no dot, returns
  *         the empty string.
@@ -269,36 +257,21 @@ Path Path::basename() const
  */
 Path Path::ext() const
 {
-    // Trivial cases
-    if(this->len() <= 1)
-        return Path("");
-
-    // We can only find an extension in the basename, not in a directory name!
-    Path sBase = this->basename().trim(".");
-    if(sBase.len() <= 1)
-        return Path("");
-
-    size_t extLength = 0;
-    bool bFoundDot = false;
-    for(size_t i = sBase.len()-1 ; i>0 ; i--, extLength++) {
-        if(sBase.getCharAt(i) == '.') {
-            bFoundDot = true;
-            break;
-        }
-    }
-
-    return bFoundDot ? Path(sBase.right(extLength)) : Path("");
+    auto p = fs::path(this->c_str());
+    auto ext = p.extension().string();
+    // remove the point.
+    return ext.substr(1);
 }
 
 /// Returns a string similar to this one but without the extension.
-/** This creates a new string wich contains exactly the same text as this
- *  exept that the extension is cut off, that means the last point and all
+/** This creates a new string which contains exactly the same text as this
+ *  except that the extension is cut off, that means the last point and all
  *  that follows isn't in the returned string.
  *
  * \return The path to the file, w/o extension. Note that if there is no dot in
  *         the string, the full string is returned! If the only dot in the
  *         is the first character and there is no other dot, the full string is
- *         returned (to be compatible with unix hidden file names).
+ *         returned (to be compatible with Unix hidden file names).
  *
  * Example: \n \code
  *       Path p("c:\\Program Files\\FTS\\data.conf");
@@ -309,27 +282,13 @@ Path Path::ext() const
  */
 Path Path::withoutExt() const
 {
-    // The trivial cases (empty string or only the dot) give no result:
-    if(this->len() < 1)
-        return Path("");
-    if(*this == "." || *this == "..") // TODO: This is too simple, does not work with for example "..."
-        return *this;
-
-    Path sTrimmed = this->trimRight(".");
-    String sExt = sTrimmed.ext();
-    if(sExt.empty()) {
-        return sTrimmed;
-    } else {
-        return Path(sTrimmed.left(sTrimmed.len()-sTrimmed.ext().len()-1));
-    }
+    auto p = fs::path(this->c_str());
+    return p.replace_extension("").string();
 }
 
 /// Returns a path containing only the path to the directory this file resides in.
-/** This creates a new string wich contains the same as this, but without the filename.
+/** This creates a new string which contains the same as this, but without the filename.
  *  That means the path to the current file.
- *
- * \param in_bTrailing If true (the default), a trailing directory separator is
- *                     added, if false none is added.
  *
  * \return The path name.
  *
@@ -337,9 +296,8 @@ Path Path::withoutExt() const
  *       Path p1("/usr/share/FTS/data.conf");
  *       Path p2("C:/bla");
  *       String dir1 = p1.directory();
- *       String dir2 = p1.directory(false);
  *       String dir3 = p2.directory();
- *       // dir1 is now "/usr/share/FTS/" and dir2 is "/usr/share/FTS" and dir3 is "C:/" \endcode
+ *       // dir1 is now "/usr/share/FTS/" and dir3 is "C:/" \endcode
  *
  * \note If the name contains no path but only the file, either "." or "./" is
  *       returned, depending on the value of \a in_bTrailing.
@@ -362,7 +320,7 @@ Path Path::directory() const
 }
 
 /// Returns a path to the file in_pszNewFile, but in the same directory as me.
-/** This creates a new string wich contains a path to a file. This file is
+/** This creates a new string which contains a path to a file. This file is
  *  located in the same directory as the file that this string contains, but
  *  has the name \a in_sNewFile
  *
@@ -409,7 +367,7 @@ Path Path::cdUp() const
     return curr.directory();
 }
 
-/** This creates a new string wich contains the protocol of this path.
+/** This creates a new string which contains the protocol of this path.
  *  The protocol is whatever comes from the beginning of the path up to
  *  the "://" symbol, not including the latter. If not indicated, the protocol
  *  defaults to "file".
