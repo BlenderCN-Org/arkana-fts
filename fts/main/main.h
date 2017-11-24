@@ -11,6 +11,7 @@
 /* -------------------------- */
 /* Includes                   */
 /* -------------------------- */
+#  include <cstdint>
 #  include "main/defines.h"
 
 #ifdef D_ARKANA_TESTING

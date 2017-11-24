@@ -16,15 +16,15 @@ namespace FTS {
     class String;
 
 struct Resolution {
-    uint16_t w = 1;
-    uint16_t h = 1;
+    std::uint16_t w = 1;
+    std::uint16_t h = 1;
     bool fs = false;
 
 #ifndef D_NO_SDL
     Resolution();
 #endif // D_NO_SDL
     Resolution(const String& in_s);
-    Resolution(uint16_t in_w, uint16_t in_h, bool in_fs);
+    Resolution(std::uint16_t in_w, std::uint16_t in_h, bool in_fs);
 
     String toString(bool in_bFS) const;
     float aspectRatio() const;

@@ -519,10 +519,6 @@ bool FileUtils::exists(const Path& in_sPathname)
 
 int FileUtils::fileCopy(const Path& in_sFrom, const Path& in_sTo, bool in_bOverwrite)
 {
-    std::FILE *pFile = NULL;
-    char *pData = NULL;
-    std::size_t lLength = 0;
-
     if(!in_sFrom || !in_sTo) {
         FTS18N("InvParam", MsgType::Horror, "fileCopy(!in_sFrom || !in_sTo)");
         return -1;

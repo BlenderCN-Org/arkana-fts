@@ -31,8 +31,8 @@ private:
     float *m_pfEdges;          ///< The heights of the 4 or 25 edges.
     Vector *m_pfNormals;   ///< The normals of the 4 or 25 edges.
 
-    uint16_t m_usX; ///< The X position of this quad on the map, unit is quads.
-    uint16_t m_usY; ///< The Y position of this quad on the map, unit is quads.
+    std::uint16_t m_usX; ///< The X position of this quad on the map, unit is quads.
+    std::uint16_t m_usY; ///< The Y position of this quad on the map, unit is quads.
 
     float m_fTexCoordDetail[3];         ///< The texture coordinats for the detailmap X,Y,W.
     float m_fTexCoordLowerTile[4];      ///< The texture coordinates for the lower tile image (Left,Top,Right,Bottom).
@@ -40,7 +40,7 @@ private:
     float m_fCplxTexCoordLowerTile[10]; ///< The texture coordinates for the lower tile image, if the quad is complex
     float m_fCplxTexCoordUpperTile[10]; ///< The texture coordinates for the upper tile image, if the quad is complex
 
-    uint8_t m_cBlendmask;    ///< The ID of the blendmask.
+    std::uint8_t m_cBlendmask;    ///< The ID of the blendmask.
 
     int renderComplex_Multitex(float in_fX, float in_fY, float in_fZ, float in_fMultip);
     int renderComplex(float in_fX, float in_fY, float in_fZ, float in_fMultip);
@@ -64,7 +64,7 @@ public:
                        char in_cTopRight,
                        char in_cBottomLeft,
                        char in_cBottomRight,
-                       uint16_t in_cUpperTile);
+                       std::uint16_t in_cUpperTile);
     void setupNormals(const Vector &in_vLUNormal, const Vector &in_vRUNormal,
                       const Vector &in_vLBNormal, const Vector &in_vRBNormal);
 

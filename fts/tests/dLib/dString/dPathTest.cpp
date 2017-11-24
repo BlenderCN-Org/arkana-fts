@@ -35,9 +35,10 @@ TEST_INSUITE(dPath, Construction)
     CHECK_EQUAL("/bla/..", Path("/bla/.."));
     CHECK_EQUAL("/bla/..", Path("/bla/../"));
 
+#if WINDOOF
     CHECK_EQUAL("C:/", Path("C:/"));
     CHECK_EQUAL("C:/", Path("C:\\"));
-
+#endif
     // French (just by hitting all keyboard keys, may have forgotten some)
     CHECK_EQUAL("&é'(-è_çà)='1°+¹²~#{[`^@]}$^ù,;!.§%µ£¨ëäẗÿüïöḧẅẍâẑêŷûîôŝĝĥĵŵĉÂẐÊŶÛÎÔŜĜĤĴŴĈÄËŸÜÏÖḦẄẌ",
            Path("&é'(-è_çà)='1°+¹²~#{[`^@]}$^ù,;!.§%µ£¨ëäẗÿüïöḧẅẍâẑêŷûîôŝĝĥĵŵĉÂẐÊŶÛÎÔŜĜĤĴŴĈÄËŸÜÏÖḦẄẌ"));
@@ -60,33 +61,39 @@ TEST_INSUITE(dPath, EscapeCheck)
     CHECK(not Path::wouldEscapeFile("&é'(-è_çà)='1°+¹²~#{[`^@]}$^ù,;!.§%µ£¨ëäẗÿüïöḧẅẍâẑêŷûîôŝĝĥĵŵĉÂẐÊŶÛÎÔŜĜĤĴŴĈÄËŸÜÏÖḦẄẌ"));
     CHECK(not Path::wouldEscapeFile("^°§$%&{[()]}=ßẃéŕźúíóṕǘáśǵḱĺýćńḿśẁèùìòǜàỳǹẂÉŔŹÚÍÓṔǗÁŚǴḰĹÝĆŃḾẀÈÙÌÒǛÀỲǸ"));
     CHECK(not Path::wouldEscapeFile("ๅ๑๒ภ๓ถ๔ุูึ฿ค๕ต๖จ๗ข๘ช๙ๆ๐ไำฎพฑะธัํี๊รณนฯยญบฐล,ฟฤหฆกฏดโเฌ้็่๋าษสศวซง.ฃฅผปแฉอฮิฺื์ทมฒใฬฝฦ"));
+#if WINDOOF
     CHECK(Path::wouldEscapeFile("C:/Hello.txt"));
+#endif
     CHECK(Path::wouldEscapeFile("/Hello_Moto.txt"));
 
+#if WINDOOF
     CHECK(not Path::wouldEscapePath("C:/Hello.txt"));
-    CHECK(not Path::wouldEscapePath("/Hello_Moto.txt"));
     CHECK(not Path::wouldEscapePath("C:/Hello\\world .txt"));
-    CHECK(not Path::wouldEscapePath("/Hello/Moto .txt"));
     CHECK(not Path::wouldEscapePath("C:/Hello\\world .txt\\ "));
-    CHECK(not Path::wouldEscapePath("/Hello/Moto .txt/ "));
     CHECK(not Path::wouldEscapePath("C:/Hello\\world .txt\\ ."));
-    CHECK(not Path::wouldEscapePath("/Hello/\\Moto .txt/ ."));
     CHECK(Path::wouldEscapePath("C:/Hello:world .txt\\ "));
+#endif
+    CHECK(not Path::wouldEscapePath("/Hello_Moto.txt"));
+    CHECK(not Path::wouldEscapePath("/Hello/Moto .txt"));
+    CHECK(not Path::wouldEscapePath("/Hello/Moto .txt/ "));
+    CHECK(not Path::wouldEscapePath("/Hello/\\Moto .txt/ ."));
     CHECK(Path::wouldEscapePath("/Hello*Moto .txt/ "));
 }
 
 TEST_INSUITE(dPath, Basename)
 {
-    CHECK_EQUAL("Hello.txt", Path("Hello.txt").basename());
+#if WINDOOF
     CHECK_EQUAL("Hello.txt", Path("C:\\Hello.txt").basename());
     CHECK_EQUAL("Hello.txt", Path("C:/Hello.txt").basename());
     CHECK_EQUAL("Hello.txt", Path("C:\\World/Hello.txt").basename());
+    CHECK_EQUAL("Hello.txt", Path("C:\\World/Hello.txt\\").basename());
+#endif
+    CHECK_EQUAL("Hello.txt", Path("Hello.txt").basename());
     CHECK_EQUAL("Hello.txt", Path("/Hello.txt").basename());
     CHECK_EQUAL("Hello.txt", Path("/World/Hello.txt").basename());
     CHECK_EQUAL("Hello.txt", Path("/World////Hello.txt").basename());
     CHECK_EQUAL("t", Path("/World////Hello.tx/t").basename());
     CHECK_EQUAL("Hello.txt", Path("/World/Hello.txt/").basename());
-    CHECK_EQUAL("Hello.txt", Path("C:\\World/Hello.txt\\").basename());
 }
 
 TEST_INSUITE(dPath, ExtStuff)
@@ -142,8 +149,10 @@ TEST_INSUITE(dPath, appendWithSeparator)
 
 TEST_INSUITE(dPath, rootLength)
 {
+#if WINDOOF
     CHECK_EQUAL(3, Path::rootLength("c:\\"));
     CHECK_EQUAL(3, Path::rootLength("c:\\path\\to\\file.txt"));
+#endif
     CHECK_EQUAL(1, Path::rootLength("\\path\\to\\file.txt"));
     CHECK_EQUAL(1, Path::rootLength("\\"));
     CHECK_EQUAL(1, Path::rootLength("/"));

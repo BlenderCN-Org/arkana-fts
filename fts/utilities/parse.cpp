@@ -5,6 +5,7 @@
  * \brief This file implements functions to parse files.
  **/
 
+#include <stdarg.h>
 #include "parse.h"
 #include "logging/logger.h"
 #include "DateTime.h"
