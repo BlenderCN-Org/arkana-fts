@@ -4,6 +4,8 @@
 #  include <process.h>
 #else
 #  include <spawn.h>
+#  include <stdlib.h>
+#  include <stdio.h>
 #endif
 
 int spawnv_sync( const char *in_pszExecutable, const char *in_ppszArgs[] )
