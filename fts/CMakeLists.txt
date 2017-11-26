@@ -28,16 +28,12 @@ if("${CURR_DIR}" STREQUAL "${fts_SOURCE_DIR}\n")
 endif()
 
 if(MSVC)
-    FOREACH(flag_var
-        CMAKE_C_FLAGS CMAKE_C_FLAGS_DEBUG CMAKE_C_FLAGS_RELEASE
-        )
+    FOREACH(flag_var CMAKE_C_FLAGS CMAKE_C_FLAGS_DEBUG CMAKE_C_FLAGS_RELEASE)
         IF(${flag_var} MATCHES "/MD")
             STRING(REGEX REPLACE "/MD" "/MT" ${flag_var} "${${flag_var}}")
         ENDIF()
     ENDFOREACH(flag_var)
-    FOREACH(flag_var
-        CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE
-        )
+    FOREACH(flag_var CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE )
         IF(${flag_var} MATCHES "/MD")
             STRING(REGEX REPLACE "/MD" "/MT" ${flag_var} "${${flag_var}}")
         ENDIF()
@@ -253,11 +249,11 @@ if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
     add_definitions("-Wall -Winvalid-pch")
     if(CMAKE_BUILD_TYPE STREQUAL "Debug")
         add_definitions("-O0 -pg -fstack-protector-all")
-    if(CMAKE_COMPILER_IS_GNUCXX)
-        add_definitions("-Wno-non-virtual-dtor")
-    endif()
+        if(CMAKE_COMPILER_IS_GNUCXX)
+            add_definitions("-Wno-non-virtual-dtor")
+        endif()
     else()
-    add_definitions("-s")
+        add_definitions("-s")
     endif()
 elseif(MSVC)
 endif()
@@ -499,11 +495,6 @@ endif()
 if(CMAKE_COMPILER_IS_GNUCXX)
     # gcc (even 7.2) needs to link a special lib for the filesystem support.
     list(APPEND FTS_LIBS stdc++fs)
-    # Pre compiled header
-    include(${fts_SOURCE_DIR}/cmake/PCH_GCC4_v2.cmake)
-    ADD_PCH_RULE(${fts_SOURCE_DIR}/3d/3d.h SOURCES_COMMON)
-    ADD_PCH_RULE(${fts_SOURCE_DIR}/dLib/dString/dString.h SOURCES_COMMON)
-    ADD_PCH_RULE(${fts_SOURCE_DIR}/main/main.h SOURCES_GAME)
 endif()
 
 execute_process(COMMAND git describe --dirty WORKING_DIRECTORY ${fts_SOURCE_DIR} RESULT_VARIABLE FTS_VERSION_RESULT OUTPUT_VARIABLE FTS_VERSION_FULL_RAW)
@@ -523,195 +514,3 @@ target_link_libraries(fts ${FTS_LIBS} )
 if(NOT WIN32)
     add_custom_command(TARGET fts POST_BUILD COMMAND cp ${fts_BINARY_DIR}/fts ${fts_SOURCE_DIR} VERBATIM)
 endif()
-
-# installation to the system. #
-#    OUTDATED AND UNTESTED    #
-###############################
-# install(TARGETS fts DESTINATION bin)
-#
-# install(FILES Data/newicon.ico
-#         DESTINATION share/arkana-fts/Data)
-#
-# install(FILES Data/Graphics/icon.ftsimg
-#               Data/Graphics/preview.ftsimg
-#               Data/Graphics/loadscreen.ftsimg
-#         DESTINATION share/arkana-fts/Data/Graphics)
-#
-# install(FILES Data/Graphics/tilesets/OldSu.tileset
-#         DESTINATION share/arkana-fts/Data/Graphics/tilesets)
-#
-# install(FILES Data/Graphics/ui/icp.ftsimg
-#               Data/Graphics/ui/rb.ftsimg
-#               Data/Graphics/ui/Loading.English.ftsimg
-#         DESTINATION share/arkana-fts/Data/Graphics/ui)
-#
-# install(FILES Data/Graphics/ui/cursors/std.conf
-#               Data/Graphics/ui/cursors/std.ftsimg
-#         DESTINATION share/arkana-fts/Data/Graphics/ui/cursors)
-#
-# install(FILES Data/Graphics/ui/fonts/license.txt
-#               Data/Graphics/ui/fonts/arkana-normal.ttf
-#               Data/Graphics/ui/fonts/normal1.font
-#               Data/Graphics/ui/fonts/normal2.font
-#               Data/Graphics/ui/fonts/normal3.font
-#               Data/Graphics/ui/fonts/normal4.font
-#               Data/Graphics/ui/fonts/normal5.font
-#               Data/Graphics/ui/fonts/normalNoCol.font
-#               Data/Graphics/ui/fonts/arkana-old.ttf
-#               Data/Graphics/ui/fonts/old1.font
-#               Data/Graphics/ui/fonts/old2.font
-#               Data/Graphics/ui/fonts/old3.font
-#               Data/Graphics/ui/fonts/old4.font
-#               Data/Graphics/ui/fonts/old5.font
-#               Data/Graphics/ui/fonts/oldNoCol.font
-#         DESTINATION share/arkana-fts/Data/Graphics/ui/fonts)
-#
-# install(FILES Data/Graphics/ui/imagesets/ArkanaLook.ftsimg
-#               Data/Graphics/ui/imagesets/ArkanaLook.imageset
-#               Data/Graphics/ui/imagesets/ftsui.ftsimg
-#               Data/Graphics/ui/imagesets/ftsui.imageset
-#         DESTINATION share/arkana-fts/Data/Graphics/ui/imagesets)
-#
-# install(FILES Data/Graphics/ui/layouts/dlg_confirm.English.layout
-#               Data/Graphics/ui/layouts/dlg_confirm.French.layout
-#               Data/Graphics/ui/layouts/dlg_confirm.German.layout
-#               Data/Graphics/ui/layouts/dlg_createAccount.English.layout
-#               Data/Graphics/ui/layouts/dlg_createAccount.French.layout
-#               Data/Graphics/ui/layouts/dlg_createAccount.German.layout
-#               Data/Graphics/ui/layouts/dlg_createOnlineAcc.English.layout
-#               Data/Graphics/ui/layouts/dlg_createOnlineAcc.French.layout
-#               Data/Graphics/ui/layouts/dlg_createOnlineAcc.German.layout
-#               Data/Graphics/ui/layouts/dlg_editAccount.English.layout
-#               Data/Graphics/ui/layouts/dlg_editAccount.French.layout
-#               Data/Graphics/ui/layouts/dlg_editAccount.German.layout
-#               Data/Graphics/ui/layouts/dlg_enterAccountName.English.layout
-#               Data/Graphics/ui/layouts/dlg_enterAccountName.French.layout
-#               Data/Graphics/ui/layouts/dlg_enterAccountName.German.layout
-#               Data/Graphics/ui/layouts/dlg_message.English.layout
-#               Data/Graphics/ui/layouts/dlg_message.French.layout
-#               Data/Graphics/ui/layouts/dlg_message.German.layout
-#               Data/Graphics/ui/layouts/dlg_onlineChannelJoin.English.layout
-#               Data/Graphics/ui/layouts/dlg_onlineChannelJoin.French.layout
-#               Data/Graphics/ui/layouts/dlg_onlineChannelJoin.German.layout
-#               Data/Graphics/ui/layouts/dlg_onlineFeedback.English.layout
-#               Data/Graphics/ui/layouts/dlg_onlineFeedback.French.layout
-#               Data/Graphics/ui/layouts/dlg_onlineFeedback.German.layout
-#               Data/Graphics/ui/layouts/dlg_onlineFindGame.English.layout
-#               Data/Graphics/ui/layouts/dlg_onlineFindGame.French.layout
-#               Data/Graphics/ui/layouts/dlg_onlineFindGame.German.layout
-#               Data/Graphics/ui/layouts/dlg_onlineNewGame.English.layout
-#               Data/Graphics/ui/layouts/dlg_onlineNewGame.French.layout
-#               Data/Graphics/ui/layouts/dlg_onlineNewGame.German.layout
-#               Data/Graphics/ui/layouts/dlg_options.English.layout
-#               Data/Graphics/ui/layouts/dlg_options.French.layout
-#               Data/Graphics/ui/layouts/dlg_options.German.layout
-#               Data/Graphics/ui/layouts/dlg_options_btnAudio.English.layout
-#               Data/Graphics/ui/layouts/dlg_options_btnAudio.French.layout
-#               Data/Graphics/ui/layouts/dlg_options_btnAudio.German.layout
-#               Data/Graphics/ui/layouts/dlg_options_btnGeneral.English.layout
-#               Data/Graphics/ui/layouts/dlg_options_btnGeneral.French.layout
-#               Data/Graphics/ui/layouts/dlg_options_btnGeneral.German.layout
-#               Data/Graphics/ui/layouts/dlg_options_btnMisc.English.layout
-#               Data/Graphics/ui/layouts/dlg_options_btnMisc.French.layout
-#               Data/Graphics/ui/layouts/dlg_options_btnMisc.German.layout
-#               Data/Graphics/ui/layouts/dlg_options_btnNetwork.English.layout
-#               Data/Graphics/ui/layouts/dlg_options_btnNetwork.French.layout
-#               Data/Graphics/ui/layouts/dlg_options_btnNetwork.German.layout
-#               Data/Graphics/ui/layouts/dlg_options_btnVideo.English.layout
-#               Data/Graphics/ui/layouts/dlg_options_btnVideo.French.layout
-#               Data/Graphics/ui/layouts/dlg_options_btnVideo.German.layout
-#               Data/Graphics/ui/layouts/dlg_options_btnVideo_advanced.English.layout
-#               Data/Graphics/ui/layouts/dlg_options_btnVideo_advanced.French.layout
-#               Data/Graphics/ui/layouts/dlg_options_btnVideo_advanced.German.layout
-#               Data/Graphics/ui/layouts/dlg_Update.English.layout
-#               Data/Graphics/ui/layouts/dlg_Update.French.layout
-#               Data/Graphics/ui/layouts/dlg_Update.German.layout
-#               Data/Graphics/ui/layouts/file_dlg.English.layout
-#               Data/Graphics/ui/layouts/file_dlg.French.layout
-#               Data/Graphics/ui/layouts/file_dlg.German.layout
-#               Data/Graphics/ui/layouts/fts_updater.layout
-#               Data/Graphics/ui/layouts/game.English.layout
-#               Data/Graphics/ui/layouts/game.French.layout
-#               Data/Graphics/ui/layouts/game.German.layout
-#               Data/Graphics/ui/layouts/loadfts.English.layout
-#               Data/Graphics/ui/layouts/loadscreen.English.layout
-#               Data/Graphics/ui/layouts/mdlviewer_main.English.layout
-#               Data/Graphics/ui/layouts/mdlviewer_main.French.layout
-#               Data/Graphics/ui/layouts/mdlviewer_main.German.layout
-#               Data/Graphics/ui/layouts/menu_main.English.layout
-#               Data/Graphics/ui/layouts/menu_main.French.layout
-#               Data/Graphics/ui/layouts/menu_main.German.layout
-#               Data/Graphics/ui/layouts/menu_online.English.layout
-#               Data/Graphics/ui/layouts/menu_online.French.layout
-#               Data/Graphics/ui/layouts/menu_online.German.layout
-#               Data/Graphics/ui/layouts/menu_online_main.English.layout
-#               Data/Graphics/ui/layouts/menu_online_main.French.layout
-#               Data/Graphics/ui/layouts/menu_online_main.German.layout
-#         DESTINATION share/arkana-fts/Data/Graphics/ui/layouts)
-#
-# install(FILES Data/Graphics/ui/looknfeel/ArkanaLook.BigProgressbar.looknfeel
-#               Data/Graphics/ui/looknfeel/ArkanaLook.Button.looknfeel
-#               Data/Graphics/ui/looknfeel/ArkanaLook.CheckboxLabelLeft.looknfeel
-#               Data/Graphics/ui/looknfeel/ArkanaLook.CheckboxLabelRight.looknfeel
-#               Data/Graphics/ui/looknfeel/ArkanaLook.Combobox.looknfeel
-#               Data/Graphics/ui/looknfeel/ArkanaLook.ComboDropList.looknfeel
-#               Data/Graphics/ui/looknfeel/ArkanaLook.ContainerBox.looknfeel
-#               Data/Graphics/ui/looknfeel/ArkanaLook.DecoButton.looknfeel
-#               Data/Graphics/ui/looknfeel/ArkanaLook.DecoButtonTxt.looknfeel
-#               Data/Graphics/ui/looknfeel/ArkanaLook.Editbox.looknfeel
-#               Data/Graphics/ui/looknfeel/ArkanaLook.EditboxNoRightBorder.looknfeel
-#               Data/Graphics/ui/looknfeel/ArkanaLook.FrameWindow.looknfeel
-#               Data/Graphics/ui/looknfeel/ArkanaLook.HorizontalDecoScrollbar.looknfeel
-#               Data/Graphics/ui/looknfeel/ArkanaLook.Image.looknfeel
-#               Data/Graphics/ui/looknfeel/ArkanaLook.Label.looknfeel
-#               Data/Graphics/ui/looknfeel/ArkanaLook.Listbox.looknfeel
-#               Data/Graphics/ui/looknfeel/ArkanaLook.MenuButton.looknfeel
-#               Data/Graphics/ui/looknfeel/ArkanaLook.MenuItem.looknfeel
-#               Data/Graphics/ui/looknfeel/ArkanaLook.MultiLineEditbox.looknfeel
-#               Data/Graphics/ui/looknfeel/ArkanaLook.PopupMenu.looknfeel
-#               Data/Graphics/ui/looknfeel/ArkanaLook.Progressbar.looknfeel
-#               Data/Graphics/ui/looknfeel/ArkanaLook.RadioButtonLabelLeft.looknfeel
-#               Data/Graphics/ui/looknfeel/ArkanaLook.RadioButtonLabelRight.looknfeel
-#               Data/Graphics/ui/looknfeel/ArkanaLook.ShadowedLabel.looknfeel
-#               Data/Graphics/ui/looknfeel/ArkanaLook.Spinner.looknfeel
-#               Data/Graphics/ui/looknfeel/ArkanaLook.StaticFrame.looknfeel
-#               Data/Graphics/ui/looknfeel/ArkanaLook.StaticFrameNoText.looknfeel
-#               Data/Graphics/ui/looknfeel/ArkanaLook.StaticText.looknfeel
-#               Data/Graphics/ui/looknfeel/ArkanaLook.SystemButton.looknfeel
-#               Data/Graphics/ui/looknfeel/ArkanaLook.Titlebar.looknfeel
-#               Data/Graphics/ui/looknfeel/ArkanaLook.Tooltip.looknfeel
-#               Data/Graphics/ui/looknfeel/ArkanaLook.VerticalDecoScrollbar.looknfeel
-#         DESTINATION share/arkana-fts/Data/Graphics/ui/looknfeel)
-#
-# install(FILES Data/Graphics/ui/menubg/800/main.ftsimg DESTINATION share/arkana-fts/Data/Graphics/ui/menubg/800)
-# install(FILES Data/Graphics/ui/menubg/1024/main.ftsimg DESTINATION share/arkana-fts/Data/Graphics/ui/menubg/1024)
-# install(FILES Data/Graphics/ui/menubg/1152/main.ftsimg DESTINATION share/arkana-fts/Data/Graphics/ui/menubg/1152)
-# install(FILES Data/Graphics/ui/menubg/1280/main.ftsimg DESTINATION share/arkana-fts/Data/Graphics/ui/menubg/1280)
-# install(FILES Data/Graphics/ui/menubg/1600/main.ftsimg DESTINATION share/arkana-fts/Data/Graphics/ui/menubg/1600)
-#
-# install(FILES Data/Graphics/ui/schemes/ArkanaLook.scheme
-#         DESTINATION share/arkana-fts/Data/Graphics/ui/schemes)
-#
-# install(FILES Data/Languages/English/messages.conf
-#               Data/Languages/English/ui.conf
-#         DESTINATION share/arkana-fts/Data/Languages/English)
-#
-# install(FILES Data/Languages/French/messages.conf
-#               Data/Languages/French/ui.conf
-#         DESTINATION share/arkana-fts/Data/Languages/French)
-#
-# install(FILES Data/Languages/German/messages.conf
-#               Data/Languages/German/ui.conf
-#         DESTINATION share/arkana-fts/Data/Languages/German)
-#
-# install(FILES Data/Languages/Thai/messages.conf
-#               Data/Languages/Thai/ui.conf
-#         DESTINATION share/arkana-fts/Data/Languages/Thai)
-#
-# install(FILES Data/Maps/test.ftsm
-#               Data/Maps/test_full.ftsm
-#         DESTINATION share/arkana-fts/Data/Maps)
-#
-# install(FILES Data/Sound/Hydrate-Kenny_Beltrey.ogg
-#               Data/Sound/whisp_recv.ogg
-#         DESTINATION share/arkana-fts/Data/Sound)
