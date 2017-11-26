@@ -37,7 +37,7 @@ TEST_INSUITE_WITHSETUP(dFile, File, invalid_file_name)
         auto actual = File::getSize("invalid.file");
         FAIL("Expected a file system exception");
     } catch(FTS::SyscallException& se) {
-        CHECK_EQUAL("SyscallFailure with file_size(p)", FTS::String(se.what()).left(32));
+        CHECK_EQUAL("SyscallFailure", FTS::String(se.what()).left(14));
     }
 }
 
@@ -76,7 +76,7 @@ TEST_INSUITE_WITHSETUP(dFile, File, mk_dir_if_needed)
     auto pDefLogger = new MinimalLogger(); // Needed by the error message generation.
     rc = FileUtils::mkdirIfNeeded(Path(), false);
     CHECK_EQUAL(-1, rc);
-    rc = FileUtils::mkdirIfNeeded(Path(",:"), false);
+    rc = FileUtils::mkdirIfNeeded(Path("/,/:"), false); // Should fail on Linux, too.
     CHECK_EQUAL(-5, rc);
     delete pDefLogger;
 
