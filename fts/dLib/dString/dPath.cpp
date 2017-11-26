@@ -214,7 +214,9 @@ bool Path::wouldEscapePath(const String& in_sPath)
 
 size_t Path::rootLength(const String& s)
 {
-    auto p = fs::path(s.c_str());
+    auto pathStr = s;
+    pathStr.replaceStr("\\", "/");
+    auto p = fs::path(pathStr.c_str());
     return p.root_path().string().size();
 }
 
