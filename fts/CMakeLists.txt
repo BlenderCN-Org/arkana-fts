@@ -20,6 +20,11 @@ set(CMAKE_ALLOW_LOOSE_LOOP_CONSTRUCTS true)
 # De-Activate very verbose makefiles.
 set(CMAKE_VERBOSE_MAKEFILE OFF)
 
+# Remove unwanted project types in MSVC
+if(MSVC)
+    list(REMOVE_ITEM CMAKE_CONFIGURATION_TYPES MinSizeRel RelWithDebInfo)
+endif()
+
 # Disallow in-source builds. #
 ##############################
 EXECUTE_PROCESS(COMMAND pwd OUTPUT_VARIABLE CURR_DIR)
@@ -289,6 +294,10 @@ list(APPEND FTS_LIBS ${CMAKE_THREAD_LIBS_INIT})
 find_package(OpenGL REQUIRED)
 list(APPEND FTS_LIBS ${OPENGL_LIBRARIES})
 list(APPEND FTS_INCLUDES ${OPENGL_INCLUDE_DIR})
+
+add_executable(fts ${SOURCES_COMMON} ${SOURCES_GAME})
+
+
 if(WIN32)
     add_subdirectory(${fts_SOURCE_DIR}/3rdparty)
     list(APPEND FTS_INCLUDES ${fts_SOURCE_DIR}/3rdparty/CEGUI/include)
@@ -506,7 +515,6 @@ endif()
 message(STATUS "Detected Arkana-FTS version to be ${FTS_VERSION_FULL}")
 configure_file(${fts_SOURCE_DIR}/main/revision.h.in ${fts_SOURCE_DIR}/main/revision.h)
 
-add_executable(fts ${SOURCES_COMMON} ${SOURCES_GAME})
 target_link_libraries(fts ${FTS_LIBS} )
 
 # copy the executable as a post-build step. #
