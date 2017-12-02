@@ -39,11 +39,17 @@ set(SOURCES Test.cpp
             TestResultSQL.cpp
             TestSuite.cpp
    )
+if(MSVC)
+    set(SOURCES ${SOURCES} TestResultDebugOut.cpp)
+endif()
+
+set(OUT_NAME "aTest")
+add_library(${OUT_NAME} STATIC ${SOURCES})
 
 # Debug or release ?
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     message(STATUS "Configuring for debug")
-    add_definitions(-DDEBUG=1)
+    target_compile_definitions(${OUT_NAME} PRIVATE DEBUG=1)
 else()
     message(STATUS "Configuring for release")
 endif()
@@ -52,12 +58,9 @@ endif()
 if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
     add_definitions("-Wall")
     if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-        add_definitions("-pg")
+        target_compile_options(${OUT_NAME} PRIVATE -pg)
     endif()
-elseif(MSVC)
-    set(SOURCES ${SOURCES} TestResultDebugOut.cpp)
 endif()
-set(OUT_NAME "aTest")
 
 enable_testing()
 
@@ -68,16 +71,10 @@ if(NOT DEFINED ATEST_BUILD_EXAMPLES)
     set(ATEST_BUILD_EXAMPLES TRUE)
 endif()
 set(BUILD_EXAMPLES ${ATEST_BUILD_EXAMPLES} CACHE BOOL "TRUE to build the aTest examples, FALSE to ignore them")
-
 if(${ATEST_BUILD_EXAMPLES})
     add_subdirectory(examples/pizza)
-
     add_test(PeetsaGeneral examples/pizza/peetsa -TS)
     add_test(PeetsaDough examples/pizza/peetsa TS_Dough)
     add_test(PeetsaSauce examples/pizza/peetsa TS_Sauce)
     add_test(PeetsaIngredients examples/pizza/peetsa TS_Ingredients)
 endif()
-
-# The compiling process. #
-##########################
-add_library(${OUT_NAME} STATIC ${SOURCES})

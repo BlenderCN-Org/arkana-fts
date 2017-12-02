@@ -459,14 +459,10 @@ endif()
 # Add fts-networking stuff
 set(fts-networking_SOURCE_DIR CACHE STRING "Location of the FTS networking library.")
 add_subdirectory(${fts-networking_SOURCE_DIR} "${CMAKE_CURRENT_BINARY_DIR}/net")
-#list(APPEND FTS_INCLUDES "${fts-networking_SOURCE_DIR}/include")
-#list(APPEND FTS_LIBS "fts-net")
 
 # Add unit testing stuff
 set(ATEST_BUILD_EXAMPLES FALSE)
 add_subdirectory(${fts_SOURCE_DIR}/dLib/aTest)
-list(APPEND FTS_INCLUDES dLib)
-list(APPEND FTS_LIBS aTest)
 
 # Add additional include search directories.
 target_include_directories(fts PRIVATE ${fts_SOURCE_DIR} ${fts_SOURCE_DIR}/main ${FTS_INCLUDES})
@@ -507,7 +503,7 @@ endif()
 message(STATUS "Detected Arkana-FTS version to be ${FTS_VERSION_FULL}")
 configure_file(${fts_SOURCE_DIR}/main/revision.h.in ${fts_SOURCE_DIR}/main/revision.h)
 
-target_link_libraries(fts ${FTS_LIBS} fts-net)
+target_link_libraries(fts ${FTS_LIBS} fts-net aTest)
 
 # copy the executable as a post-build step. #
 #############################################
