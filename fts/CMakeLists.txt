@@ -244,48 +244,17 @@ if(MSVC)
     source_group( scripting FILES ${SRC_scripting} )
 endif()
 
-# Check for various language-stuff and compiler versions #
-##########################################################
-
-
-# Compiler-dependent and build-dependend flags. Doing this before adding any 3rd party lib
-# In order to have them built with the same flags.
-if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
-    add_definitions("-Wall -Winvalid-pch")
-    if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-        add_definitions("-O0 -pg -fstack-protector-all")
-        if(CMAKE_COMPILER_IS_GNUCXX)
-            add_definitions("-Wno-non-virtual-dtor")
-        endif()
-    else()
-        add_definitions("-s")
-    endif()
-elseif(MSVC)
-endif()
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-
-# Debug or release ?
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    message(STATUS "Configuring for debug")
-    if(WIN32)
-        add_definitions(-D_DEBUG)
-        link_directories("3rdparty/vclib/")
-    endif()
-    add_definitions(-DDEBUG=1)
-else()
-    if(WIN32)
-        add_definitions(-DNDEBUG)
-    endif()
-    message(STATUS "Configuring for release")
-endif()
-
 # Search for the different needed libs. #
 #########################################
 
 set(FTS_LIBS)
 set(FTS_INCLUDES)
+
+if(MSVC)
+    # This must be set prior to the target in order to be populated to the vcxproject.
+    link_directories(3rdparty/vclib)
+endif()
+
 
 # The different standard libraries already supported by CMake.
 find_package(Threads REQUIRED)
@@ -296,6 +265,37 @@ list(APPEND FTS_LIBS ${OPENGL_LIBRARIES})
 list(APPEND FTS_INCLUDES ${OPENGL_INCLUDE_DIR})
 
 add_executable(fts ${SOURCES_COMMON} ${SOURCES_GAME})
+
+# Check for various language-stuff and compiler versions #
+##########################################################
+
+# Compiler-dependent and build-dependend flags. Doing this before adding any 3rd party lib
+# In order to have them built with the same flags.
+set_property(TARGET fts PROPERTY CXX_STANDARD 17)
+set_property(TARGET fts PROPERTY CXX_STANDARD_REQUIRED ON)
+if(CMAKE_COMPILER_IS_GNUCXX)
+    add_definitions("-Wall")
+    if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+        target_compile_options(fts PRIVATE -O0 -pg -fstack-protector-all)
+        target_compile_options(fts PRIVATE -Wno-non-virtual-dtor)
+    else()
+        target_compile_options(fts PRIVATE -s)
+    endif()
+endif()
+
+# Debug or release ?
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    message(STATUS "Configuring for debug")
+    target_compile_definitions(fts PRIVATE DEBUG=1)
+    if(MSVC)
+        target_compile_definitions(fts PRIVATE _DEBUG)
+    endif()
+else()
+    message(STATUS "Configuring for release")
+    if(MSVC)
+        target_compile_definitions(fts PRIVATE NDEBUG)
+    endif()
+endif()
 
 
 if(WIN32)
@@ -459,8 +459,8 @@ endif()
 # Add fts-networking stuff
 set(fts-networking_SOURCE_DIR CACHE STRING "Location of the FTS networking library.")
 add_subdirectory(${fts-networking_SOURCE_DIR} "${CMAKE_CURRENT_BINARY_DIR}/net")
-list(APPEND FTS_INCLUDES "${fts-networking_SOURCE_DIR}/include")
-list(APPEND FTS_LIBS "fts-net")
+#list(APPEND FTS_INCLUDES "${fts-networking_SOURCE_DIR}/include")
+#list(APPEND FTS_LIBS "fts-net")
 
 # Add unit testing stuff
 set(ATEST_BUILD_EXAMPLES FALSE)
@@ -469,34 +469,26 @@ list(APPEND FTS_INCLUDES dLib)
 list(APPEND FTS_LIBS aTest)
 
 # Add additional include search directories.
-include_directories(${fts_SOURCE_DIR})
-include_directories("${fts_SOURCE_DIR}/main")
-include_directories(${FTS_INCLUDES})
+target_include_directories(fts PRIVATE ${fts_SOURCE_DIR} ${fts_SOURCE_DIR}/main ${FTS_INCLUDES})
 
 # Add additional defines:
-add_definitions(-DD_STRING_FTS_LIBS)
-add_definitions(-DD_USE_CEGUI)
-add_definitions(-DD_STRING_FTS_PATHS)
-add_definitions(-D_USE_MATH_DEFINES) # Using M_PI etc.
-add_definitions(-DHAVE_M_PI) # Avoid redefinition through SDL_stdinc.h
+target_compile_definitions(fts PRIVATE D_STRING_FTS_LIBS)
+target_compile_definitions(fts PRIVATE D_USE_CEGUI)
+target_compile_definitions(fts PRIVATE D_STRING_FTS_PATHS)
+target_compile_definitions(fts PRIVATE _USE_MATH_DEFINES) # Using M_PI etc.
+target_compile_definitions(fts PRIVATE HAVE_M_PI) # Avoid redefinition through SDL_stdinc.h
 if(WIN32)
-    add_definitions(-DDAO_DIRECT_API)
-    add_definitions(-DDAO_SND_STATIC)
-    add_definitions(-DD_SND_SYS=1)
-    add_definitions(-DBOUGE_STATIC)
-    add_definitions(-DAL_LIBTYPE_STATIC)
-    add_definitions(-DALL_STATIC)
-    add_definitions(-DCEGUI_STATIC)
-    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
-    add_definitions(-D_CRT_SECURE_NO_DEPRECATE)
-    add_definitions(-DWIN32_LEAN_AND_MEAN=1)
-    add_definitions(-DNOMINMAX)
-endif()
-# And show the flags.
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    message(STATUS "CXX Flags for FTS (Debug) are: ${CMAKE_CXX_FLAGS_DEBUG}")
-else()
-    message(STATUS "CXX Flags for FTS (Release) are: ${CMAKE_CXX_FLAGS_RELEASE}")
+    target_compile_definitions(fts PRIVATE DAO_DIRECT_API)
+    target_compile_definitions(fts PRIVATE DAO_SND_STATIC)
+    target_compile_definitions(fts PRIVATE D_SND_SYS=1)
+    target_compile_definitions(fts PRIVATE BOUGE_STATIC)
+    target_compile_definitions(fts PRIVATE AL_LIBTYPE_STATIC)
+    target_compile_definitions(fts PRIVATE ALL_STATIC)
+    target_compile_definitions(fts PRIVATE CEGUI_STATIC)
+    target_compile_definitions(fts PRIVATE _CRT_SECURE_NO_WARNINGS)
+    target_compile_definitions(fts PRIVATE _CRT_SECURE_NO_DEPRECATE)
+    target_compile_definitions(fts PRIVATE WIN32_LEAN_AND_MEAN=1)
+    target_compile_definitions(fts PRIVATE NOMINMAX)
 endif()
 
 # The compiling process. #
@@ -515,7 +507,7 @@ endif()
 message(STATUS "Detected Arkana-FTS version to be ${FTS_VERSION_FULL}")
 configure_file(${fts_SOURCE_DIR}/main/revision.h.in ${fts_SOURCE_DIR}/main/revision.h)
 
-target_link_libraries(fts ${FTS_LIBS} )
+target_link_libraries(fts ${FTS_LIBS} fts-net)
 
 # copy the executable as a post-build step. #
 #############################################
