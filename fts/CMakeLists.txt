@@ -29,7 +29,7 @@ endif()
 ##############################
 EXECUTE_PROCESS(COMMAND pwd OUTPUT_VARIABLE CURR_DIR)
 if("${CURR_DIR}" STREQUAL "${fts_SOURCE_DIR}\n")
-    message(FATAL_ERROR "In-source-builds are not allowed to build the Arkana-FTS server. Please go into the \"linux\" directory and type \"cmake ..\" there.\nThank you.")
+    message(FATAL_ERROR "In-source-builds are not allowed to build the Arkana-FTS game. Please go into the \"build\" directory and type \"cmake ..\" there.\nThank you.")
 endif()
 
 if(MSVC)
@@ -244,6 +244,8 @@ if(MSVC)
     source_group( scripting FILES ${SRC_scripting} )
 endif()
 
+add_executable(fts ${SOURCES_COMMON} ${SOURCES_GAME})
+
 # Search for the different needed libs. #
 #########################################
 
@@ -263,8 +265,6 @@ list(APPEND FTS_LIBS ${CMAKE_THREAD_LIBS_INIT})
 find_package(OpenGL REQUIRED)
 list(APPEND FTS_LIBS ${OPENGL_LIBRARIES})
 list(APPEND FTS_INCLUDES ${OPENGL_INCLUDE_DIR})
-
-add_executable(fts ${SOURCES_COMMON} ${SOURCES_GAME})
 
 # Check for various language-stuff and compiler versions #
 ##########################################################
@@ -298,36 +298,36 @@ else()
 endif()
 
 
-if(WIN32)
-    add_subdirectory(${fts_SOURCE_DIR}/3rdparty)
-    list(APPEND FTS_INCLUDES ${fts_SOURCE_DIR}/3rdparty/CEGUI/include)
-    list(APPEND FTS_INCLUDES ${fts_SOURCE_DIR}/3rdparty/CEGUI)
-    list(APPEND FTS_INCLUDES ${fts_SOURCE_DIR}/3rdparty/sound/libogg/include)
-    list(APPEND FTS_INCLUDES ${fts_SOURCE_DIR}/3rdparty/sound/libvorbis/include)
-    list(APPEND FTS_INCLUDES ${fts_SOURCE_DIR}/3rdparty/sound/openal-soft/include)
-    list(APPEND FTS_INCLUDES ${fts_SOURCE_DIR}/3rdparty/sound/openal-soft/include/AL)
-    list(APPEND FTS_INCLUDES ${fts_SOURCE_DIR}/3rdparty/SDL2/include)
-    list(APPEND FTS_INCLUDES ${fts_SOURCE_DIR}/3rdparty/dao/src)
-    list(APPEND FTS_INCLUDES ${fts_SOURCE_DIR}/3rdparty/bouge/include)
+add_subdirectory(${fts_SOURCE_DIR}/3rdparty)
+list(APPEND FTS_INCLUDES ${fts_SOURCE_DIR}/3rdparty/CEGUI/include)
+list(APPEND FTS_INCLUDES ${fts_SOURCE_DIR}/3rdparty/CEGUI)
+list(APPEND FTS_INCLUDES ${fts_SOURCE_DIR}/3rdparty/sound/libogg/include)
+list(APPEND FTS_INCLUDES ${fts_SOURCE_DIR}/3rdparty/sound/libvorbis/include)
+list(APPEND FTS_INCLUDES ${fts_SOURCE_DIR}/3rdparty/sound/openal-soft/include)
+list(APPEND FTS_INCLUDES ${fts_SOURCE_DIR}/3rdparty/sound/openal-soft/include/AL)
+list(APPEND FTS_INCLUDES ${fts_SOURCE_DIR}/3rdparty/SDL2/include)
+list(APPEND FTS_INCLUDES ${fts_SOURCE_DIR}/3rdparty/dao/src)
+list(APPEND FTS_INCLUDES ${fts_SOURCE_DIR}/3rdparty/bouge/include)
 
-    list(APPEND FTS_3rdparty_LIBS OpenAL32)
-    list(APPEND FTS_3rdparty_LIBS vorbis)
-    list(APPEND FTS_3rdparty_LIBS ogg)
-    list(APPEND FTS_3rdparty_LIBS dao)
-    list(APPEND FTS_3rdparty_LIBS bouge)
-    list(APPEND FTS_3rdparty_LIBS bouge-math)
-    list(APPEND FTS_3rdparty_LIBS bouge-tinyxml)
-    list(APPEND FTS_3rdparty_LIBS bouge-xml-common)
-    list(APPEND FTS_3rdparty_LIBS bouge-xmlio)
-    list(APPEND FTS_3rdparty_LIBS freetype)
-    list(APPEND FTS_3rdparty_LIBS pcre)
-    list(APPEND FTS_3rdparty_LIBS SDL2)
-    list(APPEND FTS_3rdparty_LIBS SDL2main)
-    list(APPEND FTS_3rdparty_LIBS CEGUIBase)
-    list(APPEND FTS_3rdparty_LIBS CEGUITinyXMLParser)
-    list(APPEND FTS_3rdparty_LIBS CEGUIOpenGLRenderer)
-    list(APPEND FTS_3rdparty_LIBS CEGUIFalagardWRBase)
+list(APPEND FTS_3rdparty_LIBS OpenAL32)
+list(APPEND FTS_3rdparty_LIBS vorbis)
+list(APPEND FTS_3rdparty_LIBS ogg)
+list(APPEND FTS_3rdparty_LIBS dao)
+list(APPEND FTS_3rdparty_LIBS bouge)
+list(APPEND FTS_3rdparty_LIBS bouge-math)
+list(APPEND FTS_3rdparty_LIBS bouge-tinyxml)
+list(APPEND FTS_3rdparty_LIBS bouge-xml-common)
+list(APPEND FTS_3rdparty_LIBS bouge-xmlio)
+list(APPEND FTS_3rdparty_LIBS freetype)
+list(APPEND FTS_3rdparty_LIBS pcre)
+list(APPEND FTS_3rdparty_LIBS SDL2-static)
+list(APPEND FTS_3rdparty_LIBS SDL2main)
+list(APPEND FTS_3rdparty_LIBS CEGUIBase)
+list(APPEND FTS_3rdparty_LIBS CEGUITinyXMLParser)
+list(APPEND FTS_3rdparty_LIBS CEGUIOpenGLRenderer)
+list(APPEND FTS_3rdparty_LIBS CEGUIFalagardWRBase)
    
+if(WIN32)
     list(APPEND FTS_LIBS wsock32.lib)
     list(APPEND FTS_LIBS winmm.lib)
     list(APPEND FTS_LIBS dsound.lib)
@@ -335,40 +335,6 @@ if(WIN32)
     list(APPEND FTS_LIBS imm32.lib)
     list(APPEND FTS_LIBS version.lib)
 else()
-    set(SDL2_FIND_QUIETLY 1)
-    find_package(SDL2)
-    if(NOT SDL2_FOUND)
-        message(FATAL_ERROR "Could not find SDL installed on your system. This means you have to install the SDL development files. This can be done by installing a package called something in the lines of SDL-devel or SDL-dev.")
-    else()
-        message(STATUS "Found SDL in ${SDL2_INCLUDE_DIR}: ${SDL2_LIBRARY}")
-    endif()
-    list(APPEND FTS_INCLUDES ${SDL2_INCLUDE_DIR})
-    list(APPEND FTS_LIBS ${SDL2_LIBRARY})
-
-    set(PCRE_FIND_QUIETLY 1)
-    find_package(PCRE)
-    if(NOT PCRE_FOUND)
-        message(WARNING "Could not find PCRE installed on your system. Using the bundled PCRE version. You may want to install the PCRE development files by installing a package called something in the lines of PCRE-devel or PCRE-dev.")
-        set(PCRE_SUPPORT_UTF8 ON CACHE BOOL "Enable support for the Unicode UTF-8 encoding.")
-        set(PCRE_SUPPORT_UNICODE_PROPERTIES ON CACHE BOOL "Enable support for Unicode properties. (If set, UTF-8 support will be enabled as well)")
-        option(PCRE_BUILD_PCRECPP "Build the PCRE C++ library (pcrecpp)." OFF)
-        add_subdirectory(${fts_SOURCE_DIR}/3rdparty/pcre)
-        set(PCRE_INCLUDE_DIR "${PCRE_BINARY_DIR}")
-        set(PCRE_LIBRARIES "pcre")
-    else()
-        message(STATUS "Found PCRE in ${PCRE_INCLUDE_DIR}: ${PCRE_LIBRARY}")
-    endif()
-
-    set(FreeType_FIND_QUIETLY 1)
-    find_package(FreeType)
-    if(NOT FreeType_FOUND)
-        message(FATAL_ERROR "Could not find FreeType installed on your system. This means you have to install the FreeType development files. This can be done by installing a package called something in the lines of FreeType-devel or FreeType-dev.")
-    else()
-        message(STATUS "Found FreeType in ${FreeType_INCLUDE_DIR}: ${FreeType_LIBRARY}")
-    endif()
-    list(APPEND FTS_INCLUDES ${FreeType_INCLUDE_DIR})
-    list(APPEND FTS_LIBS ${FreeType_LIBRARIES})
-
     # X11 is required (at least). I'm sure there's more.
     set(X11_FIND_QUIETLY 1)
     find_package(X11)
@@ -379,62 +345,6 @@ else()
         list(APPEND FTS_INCLUDES ${X11_INCLUDE_DIR})
         list(APPEND FTS_LIBS ${X11_LIBRARIES})
     endif()
-
-    # Add the different subdirectories needed for CEGUI. #
-    ######################################################
-
-    # Add our own CEGUI.
-    add_subdirectory(${fts_SOURCE_DIR}/3rdparty/CEGUI)
-    list(APPEND FTS_INCLUDES "3rdparty/CEGUI/include" "3rdparty/CEGUI")
-    list(APPEND FTS_LIBS "dl")
-    if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-        list(APPEND FTS_LIBS "CEGUIOpenGLRendererd"
-                             "CEGUIBased"
-                             "CEGUITinyXMLParserd"
-                             "CEGUIFalagardWRBased"
-            )
-    else()
-        list(APPEND FTS_LIBS "CEGUIOpenGLRenderer"
-                             "CEGUIBase"
-                             "CEGUITinyXMLParser"
-                             "CEGUIFalagardWRBase"
-            )
-    endif()
-
-    # Add PCRE, needs to be added after CEGUI because CEGUI depends on it.
-    list(APPEND FTS_INCLUDES ${PCRE_INCLUDE_DIR})
-    list(APPEND FTS_LIBS ${PCRE_LIBRARIES})
-
-    # Add bouge
-    set(BOUGE_BUILD_EXAMPLES FALSE)
-    set(BOUGE_BUILD_STATICCRT TRUE)
-    set(BOUGE_BUILD_CAL3DXMLIO FALSE)
-    set(BOUGE_COMPILE_FLAGS ${CMAKE_CXX_FLAGS})
-    add_subdirectory(${fts_SOURCE_DIR}/3rdparty/bouge)
-    list(APPEND FTS_INCLUDES "3rdparty/bouge/include")
-    list(APPEND FTS_LIBS "bouge" "bouge-xmlio" "bouge-tinyxml" "bouge-math")
-    unset(BOUGE_COMPILE_FLAGS)
-    unset(BOUGE_BUILD_CAL3DXMLIO)
-    unset(BOUGE_BUILD_STATICCRT)
-    unset(BOUGE_BUILD_EXAMPLES)
-
-    # Add OpenAL-soft.
-    add_subdirectory(${fts_SOURCE_DIR}/3rdparty/sound/openal-soft)
-    add_definitions(-DD_SND_SYS=1)
-    list(APPEND FTS_INCLUDES "3rdparty/sound/openal-soft/include")
-    list(APPEND FTS_LIBS "openal")
-
-    # Add libogg and libvorbis
-    add_subdirectory(${fts_SOURCE_DIR}/3rdparty/sound/libogg)
-    add_subdirectory(${fts_SOURCE_DIR}/3rdparty/sound/libvorbis)
-    list(APPEND FTS_INCLUDES "3rdparty/sound/libogg/include" "3rdparty/sound/libvorbis/include")
-    list(APPEND FTS_LIBS "vorbis" "ogg")
-
-    # Add Dao scripting stuff
-    add_definitions(-DDAO_DIRECT_API)
-    add_subdirectory(${fts_SOURCE_DIR}/3rdparty/dao)
-    list(APPEND FTS_INCLUDES "3rdparty/dao/src")
-    list(APPEND FTS_LIBS "dao")
 endif()
 
 # Add fts-networking stuff
@@ -456,10 +366,10 @@ target_compile_definitions(fts PRIVATE D_USE_CEGUI)
 target_compile_definitions(fts PRIVATE D_STRING_FTS_PATHS)
 target_compile_definitions(fts PRIVATE _USE_MATH_DEFINES) # Using M_PI etc.
 target_compile_definitions(fts PRIVATE HAVE_M_PI) # Avoid redefinition through SDL_stdinc.h
+target_compile_definitions(fts PRIVATE DAO_DIRECT_API)
+target_compile_definitions(fts PRIVATE D_SND_SYS=1)
+target_compile_definitions(fts PRIVATE DAO_SND_STATIC)
 if(WIN32)
-    target_compile_definitions(fts PRIVATE DAO_DIRECT_API)
-    target_compile_definitions(fts PRIVATE DAO_SND_STATIC)
-    target_compile_definitions(fts PRIVATE D_SND_SYS=1)
     target_compile_definitions(fts PRIVATE BOUGE_STATIC)
     target_compile_definitions(fts PRIVATE AL_LIBTYPE_STATIC)
     target_compile_definitions(fts PRIVATE ALL_STATIC)
@@ -487,6 +397,11 @@ message(STATUS "Detected Arkana-FTS version to be ${FTS_VERSION_FULL}")
 configure_file(${fts_SOURCE_DIR}/main/revision.h.in ${fts_SOURCE_DIR}/main/revision.h)
 
 target_link_libraries(fts ${FTS_LIBS} ${FTS_3rdparty_LIBS})
+# Workaroud to get rid of the dxerr.lib usage of the SDL2 project.
+get_target_property(ilibs SDL2-static INTERFACE_LINK_LIBRARIES)
+list(REMOVE_ITEM ilibs dxerr)
+set_property(TARGET SDL2-static PROPERTY INTERFACE_LINK_LIBRARIES ${ilibs})
+set_property(TARGET SDL2-static PROPERTY LINK_LIBRARIES ${ilibs})
 
 # copy the executable as a post-build step. #
 #############################################

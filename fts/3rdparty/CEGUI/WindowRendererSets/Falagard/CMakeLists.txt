@@ -1,5 +1,3 @@
-# Bla
-
 project(CEGUIFalagardWRBase)
 
 set(_CEGUIFalagardWRBase_CEGUI_INCLUDE_DIR "${CEGUIFalagardWRBase_SOURCE_DIR}/../../include")
@@ -18,16 +16,6 @@ set(CMAKE_ALLOW_LOOSE_LOOP_CONSTRUCTS true)
 EXECUTE_PROCESS(COMMAND pwd OUTPUT_VARIABLE CURR_DIR)
 if("${CURR_DIR}" STREQUAL "${CEGUIFalagardWRBase_SOURCE_DIR}\n")
     message(FATAL_ERROR "In-source-builds are not allowed to build the CEGUIFalagardWRBase. Please go into the \"build\" directory and type \"cmake ..\" there.\nThank you.")
-endif()
-
-# Search for the different needed libs. #
-#########################################
-
-# The std:: namespace.
-include(${CMAKE_ROOT}/Modules/TestForSTDNamespace.cmake)
-
-if(${CMAKE_NO_STD_NAMESPACE})
-    message(SEND_ERROR "No std:: Namespace is available, This usually means you have no c++ support or no libstdc++")
 endif()
 
 # Put all sourcefiles into one variable. #
@@ -71,37 +59,25 @@ set(SOURCES src/FalButton.cpp
             src/FalListHeaderSegment.cpp
    )
 
+add_library(CEGUIFalagardWRBase ${SOURCES})
+
 # Debug or release ?
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     message(STATUS "Configuring for debug")
-    add_definitions(-DDEBUG=1)
+    target_compile_definitions(CEGUIFalagardWRBase PRIVATE DEBUG=1)
 else()
     message(STATUS "Configuring for release")
 endif()
 
 # Add additional include search directories.
-include_directories(${CEGUIFalagardWRBase_SOURCE_DIR}/include
-                    ${_CEGUIFalagardWRBase_CEGUI_INCLUDE_DIR}
-                   )
+target_include_directories(CEGUIFalagardWRBase PUBLIC ${_CEGUIFalagardWRBase_CEGUI_INCLUDE_DIR})
+
+target_include_directories(CEGUIFalagardWRBase PRIVATE  ${CEGUIFalagardWRBase_SOURCE_DIR}/include)
 
 # Compiler-dependent and build-dependend flags:
 if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -pg")
-    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall")
-elseif(MSVC)
+    add_definitions("-Wall")
+    if(CAMKE_BUILD_TYPE STREQUAL "Debug")
+        add_definitions("-pg")
+    endif()
 endif()
-
-# And show the flags.
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    message(STATUS "CXX Flags for the CEGUIFalagardWRBase (Debug) are: ${CMAKE_CXX_FLAGS_DEBUG}")
-    set(OUT_NAME "CEGUIFalagardWRBased")
-else()
-    message(STATUS "CXX Flags for the CEGUIFalagardWRBase (Release) are: ${CMAKE_CXX_FLAGS_RELEASE}")
-    set(OUT_NAME "CEGUIFalagardWRBase")
-endif()
-
-# The compiling process. #
-##########################
-add_library(${OUT_NAME} ${SOURCES})
-# target_link_libraries(fts ${FTS_LIBS})
-
