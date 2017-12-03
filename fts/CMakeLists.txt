@@ -397,12 +397,13 @@ message(STATUS "Detected Arkana-FTS version to be ${FTS_VERSION_FULL}")
 configure_file(${fts_SOURCE_DIR}/main/revision.h.in ${fts_SOURCE_DIR}/main/revision.h)
 
 target_link_libraries(fts ${FTS_LIBS} ${FTS_3rdparty_LIBS})
-# Workaroud to get rid of the dxerr.lib usage of the SDL2 project.
-get_target_property(ilibs SDL2-static INTERFACE_LINK_LIBRARIES)
-list(REMOVE_ITEM ilibs dxerr)
-set_property(TARGET SDL2-static PROPERTY INTERFACE_LINK_LIBRARIES ${ilibs})
-set_property(TARGET SDL2-static PROPERTY LINK_LIBRARIES ${ilibs})
-
+if(MSVC)
+    # Workaroud to get rid of the dxerr.lib usage of the SDL2 project.
+    get_target_property(ilibs SDL2-static INTERFACE_LINK_LIBRARIES)
+    list(REMOVE_ITEM ilibs dxerr)
+    set_property(TARGET SDL2-static PROPERTY INTERFACE_LINK_LIBRARIES ${ilibs})
+    set_property(TARGET SDL2-static PROPERTY LINK_LIBRARIES ${ilibs})
+endif()
 # copy the executable as a post-build step. #
 #############################################
 if(NOT WIN32)
