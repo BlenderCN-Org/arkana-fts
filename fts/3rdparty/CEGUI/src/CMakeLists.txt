@@ -27,7 +27,6 @@ endif()
 find_package(PCRE)
 if(${PCRE_FOUND} STREQUAL "NO")
     message(STATUS "TODO: Could not find PCRE installed on your system. Taking our own version.")
-    add_definitions(-DPCRE_STATIC)
 endif()
 
 find_package(FreeType)
@@ -207,12 +206,11 @@ target_include_directories(CEGUIBase PRIVATE ${PCRE_INCLUDE_DIR}
                     ${FreeType_INCLUDE_DIR}
                     ${FreeType_INCLUDE_DIR}/..)
                     
-
 # Compiler-dependent and build-dependend flags:
 if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
-    add_definitions("-Wall")
+    target_compile_options(CEGUIBase PRIVATE -Wall)
     if(CAMKE_BUILD_TYPE STREQUAL "Debug")
-        add_definitions("-pg")
+        target_compile_options(CEGUIBase PRIVATE -pg)
     endif()
 endif()
 

@@ -76,8 +76,8 @@ target_include_directories(CEGUIFalagardWRBase PUBLIC ${CEGUIFalagardWRBase_SOUR
 
 # Compiler-dependent and build-dependend flags:
 if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
-    add_definitions("-Wall")
+    target_compile_options(CEGUIFalagardWRBase PRIVATE -Wall)
     if(CAMKE_BUILD_TYPE STREQUAL "Debug")
-        add_definitions("-pg")
+        target_compile_options(CEGUIFalagardWRBase PRIVATE -pg)
     endif()
 endif()

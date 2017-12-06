@@ -49,8 +49,8 @@ target_include_directories(CEGUIOpenGLRenderer PRIVATE
 
 # Compiler-dependent and build-dependend flags:
 if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
-    add_definitions("-Wall")
+    target_compile_options(CEGUIOpenGLRenderer PRIVATE -Wall)
     if(CAMKE_BUILD_TYPE STREQUAL "Debug")
-        add_definitions("-pg")
+        target_compile_options(CEGUIOpenGLRenderer PRIVATE -pg)
     endif()
 endif()
