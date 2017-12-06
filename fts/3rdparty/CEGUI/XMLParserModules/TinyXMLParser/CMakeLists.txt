@@ -39,8 +39,8 @@ else()
 endif()
 
 # Add additional include search directories.
-target_include_directories(CEGUITinyXMLParser PUBLIC ${_TinyXMLParser_CEGUI_INCLUDE_DIR})
-target_include_directories(CEGUITinyXMLParser PRIVATE ${TinyXMLParser_SOURCE_DIR})
+target_include_directories(CEGUITinyXMLParser PRIVATE ${_TinyXMLParser_CEGUI_INCLUDE_DIR})
+target_include_directories(CEGUITinyXMLParser PUBLIC ${TinyXMLParser_SOURCE_DIR})
 
 # Compiler-dependent and build-dependend flags:
 if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)

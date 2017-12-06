@@ -70,9 +70,9 @@ else()
 endif()
 
 # Add additional include search directories.
-target_include_directories(CEGUIFalagardWRBase PUBLIC ${_CEGUIFalagardWRBase_CEGUI_INCLUDE_DIR})
+target_include_directories(CEGUIFalagardWRBase PRIVATE ${_CEGUIFalagardWRBase_CEGUI_INCLUDE_DIR})
 
-target_include_directories(CEGUIFalagardWRBase PRIVATE  ${CEGUIFalagardWRBase_SOURCE_DIR}/include)
+target_include_directories(CEGUIFalagardWRBase PUBLIC ${CEGUIFalagardWRBase_SOURCE_DIR}/include)
 
 # Compiler-dependent and build-dependend flags:
 if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)

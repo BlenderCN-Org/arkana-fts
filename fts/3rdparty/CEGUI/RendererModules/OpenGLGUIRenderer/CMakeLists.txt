@@ -41,9 +41,9 @@ else()
 endif()
 
 # Add additional include search directories.
-target_include_directories(CEGUIOpenGLRenderer PUBLIC ${_CEGUIOpenGLRenderer_CEGUI_INCLUDE_DIR})
+target_include_directories(CEGUIOpenGLRenderer PUBLIC ${CEGUIOpenGLRenderer_SOURCE_DIR})
 target_include_directories(CEGUIOpenGLRenderer PRIVATE
-                    ${CEGUIOpenGLRenderer_SOURCE_DIR}
+                    ${_CEGUIOpenGLRenderer_CEGUI_INCLUDE_DIR}
                     ${OPENGL_INCLUDE_DIR}
                    )
 

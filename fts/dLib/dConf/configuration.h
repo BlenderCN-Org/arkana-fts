@@ -8,7 +8,7 @@
 #include "dLib/dString/dPath.h"
 #include "dLib/dConf/DefaultOptions.h"
 #include "dLib/dFile/dFile.h"
-#include <XMLParserModules/TinyXMLParser/ceguitinyxml/tinyxml.h>
+#include <ceguitinyxml/tinyxml.h>
 #include "dLib/dConf/ArkanaDefaultSettings.h"
 
 namespace FTS {

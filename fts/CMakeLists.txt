@@ -299,17 +299,12 @@ endif()
 
 
 add_subdirectory(${fts_SOURCE_DIR}/3rdparty)
-list(APPEND FTS_INCLUDES ${fts_SOURCE_DIR}/3rdparty/CEGUI/include)
-list(APPEND FTS_INCLUDES ${fts_SOURCE_DIR}/3rdparty/CEGUI)
 list(APPEND FTS_INCLUDES ${fts_SOURCE_DIR}/3rdparty/sound/libogg/include)
 list(APPEND FTS_INCLUDES ${fts_SOURCE_DIR}/3rdparty/sound/libvorbis/include)
 list(APPEND FTS_INCLUDES ${fts_SOURCE_DIR}/3rdparty/sound/openal-soft/include)
 list(APPEND FTS_INCLUDES ${fts_SOURCE_DIR}/3rdparty/sound/openal-soft/include/AL)
-list(APPEND FTS_INCLUDES ${fts_SOURCE_DIR}/3rdparty/SDL2/include)
-list(APPEND FTS_INCLUDES ${fts_SOURCE_DIR}/3rdparty/dao/src)
 list(APPEND FTS_INCLUDES ${fts_SOURCE_DIR}/3rdparty/bouge/include)
 
-list(APPEND FTS_3rdparty_LIBS OpenAL32)
 list(APPEND FTS_3rdparty_LIBS vorbis)
 list(APPEND FTS_3rdparty_LIBS ogg)
 list(APPEND FTS_3rdparty_LIBS dao)
@@ -318,16 +313,12 @@ list(APPEND FTS_3rdparty_LIBS bouge-math)
 list(APPEND FTS_3rdparty_LIBS bouge-tinyxml)
 list(APPEND FTS_3rdparty_LIBS bouge-xml-common)
 list(APPEND FTS_3rdparty_LIBS bouge-xmlio)
-list(APPEND FTS_3rdparty_LIBS freetype)
-list(APPEND FTS_3rdparty_LIBS pcre)
-list(APPEND FTS_3rdparty_LIBS SDL2-static)
-list(APPEND FTS_3rdparty_LIBS SDL2main)
 list(APPEND FTS_3rdparty_LIBS CEGUIBase)
 list(APPEND FTS_3rdparty_LIBS CEGUITinyXMLParser)
 list(APPEND FTS_3rdparty_LIBS CEGUIOpenGLRenderer)
 list(APPEND FTS_3rdparty_LIBS CEGUIFalagardWRBase)
-   
 if(WIN32)
+    list(APPEND FTS_3rdparty_LIBS OpenAL32)
     list(APPEND FTS_LIBS wsock32.lib)
     list(APPEND FTS_LIBS winmm.lib)
     list(APPEND FTS_LIBS dsound.lib)
@@ -345,6 +336,8 @@ else()
         list(APPEND FTS_INCLUDES ${X11_INCLUDE_DIR})
         list(APPEND FTS_LIBS ${X11_LIBRARIES})
     endif()
+    # On Linux use the found openal, add the appropriate name.
+    list(APPEND FTS_LIBS "openal")
 endif()
 
 # Add fts-networking stuff
@@ -397,13 +390,6 @@ message(STATUS "Detected Arkana-FTS version to be ${FTS_VERSION_FULL}")
 configure_file(${fts_SOURCE_DIR}/main/revision.h.in ${fts_SOURCE_DIR}/main/revision.h)
 
 target_link_libraries(fts ${FTS_LIBS} ${FTS_3rdparty_LIBS})
-if(MSVC)
-    # Workaroud to get rid of the dxerr.lib usage of the SDL2 project.
-    get_target_property(ilibs SDL2-static INTERFACE_LINK_LIBRARIES)
-    list(REMOVE_ITEM ilibs dxerr)
-    set_property(TARGET SDL2-static PROPERTY INTERFACE_LINK_LIBRARIES ${ilibs})
-    set_property(TARGET SDL2-static PROPERTY LINK_LIBRARIES ${ilibs})
-endif()
 # copy the executable as a post-build step. #
 #############################################
 if(NOT WIN32)

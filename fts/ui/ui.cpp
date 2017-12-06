@@ -14,7 +14,7 @@
 #include "utilities/fps_calculator.h"
 
 #include <CEGUI.h>
-#include <RendererModules/OpenGLGUIRenderer/openglrenderer.h>
+#include <openglrenderer.h>
 
 using namespace FTS;
 

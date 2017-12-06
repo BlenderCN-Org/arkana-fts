@@ -59,34 +59,28 @@ set(SOURCES src/daoType.c
         src/daoStdtype.c
    )
 
+set(OUT_NAME "dao")
+add_library(${OUT_NAME} STATIC ${SOURCES})
+
 # Debug or release ?
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     message(STATUS "Configuring for debug")
-    add_definitions(-DDEBUG)
+    target_compile_definitions(${OUT_NAME} PRIVATE DEBUG)
 else()
     message(STATUS "Configuring for release")
 endif()
+target_compile_definitions(${OUT_NAME} PRIVATE DAO_WITH_MACRO DAO_WITH_THREAD DAO_WITH_NUMARRAY)
 if(MSVC)
-    add_definitions(-DDAO_WITH_MACRO -DDAO_WITH_THREAD -DDAO_WITH_NUMARRAY -D_LIB -D_CRT_SECURE_NO_WARNINGS -DNO_FENV)
+    target_compile_definitions(${OUT_NAME} PRIVATE _LIB _CRT_SECURE_NO_WARNINGS NO_FENV)
+    target_compile_options(${OUT_NAME} PRIVATE /wd4018 /wd4244)
 else()
-    add_definitions(-DUNIX -DDAO_WITH_MACRO -DDAO_WITH_THREAD -DDAO_WITH_NUMARRAY)
+    target_compile_definitions(${OUT_NAME} PRIVATE UNIX)
+    target_compile_options(${OUT_NAME} PRIVATE -Wall -fPIC)
+    if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+        target_compile_options(${OUT_NAME} PRIVATE -pg -o0)
+    endif()
 endif()
 
 # Add additional include search directories.
-include_directories("${dao_SOURCE_DIR}/src")
+target_include_directories(${OUT_NAME} PUBLIC "${dao_SOURCE_DIR}/src")
 
-# Compiler-dependent and build-dependend flags:
-if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
-    add_definitions("-Wall -fPIC")
-    if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-        add_definitions("-pg -O0")
-    endif()
-elseif(MSVC)
-    add_definitions("/wd4018 /wd4244")
-endif()
-
-set(OUT_NAME "dao")
-
-# The compiling process. #
-##########################
-add_library(${OUT_NAME} STATIC ${SOURCES})

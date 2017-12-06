@@ -34,7 +34,7 @@
 #include "dLib/dFile/dFile.h"
 #include "dLib/dConf/configuration.h"
 
-#include <RendererModules/OpenGLGUIRenderer/openglrenderer.h>
+#include <openglrenderer.h>
 #include <SDL.h>
 
 using namespace FTS;
