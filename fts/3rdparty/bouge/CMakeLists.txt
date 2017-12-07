@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.1)
 
 message(STATUS "                 ")
 message(STATUS "=================")
@@ -19,9 +19,9 @@ project(bouge)
 include(${PROJECT_SOURCE_DIR}/cmake/Config.cmake)
 
 # setup version numbers
-set(VERSION_MAJOR 0)
-set(VERSION_MINOR 1)
-set(VERSION_PATCH 0)
+set(BOUGE_VERSION_MAJOR 0)
+set(BOUGE_VERSION_MINOR 1)
+set(BOUGE_VERSION_PATCH 0)
 
 # add the SFML header path
 include_directories(${PROJECT_SOURCE_DIR}/include)
@@ -63,40 +63,14 @@ else()
     add_definitions(-DBOUGE_STATIC)
 endif()
 
-# remove SL security warnings with Visual C++
-if(MSVC)
-    add_definitions(-D_CRT_SECURE_NO_DEPRECATE)
-endif()
-
-# Enable all kinds of warnings
-# if(COMPILER_GCC)
-#     if(DEFINED BOUGE_C_FLAGS)
-#         set(CMAKE_C_FLAGS "${BOUGE_C_FLAGS}")
-#     else()
-#         set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
-#     endif()
-#     if(DEFINED BOUGE_CXX_FLAGS)
-#         set(CMAKE_CXX_FLAGS "${BOUGE_CXX_FLAGS}")
-#     else()
-#         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
-#     endif()
-#     if(DEFINED BOUGE_C_FLAGS_DEBUG)
-#         set(CMAKE_C_FLAGS "${BOUGE_C_FLAGS_DEBUG}")
-#     else()
-#         set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS_DEBUG} -Wall -pg -fstack-protector-all")
-#     endif()
-#     if(DEFINED BOUGE_CXX_FLAGS_DEBUG)
-#         set(CMAKE_CXX_FLAGS "${BOUGE_CXX_FLAGS_DEBUG}")
-#     else()
-#         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} -Wall -pg -fstack-protector-all")
-#     endif()
-# endif()
-
 # disable the rpath stuff
 set(CMAKE_SKIP_BUILD_RPATH TRUE)
 
 # add the subdirectories
 add_subdirectory(src/bouge)
+set(BOUGE_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include PARENT_SCOPE)
+set(BOUGE_LIBRARIES bouge PARENT_SCOPE)
+
 if(BUILD_EXAMPLES)
     add_subdirectory(examples)
 endif()
@@ -107,17 +81,8 @@ endif()
 #We may want to statically link to CRT to reduce dependancies
 if(BUILD_STATICCRT)
     if(MSVC)
-#        foreach(flag_var CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO)
-#            if(${flag_var} MATCHES "/MD")
-#                string(REGEX REPLACE "/MD" "/MT" ${flag_var} "${${flag_var}}")
-#            endif(${flag_var} MATCHES "/MD")
-#            if(${flag_var} MATCHES "/MDd")
-#               string(REGEX REPLACE "/MDd" "/MTd" ${flag_var} "${${flag_var}}")
-#            endif(${flag_var} MATCHES "/MDd")
-#        endforeach(flag_var)
         foreach(flag_var CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO)
             string(REPLACE "/MD" "/MT" ${flag_var} "${${flag_var}}")
-            message(STATUS ${${flag_var}})
         endforeach()
     endif()
 endif()
@@ -128,4 +93,3 @@ install(DIRECTORY include
         COMPONENT devel
         PATTERN ".svn" EXCLUDE)
 install(FILES cmake/Modules/Findbouge.cmake DESTINATION ${CMAKE_ROOT}/Modules)
-# install(FILES license.txt DESTINATION ${INSTALL_MISC_DIR})

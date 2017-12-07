@@ -33,10 +33,12 @@ set(BOUGE_BUILD_STATICCRT TRUE)
 set(BOUGE_BUILD_CAL3DXMLIO FALSE)
 set(BOUGE_BUILD_SHARED_LIBS FALSE)
 set(BOUGE_BUILD_DOC FALSE)
-set(BOUGE_COMPILE_FLAGS ${CMAKE_CXX_FLAGS})
 add_subdirectory(bouge)
+list(APPEND FTS_INCLUDES ${BOUGE_INCLUDE_DIR})
+list(APPEND FTS_LIBS ${BOUGE_LIBRARIES} bouge-tinyxml bouge-xmlio)
 
 add_subdirectory(dao)
+list(APPEND FTS_LIBS dao)
 
 message(STATUS "================")
 message(STATUS "CONFIGURING PCRE")

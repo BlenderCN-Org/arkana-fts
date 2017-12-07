@@ -101,13 +101,16 @@ macro(bouge_add_library target)
 
     # create the target
     add_library(${target} ${THIS_SOURCES})
-
+    # remove SL security warnings with Visual C++
+    if(MSVC)
+        target_compile_definitions(${target} PRIVATE _CRT_SECURE_NO_DEPRECATE)
+    endif()
     # adjust the output file prefix/suffix to match our conventions
     if(BUILD_SHARED_LIBS)
         if(WINDOWS)
             # include the major version number in Windows shared library names (but not import library names)
             set_target_properties(${target} PROPERTIES DEBUG_POSTFIX -d)
-            set_target_properties(${target} PROPERTIES SUFFIX "-${VERSION_MAJOR}${CMAKE_SHARED_LIBRARY_SUFFIX}")
+            set_target_properties(${target} PROPERTIES SUFFIX "-${BOUGE_VERSION_MAJOR}${CMAKE_SHARED_LIBRARY_SUFFIX}")
         else()
             set_target_properties(${target} PROPERTIES DEBUG_POSTFIX -d)
         endif()
@@ -123,8 +126,8 @@ macro(bouge_add_library target)
     endif()
 
     # set the version and soversion of the target (for compatible systems -- mostly Linuxes)
-    set_target_properties(${target} PROPERTIES SOVERSION ${VERSION_MAJOR}.${VERSION_MINOR})
-    set_target_properties(${target} PROPERTIES VERSION ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH})
+    set_target_properties(${target} PROPERTIES SOVERSION ${BOUGE_VERSION_MAJOR}.${BOUGE_VERSION_MINOR})
+    set_target_properties(${target} PROPERTIES VERSION ${BOUGE_VERSION_MAJOR}.${BOUGE_VERSION_MINOR}.${BOUGE_VERSION_PATCH})
 
     # for gcc 4.x on Windows, we add the -static-libgcc linker flag to get rid of an extra gcc DLL
     if(WINDOWS AND COMPILER_GCC)

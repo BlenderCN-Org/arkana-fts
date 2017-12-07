@@ -2,8 +2,6 @@
 # include the bouge specific macros
 include(${PROJECT_SOURCE_DIR}/cmake/Macros.cmake)
 
-# add the bouge sources path
-include_directories(${PROJECT_SOURCE_DIR}/src)
 
 # define the path of our additional CMake modules
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/Modules/")
@@ -74,3 +72,5 @@ set(SRC
 
 # define the sfml-audio target
 bouge_add_library(bouge SOURCES ${SRC} DEPENDS bouge-math)
+# add the bouge sources path
+target_include_directories(bouge PRIVATE ${PROJECT_SOURCE_DIR}/src)
