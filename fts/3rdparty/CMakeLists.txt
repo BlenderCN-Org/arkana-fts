@@ -27,6 +27,8 @@ message(STATUS "=================")
 message(STATUS "CONFIGURING sound")
 message(STATUS "=================")
 add_subdirectory(sound)
+list(APPEND FTS_LIBS ${SND_LIBS})
+list(APPEND FTS_INCLUDES ${SND_INCLUDE_DIR})
 
 set(BOUGE_BUILD_EXAMPLES FALSE)
 set(BOUGE_BUILD_STATICCRT TRUE)

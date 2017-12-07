@@ -299,15 +299,7 @@ endif()
 
 
 add_subdirectory(${fts_SOURCE_DIR}/3rdparty)
-list(APPEND FTS_INCLUDES ${fts_SOURCE_DIR}/3rdparty/sound/libogg/include)
-list(APPEND FTS_INCLUDES ${fts_SOURCE_DIR}/3rdparty/sound/libvorbis/include)
-list(APPEND FTS_INCLUDES ${fts_SOURCE_DIR}/3rdparty/sound/openal-soft/include)
-list(APPEND FTS_INCLUDES ${fts_SOURCE_DIR}/3rdparty/sound/openal-soft/include/AL)
-
-list(APPEND FTS_3rdparty_LIBS vorbis)
-list(APPEND FTS_3rdparty_LIBS ogg)
 if(WIN32)
-    list(APPEND FTS_3rdparty_LIBS OpenAL32)
     list(APPEND FTS_LIBS wsock32.lib)
     list(APPEND FTS_LIBS winmm.lib)
     list(APPEND FTS_LIBS dsound.lib)
@@ -325,8 +317,6 @@ else()
         list(APPEND FTS_INCLUDES ${X11_INCLUDE_DIR})
         list(APPEND FTS_LIBS ${X11_LIBRARIES})
     endif()
-    # On Linux use the found openal, add the appropriate name.
-    list(APPEND FTS_LIBS "openal")
 endif()
 
 # Add fts-networking stuff
