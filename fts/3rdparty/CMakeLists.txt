@@ -73,6 +73,10 @@ list(APPEND FTS_INCLUDES ${FreeType_INCLUDE_DIR})
 list(APPEND FTS_LIBS ${FreeType_LIBRARY})
 
 add_subdirectory(CEGUI)
+list(APPEND FTS_LIBS CEGUIBase)
+list(APPEND FTS_LIBS CEGUITinyXMLParser)
+list(APPEND FTS_LIBS CEGUIOpenGLRenderer)
+list(APPEND FTS_LIBS CEGUIFalagardWRBase)
 
 message(STATUS "================")
 message(STATUS "CONFIGURING SDL2")
@@ -107,6 +111,7 @@ else()
 endif()
 list(APPEND FTS_LIBS ${SDL2_LIBRARY})
 list(APPEND FTS_INCLUDES ${SDL2_INCLUDE_DIR})
+
 message(STATUS "Populate: ${FTS_LIBS}")
 message(STATUS "Populate: ${FTS_INCLUDES}")
 set(FTS_LIBS "${FTS_LIBS}" PARENT_SCOPE)

@@ -306,10 +306,6 @@ list(APPEND FTS_INCLUDES ${fts_SOURCE_DIR}/3rdparty/sound/openal-soft/include/AL
 
 list(APPEND FTS_3rdparty_LIBS vorbis)
 list(APPEND FTS_3rdparty_LIBS ogg)
-list(APPEND FTS_3rdparty_LIBS CEGUIBase)
-list(APPEND FTS_3rdparty_LIBS CEGUITinyXMLParser)
-list(APPEND FTS_3rdparty_LIBS CEGUIOpenGLRenderer)
-list(APPEND FTS_3rdparty_LIBS CEGUIFalagardWRBase)
 if(WIN32)
     list(APPEND FTS_3rdparty_LIBS OpenAL32)
     list(APPEND FTS_LIBS wsock32.lib)
