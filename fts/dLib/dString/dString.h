@@ -24,6 +24,7 @@
 
 #include "main.h"
 #include <typeinfo>
+#include <string>
 
 namespace FTS {
 
