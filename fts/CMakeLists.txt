@@ -252,12 +252,6 @@ add_executable(fts ${SOURCES_COMMON} ${SOURCES_GAME})
 set(FTS_LIBS)
 set(FTS_INCLUDES)
 
-if(MSVC)
-    # This must be set prior to the target in order to be populated to the vcxproject.
-    link_directories(3rdparty/vclib)
-endif()
-
-
 # The different standard libraries already supported by CMake.
 find_package(Threads REQUIRED)
 list(APPEND FTS_LIBS ${CMAKE_THREAD_LIBS_INIT})
