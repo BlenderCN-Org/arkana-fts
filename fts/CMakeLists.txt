@@ -317,6 +317,7 @@ else()
         list(APPEND FTS_INCLUDES ${X11_INCLUDE_DIR})
         list(APPEND FTS_LIBS ${X11_LIBRARIES})
     endif()
+    list(APPEND FTS_LIBS dl)
 endif()
 
 # Add fts-networking stuff

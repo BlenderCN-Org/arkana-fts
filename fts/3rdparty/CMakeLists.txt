@@ -6,9 +6,9 @@ PROJECT(fts-dependencies)
 
 if(MSVC)
     set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY   "${fts-dependencies_SOURCE_DIR}/vclib")
-    set( LIBTYPE "STATIC")
-    set( CMAKE_DEBUG_POSTFIX "_d")
 endif()
+set( LIBTYPE "STATIC")
+set( CMAKE_DEBUG_POSTFIX "_d")
 
 if(MSVC)
     FOREACH(flag_var CMAKE_C_FLAGS CMAKE_C_FLAGS_DEBUG CMAKE_C_FLAGS_RELEASE)
