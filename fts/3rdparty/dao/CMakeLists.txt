@@ -61,14 +61,7 @@ set(SOURCES src/daoType.c
 
 set(OUT_NAME "dao")
 add_library(${OUT_NAME} STATIC ${SOURCES})
-
-# Debug or release ?
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    message(STATUS "Configuring for debug")
-    target_compile_definitions(${OUT_NAME} PRIVATE DEBUG)
-else()
-    message(STATUS "Configuring for release")
-endif()
+target_compile_definitions(${OUT_NAME} PRIVATE $<$<CONFIG:Debug>:DEBUG>)
 target_compile_definitions(${OUT_NAME} PRIVATE DAO_WITH_MACRO DAO_WITH_THREAD DAO_WITH_NUMARRAY)
 if(MSVC)
     target_compile_definitions(${OUT_NAME} PRIVATE _LIB _CRT_SECURE_NO_WARNINGS NO_FENV)
@@ -76,9 +69,8 @@ if(MSVC)
 else()
     target_compile_definitions(${OUT_NAME} PRIVATE UNIX)
     target_compile_options(${OUT_NAME} PRIVATE -Wall -fPIC)
-    if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-        target_compile_options(${OUT_NAME} PRIVATE -pg -o0)
-    endif()
+    target_compile_options(${OUT_NAME} PRIVATE $<$<CONFIG:Debug>:-pg>)
+    target_compile_options(${OUT_NAME} PRIVATE $<$<CONFIG:Debug>:-o0>)
 endif()
 
 # Add additional include search directories.

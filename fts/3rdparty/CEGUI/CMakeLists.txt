@@ -40,13 +40,6 @@ set(CEGUI_LOAD_MODULE_DEBUG_SUFFIX "\"d\"")
 configure_file(${CEGUI_SOURCE_DIR}/config.h.cmake ${CEGUI_SOURCE_DIR}/include/config.h)
 message(STATUS "Configuration file written to: ${CEGUI_SOURCE_DIR}/include/config.h")
 add_definitions(-DHAVE_CONFIG_H -DCEGUI_STATIC)
-# Debug or release ?
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    message(STATUS "Configuring for debug")
-    add_definitions(-DDEBUG=1)
-else()
-    message(STATUS "Configuring for release")
-endif()
 
 # Add the different subdirectories needed for CEGUI. #
 ######################################################

@@ -26,20 +26,11 @@ find_package(GLU REQUIRED)
 
 # Put all sourcefiles into one variable. #
 ##########################################
-set(SOURCES openglrenderer.cpp
-            opengltexture.cpp
-   )
+set(SOURCES openglrenderer.cpp opengltexture.cpp)
 
 add_library(CEGUIOpenGLRenderer ${SOURCES})
 
-# Debug or release ?
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    message(STATUS "Configuring for debug")
-    target_compile_definitions(CEGUIOpenGLRenderer PRIVATE DEBUG=1)
-else()
-    message(STATUS "Configuring for release")
-endif()
-
+target_compile_definitions(CEGUIOpenGLRenderer PRIVATE $<$<CONFIG:Debug>:DEBUG=1>)
 # Add additional include search directories.
 target_include_directories(CEGUIOpenGLRenderer PUBLIC ${CEGUIOpenGLRenderer_SOURCE_DIR})
 target_include_directories(CEGUIOpenGLRenderer PRIVATE
@@ -49,8 +40,6 @@ target_include_directories(CEGUIOpenGLRenderer PRIVATE
 
 # Compiler-dependent and build-dependend flags:
 if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
+    target_compile_options(CEGUIOpenGLRenderer PRIVATE $<$<CONFIG:Debug>:-pg>)
     target_compile_options(CEGUIOpenGLRenderer PRIVATE -Wall)
-    if(CAMKE_BUILD_TYPE STREQUAL "Debug")
-        target_compile_options(CEGUIOpenGLRenderer PRIVATE -pg)
-    endif()
 endif()

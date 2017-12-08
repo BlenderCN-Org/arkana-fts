@@ -188,17 +188,8 @@ set(SOURCES elements/CEGUIScrollbar.cpp
 
 add_library(CEGUIBase ${SOURCES})
 
-if(NOT PCRE_FOUND)
-    target_compile_definitions(CEGUIBase PRIVATE PCRE_STATIC)
-endif()
-
-# Debug or release ?
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    message(STATUS "Configuring for debug")
-    target_compile_definitions(CEGUIBase PRIVATE DEBUG=1)
-else()
-    message(STATUS "Configuring for release")
-endif()
+target_compile_definitions(CEGUIBase PRIVATE $<$<BOOL:PCRE_FOUND>:PCRE_STATIC>)
+target_compile_definitions(CEGUIBase PRIVATE $<$<CONFIG:Debug>:DEBUG=1>)
 
 # Add additional include search directories.
 target_include_directories(CEGUIBase PUBLIC ${_CEGUIBase_CEGUI_INCLUDE_DIR})
@@ -209,8 +200,5 @@ target_include_directories(CEGUIBase PRIVATE ${PCRE_INCLUDE_DIR}
 # Compiler-dependent and build-dependend flags:
 if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
     target_compile_options(CEGUIBase PRIVATE -Wall)
-    if(CAMKE_BUILD_TYPE STREQUAL "Debug")
-        target_compile_options(CEGUIBase PRIVATE -pg)
-    endif()
+    target_compile_options(CEGUIBase PRIVATE $<$<CONFIG:Debug>:-pg>)
 endif()
-

@@ -45,21 +45,12 @@ endif()
 
 set(OUT_NAME "aTest")
 add_library(${OUT_NAME} STATIC ${SOURCES})
-
-# Debug or release ?
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    message(STATUS "Configuring for debug")
-    target_compile_definitions(${OUT_NAME} PRIVATE DEBUG=1)
-else()
-    message(STATUS "Configuring for release")
-endif()
+target_compile_definitions(${OUT_NAME} PRIVATE $<$<CONFIG:Debug>:DEBUG=1>)
 
 # Compiler-dependent and build-dependend flags:
-if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
+if(CMAKE_COMPILER_IS_GNUCXX)
     add_definitions("-Wall")
-    if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-        target_compile_options(${OUT_NAME} PRIVATE -pg)
-    endif()
+    target_compile_options(${OUT_NAME} PRIVATE $<$<CONFIG:Debug>:-pg>)
 endif()
 
 enable_testing()

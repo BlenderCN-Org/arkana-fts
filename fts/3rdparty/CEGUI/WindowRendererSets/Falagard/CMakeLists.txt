@@ -60,24 +60,14 @@ set(SOURCES src/FalButton.cpp
    )
 
 add_library(CEGUIFalagardWRBase ${SOURCES})
-
-# Debug or release ?
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    message(STATUS "Configuring for debug")
-    target_compile_definitions(CEGUIFalagardWRBase PRIVATE DEBUG=1)
-else()
-    message(STATUS "Configuring for release")
-endif()
+target_compile_definitions(CEGUIFalagardWRBase PRIVATE $<$<CONFIG:Debug>:DEBUG=1>)
 
 # Add additional include search directories.
 target_include_directories(CEGUIFalagardWRBase PRIVATE ${_CEGUIFalagardWRBase_CEGUI_INCLUDE_DIR})
-
 target_include_directories(CEGUIFalagardWRBase PUBLIC ${CEGUIFalagardWRBase_SOURCE_DIR}/include)
 
 # Compiler-dependent and build-dependend flags:
 if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
     target_compile_options(CEGUIFalagardWRBase PRIVATE -Wall)
-    if(CAMKE_BUILD_TYPE STREQUAL "Debug")
-        target_compile_options(CEGUIFalagardWRBase PRIVATE -pg)
-    endif()
+    target_compile_options(CEGUIFalagardWRBase PRIVATE $<$<CONFIG:Debug>:-pg>)
 endif()
