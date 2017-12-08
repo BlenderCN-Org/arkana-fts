@@ -351,6 +351,7 @@ if(WIN32)
     target_compile_definitions(fts PRIVATE _CRT_SECURE_NO_DEPRECATE)
     target_compile_definitions(fts PRIVATE WIN32_LEAN_AND_MEAN=1)
     target_compile_definitions(fts PRIVATE NOMINMAX)
+    target_compile_definitions(fts PRIVATE _SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING)
 endif()
 
 # The compiling process. #
