@@ -108,14 +108,14 @@ else()
         set(SDL2_LIBRARY "SDL2main" "SDL2")
         set(SDL2_INCLUDE_DIR ${fts-dependencies_SOURCE_DIR}/SDL2/include)
     else()
-	# On some systems the names are different.
-	# So map them to one.
+        # On some systems the names are different.
+        # So map them to one.
         if(SDL2_LIBRARIES)
-	    set(SDL2_LIBRARY ${SDL2_LIBRARIES})
-	endif()
-	if(SDL2_INCLUDE_DIRS)
-	    set(SDL2_INCLUDE_DIR ${SDL2_INCLUDE_DIRS})
-	endif()
+            set(SDL2_LIBRARY ${SDL2_LIBRARIES})
+        endif()
+        if(SDL2_INCLUDE_DIRS)
+            set(SDL2_INCLUDE_DIR ${SDL2_INCLUDE_DIRS})
+        endif()
     endif()
 endif()
 list(APPEND FTS_LIBS ${SDL2_LIBRARY})
