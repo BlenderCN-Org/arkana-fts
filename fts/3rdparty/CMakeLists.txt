@@ -120,5 +120,11 @@ else()
 endif()
 list(APPEND FTS_LIBS ${SDL2_LIBRARY})
 list(APPEND FTS_INCLUDES ${SDL2_INCLUDE_DIR})
+
+# Add fts-networking stuff
+add_subdirectory(fts-network)
+list(APPEND FTS_LIBS fts-net)
+
+# Populate the libs and includes
 set(FTS_LIBS "${FTS_LIBS}" PARENT_SCOPE)
 set(FTS_INCLUDES "${FTS_INCLUDES}" PARENT_SCOPE)

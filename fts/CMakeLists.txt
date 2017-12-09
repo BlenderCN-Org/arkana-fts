@@ -303,11 +303,6 @@ else()
     list(APPEND FTS_LIBS dl)
 endif()
 
-# Add fts-networking stuff
-set(fts-networking_SOURCE_DIR CACHE STRING "Location of the FTS networking library.")
-add_subdirectory(${fts-networking_SOURCE_DIR} "${CMAKE_CURRENT_BINARY_DIR}/net")
-list(APPEND FTS_3rdparty_LIBS fts-net)
-
 # Add unit testing stuff
 set(ATEST_BUILD_EXAMPLES FALSE)
 add_subdirectory(${fts_SOURCE_DIR}/dLib/aTest)
