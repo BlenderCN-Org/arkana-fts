@@ -364,7 +364,7 @@ LowerTileset::LowerTileset(BasicTileset &in_base)
     : m_wTile(in_base.getLowerW())
     , m_hTile(in_base.getLowerH())
 {
-    m_TileInfos.empty();
+    m_TileInfos.clear();
 }
 
 /// Default destructor.
