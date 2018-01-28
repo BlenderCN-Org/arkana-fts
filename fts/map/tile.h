@@ -31,19 +31,19 @@ private:
     #define FTS_DEFAULT_LOWERTILE_W 64
     #define FTS_DEFAULT_LOWERTILE_H 64
 
-    String m_sShortName; ///< The internal name of the tileset.
-    String m_sLongName;  ///< The public/official name of the tileset.
+    String m_sShortName;            ///< The internal name of the tileset.
+    String m_sLongName;             ///< The public/official name of the tileset.
 
-    Graphic *m_pUpper; ///< The upper tileset image.
-    uint16_t m_nUpper; ///< The count of uppertiles in the set.
-    uint16_t m_wUpper; ///< The width of an upper tile.
-    uint16_t m_hUpper; ///< The height of an upper tile.
-    uint16_t m_wLower; ///< The width of an lower tile.
-    uint16_t m_hLower; ///< The height of an lower tile.
+    Graphic *m_pUpper = nullptr;    ///< The upper tileset image.
+    uint16_t m_nUpper;              ///< The count of uppertiles in the set.
+    uint16_t m_wUpper;              ///< The width of an upper tile.
+    uint16_t m_hUpper;              ///< The height of an upper tile.
+    uint16_t m_wLower;              ///< The width of an lower tile.
+    uint16_t m_hLower;              ///< The height of an lower tile.
 
     std::map<uint8_t,Graphic*> m_mTiles;  ///< All the tiles mapped to their name.
     std::map<uint8_t,Graphic*> m_mBlends; ///< All blendmasks mapped to their name.
-    Graphic *m_pDetail;                   ///< The detailmap.
+    Graphic *m_pDetail = nullptr;         ///< The detailmap.
 
     Graphic *loadTileFrom(Archive& in_tileset, const String &in_sTileName);
     class Settings : public DefaultOptions {
@@ -103,7 +103,7 @@ private:
 
     uint8_t m_cBlendmask;    ///< The name of the blendmask used to compose this tile.
 
-    Graphic *m_pGraphic;   ///< The graphic of the blended tile.
+    Graphic *m_pGraphic = nullptr;   ///< The graphic of the blended tile.
 
 public:
     Tile(uint8_t in_cTopLeft, uint8_t in_cTopRight, uint8_t in_cBottomLeft,
@@ -145,7 +145,7 @@ private:
     TileMapType m_TileInfos;
 
     /// This image contais all tiles compiled together into one big tilemap.
-    Graphic *m_pTileMap;
+    Graphic *m_pTileMap = nullptr;
 
     uint16_t m_wTile; ///< The width of lowertiles.
     uint16_t m_hTile; ///< The height of lowertiles.
@@ -180,7 +180,7 @@ private:
         float pfTexCoords[4]; ///< Its coordinates in the one big image.
     } SUpperTileInfo, *PUpperTileInfo;
 
-    Graphic *m_pTileMap; ///< Contains all the tiles compiled into one picture.
+    Graphic *m_pTileMap = nullptr; ///< Contains all the tiles compiled into one picture.
     PUpperTileInfo m_pTiles; ///< The informations about all tiles.
     uint16_t m_nTiles; ///< The amount of tiles in the array.
     String m_sName; ///< The name of this tileset, for displaying errors.
@@ -203,10 +203,10 @@ public:
  */
 class Tileset {
 private:
-    LowerTileset *m_pLower; ///< The lower tileset.
-    UpperTileset *m_pUpper; ///< The upper tileset.
-    Graphic *m_pDetail;     ///< The detailmap.
-    String m_sName;        ///< The long name of the tileset.
+    LowerTileset *m_pLower = nullptr; ///< The lower tileset.
+    UpperTileset *m_pUpper = nullptr; ///< The upper tileset.
+    Graphic *m_pDetail = nullptr;     ///< The detailmap.
+    String m_sName;                   ///< The long name of the tileset.
 
 public:
     Tileset();

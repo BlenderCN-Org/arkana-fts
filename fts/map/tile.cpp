@@ -559,7 +559,7 @@ void LowerTileset::getTileTexCoords(float *out_pTexCoord,
 
 /// Default constructor.
 UpperTileset::UpperTileset(const String &in_sName)
-    : m_pTileMap(NULL)
+    : m_pTileMap(nullptr)
     , m_sName(in_sName)
 {
 }

@@ -1,5 +1,4 @@
 /*
- * $Id: $
  * \file SndObj.h
  * \author KaBey
  * \brief Interface file for the base sound object
@@ -16,14 +15,12 @@ namespace FTS {
 
 /*! The sound object interface class. This needs an implementation of a real sound
  * object class which then realize the sounds according to a specific sound architecture.
- * @author Klaus.Beyer
  */
 class ISndObj
 {
 public:
-    ISndObj():m_sName(String::EMPTY), m_grp(SndGroup::Music) {};
-    ISndObj(const Path& in_sName, SndGroup::Enum in_Group = SndGroup::Music)
-        : m_sName(in_sName),m_grp(in_Group) {};
+    ISndObj() {};
+    ISndObj(const Path& in_sName, SndGroup::Enum in_Group = SndGroup::Music) : m_sName(in_sName),m_grp(in_Group) {};
     virtual ISndObj* Load(const Path& in_sName = String::EMPTY) = 0;
     virtual ISndObj* Play() = 0;
     virtual ISndObj* Pause() = 0;
@@ -39,11 +36,11 @@ public:
     virtual ~ISndObj(){};
     inline String getName() const{return m_sName;};
 protected:
-    Vector m_pos;             ///< Current position in the 3D space.
-    Chronometer m_chron;      ///< Chronometer to calc the movement speed.
-    Path m_sName;             ///< Name of the sound file. (Relative to the sound directory)
-    SndGroup::Enum m_grp;     ///< Sound group \see SndGroup
-    SndPlayMode::Enum m_mode; ///< Sound play mode \see SndPlayMode
+    Vector m_pos;                                   ///< Current position in the 3D space.
+    Chronometer m_chron;                            ///< Chronometer to calculate the movement speed.
+    Path m_sName;                                   ///< Name of the sound file. (Relative to the sound directory)
+    SndGroup::Enum m_grp = SndGroup::Music;         ///< Sound group \see SndGroup
+    SndPlayMode::Enum m_mode = SndPlayMode::Single; ///< Sound play mode \see SndPlayMode
 };
 
 }

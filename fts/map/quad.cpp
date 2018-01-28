@@ -23,12 +23,6 @@ using namespace FTS;
 /// This is a simple constructor.
 Quad::Quad(void)
 {
-    m_bComplex = false;
-    m_pfnRender = nullptr;
-    m_pfnRenderUppertile = nullptr;
-    m_cBlendmask = '\0';
-    m_usX = 0;
-    m_usY = 0;
     m_fTexCoordLowerTile[0] = 0.0f;
     m_fTexCoordLowerTile[1] = 0.0f;
     m_fTexCoordLowerTile[2] = 1.0f;

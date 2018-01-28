@@ -35,7 +35,7 @@ using namespace FTS;
 
 /// Default constructor.
 FTS::ModelViewerRlv::ModelViewerRlv()
-    : m_pRoot(NULL)
+    : m_pRoot(nullptr)
     , m_pModelManager(new ModelManager())
     , m_sModelName(m_pModelManager->ErrorModelName)
     , m_playerColor(FTS::getPlayerColors().front())

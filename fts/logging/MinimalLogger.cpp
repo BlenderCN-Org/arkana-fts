@@ -6,9 +6,7 @@
 
 using namespace FTS;
 
-MinimalLogger::MinimalLogger(int in_iDbgLv)
-    : m_iDbgLv(in_iDbgLv)
-    , m_bMuted(false)
+MinimalLogger::MinimalLogger(int in_iDbgLv) : m_iDbgLv(in_iDbgLv)
 {
 }
 

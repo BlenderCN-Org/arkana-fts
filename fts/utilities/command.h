@@ -46,8 +46,8 @@ public:
 /// executes if a condition is met. The condition is just another command.
 class ConditionalCommand : public CommandBase {
 protected:
-    CommandBase *m_pCond;    ///< The condition command.
-    CommandBase *m_pCommand; ///< The execution command.
+    CommandBase *m_pCond = nullptr;    ///< The condition command.
+    CommandBase *m_pCommand = nullptr; ///< The execution command.
 
     /// Copy constructor blocked because of mem-free issues upon copy.
     ConditionalCommand(const ConditionalCommand &) = delete;
@@ -71,8 +71,8 @@ protected:
     CEGUI::EventArgs m_ea;
 #endif
 
-    CallbackCommand::CallBackFunction m_pfn;
-    void *m_pArg;
+    CallbackCommand::CallBackFunction m_pfn = nullptr;
+    void *m_pArg = nullptr;
 
 public:
 #ifndef D_NOCEGUI

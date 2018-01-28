@@ -2,7 +2,7 @@
  * \file load_rlv.h
  * \author Pompei2
  * \date 9 December 2008
- * \brief This file defines everything about the fts loading runlevel.
+ * \brief This file defines everything about the fts loading run level.
  **/
 
 #ifndef D_LOAD_FTS_RLV_H
@@ -21,15 +21,14 @@ private:
     /// The name of the logo to display.
     String m_sLogoFile;
 
-    /// The root window that contains progressbar etc.
-    CEGUI::Window *m_pRootWin;
-    uint16_t m_screenHeight;
-    uint16_t m_screenWidth;
+    /// The root window that contains progress bar etc.
+    CEGUI::Window *m_pRootWin = nullptr;
+    uint16_t m_screenHeight = 0;
+    uint16_t m_screenWidth = 0;
     uint16_t getW() {return m_screenWidth;}
     uint16_t getH() {return m_screenHeight;}
 
     int initCEGUI();
-    int initSDL();
 
     enum {
         LoadBeginning = 0,

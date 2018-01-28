@@ -16,31 +16,31 @@ namespace FTS {
 #  define FTS_QUAD_SIZE 5.0f
 #  define FTS_CQUAD_SIZE 5.0f / 4.0f
 
-/** Over how much quads the detailmap gets stretched.
+/** Over how much quads the detail map gets stretched.
  *  FIXME: maybe do this camera-zoom dependent ?
  */
 #  define FTS_DETAILMAP_QUADS 5.0f
 
-/** This class describes a quad, please refer to the dokuwiki to
+/** This class describes a quad, please refer to the doku wiki to
  *  understand the differences and relations between quads and tiles.
  *  http://pompei2.cesar4.be/fts/dokuwiki/doku.php/dev:map:terrain.ftst
  */
 class Quad {
 private:
-    bool m_bComplex;           ///< Wether this is a complex quad or not.
-    float *m_pfEdges;          ///< The heights of the 4 or 25 edges.
-    Vector *m_pfNormals;   ///< The normals of the 4 or 25 edges.
+    bool m_bComplex = false;            ///< Whether this is a complex quad or not.
+    float *m_pfEdges = nullptr;         ///< The heights of the 4 or 25 edges.
+    Vector *m_pfNormals = nullptr;      ///< The normals of the 4 or 25 edges.
 
-    std::uint16_t m_usX; ///< The X position of this quad on the map, unit is quads.
-    std::uint16_t m_usY; ///< The Y position of this quad on the map, unit is quads.
+    std::uint16_t m_usX = 0;            ///< The X position of this quad on the map, unit is quads.
+    std::uint16_t m_usY = 0;            ///< The Y position of this quad on the map, unit is quads.
 
-    float m_fTexCoordDetail[3];         ///< The texture coordinats for the detailmap X,Y,W.
+    float m_fTexCoordDetail[3];         ///< The texture coordinates for the detail map X,Y,W.
     float m_fTexCoordLowerTile[4];      ///< The texture coordinates for the lower tile image (Left,Top,Right,Bottom).
     float m_fTexCoordUpperTile[4];      ///< The texture coordinates for the upper tile image (Left,Top,Right,Bottom).
     float m_fCplxTexCoordLowerTile[10]; ///< The texture coordinates for the lower tile image, if the quad is complex
     float m_fCplxTexCoordUpperTile[10]; ///< The texture coordinates for the upper tile image, if the quad is complex
 
-    std::uint8_t m_cBlendmask;    ///< The ID of the blendmask.
+    std::uint8_t m_cBlendmask = '\0';      ///< The ID of the blend mask.
 
     int renderComplex_Multitex(float in_fX, float in_fY, float in_fZ, float in_fMultip);
     int renderComplex(float in_fX, float in_fY, float in_fZ, float in_fMultip);
@@ -49,15 +49,15 @@ private:
     int renderSimple(float in_fX, float in_fY, float in_fZ, float in_fMultip);
     int renderSimpleUppertile(float in_fX, float in_fY, float in_fZ, float in_fMultip);
 
-    pfnQuadDraw m_pfnRender; ///< A pointer to the render function you need to use.
-    pfnQuadDraw m_pfnRenderUppertile; ///< A pointer to the render function used for second pass rendering.
+    pfnQuadDraw m_pfnRender = nullptr; ///< A pointer to the render function you need to use.
+    pfnQuadDraw m_pfnRenderUppertile = nullptr; ///< A pointer to the render function used for second pass rendering.
 
 public:
     Quad(void);
     virtual ~Quad();
 
     int load(FTS::File * out_pFile, float in_fMultiplier,
-             bool in_bMultiTex, bool in_bComplex); // Two params for buffering.
+             bool in_bMultiTex, bool in_bComplex); // Two parameters for buffering.
     int unload(void);
     void initTexCoords(const Tileset *in_pTileset,
                        char in_cTopLeft,

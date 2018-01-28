@@ -76,16 +76,16 @@ private:
 
     String getSelectedSkinName() const;
 
-    CEGUI::Window *m_pRoot;       ///< A pointer to this dialog's window.
+    CEGUI::Window *m_pRoot = nullptr;       ///< A pointer to this dialog's window.
 
-    ModelManager* m_pModelManager;
+    ModelManager* m_pModelManager = nullptr;
     String m_sModelName;
 
     /// The instances of this model and their position (For massive rendering).
     std::list< std::shared_ptr<DecorativeMO> > m_modelInsts;
 
-    ModelInstance* m_pCoordSys;
-    ModelInstance* m_pAABB;
+    ModelInstance* m_pCoordSys = nullptr;
+    ModelInstance* m_pAABB = nullptr;
 
     Color m_playerColor;
 

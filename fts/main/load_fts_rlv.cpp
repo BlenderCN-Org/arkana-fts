@@ -41,7 +41,7 @@ using namespace FTS;
 
 /// Default constructor.
 FTS::LoadFTSRlv::LoadFTSRlv()
-    : m_pRootWin(NULL)
+    : m_pRootWin(nullptr)
     , m_eNextTodo(LoadBeginning)
 {
 }

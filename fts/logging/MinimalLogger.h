@@ -10,8 +10,8 @@ namespace FTS {
 /// (except the string class) but it also does nothing special at all.
 class MinimalLogger : public FTS::Logger {
 protected:
-    int m_iDbgLv;
-    bool m_bMuted;
+    int m_iDbgLv = 5;
+    bool m_bMuted = false;
 
     /// Protect from copying.
     MinimalLogger(const MinimalLogger&) {};

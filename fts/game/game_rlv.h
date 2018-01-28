@@ -23,21 +23,21 @@ namespace FTS {
 class GameRlv : public Runlevel {
 private:
     /// The root of the CEGUI menu.
-    CEGUI::Window *m_pRootWindow;
+    CEGUI::Window *m_pRootWindow = nullptr;
     /// The map we play the game on :)
-    Map *m_pMap;
+    Map *m_pMap = nullptr;
 
     /// The archive that this map was loaded from. We need to keep track of it
     /// not to extract things of it (done by the file class automatically)
     /// but to unload it after the game is over.
-    Archive *m_pMapArchive;
-    uint16_t m_screenHeight;
-    uint16_t m_screenWidth;
+    Archive *m_pMapArchive = nullptr;
+    uint16_t m_screenHeight = 0;
+    uint16_t m_screenWidth = 0;
     uint16_t getW() {return m_screenWidth;}
     uint16_t getH() {return m_screenHeight;}
 #ifdef DEBUG
     /// In debug mode, we want to be able to display a coordinate system.
-    bool m_bRenderCoordinateSystem;
+    bool m_bRenderCoordinateSystem = false;
     inline bool cbDbgSwapShowCoordSys(const CEGUI::EventArgs &) {
         m_bRenderCoordinateSystem = !m_bRenderCoordinateSystem;
         return true;
@@ -102,7 +102,7 @@ public:
 //     virtual SCursor *getMainCursor() {return m_pDefCursor;};
 
     inline Map *getMap() {return m_pMap;};
-    inline void giveMapArchive(Archive *in_pArch) {if(m_pMapArchive == NULL) m_pMapArchive = in_pArch;};
+    inline void giveMapArchive(Archive *in_pArch) {if(m_pMapArchive == nullptr) m_pMapArchive = in_pArch;};
 };
 };
 
