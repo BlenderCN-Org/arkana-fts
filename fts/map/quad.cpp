@@ -27,6 +27,10 @@ Quad::Quad(void)
     m_fTexCoordLowerTile[1] = 0.0f;
     m_fTexCoordLowerTile[2] = 1.0f;
     m_fTexCoordLowerTile[3] = 1.0f;
+    m_fTexCoordUpperTile[0] = 0.0f;
+    m_fTexCoordUpperTile[1] = 0.0f;
+    m_fTexCoordUpperTile[2] = 1.0f;
+    m_fTexCoordUpperTile[3] = 1.0f;
     m_fTexCoordDetail[0] = 0.0f;
     m_fTexCoordDetail[1] = 0.0f;
     m_fTexCoordDetail[2] = 0.0f;
@@ -57,11 +61,11 @@ Quad::~Quad(void)
  *                     This param is only used not to retrieve that option
  *                     every time.
  *
- * \return If successfull: ERR_OK
+ * \return If successful: ERR_OK
  * \return If failed:      Error code < 0
  *
  * \note A quad structure doesn't have a header or so ... so if
- *       the FILE pointer is wrong, the behaviour is undefined.
+ *       the FILE pointer is wrong, the behavior is undefined.
  *
  * \author Pompei2
  */
@@ -72,6 +76,7 @@ int Quad::load(File *out_pFile, float in_fMultiplier,
         FTS18N("InvParam", MsgType::Horror, "CQuad::load");
         return -1;
     }
+    unload();
 
     // First, look if this is a complex or a simple quad.
     int8_t cFlags = 0;
@@ -84,11 +89,12 @@ int Quad::load(File *out_pFile, float in_fMultiplier,
     // And now get the heights of the edges.
     uint8_t nVerts = m_bComplex ? 25 : 4;
     int16_t *psEdges = new short[nVerts];
-    m_pfEdges = new float[nVerts];
     if(nVerts != out_pFile->read(psEdges, sizeof(int16_t), nVerts)) {
         FTS18N("File_UnexpEOF", MsgType::Error, out_pFile->getName(), "read quad verts, cplx = "+String::b(m_bComplex));
+        SAFE_DELETE_ARR(psEdges);
         return -2;
     }
+    m_pfEdges = new float[nVerts];
 
     // Apply the multiplier.
     for(uint8_t i = 0; i < nVerts ; i++) {

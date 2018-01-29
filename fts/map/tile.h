@@ -180,10 +180,10 @@ private:
         float pfTexCoords[4]; ///< Its coordinates in the one big image.
     } SUpperTileInfo, *PUpperTileInfo;
 
-    Graphic *m_pTileMap = nullptr; ///< Contains all the tiles compiled into one picture.
-    PUpperTileInfo m_pTiles; ///< The informations about all tiles.
-    uint16_t m_nTiles; ///< The amount of tiles in the array.
-    String m_sName; ///< The name of this tileset, for displaying errors.
+    Graphic *m_pTileMap = nullptr;      ///< Contains all the tiles compiled into one picture.
+    PUpperTileInfo m_pTiles = nullptr;  ///< The informations about all tiles.
+    uint16_t m_nTiles = 0;              ///< The amount of tiles in the array.
+    String m_sName;                     ///< The name of this tileset, for displaying errors.
 
 public:
     UpperTileset(const String &in_sName);
