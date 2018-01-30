@@ -38,18 +38,24 @@ protected:
 class RawDataContainer : public DataContainer {
 protected:
     /// The data managed by this container.
-    uint8_t *m_pData;
+    uint8_t *m_pData = nullptr;
     /// The size of the data managed by this container.
-    uint64_t m_uiSize;
+    uint64_t m_uiSize = 0;
 
 public:
     /// Constructs a data container with no data :)
     RawDataContainer();
+    
     /// Constructs a data container that allocates \a in_uiSize bytes of data.
     /// \param in_uiSize The size (in bytes) of the data to hold.
     RawDataContainer(uint64_t in_uiSize);
+    
     /// Copies the whole data of some other data container.
     RawDataContainer(const DataContainer &);
+
+    /// Copies the whole data of some other data container.
+    RawDataContainer(const RawDataContainer &);
+
     /// Destroys the data container and deallocates the data it contains.
     virtual ~RawDataContainer();
 
@@ -65,13 +71,16 @@ public:
     ///                     less then the current size, data at the end will be
     ///                     cut off. If it is more, all data is kept.
     virtual void resize(uint64_t in_uiNewSize);
+    
     /// Grows the data that I hold (similar to realloc)
     /// \param in_uiAdditional How much more space should be reserved at the end
     ///                        of the buffer.
     virtual void grow(uint64_t in_uiAdditional);
+    
     /// Deallocates all data that is hold.
     /// \note this is automatically called in the destructor.
     virtual void destroy();
+    
     /// \return A copy of this data container (containing a copy of the whole data).
     virtual RawDataContainer *copy() const;
 

@@ -52,25 +52,31 @@ uint32_t FTS::DataContainer::fletcher32() const
 }
 
 FTS::RawDataContainer::RawDataContainer()
-    : m_pData(0)
-    , m_uiSize(0)
 {
 }
 
 FTS::RawDataContainer::RawDataContainer(uint64_t in_uiSize)
-    : m_pData(0)
-    , m_uiSize(in_uiSize)
+    : m_uiSize(in_uiSize)
 {
-    if(in_uiSize != 0) {
-        m_pData = reinterpret_cast<uint8_t *>(malloc(in_uiSize+1));
-        memset(m_pData, 0, in_uiSize+1);
+    if(in_uiSize == 0) {
+        return;
     }
+    m_pData = reinterpret_cast<uint8_t *>(malloc(in_uiSize + 1));
+    memset(m_pData, 0, in_uiSize + 1);
 }
 
 FTS::RawDataContainer::RawDataContainer(const DataContainer &o)
 {
     m_uiSize = o.getSize();
     m_pData = reinterpret_cast<uint8_t *>(malloc(o.getSize()+1));
+    memcpy(m_pData, o.getData(), o.getSize());
+    m_pData[m_uiSize] = 0;
+}
+
+FTS::RawDataContainer::RawDataContainer(const RawDataContainer &o)
+{
+    m_uiSize = o.getSize();
+    m_pData = reinterpret_cast<uint8_t *>(malloc(o.getSize() + 1));
     memcpy(m_pData, o.getData(), o.getSize());
     m_pData[m_uiSize] = 0;
 }
@@ -103,10 +109,15 @@ void FTS::RawDataContainer::grow(uint64_t in_uiAdditional)
 
 void FTS::RawDataContainer::resize(uint64_t in_uiNewSize)
 {
-    m_pData = reinterpret_cast<uint8_t *>(realloc(m_pData, in_uiNewSize+1));
-    if(in_uiNewSize > m_uiSize)
-        memset(m_pData+m_uiSize, 0, in_uiNewSize-m_uiSize);
-    m_uiSize = in_uiNewSize;
+    auto newBlock = reinterpret_cast<uint8_t *>(realloc(m_pData, in_uiNewSize+1));
+    if(newBlock != nullptr) {
+        m_pData = newBlock;
+        if(in_uiNewSize > m_uiSize)
+            memset(m_pData + m_uiSize, 0, in_uiNewSize - m_uiSize);
+        m_uiSize = in_uiNewSize;
+    } else {
+        this->destroy();
+    }
 }
 
 void FTS::RawDataContainer::destroy()
@@ -130,9 +141,7 @@ void FTS::RawDataContainer::append(const ConstRawDataContainer& in_other)
     memcpy(this->getData() + oldSize, in_other.getData(), in_other.getSize());
 }
 
-FTS::ConstRawDataContainer::ConstRawDataContainer()
-    : m_pData(0)
-    , m_uiSize(0)
+FTS::ConstRawDataContainer::ConstRawDataContainer() : m_pData(nullptr), m_uiSize(0)
 {
 }
 

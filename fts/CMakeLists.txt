@@ -168,6 +168,7 @@ set(SRC_tests
     tests/Configuration/FTSConfiguration.cpp
     tests/main/ClockTest.cpp
     tests/dLib/dFile/dFileTest.cpp
+    tests/utilities/DataContainerTest.cpp
     )
 
 set(SRC_ui
