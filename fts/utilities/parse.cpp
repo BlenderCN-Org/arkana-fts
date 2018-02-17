@@ -68,9 +68,12 @@ int CParser::load(const String & in_sFileName)
 int CParser::loadStr(const String & in_sString)
 {
     m_sFile = "From Memory";
-
-    if(NULL == (m_pData = (char *)malloc(in_sString.len()+1)))
+    SAFE_FREE(m_pData);
+    m_pData = (char *)malloc(in_sString.len() + 1);
+    if(nullptr == m_pData) {
+        m_p = nullptr;
         return -3;
+    }
 
     strncpy(m_pData, in_sString.c_str(), in_sString.len());
     m_pData[in_sString.len()] = '\0';
@@ -83,8 +86,12 @@ int CParser::loadStr(const String & in_sString)
 
 int CParser::load(const FTS::File &in_f)
 {
-    if(NULL == (m_pData = (char *)malloc(sizeof(char) * in_f.getDataContainer().getSize() + sizeof(char))))
+    SAFE_FREE(m_pData);
+    m_pData = (char *)malloc(sizeof(char) * in_f.getDataContainer().getSize() + sizeof(char));
+    if(nullptr == m_pData) {
+        m_p = nullptr;
         return -3;
+    }
 
     memcpy(m_pData, in_f.getDataContainer().getData(), in_f.getDataContainer().getSize());
     m_pData[in_f.getDataContainer().getSize()] = '\0';
@@ -276,7 +283,7 @@ size_t CParser::skipComments(void)
 
     nRead += this->skipSpaces();
 
-    while(m_p[0] == '#' && m_p[0] != '\0') {
+    while(m_p[0] == '#') {
         nRead += this->skipLine();
         nRead += this->skipSpaces();
     }
