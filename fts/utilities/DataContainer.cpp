@@ -7,7 +7,8 @@
 
 #include <cstring>
 #include <malloc.h>
-
+#include <cstdint>
+#include <utility>
 #include "DataContainer.h"
 
 using namespace FTS;
@@ -55,7 +56,7 @@ FTS::RawDataContainer::RawDataContainer()
 {
 }
 
-FTS::RawDataContainer::RawDataContainer(uint64_t in_uiSize)
+FTS::RawDataContainer::RawDataContainer(size_t in_uiSize)
     : m_uiSize(in_uiSize)
 {
     if(in_uiSize == 0) {
@@ -97,17 +98,21 @@ const uint8_t *FTS::RawDataContainer::getData() const
     return m_pData;
 }
 
-uint64_t FTS::RawDataContainer::getSize() const
+size_t FTS::RawDataContainer::getSize() const
 {
     return m_uiSize;
 }
 
-void FTS::RawDataContainer::grow(uint64_t in_uiAdditional)
+void FTS::RawDataContainer::grow(size_t in_uiAdditional)
 {
+    if(in_uiAdditional > (1024 * 1024 * 1024)) {
+        // Limit the grow size to 1GB.
+        return;
+    }
     this->resize(this->getSize() + in_uiAdditional);
 }
 
-void FTS::RawDataContainer::resize(uint64_t in_uiNewSize)
+void FTS::RawDataContainer::resize(size_t in_uiNewSize)
 {
     auto newBlock = reinterpret_cast<uint8_t *>(realloc(m_pData, in_uiNewSize+1));
     if(newBlock != nullptr) {
@@ -151,13 +156,13 @@ FTS::ConstRawDataContainer::ConstRawDataContainer(const DataContainer &in_o)
 {
 }
 
-FTS::ConstRawDataContainer::ConstRawDataContainer(const uint8_t *in_pData, uint64_t in_uiSize)
+FTS::ConstRawDataContainer::ConstRawDataContainer(const uint8_t *in_pData, size_t in_uiSize)
     : m_pData(in_pData)
     , m_uiSize(in_uiSize)
 {
 }
 
-FTS::ConstRawDataContainer::ConstRawDataContainer(const void *in_pData, uint64_t in_uiSize)
+FTS::ConstRawDataContainer::ConstRawDataContainer(const void *in_pData, size_t in_uiSize)
     : m_pData(reinterpret_cast<const uint8_t *>(in_pData))
     , m_uiSize(in_uiSize)
 {
@@ -172,7 +177,7 @@ const uint8_t *FTS::ConstRawDataContainer::getData() const
     return m_pData;
 }
 
-uint64_t FTS::ConstRawDataContainer::getSize() const
+size_t FTS::ConstRawDataContainer::getSize() const
 {
     return m_uiSize;
 }
@@ -182,7 +187,7 @@ DataContainer *FTS::ConstRawDataContainer::copy() const
     return new ConstRawDataContainer(this->getData(), this->getSize());
 }
 
-void FTS::toSystemEndian(uint8_t *out_pBuff, uint64_t in_uiSize)
+void FTS::toSystemEndian(uint8_t *out_pBuff, size_t in_uiSize)
 {
     if(!systemHasGoodEndian()) {
         // Rather use htons and htonl?
