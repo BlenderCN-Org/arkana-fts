@@ -3,8 +3,6 @@
 
 #include "utilities/NonCopyable.h"
 
-#include <memory>
-
 namespace FTS {
 
 /// Inherit (publicly) from this class whenever you want your class to have a
