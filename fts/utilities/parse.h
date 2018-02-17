@@ -19,12 +19,12 @@ namespace FTS {
     class CParser
     {
     private:
-        FTS::String m_sFile;       ///< The name of the file we are parsing.
-        char *m_pData;              ///< The whole file is stored here.
-        char *m_p;                  ///< Points at the point in pData we're at.
-        size_t m_nLine;             ///< The number of the current line.
-        size_t m_nPos;              ///< The current position of the 'cursor'.
-        bool m_bEOF;                ///< We came to the end of the file.
+        FTS::String m_sFile;        ///< The name of the file we are parsing.
+        char *m_pData = nullptr;    ///< The whole file is stored here.
+        char *m_p = nullptr;        ///< Points at the point in pData we're at.
+        size_t m_nLine = 1;         ///< The number of the current line.
+        size_t m_nPos = 0;          ///< The current position of the 'cursor'.
+        bool m_bEOF = true;         ///< We came to the end of the file.
 
     public:
         CParser( void );

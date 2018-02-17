@@ -16,22 +16,10 @@ using namespace FTS;
 
 CParser::CParser(void)
 {
-    m_sFile = String::EMPTY;
-    m_pData = NULL;
-    m_p = NULL;
-    m_nLine = 1;
-    m_nPos = 0;
-    m_bEOF = true;
 }
 
-CParser::CParser(const String & in_sFileName)
+CParser::CParser(const String & in_sFileName) : m_sFile(in_sFileName)
 {
-    m_sFile = in_sFileName;
-    m_pData = NULL;
-    m_p = NULL;
-    m_nLine = 1;
-    m_nPos = 0;
-    m_bEOF = true;
 }
 
 CParser::~CParser(void)
@@ -121,7 +109,7 @@ int CParser::unload(void)
 
     m_sFile = String::EMPTY;
 
-    m_p = NULL;
+    m_p = nullptr;
     m_nLine = 1;
     m_nPos = 0;
     m_bEOF = true;
