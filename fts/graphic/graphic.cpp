@@ -27,9 +27,6 @@ Graphic::TextureFilter Graphic::toTexureFilter(int i)
     if(i == (int)Nearest_Nearest)
         return Nearest_Nearest;
 
-    if(i == (int)Nearest_Nearest)
-        return Nearest_Nearest;
-
     if(i == (int)Linear_Linear)
         return Linear_Linear;
 
