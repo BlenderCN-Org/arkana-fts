@@ -72,6 +72,22 @@ File::File(const File& o)
 {
 }
 
+File& File::operator=(const File& o)
+{
+    if(this == &o) {
+        return *this;
+    }
+    m_sName = o.m_sName;
+    m_mode = o.m_mode;
+    m_saveMode = o.m_saveMode;
+    m_pSDC = new StreamedDataContainer(*(o.m_pSDC));
+    m_pOriginalCompressor = o.m_pOriginalCompressor->copy();
+#ifndef D_FILE_NO_ARCHMAP
+    m_sMyArchiveID = o.m_sMyArchiveID;
+#endif
+    return *this;
+}
+
 File::~File()
 {
     delete m_pSDC;

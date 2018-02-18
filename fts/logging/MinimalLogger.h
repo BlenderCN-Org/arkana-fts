@@ -14,7 +14,9 @@ protected:
     bool m_bMuted = false;
 
     /// Protect from copying.
-    MinimalLogger(const MinimalLogger&) {};
+    MinimalLogger(const MinimalLogger&) = delete;
+    MinimalLogger& operator=(const MinimalLogger&) = delete;
+    MinimalLogger(MinimalLogger&&) = delete;
 
 public:
     MinimalLogger(int in_iDbgLv = 5);

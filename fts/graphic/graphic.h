@@ -110,7 +110,7 @@ private:
     uint8_t* m_pGrabbedPixels;
 
     Graphic();
-    Graphic(const Graphic &) {};
+    Graphic(const Graphic &) = delete ;
     virtual ~Graphic();
 
     void create(const uint8_t * const in_pData, uint16_t in_uiW, uint16_t in_uiH, TextureFilter in_forceFilter = DefaultFilter, Anisotropy in_forceAnisotropy = DefaultAnisotropy);

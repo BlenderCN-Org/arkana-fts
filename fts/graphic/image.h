@@ -24,11 +24,15 @@ class ImageFormat {
     /// Pointer to the raw data (w*h pixels, one pixel is RGBA as uint32_t).
     uint32_t *m_pData;
 
-    /// Protect from copying.
-    ImageFormat(const ImageFormat &) {};
 
 public:
     ImageFormat();
+
+    /// Protect from copying.
+    ImageFormat(const ImageFormat &) = delete;
+    ImageFormat(ImageFormat&&) = delete;
+    ImageFormat& operator=(const ImageFormat &) = delete;
+
     virtual ~ImageFormat();
 
     File& restore(File& in_File);

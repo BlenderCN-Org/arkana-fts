@@ -118,7 +118,7 @@ protected:
 
     /// \internal Only for class-use.
     File(const File& o);
-
+    File& operator=(const File& o);
 public:
     /// Destroys the file object. CARE: This will not save the file before doing so.
     virtual ~File();

@@ -58,6 +58,9 @@ public:
     /// Destroys the data container and deallocates the data it contains.
     virtual ~RawDataContainer();
 
+    /// Copies the whole data of some other data container.
+    RawDataContainer& operator=(const RawDataContainer& o);
+    
     /// \return A modifiable pointer to the data.
     virtual uint8_t *getData();
     /// \return A read-only pointer to the data.

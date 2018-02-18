@@ -41,9 +41,9 @@ protected:
 class LightSystem {
 private:
     /// Default constructor.
-    LightSystem(void) {};
+    LightSystem() {};
     /// Copy constructor ; prohibit copy.
-    LightSystem(const LightSystem &) {};
+    LightSystem(const LightSystem &) = delete;
 
 public:
     virtual ~LightSystem(void);

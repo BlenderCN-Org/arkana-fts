@@ -17,12 +17,10 @@ namespace FTS {
 /// that is the same for all chunks.
 class Chunk {
 private:
-    /// Protect against copying
-    Chunk(const Chunk &) {};
 
 protected:
-    /// Protect against construction.
-    Chunk() : m_uiPayloadLength(0) {};
+    /// Protect against construction other then from derived once.
+    Chunk() {};
 
     /// The name that identifies the chunk.
     String m_sName;
@@ -31,6 +29,10 @@ protected:
     uint64_t m_uiPayloadLength;
 
 public:
+    /// Protect against copying
+    Chunk(const Chunk &) = delete;
+    Chunk(Chunk&&) = delete;
+
     /// Default destructor.
     virtual ~Chunk() {};
 

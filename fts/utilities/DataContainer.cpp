@@ -88,6 +88,17 @@ FTS::RawDataContainer::~RawDataContainer()
     m_uiSize = 0;
 }
 
+RawDataContainer& RawDataContainer::operator=(const RawDataContainer& o)
+{
+    if(this == &o) {
+        return *this;
+    }
+    m_uiSize = o.getSize();
+    m_pData = reinterpret_cast<uint8_t *>(malloc(o.getSize() + 1));
+    memcpy(m_pData, o.getData(), o.getSize());
+    m_pData[m_uiSize] = 0;
+}
+
 uint8_t *FTS::RawDataContainer::getData()
 {
     return m_pData;

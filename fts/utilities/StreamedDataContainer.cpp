@@ -500,6 +500,17 @@ FTS::StreamedDataContainer::~StreamedDataContainer()
     SAFE_DELETE(m_pDC);
 }
 
+/// Has the same semantic as the copy ctor.
+StreamedDataContainer& StreamedDataContainer::operator=(const StreamedDataContainer& o)
+{
+    if(this == &o) {
+        return *this;
+    }
+    m_pDC = o.m_pDC;
+    m_uiDataCursor = o.m_uiDataCursor;
+    return *this;
+}
+
 /** Binds a new data container to the streamed data container. This will loose
  *  control over the old data container (and delete it) and gain control over
  *  the data container passed as an argument. Also this will rewind the cursor.

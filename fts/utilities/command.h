@@ -56,14 +56,14 @@ public:
     ConditionalCommand(CommandBase *in_pCond, CommandBase *in_pCommand);
     virtual ~ConditionalCommand();
 
-    bool exec();
+    bool exec() override;
 };
 
 /// This is a command class that calls a callback method or function upon execution.
 class CallbackCommand : public CommandBase {
 public:
     /// The type of function that may be called back.
-    typedef bool (*CallBackFunction)(void *);
+    using CallBackFunction = bool (*)(void *);
 
 protected:
 #ifndef D_NOCEGUI
@@ -82,11 +82,12 @@ public:
     CallbackCommand(CallBackFunction in_pfn);
     CallbackCommand(CallBackFunction in_pfn, void *in_pArg);
     CallbackCommand(const CallbackCommand &o);
-
+    CallbackCommand& operator=(const CallbackCommand& o);
+    
     /// Destructor.
     virtual ~CallbackCommand() {};
 
-    virtual bool exec();
+    bool exec() override;
 };
 
 } // namespace FTS

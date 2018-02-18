@@ -159,6 +159,8 @@ public:
     StreamedDataContainer(const StreamedDataContainer& o);
     virtual ~StreamedDataContainer();
 
+    StreamedDataContainer& operator=(const StreamedDataContainer& o);
+
     /// \return the data container that currently is under control.
     inline const RawDataContainer *getBoundDC() const {return m_pDC;};
     void bindDC(RawDataContainer *out_pDC);

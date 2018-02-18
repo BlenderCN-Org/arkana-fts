@@ -93,8 +93,20 @@ CallbackCommand::CallbackCommand(const CallbackCommand &o)
       m_pfn(o.m_pfn)
 {
 }
-
-/// Calls the callback function or method with the argumets given in the constructor.
+CallbackCommand& CallbackCommand::operator=(const CallbackCommand& o)
+{
+    if(&o == this) {
+        return *this;
+    }
+#ifndef D_NOCEGUI
+    m_subs = o.m_subs;
+    m_ea = o.m_ea;
+#endif
+    m_pArg = o.m_pArg;
+    m_pfn = o.m_pfn;
+    return *this;
+}
+/// Calls the callback function or method with the arguments given in the constructor.
 bool CallbackCommand::exec()
 {
     if(m_pfn)
