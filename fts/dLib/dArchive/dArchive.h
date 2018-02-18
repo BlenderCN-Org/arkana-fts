@@ -26,7 +26,7 @@ protected:
     String m_sName;
 
     /// The length of the chunk's data alone.
-    uint64_t m_uiPayloadLength;
+    uint64_t m_uiPayloadLength = 0;
 
 public:
     /// Protect against copying
