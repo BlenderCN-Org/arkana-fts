@@ -593,8 +593,8 @@ Vector Quad::getN(int in_iEdge)const
 /** Draws the quad by calling the appropriate member function.
  *
  * \param in_fX       The X position of the quad.
- * \param in_fZ       The Z position of the quad.
  * \param in_fY       The Y position of the quad (height).
+ * \param in_fZ       The Z position of the quad.
  * \param in_fMultip  The size multiplier to multiply the quads height (Y) with.
  *
  * \return If successfull: The return code of the called drawing function.
@@ -602,7 +602,7 @@ Vector Quad::getN(int in_iEdge)const
  *
  * \author Pompei2
  */
-int Quad::draw(float in_fX, float in_fZ, float in_fY, float in_fMultip)
+int Quad::draw(float in_fX, float in_fY, float in_fZ, float in_fMultip)
 {
     if(m_pfnRender) {
         return CALL_MEMBER_FN(*this, m_pfnRender) (in_fX, in_fZ, in_fY, in_fMultip);
@@ -615,8 +615,8 @@ int Quad::draw(float in_fX, float in_fZ, float in_fY, float in_fMultip)
 /** Draws the quad with uppertile texture by calling the appropriate member function.
  *
  * \param in_fX       The X position of the quad.
- * \param in_fZ       The Z position of the quad.
  * \param in_fY       The Y position of the quad (height).
+ * \param in_fZ       The Z position of the quad.
  * \param in_fMultip  The size multiplier to multiply the quads height (Y) with.
  *
  * \return If successfull: The return code of the called drawing function.
@@ -624,7 +624,7 @@ int Quad::draw(float in_fX, float in_fZ, float in_fY, float in_fMultip)
  *
  * \author Pompei2
  */
-int Quad::drawUppertile(float in_fX, float in_fZ, float in_fY, float in_fMultip)
+int Quad::drawUppertile(float in_fX, float in_fY, float in_fZ, float in_fMultip)
 {
     if(m_pfnRenderUppertile) {
         return CALL_MEMBER_FN(*this, m_pfnRenderUppertile) (in_fX, in_fZ, in_fY, in_fMultip);
