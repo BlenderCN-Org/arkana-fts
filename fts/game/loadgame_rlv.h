@@ -10,20 +10,19 @@
 
 #include "main.h"
 #include "main/runlevels.h"
-
+#include "dLib/dString/dPath.h"
 #include "map/terrain.h" // Hmmm, don't know how to fwd-decl that stuff.
 #include "dLib/dString/dString.h"
 
 namespace CEGUI {
     class Window;
     class Tooltip;
-};
+}
 
 namespace FTS {
     class MapInfo;
     class GameRlv;
 
-    
 /** This class is the runlevel of the game, that is while playing.
  *  Its load method does not load the game itself, this is done during the
  *  LoadGame runlevel, it is only the real "game" itself.
@@ -32,24 +31,24 @@ class LoadGameRlv : public Runlevel {
 public:
     class ILoadGameState;
 private:
-    ILoadGameState* m_loadState;
-    float m_fPercentDone ;
+    ILoadGameState* m_loadState = nullptr;
+    float m_fPercentDone = 0.f;
     /// The root of the CEGUI menu.
-    CEGUI::Window *m_pRootWindow;
+    CEGUI::Window *m_pRootWindow = nullptr;
 
     /// The game runlevel that is being loaded.
-    GameRlv *m_pGame;
+    GameRlv *m_pGame = nullptr;
 
     Path m_sFile;       ///< The name of the map file to load.
-    uint8_t m_nPlayers; ///< The number of players that play in this map.
+    uint8_t m_nPlayers = 0; ///< The number of players that play in this map.
 
-    uint32_t m_uiBeginTime; ///< The time that stage began. Used for time measuring.
+    uint32_t m_uiBeginTime = 0; ///< The time that stage began. Used for time measuring.
 
     /// The informations needed to load the terrain.
-    Terrain::SLoadingInfo *m_pTerrainLoadingInfo;
+    Terrain::SLoadingInfo *m_pTerrainLoadingInfo = nullptr;
 
     /// Whether this runlevel is waiting for user interaction to start the game.
-    bool m_bWaiting;
+    bool m_bWaiting = false;
 
     bool cbAnyKeyPressed(const CEGUI::EventArgs &);
 
@@ -141,11 +140,11 @@ public:
     };
     LoadGameRlv(const Path &in_sMapFile, uint8_t in_nPlayers);
     virtual ~LoadGameRlv();
-    virtual bool load();
-    virtual bool unload();
-    virtual void render2D(const Clock&);
-    virtual String getName();
-    virtual bool update(const Clock&);
+    bool load() override;
+    bool unload() override;
+    void render2D(const Clock&) override;
+    String getName() override;
+    bool update(const Clock&) override;
     void setState(ILoadGameState* state);
 };
 };

@@ -13,18 +13,18 @@ namespace FTS {
 class LoginMenuRlv : public Runlevel {
 private:
     /// The root of the CEGUI menu.
-    CEGUI::Window *m_pRoot;
+    CEGUI::Window *m_pRoot = nullptr;
 
     /// The menu background picture.
-    FTS::Graphic *m_pgMenuBG;
+    FTS::Graphic *m_pgMenuBG = nullptr;
 
     /// The model manager.
-    ModelManager* m_pModelManager;
+    ModelManager* m_pModelManager = nullptr;
 
     /// An instance of the menu background model.
-    ModelInstance* m_pMenuBGInst;
+    ModelInstance* m_pMenuBGInst = nullptr;
 
-    Configuration* m_pConf;
+    Configuration* m_pConf = nullptr;
 
     bool cbLogin(const CEGUI::EventArgs & in_ea);
     bool cbCreate(const CEGUI::EventArgs & in_ea);
@@ -34,11 +34,11 @@ public:
     LoginMenuRlv();
     virtual ~LoginMenuRlv();
 
-    virtual bool load();
-    virtual bool unload();
-    virtual void render2D(const Clock&);
-    virtual void render3D(const Clock&);
-    virtual String getName();
+    bool load() override;
+    bool unload() override;
+    void render2D(const Clock&) override;
+    void render3D(const Clock&) override;
+    String getName() override;
 };
 
 } // namespace FTS

@@ -33,12 +33,7 @@
 using namespace FTS;
 
 GameRlv::GameRlv()
-    : m_pRootWindow(NULL)
-    , m_pMap(new Map)
-    , m_pMapArchive(NULL)
-#ifdef DEBUG
-    , m_bRenderCoordinateSystem(false)
-#endif
+    : m_pMap(new Map)
 {
 }
 
@@ -50,7 +45,7 @@ GameRlv::~GameRlv()
  *  Please note that this method does NOT load the map, that is done during the
  *  LoadGame's runlevel.\n
  *
- *  This load method rather executes the map's script initialising function.
+ *  This load method rather executes the map's script initializing function.
  *
  *  \return This method should return true only if it successfully loaded
  *          the whole runlevel. If it returns false, the previous runlevel
@@ -134,7 +129,7 @@ bool GameRlv::unload()
  *  Thus you should use the commands glVertex2i(x,y) to draw something, x
  *  and y being screen-space pixels (from 0 to w, 0 to h).\n
  *
- *  Actually, this only draws the gui.
+ *  Actually, this only draws the GUI.
  *
  *  \author Pompei2
  */

@@ -22,8 +22,6 @@ class Camera;
 /// Base class for any runlevel.
 class Runlevel : public Updateable {
 private:
-    /// Protect from copying
-    Runlevel(const Runlevel &) {};
 
     /// A default cursor.
     SCursor *m_pDefCursor;
@@ -37,6 +35,8 @@ protected:
     int unloadDefaultCursor();
     String getTranslation(const String& in_String);
 public:
+    /// Protect from copying
+    Runlevel(const Runlevel &) = delete;
     /// Default destructor.
     virtual ~Runlevel();
 

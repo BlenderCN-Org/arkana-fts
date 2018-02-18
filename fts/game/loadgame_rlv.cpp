@@ -28,6 +28,7 @@
 #include "scripting/DaoVm.h"
 #include "input/input.h"
 #include "sound/fts_Snd.h"
+#include "map/terrain.h" // Hmmm, don't know how to fwd-decl that stuff.
 
 using namespace FTS;
 

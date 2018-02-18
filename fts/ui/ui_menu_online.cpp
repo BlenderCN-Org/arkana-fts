@@ -31,11 +31,6 @@ using namespace FTS;
 
 /// Default constructor.
 FTS::LoginMenuRlv::LoginMenuRlv()
-    : m_pRoot(NULL)
-    , m_pgMenuBG(NULL)
-    , m_pModelManager(0)
-    , m_pMenuBGInst(0)
-    , m_pConf(nullptr)
 {
 }
 

@@ -32,11 +32,11 @@ public:
     ModelViewerRlv();
     virtual ~ModelViewerRlv();
 
-    virtual bool load();
-    virtual bool unload();
-    virtual void render2D(const Clock& in_c);
-    virtual void render3D(const Clock& in_c);
-    virtual String getName();
+    bool load() override;
+    bool unload() override;
+    void render2D(const Clock& in_c) override;
+    void render3D(const Clock& in_c) override;
+    String getName() override;
 
     virtual void onMouseMoved(uint16_t x, uint16_t y);
 
@@ -89,7 +89,7 @@ private:
 
     Color m_playerColor;
 
-    bool m_bShowAABB;
+    bool m_bShowAABB = false;
 };
 
 } // namespace FTS

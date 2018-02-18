@@ -20,33 +20,32 @@ public:
     MainMenuRlv();
     virtual ~MainMenuRlv();
 
-    virtual bool load();
-    virtual bool unload();
+    bool load() override;
+    bool unload() override;
+    void render2D(const Clock&) override;
+    void render3D(const Clock&) override;
+    String getName() override;
+
     bool loadCEGUI();
     bool unloadCEGUI();
-
-    virtual void render2D(const Clock&);
-    virtual void render3D(const Clock&);
-    virtual String getName();
-
 private:
     /// The root of the CEGUI menu.
-    CEGUI::Window *m_pRoot;
+    CEGUI::Window *m_pRoot = nullptr;
 
     /// The model manager.
-    ModelManager* m_pModelManager;
+    ModelManager* m_pModelManager = nullptr;
 
     /// The menu background picture.
-    Graphic *m_pgMenuBG;
+    Graphic *m_pgMenuBG = nullptr;
 
     /// The current screen width.
-    int m_iScreenWidth;
+    int m_iScreenWidth = 0;
 
     /// The current screen height.
-    int m_iScreenHeigth;
+    int m_iScreenHeigth = 0;
 
     /// An instance of the menu background model.
-    ModelInstance* m_pMenuBGInst;
+    ModelInstance* m_pMenuBGInst = nullptr;
 
     void loadSettingsFromConf();
 

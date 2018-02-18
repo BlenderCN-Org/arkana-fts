@@ -55,10 +55,7 @@ void FTS::setVersionInfo()
 
 /// Default constructor
 FTS::MainMenuRlv::MainMenuRlv()
-    : m_pRoot(nullptr)
-    , m_pModelManager(new ModelManager())
-    , m_pgMenuBG(nullptr)
-    , m_pMenuBGInst(0)
+    : m_pModelManager(new ModelManager())
 {
     loadSettingsFromConf();
 }

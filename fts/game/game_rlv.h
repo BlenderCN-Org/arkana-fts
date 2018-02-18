@@ -50,56 +50,11 @@ private:
 public:
     GameRlv();
     virtual ~GameRlv();
-    virtual bool load();
-    virtual bool unload();
-    virtual void render2D(const Clock&);
-    virtual void render3D(const Clock&);
-    virtual String getName();
-
-    /* This method may be overloaded. It has to return a reference to the
-     *  runlevel's currently used camera. You only need to overwrite this
-     *  method if the runlevel does use more then one default camera.\n
-     *
-     *  \return A reference to the currently active camera.
-     *
-     *  \author Pompei2
-     */
-//     virtual CFTSCamera &getActiveCamera() {return m_defaultCamera;};
-
-    /* This method may be overloaded. It has to return a reference to the
-     *  runlevel's main camera. That must not be the currently active camera.
-     *  For example the game's main camera is the one in bird-view, but
-     *  during a cut-scene there may be a lot of cameras and one of them may be
-     *  currently active.\n
-     *  You only need to overwrite this method if you have more then one camera.
-     *
-     *  \return A reference to the runlevel's main camera.
-     *
-     *  \author Pompei2
-     */
-//     virtual CFTSCamera &getMainCamera() {return m_defaultCamera;};
-
-    /* This method may be overloaded. It has to return a pointer to the
-     *  runlevel's currently used cursor. You only need to overwrite this
-     *  method if the runlevel does use more then one default cursor.\n
-     *
-     *  \return A pointer to the currently active cursor.
-     *
-     *  \author Pompei2
-     */
-//     virtual SCursor *getActiveCursor() {return m_pDefCursor;};
-
-    /* This method may be overloaded. It has to return a pointer to the
-     *  runlevel's main cursor. That must not be the currently active cursor.
-     *  For example the game's main cursor is the one pointer, but while the
-     *  game is scrolling, there is another cursor being displayed with arrows. \n
-     *  You only need to overwrite this method if you have more then one cursor.
-     *
-     *  \return A pointer to the runlevel's main cursor.
-     *
-     *  \author Pompei2
-     */
-//     virtual SCursor *getMainCursor() {return m_pDefCursor;};
+    bool load() override;
+    bool unload() override;
+    void render2D(const Clock&) override;
+    void render3D(const Clock&) override;
+    String getName() override;
 
     inline Map *getMap() {return m_pMap;};
     inline void giveMapArchive(Archive *in_pArch) {if(m_pMapArchive == nullptr) m_pMapArchive = in_pArch;};

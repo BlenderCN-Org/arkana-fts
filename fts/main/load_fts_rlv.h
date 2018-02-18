@@ -39,18 +39,18 @@ private:
         LoadFinal,
         LoadDone,
         LoadStageCount
-    } m_eNextTodo;  ///< The next thing that has to be loaded.
+    } m_eNextTodo = LoadBeginning;  ///< The next thing that has to be loaded.
 
     void updateProgressbar();
 
 public:
     LoadFTSRlv();
     virtual ~LoadFTSRlv();
-    virtual bool load();
-    virtual bool unload();
-    virtual void render2D(const Clock&);
-    virtual bool update(const Clock&);
-    virtual String getName();
+    bool load() override;
+    bool unload() override;
+    void render2D(const Clock&) override;
+    bool update(const Clock&) override;
+    String getName() override;
 };
 
 } // namespace FTS
