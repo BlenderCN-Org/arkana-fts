@@ -206,7 +206,6 @@ set(SRC_utilities
     utilities/radix.cpp
     utilities/parse.cpp
     utilities/utilities.cpp
-    utilities/threading.cpp
     utilities/DateTime.cpp
     utilities/md5.cpp
     utilities/sha2.cpp

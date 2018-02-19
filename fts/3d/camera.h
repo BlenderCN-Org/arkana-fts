@@ -7,11 +7,10 @@
 
 #ifndef FTS_CAMERA_H
 #define FTS_CAMERA_H
-
+#include <mutex>
 #include "main.h"
 
 #include "3d/Math.h"
-#include "utilities/threading.h"
 #include "utilities/command.h"
 
 namespace FTS {
@@ -97,7 +96,7 @@ private:
     General4x4Matrix m_projectionMatrix;
 
     /// The mutex to protect myself.
-    mutable Mutex m_Mutex;
+    mutable std::recursive_mutex m_Mutex;
 
     CameraDrawMode m_mode = CameraDrawMode::Dont;
 

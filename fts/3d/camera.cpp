@@ -82,7 +82,7 @@ Vector FTS::Camera::getUp() const
  */
 Camera& FTS::Camera::resetOrientation()
 {
-    Lock l(m_Mutex);
+    std::lock_guard<std::recursive_mutex> l(m_Mutex);
     m_viewMatrix = AffineMatrix::translation(m_viewMatrix);
     FTSMSGDBG("View matrix:\n{1}", 4, m_viewMatrix.to_s());
 
@@ -135,7 +135,7 @@ Camera& Camera::lookAt(const Vector& in_vTgt)
  */
 Camera& Camera::position(const Vector& in_vPos)
 {
-    Lock l(m_Mutex);
+    std::lock_guard<std::recursive_mutex> l(m_Mutex);
     // Translate the camera to the new position. That means translate the whole
     // scene to the opposite, that's why we do curpos-newpos.
     m_viewMatrix *= AffineMatrix::translation(this->getPos() - in_vPos);
@@ -183,7 +183,7 @@ Camera& Camera::moveFront(float in_fAmount)
 /// Moves the camera upwards.
 /** This moves the camera upwards. Upwards is the direction that is perpendicular
  *  To your right and to your front, and shows up :) It is like the top of your head.
- *  To move downwards (to your feets), put a negative value here.
+ *  To move downwards (to your feet), put a negative value here.
  *
  * \param in_fAmount The amount of units to move up.
  *
@@ -307,7 +307,7 @@ Camera& Camera::moveFrontParralelToGlobalYZ(float in_fAmount)
 Camera& Camera::orbit(const Vector& position, const Vector& in_axis, float in_fRadians)
 {
 /*    Quaternion q = Quaternion::rotation(in_fRadians, in_axis);
-    Lock l(m_Mutex);
+    std::lock_guard<std::recursive_mutex> l(m_Mutex);
     m_viewMatrix *= AffineMatrix::rotationQuat(q);
     FTSMSGDBG("View matrix:\n{1}", 4, m_viewMatrix.toString());
 */
@@ -329,7 +329,7 @@ Camera& Camera::rotate(const Vector& in_axis, float in_fRadians)
 {
     // Rotate in the other direction because we're the camera!
     Quaternion q = Quaternion::rotation(in_axis, -in_fRadians);
-    Lock l(m_Mutex);
+    std::lock_guard<std::recursive_mutex> l(m_Mutex);
     m_viewMatrix = AffineMatrix::rotation(q) * m_viewMatrix;
     FTSMSGDBG("View matrix:\n{1}", 4, m_viewMatrix.to_s());
     return *this;
@@ -353,7 +353,7 @@ Camera& Camera::rotateGlobal(const Vector& in_axis, float in_fRadians)
 
     // Rotate in the other direction because we're the camera!
     Quaternion q = Quaternion::rotation(vGlobalAxis, -in_fRadians);
-    Lock l(m_Mutex);
+    std::lock_guard<std::recursive_mutex> l(m_Mutex);
     m_viewMatrix = AffineMatrix::rotation(q) * m_viewMatrix;
     FTSMSGDBG("View matrix:\n{1}", 4, m_viewMatrix.to_s());
 
@@ -374,7 +374,7 @@ Camera& Camera::rotateGlobal(const Vector& in_axis, float in_fRadians)
  */
 Camera& Camera::rotateX(float in_fRadians)
 {
-    Lock l(m_Mutex);
+    std::lock_guard<std::recursive_mutex> l(m_Mutex);
     // Rotate in the other direction because we're the camera!
     m_viewMatrix = AffineMatrix::rotationX(-in_fRadians) * m_viewMatrix;
     FTSMSGDBG("View matrix:\n{1}", 4, m_viewMatrix.to_s());
@@ -396,7 +396,7 @@ Camera& Camera::rotateX(float in_fRadians)
  */
 Camera& Camera::rotateY(float in_fRadians)
 {
-    Lock l(m_Mutex);
+    std::lock_guard<std::recursive_mutex> l(m_Mutex);
     // Rotate in the other direction because we're the camera!
     m_viewMatrix = AffineMatrix::rotationY(-in_fRadians) * m_viewMatrix;
     FTSMSGDBG("View matrix:\n{1}", 4, m_viewMatrix.to_s());
@@ -418,7 +418,7 @@ Camera& Camera::rotateY(float in_fRadians)
  */
 Camera& Camera::rotateZ(float in_fRadians)
 {
-    Lock l(m_Mutex);
+    std::lock_guard<std::recursive_mutex> l(m_Mutex);
     // Rotate in the other direction because we're the camera!
     m_viewMatrix = AffineMatrix::rotationZ(-in_fRadians) * m_viewMatrix;
     FTSMSGDBG("View matrix:\n{1}", 4, m_viewMatrix.to_s());
@@ -540,13 +540,13 @@ Camera& Camera::orbitGlobalZ(const Vector& in_vPosition, float in_fRadians)
  */
 Camera& Camera::ortho2DProjection()
 {
-    Lock l(m_Mutex);
+    std::lock_guard<std::recursive_mutex> l(m_Mutex);
     m_projectionMatrix = AffineMatrix::ortho2DProjection(m_fW, m_fH);
 
     return *this;
 }
 
-/// Use a prespective projection for this matrix's projection.
+/// Use a perspective projection for this matrix's projection.
 /** This makes the camera use a perspective projection, that's the most
  *  realistic looking one. It makes the camera frustrum have a trapezoidal form.
  *
@@ -565,7 +565,7 @@ Camera& Camera::ortho2DProjection()
 Camera& Camera::perspectiveProjection(float in_fFoV,
                                       float in_fNearPlane, float in_fFarPlane)
 {
-    Lock l(m_Mutex);
+    std::lock_guard<std::recursive_mutex> l(m_Mutex);
     m_projectionMatrix = General4x4Matrix::perspectiveProjection(in_fFoV, m_fW/m_fH, in_fNearPlane, in_fFarPlane);
 
     return *this;
@@ -583,7 +583,7 @@ Camera& Camera::perspectiveProjection(float in_fFoV,
 const Camera& Camera::use() const
 {
     verifGL("Camera::use start");
-    Lock l(m_Mutex);
+    std::lock_guard<std::recursive_mutex> l(m_Mutex);
     glViewport(0, 0, (GLsizei)m_fW, (GLsizei)m_fH);
     glMatrixMode(GL_PROJECTION);
     glLoadMatrixf(m_projectionMatrix.array16f());
