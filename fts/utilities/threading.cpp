@@ -6,9 +6,6 @@
  **/
 
 #include "threading.h"
-#include <mutex>
-
-using namespace FTS;
 
 FTS::Mutex::Mutex()
 {
@@ -28,7 +25,7 @@ void FTS::Mutex::unlock()
     m_mtx.unlock();
 }
 
-FTS::Lock::Lock(Mutex& in_m)
+FTS::Lock::Lock(FTS::Mutex& in_m)
     : m(in_m)
 {
     m.lock();

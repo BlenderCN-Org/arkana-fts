@@ -41,34 +41,6 @@ int run_tests(int argc, const char* argv[]);
 /* Var's                      */
 /* -------------------------- */
 
-#ifdef DEBUG
-String PRINT_FUN =
-"       _____________   ____         \n"
-"       \\_   _____/  |_/ __         \n"
-"        |   ___) \\  __\\____       \n"
-"        |  |     |  |   __ \\       \n"
-"        \\__|     |__|  ____/ " + String(getFTSVersionString()) + "\n"
-"                                    \n"
-"                  ###               \n"
-"                 #o#o#              \n"
-"                 #vvv#              \n"
-"                #  v  #             \n"
-"       LINUX   ##     ##  RULES !   \n"
-"               +###   #+            \n"
-"              +++#   #+++           \n"
-"               +++###+++            \n"
-"                ++   ++             \n"
-"                                    \n"
-" By:                                \n"
-"   - Pompei2 (Pompei2@gmail.com)    \n"
-" From:                              \n"
-"   - The dProggers                  \n"
-"                                    \n"
-"                                    \n"
-" DEBUG:                             \n"
-" ------                             \n"
-"Version " + String(getFTSVersionString()) + "\n";
-#else // DEBUG
 String PRINT_FUN =
 "       _____________   ____         \n"
 "       \\_   _____/  |_/ __         \n"
@@ -91,6 +63,14 @@ String PRINT_FUN =
 " From:                              \n"
 "   - The dProggers                  \n"
 "                                    \n";
+#if defined(_DEBUG)
+String PRINT_FUN_DBG =
+"                                    \n"
+" DEBUG:                             \n"
+" ------                             \n"
+"Version " + String(getFTSVersionString()) + "\n";
+#else
+String PRINT_FUN_DBG = "";
 #endif // DEBUG
 
 int main(int argc, char *argv[])
@@ -137,7 +117,7 @@ int main(int argc, char *argv[])
         //      setlocale( LC_ALL, globals->pLocalAcc->getOptString( _S("Language"), _S("English") ).c_str( ) );
         setlocale(LC_NUMERIC, "C");
         Console::EnableUTF8();
-        fputs("\x00\xe9", stdout);
+        std::puts("\x00\xe9");
 
         srand((unsigned)time(NULL));
 
@@ -148,45 +128,15 @@ int main(int argc, char *argv[])
             return -1;
         }
 
-        // Init the logging system and test it right away.
+        // Init the logging system.
         DefaultLogger* pDefLog = new DefaultLogger;
-        FTSMSG("Version {1}\n", MsgType::Raw, getFTSVersionString());
-
-        // MAKE TESTS HERE
-#ifdef DEBUG
-
-    #define SIZEOF_TEST(type) FTSMSG("sizeof({1}) = {2}\n", MsgType::MessageNoMB, # type, String::nr(sizeof(type)))
-        SIZEOF_TEST(int8_t);
-        SIZEOF_TEST(uint8_t);
-        SIZEOF_TEST(int16_t);
-        SIZEOF_TEST(uint16_t);
-        SIZEOF_TEST(int32_t);
-        SIZEOF_TEST(uint32_t);
-        SIZEOF_TEST(int64_t);
-        SIZEOF_TEST(uint64_t);
-        SIZEOF_TEST(char);
-        SIZEOF_TEST(unsigned char);
-        SIZEOF_TEST(short);
-        SIZEOF_TEST(unsigned short);
-        SIZEOF_TEST(int);
-        SIZEOF_TEST(unsigned int);
-        SIZEOF_TEST(long);
-        SIZEOF_TEST(unsigned long);
-        SIZEOF_TEST(long long);
-        SIZEOF_TEST(unsigned long long);
-        SIZEOF_TEST(void *);
-        SIZEOF_TEST(float);
-        SIZEOF_TEST(double);
-        SIZEOF_TEST(long double);
-#endif
-        // STOP TESTS.
 
         // We have to make that after glfwInit because glfwInit registers an atexit
         // that destroys the OpenGL context.
         atexit(exitfunc);
 
         // Counter-intuitively, this does NOT create a GUI. Hehe.
-        // It is more a helper-glue-class for gui-related stuff.
+        // It is more a helper-glue-class for GUI-related stuff.
         new GUI();
 
         // The arguments loop.
@@ -221,7 +171,8 @@ int main(int argc, char *argv[])
         Logger::getSingleton().loadConfig();
 
         // Print a lil nice message.
-        printf(PRINT_FUN.c_str());
+        std::puts(PRINT_FUN.c_str());
+        std::puts(PRINT_FUN_DBG.c_str());
 
         // And get the stone rolling ...
         new RunlevelManager();
@@ -357,16 +308,16 @@ int enterMainLoop()
  */
 void printCmdHelp(char *in_pszAppName)
 {
-    printf("usage: %s [options]\n\n", in_pszAppName);
-    printf("options:\n");
-    printf("\t-h, --help  Prints this help\n");
-    printf("\t-d, --debug Sets the debug level to LEVEL(1->5)\n");
-    printf("-------------------------------------------------\n");
-    printf("This software is distributed under the GNU/GPL license v2 or higher.\n");
-    printf("See LICENSE.txt for more details.\n\n");
-
-    printf("Bug report to <pompei2@gmail.com>. For more infos about how to\n");
-    printf("report your bug, see README.txt chapter bug report.\n");
+    std::cout << "usage: " << in_pszAppName << " [options]\n\n";
+    std::puts("options:");
+    std::puts("\t-h, --help  Prints this help");
+    std::puts("\t-d, --debug Sets the debug level to LEVEL(1->5)");
+    std::puts("-------------------------------------------------");
+    std::puts("This software is distributed under the GNU/GPL license v2 or higher.");
+    std::puts("See LICENSE.txt for more details.");
+    std::puts("");
+    std::puts("Bug report to <pompei2@gmail.com>. For more infos about how to");
+    std::puts("report your bug, see README.txt chapter bug report.");
 
     delete GUI::getSingletonPtr();
     exit(EXIT_SUCCESS);

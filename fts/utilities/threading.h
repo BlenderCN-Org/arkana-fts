@@ -9,11 +9,6 @@
 #define D_THREADING_H
 #include <mutex>
 
-#ifdef D_COMPILES_SERVER
-#  include "server.h"
-#else
-#endif
-
 namespace FTS {
 
 class Lock;
