@@ -80,7 +80,6 @@ set(SRC_dLib
     dLib/dConf/DefaultOptions.cpp
     dLib/dFile/dFile.cpp
     dLib/dFile/dBrowse.cpp
-    dLib/dProcess/dProcess.cpp
     dLib/dString/dString.cpp
     dLib/dString/dPath.cpp
     dLib/dString/dTranslation.cpp

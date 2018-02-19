@@ -31,7 +31,6 @@
 #include "graphic/graphic.h"
 #include "dLib/dConf/configuration.h"
 #include "dLib/dString/dTranslation.h"
-#include "dLib/dProcess/dProcess.h"
 #include "dLib/dFile/dBrowse.h"
 
 
