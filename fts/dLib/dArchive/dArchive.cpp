@@ -281,7 +281,7 @@ int FileChunk::write(File &out_f)
 /// \Note if the file is compressed in the archive, it gets decompressed
 /// when this method gets called the first time, thus this method may take a
 /// little time (actually, with miniLZO it's very fast) the first time it's
-/// called. The subsequent calls do make virutally no overhead.
+/// called. The subsequent calls do make virtually no overhead.
 FileChunk::operator File&()
 {
     // Maybe load the cached file!

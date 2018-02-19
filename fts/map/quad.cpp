@@ -182,7 +182,7 @@ void Quad::initTexCoords(const Tileset * in_pTileset,
         in_pTileset->lower()
                    ->getTileTexCoords(m_fTexCoordLowerTile, in_cTopLeft, in_cTopRight,
                                       in_cBottomLeft, in_cBottomRight, m_cBlendmask);
-        // Wether to enable or disable multitexturing.
+        // Whether to enable or disable multi texturing.
         if(conf.getBool("MultiTexturing")) {
             m_fTexCoordDetail[0] = m_usX / FTS_DETAILMAP_QUADS;
             m_fTexCoordDetail[1] = m_usY / FTS_DETAILMAP_QUADS;
@@ -209,7 +209,7 @@ void Quad::initTexCoords(const Tileset * in_pTileset,
         m_fCplxTexCoordLowerTile[8] = fTexCoordLowerTile[1] + (fTexCoordLowerH / 4.0f) * 3.0f;
         m_fCplxTexCoordLowerTile[9] = fTexCoordLowerTile[3];
 
-        // Wether to enable or disable multitexturing.
+        // Whether to enable or disable multi texturing.
         if(conf.getBool("MultiTexturing")) {
             m_fTexCoordDetail[0] = m_usX / FTS_DETAILMAP_QUADS;
             m_fTexCoordDetail[1] = m_usY / FTS_DETAILMAP_QUADS;
@@ -232,8 +232,8 @@ void Quad::initTexCoords(const Tileset * in_pTileset,
     }
 }
 
-/// Stores the normals of the four outter vertices of this quad and re-calcs the inner normals.
-/** This stores the normals it gets for the four outter-most vertices of this
+/// Stores the normals of the four outer vertices's of this quad and re-calcs the inner normals.
+/** This stores the normals it gets for the four outer-most vertices's of this
  *  quad and then, if this is a complex quad, recalculates all inner-normals.
  *
  * \param in_vLUNormal The normal of the left -upper -most vertex of this quad.
@@ -283,7 +283,7 @@ void Quad::setupNormals(const Vector &in_vLUNormal, const Vector &in_vRUNormal,
         m_pfNormals[15] = (m_pfNormals[0]   + m_pfNormals[20]*2).normalize();
 
         // Now, calculate the normal of every four edges of every sub-quad, and add it
-        // To the probably already calculated normal of that vertice, or to 0.
+        // To the probably already calculated normal of that vertex, or to 0.
         Vector v1, v2;
         for(int y = 0, i = 0; y < 4; y++) {
             for(int x = 0; x < 4; x++, i++) {
@@ -366,7 +366,7 @@ void Quad::setupNormals(const Vector &in_vLUNormal, const Vector &in_vRUNormal,
         m_pfNormals[15] = (m_pfNormals[0]   + m_pfNormals[20]*2).normalize();
 
         // Now, calculate the normal of every four edges of every sub-quad, and add it
-        // To the probably already calculated normal of that vertice, or to 0.
+        // To the probably already calculated normal of that vertex, or to 0.
         Vector v1, v2;
         for(int y = 0, i = 0; y < 4; y++) {
             for(int x = 0; x < 4; x++, i++) {
@@ -597,7 +597,7 @@ Vector Quad::getN(int in_iEdge)const
  * \param in_fZ       The Z position of the quad.
  * \param in_fMultip  The size multiplier to multiply the quads height (Y) with.
  *
- * \return If successfull: The return code of the called drawing function.
+ * \return If successful: The return code of the called drawing function.
  * \return If failed:      Error code < 0
  *
  * \author Pompei2
@@ -619,7 +619,7 @@ int Quad::draw(float in_fX, float in_fY, float in_fZ, float in_fMultip)
  * \param in_fZ       The Z position of the quad.
  * \param in_fMultip  The size multiplier to multiply the quads height (Y) with.
  *
- * \return If successfull: The return code of the called drawing function.
+ * \return If successful: The return code of the called drawing function.
  * \return If failed:      Error code < 0
  *
  * \author Pompei2
@@ -637,10 +637,11 @@ int Quad::drawUppertile(float in_fX, float in_fY, float in_fZ, float in_fMultip)
 /** This is the function to draw a complex quad with support of a detailmap.
  *
  * \param in_fX       The X position of the quad.
- * \param in_fY       The Z position of the quad.
+ * \param in_fY       The Y position of the quad.
+ * \param in_fZ       The Z position of the quad.
  * \param in_fMultip  The size multiplier to multiply the quads height (Y) with.
  *
- * \return If successfull: The return code of the called drawing function.
+ * \return If successful: The return code of the called drawing function.
  * \return If failed:      Error code < 0
  *
  * \author Pompei2
@@ -1003,13 +1004,14 @@ int Quad::renderComplex_Multitex(float in_fX, float in_fY, float in_fZ, float in
 }
 
 /// Draws the quad.
-/** This is the function to draw a complex quad withoute support of a detailmap.
+/** This is the function to draw a complex quad without support of a detailmap.
  *
  * \param in_fX       The X position of the quad.
- * \param in_fY       The Z position of the quad.
+ * \param in_fY       The Y position of the quad.
+ * \param in_fZ       The Z position of the quad.
  * \param in_fMultip  The size multiplier to multiply the quads height (Y) with.
  *
- * \return If successfull: The return code of the called drawing function.
+ * \return If successful: The return code of the called drawing function.
  * \return If failed:      Error code < 0
  *
  * \author Pompei2
@@ -1244,14 +1246,15 @@ int Quad::renderComplex(float in_fX, float in_fY, float in_fZ, float in_fMultip)
 }
 
 /// Draws the quad using uppertile texture.
-/** This is the function to draw a complex quad withoute support of a detailmap
+/** This is the function to draw a complex quad without support of a detailmap
  *  but using it's uppertile texture.
  *
  * \param in_fX       The X position of the quad.
- * \param in_fY       The Z position of the quad.
+ * \param in_fY       The Y position of the quad.
+ * \param in_fZ       The Z position of the quad.
  * \param in_fMultip  The size multiplier to multiply the quads height (Y) with.
  *
- * \return If successfull: The return code of the called drawing function.
+ * \return If successful: The return code of the called drawing function.
  * \return If failed:      Error code < 0
  *
  * \author Pompei2
@@ -1490,9 +1493,10 @@ int Quad::renderComplexUppertile(float in_fX, float in_fY, float in_fZ, float in
  *
  * \param in_fX       The X position of the quad.
  * \param in_fY       The Z position of the quad.
+ * \param in_fZ       The Z position of the quad.
  * \param in_fMultip  The size multiplier to multiply the quads height (Y) with.
  *
- * \return If successfull: The return code of the called drawing function.
+ * \return If successful: The return code of the called drawing function.
  * \return If failed:      Error code < 0
  *
  * \author Pompei2
@@ -1528,13 +1532,14 @@ int Quad::renderSimple_Multitex(float in_fX, float in_fY, float in_fZ, float in_
 }
 
 /// Draws the quad.
-/** This is the function to draw a simple quad withoute support of a detailmap.
+/** This is the function to draw a simple quad without support of a detailmap.
  *
  * \param in_fX       The X position of the quad.
  * \param in_fY       The Y position of the quad.
+ * \param in_fZ       The Z position of the quad.
  * \param in_fMultip  The size multiplier to multiply the quads height (Y) with.
  *
- * \return If successfull: The return code of the called drawing function.
+ * \return If successful: The return code of the called drawing function.
  * \return If failed:      Error code < 0
  *
  * \author Pompei2
@@ -1562,14 +1567,15 @@ int Quad::renderSimple(float in_fX, float in_fY, float in_fZ, float in_fMultip)
 }
 
 /// Draws the quad with its uppertile.
-/** This is the function to draw a simple quad withoute support of a detailmap but
+/** This is the function to draw a simple quad without support of a detailmap but
  *  using it's uppertile texture.
  *
  * \param in_fX       The X position of the quad.
  * \param in_fY       The Y position of the quad.
+ * \param in_fZ       The Z position of the quad.
  * \param in_fMultip  The size multiplier to multiply the quads height (Y) with.
  *
- * \return If successfull: The return code of the called drawing function.
+ * \return If successful: The return code of the called drawing function.
  * \return If failed:      Error code < 0
  *
  * \author Pompei2

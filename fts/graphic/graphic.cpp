@@ -318,7 +318,7 @@ uint8_t *Graphic::copyPixels(bool in_bRealTextureSize) const
  *  The image is called "image" and the Imageset is called whatever you want.
  *
  * \param in_sImagesetName The name of the imageset that should be created.
- * \param in_bReplace Wether to replace the imageset if it already exists or not.
+ * \param in_bReplace Whether to replace the imageset if it already exists or not.
  *
  * \return A pointer to the imageset that has been created or NULL in case of error.
  *
@@ -326,7 +326,7 @@ uint8_t *Graphic::copyPixels(bool in_bRealTextureSize) const
  *       used somewhere !
  * \note You may create pseudo-anonymous imagesets by setting \a in_sImagesetName
  *       to an empty string: the method will choose a random, available name
- *       for the imageset automagically.
+ *       for the imageset automatically.
  *
  * \author Pompei2
  */
@@ -337,7 +337,7 @@ CEGUI::Imageset *Graphic::createCEGUI(const String &in_sImagesetName, bool in_bR
     if(!pImgMgr || !this->isLoaded())
         return NULL;
 
-    // Find a disponible random name for the imageset ...
+    // Find a random name for the imageset ...
     if(in_sImagesetName.empty()) {
         do {
             String sName = String::random("##########", random<int>);
@@ -954,7 +954,7 @@ GraphicManager::GraphicManager()
 {
     FTSMSGDBG("Initialised graphics manager, max texture size: "+String::nr(this->getMaxTextureSize()), 2);
 
-    // Create the texture that will be used for errorneous textures.
+    // Create the texture that will be used for erroneous textures.
     Graphic *pErrGraph = new Graphic();
     pErrGraph->create(reinterpret_cast<const uint8_t * const>(g_errTex.pixel_data), g_errTex.width, g_errTex.height);
     m_mGraphicsFromFiles[GraphicManager::ErrorTextureName] = pErrGraph;
@@ -1073,7 +1073,7 @@ Graphic *GraphicManager::getOrLoadGraphic(const String &in_sFileName,
 }
 
 /// Extracts an image out of a packet.
-/** This extracts an image (stored earlyer using the \a writeToPacket method)
+/** This extracts an image (stored earlier using the \a writeToPacket method)
  *  from a packet (\a in_pPacket ). The extracted image will be stored in this.\n
  *  This will be unloaded first.
  *
@@ -1377,7 +1377,7 @@ Graphic *GraphicManager::resizeGraphic(const String &in_sOrig, float in_fRatio)
  *  graphic is registered under a certain name, the name will be kept.\n
  *  The original graphic will be lost! and replaced by the resized one.
  *
- * \param in_pOrig The graphic to resize. If the operation is successfull, the
+ * \param in_pOrig The graphic to resize. If the operation is successful, the
  *                 pointer will be redirected to the resized graphic.
  * \param in_uiNewW The new width of the graphic (after the resize).
  * \param in_uiNewH The new height of the graphic (after the resize).
@@ -1429,7 +1429,7 @@ Graphic *GraphicManager::resizeGraphic(Graphic *& in_pOrig, uint16_t in_uiNewW, 
  *  \a in_fRatio. If the ratio is < 1 then the graphic gets shrinked, if it is
  *  > 1 the graphic gets magnified.
  *
- * \param in_pOrig The graphic to resize. If the operation is successfull, the
+ * \param in_pOrig The graphic to resize. If the operation is successful, the
  *                 pointer will be redirected to the resized graphic.
  * \param in_uiNewW The new width of the graphic (after the resize).
  * \param in_fRatio The resizing ratio.
