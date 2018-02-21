@@ -36,13 +36,6 @@ namespace FTS {
             Options m_opts;
             Options m_defaults;
     };
-    
-    class EnhancedXMLDocument : public CEGUITinyXML::TiXmlDocument 
-    {
-    public:
-        EnhancedXMLDocument( File& filename );
-    };
-
-};
+}
 
 #endif
