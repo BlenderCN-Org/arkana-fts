@@ -605,7 +605,7 @@ Vector Quad::getN(int in_iEdge)const
 int Quad::draw(float in_fX, float in_fY, float in_fZ, float in_fMultip)
 {
     if(m_pfnRender) {
-        return CALL_MEMBER_FN(*this, m_pfnRender) (in_fX, in_fZ, in_fY, in_fMultip);
+        return CALL_MEMBER_FN(*this, m_pfnRender) (in_fX, in_fY, in_fZ, in_fMultip);
     } else {
         return -1;
     }
@@ -627,7 +627,7 @@ int Quad::draw(float in_fX, float in_fY, float in_fZ, float in_fMultip)
 int Quad::drawUppertile(float in_fX, float in_fY, float in_fZ, float in_fMultip)
 {
     if(m_pfnRenderUppertile) {
-        return CALL_MEMBER_FN(*this, m_pfnRenderUppertile) (in_fX, in_fZ, in_fY, in_fMultip);
+        return CALL_MEMBER_FN(*this, m_pfnRenderUppertile) (in_fX, in_fY, in_fZ, in_fMultip);
     } else {
         return -1;
     }
