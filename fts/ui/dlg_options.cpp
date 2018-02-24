@@ -294,7 +294,7 @@ int FTS::MenuOptions::loadGeneral()
             cb->addItem(sli);
         }
 
-        String sLanguage = m_pConf->get("Language");
+        String sLanguage = m_pConf->get<std::string>("Language");
         sli = dynamic_cast<SimpleListItem *>(cb->findItemWithText(sLanguage, NULL));
         if(sli)
             sli->setAsDefault(cb);
@@ -305,7 +305,7 @@ int FTS::MenuOptions::loadGeneral()
     try {
         // Set the spinner for the debug level choice.
         FTSGetConvertWinMacro(CEGUI::Spinner, sp, "dlg_options/btnGeneral/spGDLL");
-        sp->setCurrentValue((float)m_pConf->getInt("DebugLevel"));
+        sp->setCurrentValue((float)m_pConf->get<int>("DebugLevel"));
     } catch(CEGUI::Exception & e) {
         FTS18N("CEGUI", MsgType::Error, e.getMessage());
     }
@@ -315,7 +315,7 @@ int FTS::MenuOptions::loadGeneral()
         FTSGetConvertWinMacro(CEGUI::Scrollbar, sb, "dlg_options/btnGeneral/hsMouseScroll");
         sb->subscribeEvent(CEGUI::Scrollbar::EventScrollPositionChanged,
                            FTS_SUBS(FTS::MenuOptions::cbOptions_hsScrollChanged));
-        sb->setScrollPosition((float)m_pConf->getInt("MouseScrollSpeed"));
+        sb->setScrollPosition((float)m_pConf->get<int>("MouseScrollSpeed"));
     } catch(CEGUI::Exception & e) {
         FTS18N("CEGUI", MsgType::Error, e.getMessage());
     }
@@ -325,7 +325,7 @@ int FTS::MenuOptions::loadGeneral()
         FTSGetConvertWinMacro(CEGUI::Scrollbar, sb, "dlg_options/btnGeneral/hsKbdScroll");
         sb->subscribeEvent(CEGUI::Scrollbar::EventScrollPositionChanged,
                            FTS_SUBS(FTS::MenuOptions::cbOptions_hsScrollChanged));
-        sb->setScrollPosition((float)m_pConf->getInt("KbdScrollSpeed"));
+        sb->setScrollPosition((float)m_pConf->get<int>("KbdScrollSpeed"));
     } catch(CEGUI::Exception & e) {
         FTS18N("CEGUI", MsgType::Error, e.getMessage());
     }
@@ -377,7 +377,7 @@ int FTS::MenuOptions::loadVideo()
     try {
         // Set the fullscreen checkbox to the correct state.
         FTSGetConvertWinMacro(CEGUI::Checkbox, ck, "dlg_options/btnVideo/chkFullscr");
-        ck->setSelected(m_pConf->getBool("Fullscreen"));
+        ck->setSelected(m_pConf->get<bool>("Fullscreen"));
 
         ck->subscribeEvent(CEGUI::Checkbox::EventCheckStateChanged,
                            FTS_SUBS(FTS::MenuOptions::cbOptions_btnVidOption));
@@ -402,7 +402,7 @@ int FTS::MenuOptions::loadVideo()
         lti->setUserData((void *)((size_t)3));
         cb->addItem(lti);
 
-        switch (m_pConf->getInt("TextureFilter")) {
+        switch (m_pConf->get<int>("TextureFilter")) {
         case 1:
             lti = dynamic_cast<SimpleListItem *>(cb->findItemWithText(sTexFilter1, NULL));
             break;
@@ -443,7 +443,7 @@ int FTS::MenuOptions::loadVideo()
         lti->setUserData((void *)3);
         cb->addItem(lti);
 
-        switch (m_pConf->getInt("ModelDetails")) {
+        switch (m_pConf->get<int>("ModelDetails")) {
         case 1:
             lti = dynamic_cast<SimpleListItem *>(cb->findItemWithText(sModDet1, NULL));
             break;
@@ -499,7 +499,7 @@ int FTS::MenuOptions::loadAudio()
 #if D_SND_SYS != D_FTS_NoSound
             // or if there were problems during the init of the sound system.
            && ISndSys::getSingleton().getType() == "None"
-           && m_pConf->getBool("SoundEnabled")
+           && m_pConf->get<bool>("SoundEnabled")
 #endif
           ) {
             Translation trans("messages");
@@ -515,7 +515,7 @@ int FTS::MenuOptions::loadAudio()
         ck->subscribeEvent(CEGUI::Checkbox::EventCheckStateChanged,
                            FTS_SUBS(FTS::MenuOptions::cbOptions_chkSoundEnabled));
         // This is a little trick to be SURE to toggle the event.
-        bool bEnabled = m_pConf->getBool("SoundEnabled");
+        bool bEnabled = m_pConf->get<bool>("SoundEnabled");
         ck->setSelected(!bEnabled);
         ck->setSelected(bEnabled);
     } catch(CEGUI::Exception & e) {
@@ -527,7 +527,7 @@ int FTS::MenuOptions::loadAudio()
         FTSGetConvertWinMacro(CEGUI::Scrollbar, sb, "dlg_options/btnAudio/hsMusicVol");
         sb->subscribeEvent(CEGUI::Scrollbar::EventScrollPositionChanged,
                            FTS_SUBS(FTS::MenuOptions::cbOptions_hsScrollChanged));
-        sb->setScrollPosition((float)m_pConf->getInt("SoundVolumeMusic"));
+        sb->setScrollPosition((float)m_pConf->get<int>("SoundVolumeMusic"));
     } catch(CEGUI::Exception & e) {
         FTS18N("CEGUI", MsgType::Error, e.getMessage());
     }
@@ -537,7 +537,7 @@ int FTS::MenuOptions::loadAudio()
         FTSGetConvertWinMacro(CEGUI::Scrollbar, sb, "dlg_options/btnAudio/hsUnitReacVol");
         sb->subscribeEvent(CEGUI::Scrollbar::EventScrollPositionChanged,
                            FTS_SUBS(FTS::MenuOptions::cbOptions_hsScrollChanged));
-        sb->setScrollPosition((float)m_pConf->getInt("SoundVolumeSFXUnitReaction"));
+        sb->setScrollPosition((float)m_pConf->get<int>("SoundVolumeSFXUnitReaction"));
     } catch(CEGUI::Exception & e) {
         FTS18N("CEGUI", MsgType::Error, e.getMessage());
     }
@@ -547,7 +547,7 @@ int FTS::MenuOptions::loadAudio()
         FTSGetConvertWinMacro(CEGUI::Scrollbar, sb, "dlg_options/btnAudio/hsActionVol");
         sb->subscribeEvent(CEGUI::Scrollbar::EventScrollPositionChanged,
                            FTS_SUBS(FTS::MenuOptions::cbOptions_hsScrollChanged));
-        sb->setScrollPosition((float)m_pConf->getInt("SoundVolumeSFXAction"));
+        sb->setScrollPosition((float)m_pConf->get<int>("SoundVolumeSFXAction"));
     } catch(CEGUI::Exception & e) {
         FTS18N("CEGUI", MsgType::Error, e.getMessage());
     }
@@ -557,7 +557,7 @@ int FTS::MenuOptions::loadAudio()
         FTSGetConvertWinMacro(CEGUI::Scrollbar, sb, "dlg_options/btnAudio/hsEnvironmentVol");
         sb->subscribeEvent(CEGUI::Scrollbar::EventScrollPositionChanged,
                            FTS_SUBS(FTS::MenuOptions::cbOptions_hsScrollChanged));
-        sb->setScrollPosition((float)m_pConf->getInt("SoundVolumeSFXEnvironment"));
+        sb->setScrollPosition((float)m_pConf->get<int>("SoundVolumeSFXEnvironment"));
     } catch(CEGUI::Exception & e) {
         FTS18N("CEGUI", MsgType::Error, e.getMessage());
     }
@@ -567,7 +567,7 @@ int FTS::MenuOptions::loadAudio()
         FTSGetConvertWinMacro(CEGUI::Scrollbar, sb, "dlg_options/btnAudio/hsAttentionVol");
         sb->subscribeEvent(CEGUI::Scrollbar::EventScrollPositionChanged,
                            FTS_SUBS(FTS::MenuOptions::cbOptions_hsScrollChanged));
-        sb->setScrollPosition((float)m_pConf->getInt("SoundVolumeSFXAttention"));
+        sb->setScrollPosition((float)m_pConf->get<int>("SoundVolumeSFXAttention"));
     } catch(CEGUI::Exception & e) {
         FTS18N("CEGUI", MsgType::Error, e.getMessage());
     }
@@ -577,7 +577,7 @@ int FTS::MenuOptions::loadAudio()
         FTSGetConvertWinMacro(CEGUI::Scrollbar, sb, "dlg_options/btnAudio/hsMagicVol");
         sb->subscribeEvent(CEGUI::Scrollbar::EventScrollPositionChanged,
                            FTS_SUBS(FTS::MenuOptions::cbOptions_hsScrollChanged));
-        sb->setScrollPosition((float)m_pConf->getInt("SoundVolumeSFXMagic"));
+        sb->setScrollPosition((float)m_pConf->get<int>("SoundVolumeSFXMagic"));
     } catch(CEGUI::Exception & e) {
         FTS18N("CEGUI", MsgType::Error, e.getMessage());
     }
@@ -603,7 +603,7 @@ int FTS::MenuOptions::loadNet()
     try{
         // Set the currently used port.
         FTSGetConvertWinMacro(CEGUI::Spinner, sp, "dlg_options/btnNetwork/spPort");
-        sp->setCurrentValue((float)m_pConf->getInt("MasterServerPort"));
+        sp->setCurrentValue((float)m_pConf->get<int>("MasterServerPort"));
     } catch(CEGUI::Exception & e) {
         FTS18N("CEGUI", MsgType::Error, e.getMessage());
     }
@@ -618,7 +618,7 @@ int FTS::MenuOptions::loadNet()
     try{
         // Set the currently used default channel name.
         m_pNet->getChild("dlg_options/btnNetwork/edChannel")
-              ->setText(m_pConf->get("DefaultChannel"));
+              ->setText(m_pConf->get<std::string>("DefaultChannel"));
     } catch(CEGUI::Exception & e) {
         FTS18N("CEGUI", MsgType::Error, e.getMessage());
     }
@@ -626,7 +626,7 @@ int FTS::MenuOptions::loadNet()
     try {
         // Adjust the Clear Chatbox checkbox.
         FTSGetConvertWinMacro(CEGUI::Checkbox, ck, "dlg_options/btnNetwork/chkClearChat");
-        ck->setSelected(m_pConf->getBool("ClearChatbox"));
+        ck->setSelected(m_pConf->get<bool>("ClearChatbox"));
     } catch(CEGUI::Exception & e) {
         FTS18N("CEGUI", MsgType::Error, e.getMessage());
     }
@@ -665,7 +665,7 @@ int FTS::MenuOptions::loadMisc()
 
         // Set the cursor warping checkbox.
         FTSGetConvertWinMacro(CEGUI::Checkbox, ck, "dlg_options/btnMisc/chkMouseWarp");
-        ck->setSelected(m_pConf->getBool("MenuMouseWarp"));
+        ck->setSelected(m_pConf->get<bool>("MenuMouseWarp"));
     } catch(CEGUI::Exception & e) {
         FTS18N("CEGUI", MsgType::Error, e.getMessage());
     }
@@ -688,7 +688,7 @@ int FTS::MenuOptions::saveGeneral(bool &out_bReloadMenu)
     try {
         // Language
         String sLng(m_pGeneral->getChild("dlg_options/btnGeneral/cbLang")->getText());
-        if(sLng != m_pConf->get("Language")) {
+        if(sLng != m_pConf->get<std::string>("Language")) {
             m_pConf->set("Language", sLng);
             out_bReloadMenu = true;
         }
@@ -1056,7 +1056,7 @@ void FTS::MenuOptions::fillMasterServerList(bool in_bSelectDefault)
     String sCurrMasterServer = D_DEFAULT_SERVER_NAME;
 
     if(!in_bSelectDefault) {
-        sCurrMasterServer = m_pConf->get("MasterServerName");
+        sCurrMasterServer = m_pConf->get<std::string>("MasterServerName");
     }
 
     // Strip out the "http://" thing if present.

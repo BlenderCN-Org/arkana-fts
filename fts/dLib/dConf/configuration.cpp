@@ -81,44 +81,6 @@ void Configuration::parse ( CEGUITinyXML::TiXmlDocument& doc )
     }
 }
 
-String Configuration::get ( String in_optName )
-{
-    if(m_opts.find(in_optName) != m_opts.end()){
-        return m_opts[in_optName];
-    }
-    return "";
-}
-
-bool Configuration::getBool ( String in_optName )
-{
-    try {
-        bool ret = m_defaults[in_optName].toExactly<bool>();
-        return m_opts[in_optName].to<bool>(ret);
-    } catch (std::bad_cast ex) {
-        throw CorruptDataException(in_optName,"Bad cast of bool option in Configuration::getBool()", MsgType::Horror);
-    }
-}
-
-int Configuration::getInt ( String in_optName )
-{
-    try {
-        int ret = m_defaults[in_optName].toExactly<int>();
-        return m_opts[in_optName].to<int>(ret);
-    } catch (std::bad_cast ex) {
-        throw CorruptDataException(in_optName,"Bad cast of bool option in Configuration::getInt()", MsgType::Horror);
-    }
-}
-
-float Configuration::getFloat ( String in_optName )
-{
-    try {
-        float ret = m_defaults[in_optName].toExactly<float>();
-        return m_opts[in_optName].to<float>(ret);
-    } catch (std::bad_cast ex) {
-        throw CorruptDataException(in_optName,"Bad cast of bool option in Configuration::getFloat()", MsgType::Horror);
-    }
-}
-
 void Configuration::set ( String in_optName, String value )
 {
     m_opts[in_optName] = value;

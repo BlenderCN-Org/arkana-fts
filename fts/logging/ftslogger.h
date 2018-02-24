@@ -5,7 +5,6 @@
 
 #include "logging/logger.h"
 #include "logging/Chronometer.h"
-#include "dLib/dConf/configuration.h"
 
 namespace FTS {
 

@@ -13,13 +13,13 @@
 #include <vector>
 
 #include "graphic/graphic.h"
-#include "dLib/dConf/configuration.h"
 
 /**********************
  * The tileset        *
  **********************/
 namespace FTS {
     class Archive;
+
 /** What is a basic tileset ? This is a set just containing all different
  *  tiles, without any transition from one tile to the other.
  *  This tileset is used to create an extended tileset. (see below).
@@ -46,17 +46,6 @@ private:
     Graphic *m_pDetail = nullptr;         ///< The detailmap.
 
     Graphic *loadTileFrom(Archive& in_tileset, const String &in_sTileName);
-    class Settings : public DefaultOptions {
-    public:
-        Settings() {
-            add("LongName", "Default Tileset name");
-            add( "LowerCount", 1);
-            add( "BlendCount", 1);
-            add( "UpperCount", 1);
-            add( "UpperW", FTS_DEFAULT_UPPERTILE_W);
-            add( "UpperH", FTS_DEFAULT_UPPERTILE_H);
-        }
-    };
 
 public:
     BasicTileset();

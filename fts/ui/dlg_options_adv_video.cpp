@@ -77,21 +77,21 @@ int FTS::AdvVideoDlg::loadData(void)
     // The multitexturing checkbox
     try {
         ck = (CEGUI::Checkbox *) m_pRoot->getChild("dlg_options_btnVideo_advanced/chkMultiTex");
-        ck->setSelected(m_pConf->getBool("MultiTexturing"));
+        ck->setSelected(m_pConf->get<bool>("MultiTexturing"));
     } catch(CEGUI::Exception & e) {
         FTS18N("CEGUI", MsgType::Error, e.getMessage());
     }
     // The complex quads checkbox
     try {
         ck = (CEGUI::Checkbox *) m_pRoot->getChild("dlg_options_btnVideo_advanced/chkComplexQuads");
-        ck->setSelected(m_pConf->getBool("ComplexQuads"));
+        ck->setSelected(m_pConf->get<bool>("ComplexQuads"));
     } catch(CEGUI::Exception & e) {
         FTS18N("CEGUI", MsgType::Error, e.getMessage());
     }
     // The anisotropic checkbox
     try {
         ck = (CEGUI::Checkbox *) m_pRoot->getChild("dlg_options_btnVideo_advanced/chkAnisotropic");
-        ck->setSelected(m_pConf->getBool("Anisotropic"));
+        ck->setSelected(m_pConf->get<bool>("Anisotropic"));
     } catch(CEGUI::Exception & e) {
         FTS18N("CEGUI", MsgType::Error, e.getMessage());
     }
@@ -108,7 +108,7 @@ int FTS::AdvVideoDlg::loadData(void)
         lti = new SimpleListItem("Direct");
         cb->addItem(lti);
 
-        String sCurrent = m_pConf->get("ModelRenderTechnique");
+        String sCurrent = m_pConf->get<std::string>("ModelRenderTechnique");
         lti = (SimpleListItem *) cb->findItemWithText(sCurrent, NULL);
         if(!lti) {
             lti = new SimpleListItem(sCurrent);
@@ -134,7 +134,7 @@ int FTS::AdvVideoDlg::loadData(void)
         lti = new SimpleListItem("None");
         cb->addItem(lti);
 
-        String sCurrent = m_pConf->get("MaxShaderQuality");
+        String sCurrent = m_pConf->get<std::string>("MaxShaderQuality");
         lti = (SimpleListItem *) cb->findItemWithText(sCurrent, NULL);
         if(!lti) {
             lti = new SimpleListItem(sCurrent);

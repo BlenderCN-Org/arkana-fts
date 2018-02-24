@@ -82,7 +82,7 @@ namespace CEGUI
         // For layouts, add the language to the name!
         if(in_sResourceGroup == "layouts") {
             FTS::Configuration conf ("conf.xml", FTS::ArkanaDefaultSettings());
-            FTS::String sMyLang = conf.get("Language");
+            FTS::String sMyLang = conf.get<std::string>("Language");
             FTS::Path sNameInMyLang = FTS::String(sNameWithGroupDir) + FTS::String(".") + sMyLang + FTS::String(".layout");
             FTS::Path sNameInEngl = FTS::String(sNameWithGroupDir) + FTS::String(".English.layout");
 

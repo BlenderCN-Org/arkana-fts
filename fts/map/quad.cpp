@@ -183,7 +183,7 @@ void Quad::initTexCoords(const Tileset * in_pTileset,
                    ->getTileTexCoords(m_fTexCoordLowerTile, in_cTopLeft, in_cTopRight,
                                       in_cBottomLeft, in_cBottomRight, m_cBlendmask);
         // Whether to enable or disable multi texturing.
-        if(conf.getBool("MultiTexturing")) {
+        if(conf.get<bool>("MultiTexturing")) {
             m_fTexCoordDetail[0] = m_usX / FTS_DETAILMAP_QUADS;
             m_fTexCoordDetail[1] = m_usY / FTS_DETAILMAP_QUADS;
             m_fTexCoordDetail[2] = 1.0f / FTS_DETAILMAP_QUADS;
@@ -210,7 +210,7 @@ void Quad::initTexCoords(const Tileset * in_pTileset,
         m_fCplxTexCoordLowerTile[9] = fTexCoordLowerTile[3];
 
         // Whether to enable or disable multi texturing.
-        if(conf.getBool("MultiTexturing")) {
+        if(conf.get<bool>("MultiTexturing")) {
             m_fTexCoordDetail[0] = m_usX / FTS_DETAILMAP_QUADS;
             m_fTexCoordDetail[1] = m_usY / FTS_DETAILMAP_QUADS;
             m_fTexCoordDetail[2] = 1.0f / (FTS_DETAILMAP_QUADS * 4.0f);

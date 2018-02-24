@@ -105,7 +105,7 @@ bool FTS::LoginMenuRlv::load()
     }
     try {
         m_pRoot->getChild("menu_online/Nickname")
-               ->setText(m_pConf->get("LastLogin"));
+               ->setText(m_pConf->get<std::string>("LastLogin"));
     } catch(CEGUI::Exception & e) {
         FTS18N("CEGUI", MsgType::Error, e.getMessage());
     }
@@ -180,8 +180,8 @@ bool FTS::LoginMenuRlv::unload()
 void FTS::LoginMenuRlv::render2D(const Clock& c)
 {
     // Draw menu background first.
-    float fZoomX = (float)m_pConf->getInt("HRes") / (float)m_pgMenuBG->getW();
-    float fZoomY = (float)m_pConf->getInt("VRes") / (float)m_pgMenuBG->getH();
+    float fZoomX = (float)m_pConf->get<int>("HRes") / (float)m_pgMenuBG->getW();
+    float fZoomY = (float)m_pConf->get<int>("VRes") / (float)m_pgMenuBG->getH();
     m_pgMenuBG->drawZoom(0, 0, fZoomX, fZoomY);
 
     // Now comes the GUI.

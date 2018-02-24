@@ -5,10 +5,6 @@
 
 #include "dLib/dString/dString.h"
 
-#ifndef D_NO_CONF
-#  include "dLib/dConf/configuration.h"
-#endif // D_NO_CONF
-
 #ifndef D_NO_SDL
 #  include <SDL.h>
 #endif // D_NO_SDL

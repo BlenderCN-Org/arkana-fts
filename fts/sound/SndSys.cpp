@@ -54,7 +54,7 @@ ISndSys *ISndSys::createSoundSys()
 #if D_SND_SYS == D_FTS_OpenAL
 
     // Use The OpenAL driver if the sound is enabled in the options.
-    if(conf.getBool("SoundEnabled")) {
+    if(conf.get<bool>("SoundEnabled")) {
         // If we have sound installed the ctor should work. Otherwise an exception is
         // generated. Then the dummy sound system is used.
         // On linux this usually fails if the dsp device is busy.
@@ -80,7 +80,7 @@ ISndSys *ISndSys::createSoundSys()
 
     // Only display the warning if the user wanted to have sound, if he didn't
     // want any sound, it is normal that we create the dummy sound system here!
-    if(conf.getBool("SoundEnabled"))
+    if(conf.get<bool>("SoundEnabled"))
         FTS18N("SND_NoSys", MsgType::Warning);
 
     return FTS::ISndSys::getSingletonPtr();
@@ -91,7 +91,7 @@ ISndSys *ISndSys::createSoundSys()
     {
         Configuration conf ("conf.xml", ArkanaDefaultSettings());
 
-        int iVol = conf.getInt(in_optName);
+        int iVol = conf.get<int>(in_optName);
         float vol = float( iVol < 0 ? 0 : (iVol > 100 ? 100 : iVol) );
         return vol /  100.f ;
     }
@@ -118,7 +118,7 @@ ISndSys::~ISndSys()
 ISndObj* ISndSys::getSndObj(SndGroup::Enum in_eGroup, const String &in_sName)
 {
     SndGrp* grp = this->getGroup(in_eGroup);
-    if(grp == NULL)
+    if(grp == nullptr)
         return this->getDummyObj();
 
     return grp->getSndObj(in_sName);

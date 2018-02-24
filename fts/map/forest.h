@@ -11,9 +11,7 @@
 #include "main.h"
 #include <vector>
 #include <map>
-
-#include "graphic/graphic.h"
-#include "dLib/dConf/configuration.h"
+#include "dLib/dString/dString.h"
 
 namespace FTS {
     class Tree;
@@ -35,11 +33,6 @@ private:
     std::map<int, std::vector<Tree *> >m_QuadTrees;
 
     bool m_bLoaded; ///< Wether this forest is loaded or not.
-        class Settings : public DefaultOptions {
-    public:
-        Settings() {
-        }
-    };
     
 public:
     Forest(unsigned char in_ucID);

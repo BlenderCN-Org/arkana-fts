@@ -8,13 +8,14 @@
 #include "logging/ftslogger.h"
 
 using namespace FTS;
+using namespace std;
 
 SUITE(dTranslation)
 
 TEST_INSUITE(dTranslation, UI_de)
 {
     Configuration conf("conf.xml", ArkanaDefaultSettings());
-    String org_lang = conf.get("Language");
+    String org_lang = conf.get<string>("Language");
     conf.set("Language", "German");
     conf.save();
     Translation trans("ui");
@@ -27,7 +28,7 @@ TEST_INSUITE(dTranslation, UI_de)
 TEST_INSUITE(dTranslation, UI_en)
 {
     Configuration conf("conf.xml", ArkanaDefaultSettings());
-    String org_lang = conf.get("Language");
+    String org_lang = conf.get<string>("Language");
     conf.set("Language", "English");
     conf.save();
     Translation trans("ui");
@@ -40,7 +41,7 @@ TEST_INSUITE(dTranslation, UI_en)
 TEST_INSUITE(dTranslation, message_de)
 {
     Configuration conf("conf.xml", ArkanaDefaultSettings());
-    String org_lang = conf.get("Language");
+    String org_lang = conf.get<string>("Language");
     conf.set("Language", "German");
     conf.save();
     Translation trans("messages");
@@ -54,7 +55,7 @@ TEST_INSUITE(dTranslation, message_de)
 TEST_INSUITE(dTranslation, message_en)
 {
     Configuration conf("conf.xml", ArkanaDefaultSettings());
-    String org_lang = conf.get("Language");
+    String org_lang = conf.get<string>("Language");
     conf.set("Language", "English");
     conf.save();
     Translation trans("messages");
@@ -68,7 +69,7 @@ TEST_INSUITE(dTranslation, message_en)
 TEST_INSUITE(dTranslation, message_de_missing)
 {
     Configuration conf("conf.xml", ArkanaDefaultSettings());
-    String org_lang = conf.get("Language");
+    String org_lang = conf.get<string>("Language");
     conf.set("Language", "German");
     conf.save();
     Translation trans("messages");

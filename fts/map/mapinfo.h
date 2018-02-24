@@ -5,11 +5,10 @@
 
 #include "utilities/DateTime.h"
 #include "dLib/dString/dString.h"
-#include "graphic/graphic.h"
-#include "dLib/dConf/configuration.h"
 
 namespace FTS {
     class Packet;
+    class Graphic;
 
 class MapInfo {
 private:
@@ -27,19 +26,6 @@ private:
     bool m_bPressBtnToStart; ///< Whether to press a button after loading the map nor not.
 
     bool m_bLoaded;          ///< Whether infos are loaded or not.
-    class Settings : public DefaultOptions {
-    public:
-        Settings() {
-            add("Name", "N/A");
-            add( "Desc", "N/A");
-            add( "MinPlayers", 0);
-            add( "MaxPlayers", 0);
-            add( "SuggPlayers", "N/A");
-            add( "Author", "N/A");
-            add( "LastModif", "2000-01-01 00:00:00");
-            add( "PressButtonToStart", true);
-        }
-    };
 
 public:
     MapInfo();

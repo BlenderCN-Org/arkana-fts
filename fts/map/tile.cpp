@@ -15,6 +15,7 @@
 #include "graphic/image.h"
 
 #include "dLib/dArchive/dArchive.h"
+#include "dLib/dConf/configuration.h"
 
 using namespace FTS;
 
@@ -64,14 +65,25 @@ int BasicTileset::load(const String & in_sShortName)
         // Load the archive of the tileset and get the info file out of it.
         Archive::Ptr pArch(Archive::loadArchive(Path::datadir("Graphics/tilesets") + Path(m_sShortName + ".tileset")));
         File& infoFile = pArch->getFile("info.xml");
+        class Settings : public DefaultOptions {
+        public:
+            Settings() {
+                add("LongName", "Default Tileset name");
+                add("LowerCount", 1);
+                add("BlendCount", 1);
+                add("UpperCount", 1);
+                add("UpperW", FTS_DEFAULT_UPPERTILE_W);
+                add("UpperH", FTS_DEFAULT_UPPERTILE_H);
+            }
+        };
         Configuration conf( infoFile, Settings());
         // Get all informations out of the info.conf file.
-        m_sLongName = conf.get("LongName");
-        uint16_t nLower = conf.getInt("LowerCount");
-        uint16_t nBlend = conf.getInt("BlendCount");
-        m_nUpper = conf.getInt("UpperCount");
-        m_wUpper = conf.getInt("UpperW");
-        m_hUpper = conf.getInt("UpperH");
+        m_sLongName = conf.get<std::string>("LongName");
+        uint16_t nLower = conf.get<int>("LowerCount");
+        uint16_t nBlend = conf.get<int>("BlendCount");
+        m_nUpper        = conf.get<int>("UpperCount");
+        m_wUpper        = conf.get<int>("UpperW");
+        m_hUpper        = conf.get<int>("UpperH");
 
         // Load the upper tileset.
         /// \todo: Fix it that the upper tiles can only be rendered using nearest_nearest filter ! That sucks hard.

@@ -202,7 +202,7 @@ int FTS::Console::Foreground( const bool bFore )
     Configuration conf ("conf.xml", ArkanaDefaultSettings());
     
     /* Don't do this in fullscreen mode ! */
-    if(conf.getBool("Fullscreen"))
+    if(conf.get<bool>("Fullscreen"))
         return ERR_OK;
 
     if(bFore) {

@@ -93,7 +93,7 @@ int main(int argc, char *argv[])
             return failures;
         }
 
-        if( argc == 2 && std::string(argv[1]) == "run-test-only" ) {
+        if( argc >= 2 && std::string(argv[1]) == "run-test-only" ) {
             Console::Pause();
             return 0;
         }

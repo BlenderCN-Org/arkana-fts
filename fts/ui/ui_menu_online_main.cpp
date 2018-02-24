@@ -140,7 +140,7 @@ bool FTS::OnlineMenuRlv::load()
     // But will periodically retry this.
     Configuration conf ("conf.xml", ArkanaDefaultSettings());
 
-    String defaultChannel = conf.get("DefaultChannel");
+    String defaultChannel = conf.get<std::string>("DefaultChannel");
 
     this->join(defaultChannel);
 
@@ -964,7 +964,7 @@ int FTS::OnlineMenuRlv::enteringNewChannel(const String &in_sNewChanName)
     Configuration conf ("conf.xml", ArkanaDefaultSettings());
 
     // In case the user wants to clear the chatbox, do this now.
-    if(conf.getBool("ClearChatbox")) {
+    if(conf.get<bool>("ClearChatbox")) {
         try {
             FTSGetConvertWinMacro(CEGUI::Listbox, pChat, "menu_online_main/lbChat");
             pChat->resetList();

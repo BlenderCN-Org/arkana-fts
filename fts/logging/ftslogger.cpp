@@ -36,7 +36,7 @@ DefaultLogger::DefaultLogger()
     FileUtils::mkdirIfNeeded(Path::userdir("Logfiles"), false);
 
     Configuration conf("conf.xml", ArkanaDefaultSettings());
-    m_iGDLL = conf.getInt("DebugLevel");
+    m_iGDLL = conf.get<int>("DebugLevel");
 
     if(!m_pLogFile) {
         // Create a filename consisting of date and time.
@@ -606,7 +606,7 @@ DefaultLoggerDlg::DefaultLoggerDlg(MsgType::Enum in_Gravity, const String &in_sM
         // is an error during loading of the window !
         Configuration conf ("conf.xml", ArkanaDefaultSettings());
 
-        String sWindowName = "dlg_message." + conf.get("Language") + ".layout";
+        String sWindowName = "dlg_message." + conf.get<std::string>("Language") + ".layout";
         m_pRoot = CEGUI::WindowManager::getSingleton().loadWindowLayout(sWindowName);
         String sTitle = m_pRoot->getText();
 

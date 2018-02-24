@@ -12,6 +12,8 @@
 #include "logging/logger.h"
 #include "game/objects/tree.h"
 #include "utilities/Math.h"
+#include "graphic/graphic.h"
+#include "dLib/dConf/configuration.h"
 
 using namespace FTS;
 
@@ -55,16 +57,22 @@ int Forest::load(const String &in_sConfFile)
     }
     // Get the forest parameters.
     String sPrefix = "Forest"+String::nr(m_ucID)+"%d_";
+    class Settings : public DefaultOptions {
+    public:
+        Settings() {
+        }
+    };
     Settings defaults;
+
     defaults.add(sPrefix + "Type", "oak");
     defaults.add(sPrefix + "Diversity", 0.2f);
     defaults.add(sPrefix + "Density", 0.4f);
     defaults.add(sPrefix + "Height", "mid");
     Configuration conf(in_sConfFile, defaults, false);
-    m_sType = conf.get(sPrefix + "Type");
-    m_fDiversity = conf.getFloat(sPrefix + "Diversity");
-    m_fDensity = conf.getFloat(sPrefix + "Density");
-    m_sHeight = conf.get(sPrefix + "Height");
+    m_sType      = conf.get<std::string>(sPrefix + "Type");
+    m_fDiversity = conf.get<float>(sPrefix + "Diversity");
+    m_fDensity   = conf.get<float>(sPrefix + "Density");
+    m_sHeight    = conf.get<std::string>(sPrefix + "Height");
 
     // Check these params for validity:
     if(m_fDiversity < 0.0f || m_fDiversity > 1.0f) {

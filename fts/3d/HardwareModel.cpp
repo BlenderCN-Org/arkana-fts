@@ -20,7 +20,6 @@
 
 #include "dLib/dString/dString.h"
 #include "dLib/dArchive/dArchive.h"
-#include "dLib/dConf/configuration.h"
 
 #include "bouge/bouge.hpp"
 #include "bouge/IOModules/XML/Loader.hpp"

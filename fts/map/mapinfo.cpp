@@ -7,6 +7,7 @@
 #include "dLib/dArchive/dArchive.h"
 #include "logging/logger.h"
 #include "graphic/graphic.h"
+#include "dLib/dConf/configuration.h"
 
 using namespace FTS;
 
@@ -39,15 +40,28 @@ int MapInfo::load(const String & in_sDirectory)
     String sInfoFile = in_sDirectory + "info.xml";
 
     FTSMSGDBG("Loading map info from file \"" + sInfoFile + "\".", 3);
+    class Settings : public DefaultOptions {
+    public:
+        Settings() {
+            add("Name", "N/A");
+            add("Desc", "N/A");
+            add("MinPlayers", 0);
+            add("MaxPlayers", 0);
+            add("SuggPlayers", "N/A");
+            add("Author", "N/A");
+            add("LastModif", "2000-01-01 00:00:00");
+            add("PressButtonToStart", true);
+        }
+    };
     Configuration conf(*File::open(sInfoFile, File::Read), Settings());
-    m_sName = conf.get("Name").str();
-    m_sDesc = conf.get("Desc").str();
-    m_cMinPlayers = (uint8_t)conf.getInt("MinPlayers");
-    m_cMaxPlayers = (uint8_t)conf.getInt("MaxPlayers");
-    m_sSuggPlayers = conf.get("SuggPlayers").str();
-    m_sAuthor = conf.get("Author").str();
-    m_dtLastModif.fromInternStr(conf.get("LastModif"));
-    m_bPressBtnToStart = conf.getBool("PressButtonToStart");
+    m_sName         = conf.get<std::string>("Name");
+    m_sDesc         = conf.get<std::string>("Desc");
+    m_sSuggPlayers  = conf.get<std::string>("SuggPlayers");
+    m_sAuthor       = conf.get<std::string>("Author");
+    m_dtLastModif.fromInternStr(conf.get<std::string>("LastModif"));
+    m_cMinPlayers   = (uint8_t)conf.get<int>("MinPlayers");
+    m_cMaxPlayers   = (uint8_t)conf.get<int>("MaxPlayers");
+    m_bPressBtnToStart = conf.get<bool>("PressButtonToStart");
 
     m_pPreview = GraphicManager::getSingleton().getOrLoadGraphic(Path::datadir("Graphics/preview.png"));
     m_pIcon = GraphicManager::getSingleton().getOrLoadGraphic(Path::datadir("Graphics/icon.png"));

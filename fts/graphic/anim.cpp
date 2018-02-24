@@ -46,9 +46,9 @@ int FTS::Anim::load()
         Configuration conf(confFile, Settings());
 
         // Read all info from the anim's config file.
-        m_nFrames = conf.getInt ("Frames");
-        m_iLenght = conf.getInt("Time");
-        m_bLoop   = conf.getBool("Loop");
+        m_nFrames = conf.get<int>("Frames");
+        m_iLenght = conf.get<int>("Time");
+        m_bLoop   = conf.get<bool>("Loop");
 
         // Load all those images that form the animation.
         m_pGraphs = new Graphic*[m_nFrames];

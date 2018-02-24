@@ -17,7 +17,7 @@ Translation::Translation(const String& in_sFile)
     : m_bLogging(true)
 {
     Configuration conf("conf.xml", ArkanaDefaultSettings());
-    Path sFile = Path::datadir("Languages") + Path(conf.get("Language")) + Path(in_sFile + ".xml");
+    Path sFile = Path::datadir("Languages") + Path(conf.get<std::string>("Language")) + Path(in_sFile + ".xml");
     Options optTranslation = Configuration::buildFromFile(sFile);
     m_confTranslation = new Configuration(optTranslation);
     sFile = Path::datadir("Languages/English") + Path(in_sFile + ".xml");;
@@ -33,15 +33,19 @@ Translation::~Translation()
 
 String Translation::get(String in_sString)
 {
-    String ret = m_confTranslation->get(in_sString);
-    // If there was an error, first try in english. If that doesn't work, load default error string.
-    if(ret.empty()) {
-        ret = m_confTranslationDefault->get(in_sString);
-        // Print a warning to the logfile.
-        if(ret.empty() && m_bLogging) {
-            FTSMSG(String("Missing translation for ") + in_sString, MsgType::WarningNoMB);
+    try {
+        return m_confTranslation->get<std::string>(in_sString);
+    } catch(CorruptDataException& ) {
+        try {
+            // If there was an error, first try in English. If that doesn't work, load default error string.
+            return m_confTranslationDefault->get<std::string>(in_sString);
+        } catch(CorruptDataException&) {
+            // Print a warning to the logfile.
+            if(m_bLogging) {
+                FTSMSG(String("Missing translation for ") + in_sString, MsgType::WarningNoMB);
+            }
         }
     }
-    return ret;
+    return String::EMPTY;
 }
 

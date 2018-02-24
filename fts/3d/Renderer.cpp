@@ -40,7 +40,7 @@ FTS::Renderer::Renderer()
 {
 
     Configuration conf ("conf.xml", ArkanaDefaultSettings());
-    this->changeResolution(Resolution(conf.getInt("HRes"), conf.getInt("VRes"), conf.getBool("Fullscreen")));
+    this->changeResolution(Resolution(conf.get<int>("HRes"), conf.get<int>("VRes"), conf.get<bool>("Fullscreen")));
 
     // Initialize the Camera object after the SDL window is initialized.
     m_default2DCam.reset();

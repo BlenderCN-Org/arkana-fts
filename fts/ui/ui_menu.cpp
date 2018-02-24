@@ -69,8 +69,8 @@ void FTS::MainMenuRlv::loadSettingsFromConf()
 {
     Configuration conf ("conf.xml", ArkanaDefaultSettings());
 
-    m_iScreenHeigth = conf.getInt("VRes");
-    m_iScreenWidth = conf.getInt("HRes");
+    m_iScreenHeigth = conf.get<int>("VRes");
+    m_iScreenWidth  = conf.get<int>("HRes");
 }
 
 /** This method will be called during the loading
