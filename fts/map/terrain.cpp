@@ -72,8 +72,8 @@ int Terrain::loadInfo(const String &in_sTerrainFile, SLoadingInfo &out_info)
     // First, check for multitexturing and complex quads options.
     Configuration conf ("conf.xml", ArkanaDefaultSettings());
 
-    m_bMultiTex = conf.getBool("MultiTexturing");
-    m_bComplex  = conf.getBool("ComplexQuads");
+    m_bMultiTex = conf.get<bool>("MultiTexturing");
+    m_bComplex  = conf.get<bool>("ComplexQuads");
 
     if(in_sTerrainFile.empty() || out_info.sMapName.empty()) {
         FTS18N("InvParam", MsgType::Horror, "Terrain::load");

@@ -75,16 +75,16 @@ int FTS::Player::og_connectMaster(uint32_t in_uiTimeoutMS)
 
     Configuration conf ("conf.xml", ArkanaDefaultSettings());
 
-    String sServer = conf.get("MasterServerName");
-    int iPort = conf.getInt("MasterServerPort");
-    unsigned long timeout= conf.getInt( "ConnectionConnectTimeOut" );
+    String sServer = conf.get<std::string>("MasterServerName");
+    int iPort = conf.get<int>("MasterServerPort");
+    unsigned long timeout= conf.get<int>( "ConnectionConnectTimeOut" );
     FTSMSGDBG("  Connecting to the master server "+sServer+":"+String::nr(iPort), 3);
     m_pcMasterServer =  Connection::create(Connection::eConnectionType::D_CONNECTION_TRADITIONAL, sServer.c_str(), iPort, timeout);
     if(!m_pcMasterServer->isConnected()) {
         SAFE_DELETE(m_pcMasterServer);
         return -1;
     }
-    m_pcMasterServer->setMaxWaitMillisec( conf.getInt( "ConnectionTimeOut" ) );
+    m_pcMasterServer->setMaxWaitMillisec( conf.get<int>( "ConnectionTimeOut" ) );
     return ERR_OK;
 }
 

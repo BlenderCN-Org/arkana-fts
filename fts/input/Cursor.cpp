@@ -48,10 +48,10 @@ PCursor loadCursor(const String & in_sFile)
     /* now read all the configuration of the cursor. */
     Configuration conf(sFile, CursorSettings(), false);
     /* now read all the configuration of the cursor. */
-    sImg[0] = conf.get("Normal");
-    sImg[1] = conf.get("Left");
-    sImg[2] = conf.get("Middle");
-    sImg[3] = conf.get("Right");
+    sImg[0] = conf.get<std::string>("Normal");
+    sImg[1] = conf.get<std::string>("Left");
+    sImg[2] = conf.get<std::string>("Middle");
+    sImg[3] = conf.get<std::string>("Right");
 
     /* Check wether it's animated or not. */
     for(int i = 0; i < FTS_CURSOR_IMAGES; i++) {
@@ -61,8 +61,8 @@ PCursor loadCursor(const String & in_sFile)
         pCur->bAnimated[i] = sImg[i].contains(".anim");
     }
 
-    pCur->iXHS = conf.getInt("hotspotX");
-    pCur->iYHS = conf.getInt("hotspotY");
+    pCur->iXHS = conf.get<int>("hotspotX");
+    pCur->iYHS = conf.get<int>("hotspotY");
 
     pCur->iX = 0;
     pCur->iY = 0;

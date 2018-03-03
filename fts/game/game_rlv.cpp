@@ -57,8 +57,8 @@ bool GameRlv::load()
 {
     Configuration conf ("conf.xml", ArkanaDefaultSettings());
 
-    m_screenWidth = conf.getInt("HRes");
-    m_screenHeight = conf.getInt("VRes");
+    m_screenWidth  = conf.get<int>("HRes");
+    m_screenHeight = conf.get<int>("VRes");
     // Change the camera. TODO: Make this in the map's script.
     this->getMainCamera().resetOrientation();
     this->getMainCamera().position(Vector(0.0f,-60.0f,80.0f));

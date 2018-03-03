@@ -105,11 +105,11 @@ bool FTS::LoadFTSRlv::load()
 
     Configuration conf ("conf.xml", ArkanaDefaultSettings());
 
-    m_screenWidth = conf.getInt("HRes");
-    m_screenHeight = conf.getInt("VRes");
+    m_screenWidth  = conf.get<int>("HRes");
+    m_screenHeight = conf.get<int>("VRes");
 
     // Load the logo and we are fine for our first display.
-    String sLang = conf.get("Language");
+    String sLang = conf.get<std::string>("Language");
     m_sLogoFile = Path::datadir("Graphics/ui") + Path("Loading." + sLang + ".png");
     if(!FileUtils::fileExists(m_sLogoFile, File::Read)) {
         m_sLogoFile = Path::datadir("Graphics/ui") + Path("Loading.English.png");

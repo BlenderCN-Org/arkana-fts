@@ -153,7 +153,7 @@ void Graphic::create(const uint8_t * const in_pData, uint16_t in_uiW, uint16_t i
     Configuration conf ("conf.xml", ArkanaDefaultSettings());
 
     if(in_forceFilter == DefaultFilter)
-        m_usedFilter = toTexureFilter(conf.getInt("TextureFilter"));
+        m_usedFilter = toTexureFilter(conf.get<int>("TextureFilter"));
     else
         m_usedFilter = in_forceFilter;
 
@@ -177,7 +177,7 @@ void Graphic::create(const uint8_t * const in_pData, uint16_t in_uiW, uint16_t i
     // But we can force a filter in code by setting the
     // in_iForceFilter parameter to a value different then 0.
     if(in_forceAnisotropy == DefaultAnisotropy)
-        m_usedAnisotropy = toAnisotropy(conf.getBool("Anisotropic"));
+        m_usedAnisotropy = toAnisotropy(conf.get<bool>("Anisotropic"));
     else
         m_usedAnisotropy = in_forceAnisotropy;
 
