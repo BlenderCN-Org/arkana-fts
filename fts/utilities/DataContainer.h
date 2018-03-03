@@ -28,7 +28,20 @@ public:
     uint32_t fletcher32() const;
 
     virtual ~DataContainer() {};
-
+    class Iterator {
+    public:
+        Iterator(const uint8_t* d) : data(d) {}
+        Iterator(size_t pos) : pos(pos) {}
+        Iterator& operator++() { ++pos; return *this; }
+        const uint8_t* operator*() { return &data[pos]; }
+        bool operator!=(Iterator rhs) { return pos != rhs.pos; }
+    private:
+        size_t          pos = 0;
+        const uint8_t*  data = nullptr;
+    };
+    Iterator begin() { return Iterator(getData()); }
+    Iterator end() { return Iterator(getSize()); }
+    
 protected:
     DataContainer() {};
     DataContainer(const DataContainer&) {};

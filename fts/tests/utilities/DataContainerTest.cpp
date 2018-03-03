@@ -153,3 +153,16 @@ TEST_INSUITE(DataContainerTests, resize_grow)
     CHECK(container.getData() != nullptr);
     CHECK(memcmp(testdata, container.getData(), 10) == 0);
 }
+
+TEST_INSUITE(DataContainerTests, for_each)
+{
+    RawDataContainer container(10);
+    char testdata[] = "1234567890";
+    char* td = testdata;
+    memcpy(container.getData(), testdata, 10);
+    for(auto c : container) {
+        CHECK_EQUAL((char)*c, *td);
+        ++td;
+    }
+
+}
