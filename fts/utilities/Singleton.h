@@ -1,7 +1,6 @@
 #ifndef D_SINGLETON_H
 #define D_SINGLETON_H
 
-#include "main/main.h" // Only for nullptr workaround...
 #include "main/Exception.h"
 #include "utilities/NonCopyable.h"
 
