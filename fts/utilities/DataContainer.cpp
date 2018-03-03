@@ -97,6 +97,7 @@ RawDataContainer& RawDataContainer::operator=(const RawDataContainer& o)
     m_pData = reinterpret_cast<uint8_t *>(malloc(o.getSize() + 1));
     memcpy(m_pData, o.getData(), o.getSize());
     m_pData[m_uiSize] = 0;
+    return *this;
 }
 
 uint8_t *FTS::RawDataContainer::getData()
