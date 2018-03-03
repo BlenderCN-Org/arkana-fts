@@ -378,19 +378,17 @@ bool FTS::MainMenuRlv::cbUpdate(const CEGUI::EventArgs & in_ea)
         wUpdate->getChild("dlg_Update/Ok")->setEnabled(false);
 
         Translation trans( "ui" );
-        // TODO Fix DataContainer usage afte the fts-net lib doesn't use it anymore.
         std::vector<uint8_t> Data ;
         FTSC_ERR err = getHTTPFile(Data, "arkana-fts.sourceforge.net", "/actual_release", 1000*10);
         if( err != FTSC_ERR::OK ) {
             wUpdate->getChild( "dlg_Update/Desc" )->setText( trans.get( "Update_Error" ) );
             return true;
         }
-        RawDataContainer NewestVersion ( Data.size() );
-        memcpy( NewestVersion.getData(), Data.data(), Data.size() );
+        String version(Data.data(), 0, Data.size());
 
         // Extract the version information.
-        int iVersion[3] = {0};
-        sscanf(StreamedConstDataContainer(&NewestVersion).readstr().c_str(), "%d.%d.%d", &iVersion[0], &iVersion[1], &iVersion[2]);
+        int iVersion[3] {0};
+        sscanf(version.c_str(), "%d.%d.%d", &iVersion[0], &iVersion[1], &iVersion[2]);
 
         // Look if we have a new version.
         if(makeFTSVersionUInt32(iVersion[0],iVersion[1],iVersion[2]) > getFTSVersionUInt32()) {
