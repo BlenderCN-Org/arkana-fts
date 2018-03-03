@@ -1,7 +1,6 @@
-
-
 #include "dLib/aTest/TestHarness.h"
 #include "utilities/DataContainer.h"
+#include <cstring>
 
 using namespace FTS;
 
