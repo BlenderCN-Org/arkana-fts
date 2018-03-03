@@ -39,7 +39,7 @@ int Lister::execute()
 void Lister::printChunk(const Chunk *in_pChunk)
 {
     String sType = "["+String::chr(in_pChunk->getTypeName()[0])+"] ";
-    float fSize = in_pChunk->getPayloadLength();
+    double fSize = (double)in_pChunk->getPayloadLength();
     String sSize;
     if(fSize / 1024.f < 1.f) {
         sSize = "(" + String::nr(fSize, 2) + " B)";

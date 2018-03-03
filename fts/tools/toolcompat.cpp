@@ -2,6 +2,7 @@
 #include "toolcompat.h"
 #include <thread>
 #include <chrono>
+#include <cstdint>
 
 using namespace FTSTools;
 using namespace FTS;
@@ -205,10 +206,10 @@ int MinimalLogger::failConsoleMessage()
     return ERR_OK;
 }
 
-uint32_t FTS::dGetTicks()
+std::uint32_t FTS::dGetTicks()
 {
     auto now = std::chrono::system_clock::now();
-    return std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
+    return (std::uint32_t) std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
 }
 
 /// Sleeps the thread for a certain amount of time.

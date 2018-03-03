@@ -2,7 +2,6 @@
 #define FTS_TOOLS_MAIN_H
 
 #include "main/defines.h"
-#include "main/workarounds.h"
 
 #include <time.h>
 #include <errno.h>

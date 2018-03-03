@@ -7,7 +7,6 @@
 #include <filesystem>
 
 #include "dLib/dCompressor/dCompressor.h"
-#include "dLib/dBrowse/dBrowse.h"
 
 using namespace FTSArc;
 using namespace FTS;

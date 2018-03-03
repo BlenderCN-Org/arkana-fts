@@ -1,13 +1,10 @@
-# Bla
-#
-
 project(ftsarc)
 
 #set(CMAKE_VERBOSE_MAKEFILE ON)
 
 # Setup the make environement. #
 ################################
-cmake_minimum_required(VERSION 2.4)
+cmake_minimum_required(VERSION 3.9)
 
 # Setup the cmake directory containing numerous cmake scripts and macros.
 set(CMAKE_MODULE_PATH "${ftsarc_SOURCE_DIR}/../../cmake")
@@ -28,30 +25,6 @@ endif()
 
 set(LIBS)
 
-# Append the libraries that should be uset do LIBS. Example:
-#
-# The SDL:
-find_package(SDL)
-if(${SDL_FOUND} STREQUAL "NO")
-    message(FATAL_ERROR "Could not find SDL installed on your system. TODO: Build our own.")
-else()
-    message(STATUS "Found SDL in ${SDL_INCLUDE_DIR}: ${SDL_LIBRARY}")
-    include_directories(${SDL_INCLUDE_DIR})
-    list(APPEND LIBS ${SDL_LIBRARY})
-endif()
-
-# The std:: namespace.
-include(${CMAKE_ROOT}/Modules/TestForSTDNamespace.cmake)
-
-if(${CMAKE_NO_STD_NAMESPACE})
-    message(SEND_ERROR "No std:: Namespace is available, This usually means you have no c++ support or no libstdc++")
-endif()
-
-# Add the aTest library and all test cases.
-#enable_testing()
-#add_subdirectory(${ftsarc_SOURCE_DIR}/../../dLib/aTest ./aTest)
-#add_subdirectory(${ftsarc_SOURCE_DIR}/tests)
-
 # Put all sourcefiles into one variable. #
 ##########################################
 set(SOURCES main.cpp
@@ -64,7 +37,6 @@ set(SOURCES main.cpp
             compressorlister.cpp
             ../toolcompat.cpp
             ../../dLib/dArchive/dArchive.cpp
-            ../../dLib/dBrowse/linux.cpp
             ../../dLib/dCompressor/dCompressor.cpp
             ../../dLib/dCompressor/minilzo_compressor.cpp
             ../../dLib/dCompressor/minilzo/minilzo.c
@@ -80,13 +52,10 @@ set(SOURCES main.cpp
             ../../main/Clock.cpp
    )
 
-# Debug or release ?
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    message(STATUS "Configuring for debug")
-    add_definitions(-DDEBUG=1)
-else()
-    message(STATUS "Configuring for release")
-endif()
+add_executable(ftsarc ${SOURCES})
+target_compile_definitions(ftsarc PRIVATE $<$<CONFIG:Debug>:DEBUG=1>)
+set_property(TARGET ftsarc PROPERTY CXX_STANDARD 14)
+set_property(TARGET ftsarc PROPERTY CXX_STANDARD_REQUIRED ON)
 
 # Add additional source directories.
 include_directories(${ftsarc_SOURCE_DIR}/../..
@@ -94,28 +63,17 @@ include_directories(${ftsarc_SOURCE_DIR}/../..
                    )
 
 # Add necessary defines:
-add_definitions(-DD_STRING_FTS_LIBS)
-add_definitions(-DD_NOCEGUI)
-add_definitions(-DD_NONET)
+target_compile_definitions(ftsarc PRIVATE D_STRING_FTS_LIBS D_NOCEGUI D_NONET)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
-# Compiler-dependent and build-dependend flags:
+# Compiler-dependent and build-dependent flags:
 if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -g -pg")
-    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall")
+    target_compile_options(ftsarc PRIVATE Wall $<$<CONFIG:Debug>:-O0> $<$<CONFIG:Debug>:-g> $<$<CONFIG:Debug>:-pg> )
 elseif(MSVC)
-endif()
-
-# And show the flags.
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    message(STATUS "CXX Flags (Debug) are: ${CMAKE_CXX_FLAGS_DEBUG}")
-else()
-    message(STATUS "CXX Flags (Release) are: ${CMAKE_CXX_FLAGS_RELEASE}")
+    target_compile_definitions(ftsarc PRIVATE _CRT_SECURE_NO_WARNINGS NOMINMAX)
 endif()
 
 # The compiling process. #
 ##########################
-add_executable(ftsarc ${SOURCES})
 target_link_libraries(ftsarc ${LIBS})
 
 # The installation process. #

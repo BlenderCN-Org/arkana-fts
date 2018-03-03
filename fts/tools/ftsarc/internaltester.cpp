@@ -31,8 +31,8 @@ int InternalTester::execute()
     FTSMSG("OK\n");
 
     FTSMSG("Filling data container with data:              ");
-    for(uint64_t i = 0 ; i < rdc.getSize() ; i++) {
-        rdc.getData()[i] = i;
+    for(size_t i = 0 ; i < rdc.getSize() ; i++) {
+        rdc.getData()[i] = (uint8_t) (i & 0xFF);
     }
     FTSMSG("OK\n");
 
