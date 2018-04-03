@@ -9,8 +9,8 @@ GetOpt::GetOpt( int argc, char* argv[], const std::string optstring ) : index( 1
 
 char GetOpt::operator()()
 {
-    optarg.empty();
-    errtext.empty();
+    optarg.clear();
+    errtext.clear();
 
     // Is first character of option string a ':'
     if ( optstring[0] == ':' )
