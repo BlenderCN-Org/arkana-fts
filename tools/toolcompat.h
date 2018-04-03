@@ -14,11 +14,12 @@ void init();
 /// Own logger for the tools
 class MinimalLogger : public FTS::Logger {
 protected:
-    int m_iDbgLv;
-    bool m_bMuted;
+    int m_iDbgLv = 0;
+    bool m_bMuted = false;
 
     /// Protect from copying.
     MinimalLogger(const MinimalLogger&) {};
+    MinimalLogger& operator=(const MinimalLogger&) = delete;
 
 public:
     MinimalLogger(int in_iDbgLv = 5);
