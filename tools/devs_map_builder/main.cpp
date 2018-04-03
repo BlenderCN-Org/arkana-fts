@@ -171,6 +171,11 @@ int main(int argc, char *argv[])
 
     fwrite(upperTiles, sizeof(char), (header.w) * (header.h), pFile);
 
+    delete [] sHeights;
+    delete [] s;
+    delete [] lowerTiles;
+    delete [] upperTiles;
+
     fflush(pFile);
     fclose(pFile);
     printf("Done !\n");
